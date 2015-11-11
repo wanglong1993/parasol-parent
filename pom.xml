@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -12,7 +13,8 @@
 	<url>http://192.168.101.101:3000/</url>
 	<modules>
 		<module>parasol-metadata</module>
-	</modules>
+    	<module>parasol-sms</module>
+  </modules>
 	<repositories>
 		<repository>
 			<id>nexus</id>
@@ -339,7 +341,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -353,7 +355,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -366,7 +368,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -379,7 +381,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -392,7 +394,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -405,7 +407,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -418,7 +420,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -431,7 +433,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -444,7 +446,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -458,6 +460,8 @@
 	<properties>
 		<spring.version>4.2.1.RELEASE</spring.version>
 		<hibernate.version>5.0.1.Final</hibernate.version>
+		<!-- phoenix-util -->
+		<util.version>8.0.0-SNAPSHOT</util.version>
 		<!-- database -->
 		<mysql.version>5.1.36</mysql.version>
 		<maven.test.skip>false</maven.test.skip>
@@ -473,4 +477,3 @@
 			<url>scm:git:ssh://git@192.168.101.89/phoenix-parent.git</url> <developerConnection>scm:git:ssh://git@192.168.101.89/phoenix-parent.git</developerConnection> -->
 	</scm>
 </project>
-
