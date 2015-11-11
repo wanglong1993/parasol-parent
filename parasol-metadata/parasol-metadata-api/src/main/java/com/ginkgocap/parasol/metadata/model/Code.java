@@ -1,4 +1,4 @@
-package com.ginkgocap.ywxt.metadata.model;
+package com.ginkgocap.parasol.metadata.model;
 
 import java.io.Serializable;
 

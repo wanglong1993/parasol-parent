@@ -32,13 +32,4 @@
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
     <dubbo:reference id="codeService" interface="com.ginkgocap.ywxt.metadata.service.code.CodeService" version="2.0.0"/>
-	<dubbo:reference id="codeRegionService" interface="com.ginkgocap.ywxt.metadata.service.region.CodeRegionService" version="2.0.0"/>
-	<dubbo:reference id="codeDyService" interface="com.ginkgocap.ywxt.metadata.service.CodeDyService" version="2.0.0"/>
-	<dubbo:reference id="codeLogService" interface="com.ginkgocap.ywxt.metadata.service.code.CodeLogService" version="2.0.0"/>
-	<dubbo:reference id="suggestionService" interface="com.ginkgocap.ywxt.metadata.service.suggestion.SuggestionService" version="2.0.0"/>
-	<dubbo:reference id="rCodeDockService" interface="com.ginkgocap.ywxt.metadata.service.code.RCodeDockService" version="2.0.0"/>
-	<dubbo:reference id="sensitiveWordService" interface="com.ginkgocap.ywxt.metadata.service.SensitiveWordService" version="2.0.0"/>
-	<dubbo:reference id="userTagService" interface="com.ginkgocap.ywxt.metadata.service.userTag.UserTagService" version="2.0.0"/>
-	<dubbo:reference id="countryCodeService" interface="com.ginkgocap.ywxt.metadata.service.CountryCodeService" version="2.0.0"/>
-	<dubbo:reference id="emailSuffixService" interface="com.ginkgocap.ywxt.metadata.service.EmailSuffixService" version="2.0.0"/>
 </beans>
