@@ -1,0 +1,213 @@
+package com.ginkgocap.ywxt.metadata.dao.code.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+import org.springframework.stereotype.Repository;
+
+import com.ginkgocap.ywxt.metadata.dao.code.CodeDao;
+import com.ginkgocap.ywxt.metadata.model.Code;
+import com.ginkgocap.ywxt.metadata.model.CodeRegion;
+import com.ginkgocap.ywxt.util.DateFunc;
+import com.ibatis.sqlmap.client.SqlMapClient;
+/**
+ * 类型的DAO实现类
+ * @author liu
+ *
+ */
+@Repository("codeDAO")
+public class CodeDaoImpl extends SqlMapClientDaoSupport implements CodeDao {
+
+    @Resource
+    SqlMapClient metadataSqlMapClient;
+
+    @PostConstruct
+    public void initSqlMapClient() {
+        super.setSqlMapClient(metadataSqlMapClient);
+    }
+    public Code selectByPrimarKey(long id) {
+        return (Code) getSqlMapClientTemplate().queryForObject("tb_code.selectByPrimaryKey", id);
+    }
+
+    
+    public List<Code> selectByGroupAndLevel(String group, int level) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("type", group);
+        map.put("level", level);
+        List<Code> list = getSqlMapClientTemplate().queryForList("tb_code.selectByGroupAndLevel", map);
+        return list;
+    }
+
+    
+    public Code insert(Code code) {
+        code.setCtime(DateFunc.getDate());
+        Long id = (Long) getSqlMapClientTemplate().insert("tb_code.insertCode", code);
+        if (id != null) {
+            code.setId(id);
+            return code;
+        } else {
+            return null;
+        }
+    }
+
+    
+    public void update(Code code) {
+        getSqlMapClientTemplate().update("tb_code.updateCode", code);
+    }
+
+    
+    public void delete(long id) {
+        getSqlMapClientTemplate().delete("tb_code.deleteCode", id);
+    }
+    
+    public List<Code> selectByName(String name) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("name", name);
+        List<Code> list = getSqlMapClientTemplate().queryForList("tb_code.selectByName", map);
+        return list;
+    }
+    @Override
+    public List<Code> selectByParams(Map<String, Object> params) {
+        List<Code> list = getSqlMapClientTemplate().queryForList("tb_code.selectByParams", params);
+        return list;
+    }
+    @Override
+    public List<Code> selectByName(String name, int root) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("name", name);
+        map.put("root", root);
+        List<Code> list = getSqlMapClientTemplate().queryForList("tb_code.selectByName", map);
+        return list;
+    }
+	@Override
+	public List<Code> selectAll() {
+		return getSqlMapClientTemplate().queryForList("tb_code.selectAll");
+	}
+    @Override
+    public List<Map> findByMap(Map<String, Object> map) {
+        List<Map> lt = getSqlMapClientTemplate().queryForList("tb_code.findByMap",map);
+        if(lt!=null && lt.size()>0){
+            for (Map map2 : lt) {
+                int no = (Integer) map2.get("orderNo");
+                if(no == 9999){
+                    map2.put("orderNo",0);
+                }
+            }
+        }
+        return lt;
+    }
+    @Override
+    public List<Code> selectByOrderNo(int root) {
+        return getSqlMapClientTemplate().queryForList("tb_code.selectByOrderNo",root);
+    }
+	@Override
+	public List<Code> selectByParam(String name, String createBy,
+			String sysItem, String startTimer, String endTimer, String type,Integer start, Integer size) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isNotBlank(name))
+        	map.put("name", name);
+        if(StringUtils.isNotBlank(createBy))
+        	map.put("createBy", createBy);
+        if(StringUtils.isNotBlank(sysItem))
+        	map.put("sysItem", sysItem);
+        if(StringUtils.isNotBlank(startTimer))
+        	map.put("startTimer", startTimer);
+        if(StringUtils.isNotBlank(endTimer))
+        	map.put("endTimer", endTimer);
+        if(StringUtils.isNotBlank(type))
+        	map.put("type", type);
+        map.put("start", start);
+        map.put("size", size);
+        List<Code> list = getSqlMapClientTemplate().queryForList("tb_code.selectByParam", map);
+        return list;
+	}
+	@Override
+	public Long selectByParamCount(String name, String createBy,
+			String sysItem, String startTimer, String endTimer, String type) {
+		Map<String, Object> map = new HashMap<String, Object>();
+	 	if(StringUtils.isNotBlank(name))
+        	map.put("name", name);
+        if(StringUtils.isNotBlank(createBy))
+        	map.put("createBy", createBy);
+        if(StringUtils.isNotBlank(sysItem))
+        	map.put("sysItem", sysItem);
+        if(StringUtils.isNotBlank(startTimer))
+        	map.put("startTimer", startTimer);
+        if(StringUtils.isNotBlank(endTimer))
+        	map.put("endTimer", endTimer);
+        if(StringUtils.isNotBlank(type))
+        	map.put("type", type);
+		return (Long) getSqlMapClientTemplate().queryForObject(
+				"tb_code.selectByParamCount", map);
+	}
+	@Override
+	public Code selectFatherNodeById(long id) {
+		return (Code) getSqlMapClientTemplate().queryForObject("tb_code.selectFatherNodeById", id);
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Code> selectChildNodeById(long id) {
+		return getSqlMapClientTemplate().queryForList("tb_code.selectChildNodeById",String.valueOf(id));
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Code> selectBrotherNodeById(long id) {
+		return getSqlMapClientTemplate().queryForList("tb_code.selectChildNodeById",String.valueOf(id));
+	}
+	@Override
+	public long SelectCountByUserTypeIndustry(int userType, int industry,int level) {
+		Map<String,Object> values=new HashMap<String,Object>();
+		if(userType!=-1){
+			values.put("userType", userType);
+		}
+	    if(industry!=-1){
+	    	values.put("industry", industry);
+	    }
+	    if(level!=-1){
+	    	values.put("level", level);
+	    }
+		return (Long) getSqlMapClientTemplate().queryForObject("tb_code.selectCountByUserTypeIndustry", values);
+	}
+	@Override
+	public List<Code> SelectByUserTypeIndustry(int userType, int industry, int level,
+			int pageIndex, int pageSize) {
+		Map<String,Object> values=new HashMap<String,Object>();
+		if(userType!=-1){
+			values.put("userType", userType);
+		}
+	    if(industry!=-1){
+	    	values.put("industry", industry);
+	    }
+	    if(level!=-1){
+	    	values.put("level", level);
+	    }
+		values.put("start", (pageIndex-1)*pageSize);
+		values.put("size", pageSize);
+		return getSqlMapClientTemplate().queryForList("tb_code.SelectByUserTypeIndustry", values);
+	}
+	/* (non-Javadoc)
+	 * @see com.ginkgocap.ywxt.metadata.dao.code.CodeDao#selectAreaList(java.lang.Integer)
+	 */
+	@Override
+	public List<CodeRegion> selectAreaList(Long pid) {
+		Map<String,Object> values=new HashMap<String,Object>();
+		values.put("pid", pid);
+		return getSqlMapClientTemplate().queryForList("tb_code_region.selectAreaList", values);
+	}
+	@Override
+	public List<Code> selectAllOrderByNumberAsc() {
+		return getSqlMapClientTemplate().queryForList("tb_code.selectAll_ASC");
+	}
+	@Override
+	public Long selectCataLogMaxId() {
+		return (Long) getSqlMapClientTemplate().queryForObject("tb_code.selectCataLogMaxId");
+	}
+
+}

@@ -1,0 +1,81 @@
+package com.ginkgocap.ywxt.metadata.service.suggestion.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.stereotype.Service;
+
+import com.ginkgocap.ywxt.metadata.dao.suggestion.SuggestionDao;
+import com.ginkgocap.ywxt.metadata.form.DataGridModel;
+import com.ginkgocap.ywxt.metadata.model.Code;
+import com.ginkgocap.ywxt.metadata.model.Dic;
+import com.ginkgocap.ywxt.metadata.model.Suggestion;
+import com.ginkgocap.ywxt.metadata.service.suggestion.SuggestionService;
+import com.ginkgocap.ywxt.util.DateFunc;
+@Service("suggestionService")
+public class SuggestionServiceImpl implements SuggestionService {
+    @Autowired
+    private SuggestionDao suggestionDao;
+    private Logger logger = LoggerFactory.getLogger(getClass());
+	@Override
+	public Suggestion selectByPrimarKey(long id) {
+		return suggestionDao.selectByPrimarKey(id);
+	}
+	@Override
+	public Suggestion insert(Suggestion suggestion) {
+		return suggestionDao.insert(suggestion);
+	}
+	@Override
+	public Suggestion add(Suggestion suggestion) {
+	    return suggestionDao.add(suggestion);
+	}
+	@Override
+	public void update(Suggestion suggestion) {
+		suggestionDao.update(suggestion);
+	}
+	@Override
+	public void delete(long id) {
+		suggestionDao.delete(id);
+	}
+	@Override
+	public List<Suggestion> selectByParams(long id, String user_name,
+			String problemTitle, String feedbackType, long startRow,
+			int pageSize) {
+		return null;
+	}
+	@Override
+	public Map<String, Object> selectByParam(long id, String user_name,
+			String problemTitle, String cstart, String cend, String fstart,
+			String fend, String feedbackType, DataGridModel dgm) {
+		Integer start = (dgm.getPage() - 1) * dgm.getRows();
+		Integer size = dgm.getRows();
+		List<Suggestion> lt=null;
+		long total=0l;
+		try{
+			lt = suggestionDao.selectByParams(id, user_name, problemTitle, cstart, cend, fstart, fend, feedbackType, start, size);
+			total = suggestionDao.selectByParamsCount(id, user_name, problemTitle, cstart, cend, fstart, fend, feedbackType);
+			logger.debug("selectByParam --------->user_name:"+user_name);
+			logger.debug("selectByParam --------->cstart:"+cstart);
+			logger.debug("selectByParam --------->fstart:"+fstart);
+			logger.debug("selectByParam --------->feedbackType:"+feedbackType);
+			logger.debug("selectByParam --------->problemTitle:"+problemTitle);
+		}catch (Exception e) {
+			logger.error("selectByParam is error");
+			e.printStackTrace();
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("total", total);
+		result.put("rows", lt);
+		return result;
+	}
+    @Override
+    public List<Dic> selectDics() {
+        return suggestionDao.selectDics();
+    }
+}

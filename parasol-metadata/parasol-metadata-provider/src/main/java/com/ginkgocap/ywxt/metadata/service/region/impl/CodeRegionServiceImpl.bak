@@ -1,0 +1,48 @@
+/**
+ * Copyright (c) 2011 银杏资本.
+ * All Rights Reserved. 保留所有权利.
+ */
+package com.ginkgocap.ywxt.metadata.service.region.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ginkgocap.ywxt.metadata.dao.region.CodeRegionDAO;
+import com.ginkgocap.ywxt.metadata.model.CodeRegion;
+import com.ginkgocap.ywxt.metadata.service.region.CodeRegionService;
+
+/**
+ * @author douyou 
+ * @version 创建时间：2011-11-18 下午3:54:41
+ * 类说明
+ */
+@Service("codeRegionService")
+public class CodeRegionServiceImpl implements CodeRegionService {
+    @Autowired
+    private CodeRegionDAO codeRegionDAO;
+
+    
+    public CodeRegion selectByPrimaryKey(long id) {
+        return codeRegionDAO.selectByPrimaryKey(id);
+    }
+
+    
+    public List<CodeRegion> selectByParentId(long id) {
+        return codeRegionDAO.selectByParentId(id);
+    }
+
+    
+    public CodeRegion selectParentByPrimaryKey(long id) {
+        return codeRegionDAO.selectParentByPrimaryKey(id);
+    }
+    
+    public List<CodeRegion> selectAllCountry(){
+    	return codeRegionDAO.selectAllCountry();
+    }
+    public List<CodeRegion> selectByName(String name){
+    	return codeRegionDAO.selectByName(name);
+    }
+    
+}

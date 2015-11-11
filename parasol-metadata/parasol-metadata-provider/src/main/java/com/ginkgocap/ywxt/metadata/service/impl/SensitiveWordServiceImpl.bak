@@ -1,0 +1,147 @@
+package com.ginkgocap.ywxt.metadata.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ginkgocap.ywxt.metadata.dao.SensitiveWordDao;
+import com.ginkgocap.ywxt.metadata.form.DataGridModel;
+import com.ginkgocap.ywxt.metadata.model.SensitiveWord;
+import com.ginkgocap.ywxt.metadata.service.SensitiveWordService;
+import com.ginkgocap.ywxt.util.sw.SWSeeker;
+import com.ginkgocap.ywxt.util.sw.format.AbstractFormat;
+import com.ginkgocap.ywxt.util.sw.format.HTMLFormat;
+@Service("sensitiveWordService")
+public class SensitiveWordServiceImpl implements SensitiveWordService {
+	@Resource
+	SensitiveWordDao sensitiveWordDao;
+	SWSeeker sw = new SWSeeker();
+	@Override
+	public Map<String, Object> findByParams(Map<String, Object> param,
+			DataGridModel dgm) {
+		Integer start = (dgm.getPage() - 1) * dgm.getRows();
+		Integer size = dgm.getRows();
+		long count = sensitiveWordDao.countByParmas(param);
+		param.put("start", start);
+		param.put("step", size);
+		List<SensitiveWord> list = sensitiveWordDao.findByParmas(param);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("total", count);
+		result.put("rows", list);
+		return result;
+	}
+
+	@Override
+	public SensitiveWord findOne(long id) {
+		return sensitiveWordDao.findOne(id);
+	}
+
+	@Override
+	public SensitiveWord saveOrUpdate(SensitiveWord sensitiveWord) {
+		if(sensitiveWord!=null ){
+			if(sensitiveWord.getId()>0){
+				return sensitiveWordDao.update(sensitiveWord);
+			}else{
+				return sensitiveWordDao.save(sensitiveWord);
+			}
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	public int deleteByIds(Long[] ids) {
+		return sensitiveWordDao.deleteIds(ids);
+	}
+	public List<SensitiveWord> check(String word,long id){
+		return sensitiveWordDao.check(word,id);
+	}
+	public int updateWord(){
+		SWSeeker sw2 = new SWSeeker();
+		try {
+			if(!sw2.isReady()){
+				Map<String,Object> param = new HashMap<String, Object>();
+				long start=0;
+				param.put("start", start);
+				param.put("step", 100);
+				List<SensitiveWord> list = sensitiveWordDao.findByParmas(param);
+				while(list.size()>0){
+					List<String> words = new ArrayList<String>();
+					for(SensitiveWord s:list){
+						words.add(s.getWord());
+					}
+					sw2.initData(words);
+					start+=100;
+					param.put("start", start);
+					list = sensitiveWordDao.findByParmas(param);
+				}
+			}
+			if(sw2!=null){
+				sw=sw2;
+			}
+			return 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	/**
+	 * 高亮文本中的关键词
+	 * @param text 文本
+	 * @param matchType 匹配方式，1为最小匹配（在文本中匹配到一个即可） 2为最大匹配（文本中所有关键词均匹配）
+	 * @return
+	 */
+	public String highlight(String text, int matchType){
+		return highlight(text, matchType, new HTMLFormat("<font color='red'>", "</font>"));
+	}
+	
+	/**
+	 * 使用指定字符串高了文本中关键词
+	 * @param text 文本
+	 * @param matchType 匹配方式，1为最小匹配（在文本中匹配到一个即可） 2为最大匹配（文本中所有关键词均匹配）
+	 * @param formate  例如：new HTMLFormat("<font color='red'>", "</font>")
+	 * @return
+	 */
+	public String highlight(String text, int matchType, AbstractFormat formate) {
+		init();
+		return sw.highlight(text, matchType, formate);
+	}
+	public List<String> sensitiveWord(String text){
+		init();
+		return sw.sensitiveWord(text);
+	}
+	private void init(){
+		if(!sw.isReady()){
+			Map<String,Object> param = new HashMap<String, Object>();
+			long start=0;
+			param.put("start", start);
+			param.put("step", 100);
+			List<SensitiveWord> list = sensitiveWordDao.findByParmas(param);
+			while(list.size()>0){
+				List<String> words = new ArrayList<String>();
+				for(SensitiveWord s:list){
+					words.add(s.getWord());
+				}
+				sw.initData(words);
+				start+=100;
+				param.put("start", start);
+				list = sensitiveWordDao.findByParmas(param);
+			}
+		}
+	}
+	public String replaceSensitive(String text){
+		init();
+		return sw.replaceSensitive(text);
+	}
+	
+	@Override
+	public boolean batchInsertSelective(List<SensitiveWord> sensitiveWords) {
+		return false; 
+//				sensitiveWordDao.batchInsertSelective(sensitiveWords);
+	}
+}

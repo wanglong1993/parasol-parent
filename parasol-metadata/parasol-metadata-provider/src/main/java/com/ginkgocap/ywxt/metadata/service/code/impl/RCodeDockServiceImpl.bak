@@ -1,0 +1,95 @@
+package com.ginkgocap.ywxt.metadata.service.code.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ginkgocap.ywxt.metadata.dao.code.RCodeDockDao;
+import com.ginkgocap.ywxt.metadata.form.DataGridModel;
+import com.ginkgocap.ywxt.metadata.model.RCodeDock;
+import com.ginkgocap.ywxt.metadata.service.code.RCodeDockService;
+@Service("rCodeDockService")
+public class RCodeDockServiceImpl implements RCodeDockService {
+	@Autowired
+    private RCodeDockDao rCodeDockDao;
+	@Override
+	public RCodeDock selectByPrimarKey(long id) {
+		return rCodeDockDao.selectByPrimarKey(id);
+	}
+
+	@Override
+	public RCodeDock save(RCodeDock rCodeDock) {
+		return rCodeDockDao.save(rCodeDock);
+	}
+
+	@Override
+	public int update(RCodeDock rCodeDock) {
+		if(rCodeDock.getId()!=0){
+			RCodeDock rCodeDock1 = rCodeDockDao.selectByPrimarKey(rCodeDock.getId());
+			if(rCodeDock1!=null){
+				return rCodeDockDao.update(rCodeDock);
+			}else{
+				rCodeDockDao.save(rCodeDock);
+				return 1;
+			}
+		}else{
+			return 0;
+		}
+	}
+
+	@Override
+	public int delete(long id) {
+		return rCodeDockDao.delete(id);
+	}
+
+	@Override
+	public String dockTz(String tz) {
+		List<RCodeDock> list = rCodeDockDao.dockTz(tz);
+		String string="";
+		if(list!=null && list.size()>0){
+			string+=",";
+			for(RCodeDock rcd:list){
+				string+=rcd.getRzNumber()+",";
+			}
+		}
+		return string;
+	}
+	@Override
+	public List<RCodeDock> dockTzList(String tz) {
+		List<RCodeDock> list = rCodeDockDao.dockTz(tz);
+		return list;
+	}
+	@Override
+	public String dockRz(String rz) {
+		List<RCodeDock> list = rCodeDockDao.dockRz(rz);
+		String string="";
+		if(list!=null && list.size()>0){
+			string+=",";
+			for(RCodeDock rcd:list){
+				string+=rcd.getTzNumber()+",";
+			}
+		}
+		return string;
+	}
+	@Override
+	public List<RCodeDock> dockRzList(String rz) {
+		List<RCodeDock> list = rCodeDockDao.dockRz(rz);
+		return list;
+	}
+	@Override
+	public Map<String, Object> selectByParam(String rzName, String tzName,
+			DataGridModel dgm) {
+		Integer start = (dgm.getPage() - 1) * dgm.getRows();
+		Integer size = dgm.getRows();
+		List<RCodeDock> list = rCodeDockDao.selectByParam(rzName, tzName,start, size);
+		long total = rCodeDockDao.selectByParamCount(rzName, tzName);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("total", total);
+		result.put("rows", list);
+		return null;
+	}
+
+}

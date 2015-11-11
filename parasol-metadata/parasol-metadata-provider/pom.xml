@@ -1,0 +1,336 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>parasol-metadata</artifactId>
+		<groupId>com.ginkgocap.ywxt</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>parasol-metadata-provider</artifactId>
+	<name>${project.artifactId}</name>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<properties>
+		<skip_maven_deploy>true</skip_maven_deploy>
+		<h2.version>1.3.161</h2.version>
+		<maven.test.skip>true</maven.test.skip>
+		<maven.test.failure.ignore>true</maven.test.failure.ignore>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-metadata-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-framework-dal</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<!-- dubbo 服务注册方式 start -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- zookeeper -->
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.sgroschupf</groupId>
+			<artifactId>zkclient</artifactId>
+		</dependency>
+		<!-- <dependency> <groupId>com.ginkgocap.ywxt</groupId> <artifactId>phoenix-util</artifactId> 
+			<version>1.0-SNAPSHOT</version> </dependency> -->
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/assembly</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<filtering>true</filtering>
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<filtering>true</filtering>
+				<directory>src/main/webapp</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</testResource>
+		</testResources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<!-- 打jar包时候过滤掉dubbo.properties文件，使用最后发布包里conf下的属性文件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+
+				<configuration>
+					<excludes>
+						<excludes>**/conf/**</excludes>
+						<excludes>**/assembly.xml</excludes>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.ginkgocap.ywxt</groupId>
+									<artifactId>phoenix-util</artifactId>
+									<version>8.0.0-SNAPSHOT</version>
+									<outputDirectory>${project.build.directory}/dubbo</outputDirectory>
+									<includes>META-INF/assembly/**</includes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>src/main/assembly/assembly.xml</descriptor>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<escapeString>\</escapeString>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<!-- 开发打包使用的profile -->
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+				<!-- redis地址 -->
+				<redis.host>192.168.101.131</redis.host>
+				<!-- redis端口 -->
+				<redis.port>6379</redis.port>
+				<!-- 数据库连接地址和数据库名 -->
+				<jdbc.url>
+					jdbc:mysql://192.168.101.131:3306/phoenix_metadata?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+				</jdbc.url>
+				<!-- 数据库访问帐号 -->
+				<jdbc.username>zhangwei</jdbc.username>
+				<!-- 数据库访问密码 -->
+				<jdbc.password>zhangwei</jdbc.password>
+				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
+				<log4j.level>debug</log4j.level>
+				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
+				<log4j.path>d:/log</log4j.path>
+				<qatest.schema.skip>false</qatest.schema.skip>
+				<!-- dubbo注册中心的地址 -->
+				<dubbo.application.name>metadatadubboprovider</dubbo.application.name>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.port>2011</dubbo.protocol.port>
+			</properties>
+			<build>
+				<plugins>
+					<!-- sql plugin -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>sql-maven-plugin</artifactId>
+						<version>1.5</version>
+						<!-- common configuration shared by all executions -->
+						<dependencies>
+							<!-- specify the dependent jdbc driver here -->
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>5.1.12</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<driver>${jdbc.driverClassName}</driver>
+							<username>${jdbc.username}</username>
+							<password>${jdbc.password}</password>
+							<url>${jdbc.url}</url>
+							<!--all executions are ignored if -Dmaven.test.skip=true -->
+							<skip>${maven.test.skip}</skip>
+						</configuration>
+						<executions>
+							<execution>
+								<id>create-schema-default</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<inherited>false</inherited>
+								<configuration>
+									<skip>${maven.test.skip}</skip>
+									<autocommit>true</autocommit>
+									<srcFiles>
+										<srcFile>src/test/resources/sql/mysql/schema.sql</srcFile>
+										<srcFile>src/test/resources/sql/mysql/default-data.sql</srcFile>
+									</srcFiles>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>dbunit-maven-plugin</artifactId>
+						<version>1.0-beta-3</version>
+						<executions>
+							<execution>
+								<id>test-compile</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>operation</goal>
+								</goals>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>${jdbc.groupId}</groupId>
+								<artifactId>${jdbc.artifactId}</artifactId>
+								<version>${jdbc.version}</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<dataTypeFactoryName> ${dbuint.dataTypeFactoryName}
+							</dataTypeFactoryName>
+							<driver>${jdbc.driverClassName}</driver>
+							<username>${jdbc.username}</username>
+							<password>${jdbc.password}</password>
+							<url>${jdbc.url}</url>
+							<src>src/test/resources/data/sample-data.xml</src>
+							<type>CLEAN_INSERT</type>
+							<skip>${maven.test.skip}</skip>
+							<format>flat</format>
+							<encoding>UTF-8</encoding>
+							<dest>target/dbunit/export.xml</dest>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>delivery</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<filters>
+					<filter>${sa.config.file}</filter>
+				</filters>
+			</build>
+		</profile>
+		<profile>
+			<id>online</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<filters>
+					<filter>${sa.config.file}</filter>
+				</filters>
+			</build>
+			<properties>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+				<!-- redis地址 -->
+				<redis.host>${metadata.online.redis.host}</redis.host>
+				<!-- redis端口 -->
+				<redis.port>${metadata.online.redis.port}</redis.port>
+				<!-- 数据库连接地址和数据库名 -->
+				<jdbc.url>${metadata.online.jdbc.url}</jdbc.url>
+				<!-- 数据库访问帐号 -->
+				<jdbc.username>${metadata.online.jdbc.username}</jdbc.username>
+				<!-- 数据库访问密码 -->
+				<jdbc.password>${metadata.online.jdbc.password}</jdbc.password>
+				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
+				<log4j.level>${metadata.online.log4j.level}</log4j.level>
+				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
+				<log4j.path>${metadata.online.log4j.path}</log4j.path>
+				<!-- dubbo注册中心的地址 -->
+				<dubbo.application.name>${metadata.online.dubbo.application.name}</dubbo.application.name>
+				<dubbo.protocol.name>${metadata.online.dubbo.protocol.name}</dubbo.protocol.name>
+				<dubbo.registry.address>${metadata.online.dubbo.registry.address}</dubbo.registry.address>
+				<dubbo.protocol.port>${metadata.online.dubbo.protocol.port}</dubbo.protocol.port>
+			</properties>
+		</profile>
+	</profiles>
+</project>

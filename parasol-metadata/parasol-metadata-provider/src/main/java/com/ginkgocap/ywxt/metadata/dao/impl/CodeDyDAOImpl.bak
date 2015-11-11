@@ -1,0 +1,109 @@
+package com.ginkgocap.ywxt.metadata.dao.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+import org.springframework.stereotype.Component;
+
+import com.ginkgocap.ywxt.metadata.dao.CodeDyDAO;
+import com.ginkgocap.ywxt.metadata.model.CodeDy;
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+/**
+ * 
+ * @author liu
+ * @version 2011-11-21 10:56:01
+ */
+@Component("codeDyDAO")
+public class CodeDyDAOImpl extends SqlMapClientDaoSupport implements CodeDyDAO {
+    @Resource
+	SqlMapClient metadataSqlMapClient;
+
+	@PostConstruct
+	public void initSqlMapClient() {
+		super.setSqlMapClient(metadataSqlMapClient);
+	}
+
+	/*
+	 * (non-Javadoc) 根据主键ID查询
+	 * 
+	 * @see
+	 * com.ginkgocap.ywxt.dao.CodeDyDAO#selectByPrimarKey(java.lang.Integer)
+	 */
+	public CodeDy selectByPrimarKey(long id) {
+		CodeDy codeDy = (CodeDy) getSqlMapClientTemplate().queryForObject(
+				"tb_code_dy.selectByPrimaryKey", id);
+		return codeDy;
+	}
+
+	/*
+	 * (non-Javadoc) 根据地域的名称查询
+	 * 
+	 * @see com.ginkgocap.ywxt.dao.CodeDyDAO#selectByName(java.lang.String)
+	 */
+	public CodeDy selectByName(String name) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", name);
+		CodeDy codeDy = (CodeDy) getSqlMapClientTemplate().queryForObject(
+				"tb_code_dy.selectByName", map);
+		return codeDy;
+	}
+
+	/*
+	 * (non-Javadoc) 查询所有的地域信息
+	 * 
+	 * @see com.ginkgocap.ywxt.dao.CodeDyDAO#selectAll()
+	 */
+	@SuppressWarnings("unchecked")
+	public List<CodeDy> selectAll() {
+		List<CodeDy> list = getSqlMapClientTemplate().queryForList(
+				"tb_code_dy.selectAll");
+
+		return list;
+	}
+
+	/*
+	 * (non-Javadoc) 插入地域信息
+	 * 
+	 * @see
+	 * com.ginkgocap.ywxt.dao.CodeDyDAO#insert(com.ginkgocap.ywxt.model.CodeDy)
+	 */
+	public CodeDy insert(CodeDy codeDy) {
+		Long id = (Long) getSqlMapClientTemplate().insert(
+				"tb_code_dy.insertCodeDy", codeDy);
+		if (id != null) {
+			codeDy.setId(id);
+			return codeDy;
+		} else {
+			return null;
+		}
+	}
+
+	/*
+	 * (non-Javadoc) 更新地域信息
+	 * 
+	 * @see
+	 * com.ginkgocap.ywxt.dao.CodeDyDAO#update(com.ginkgocap.ywxt.model.CodeDy)
+	 */
+	public void update(CodeDy codeDy) {
+		getSqlMapClientTemplate().update("tb_code_dy.updateCodeDy", codeDy);
+
+	}
+
+	/*
+	 * (non-Javadoc) 删除地域信息
+	 * 
+	 * @see com.ginkgocap.ywxt.dao.CodeDyDAO#delete(java.lang.Integer)
+	 */
+	public void delete(long id) {
+		getSqlMapClientTemplate().delete("tb_code_dy.deleteCodeDy", id);
+
+	}
+
+}

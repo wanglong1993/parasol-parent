@@ -1,0 +1,66 @@
+package com.ginkgocap.ywxt.metadata.dao.impl;
+
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+import org.springframework.stereotype.Component;
+
+import com.ginkgocap.ywxt.metadata.dao.CountryCodeDao;
+import com.ginkgocap.ywxt.metadata.model.CountryCode;
+import com.ibatis.sqlmap.client.SqlMapClient;
+@Component("countryCodeDao")
+public class CountryCodeDaoImpl extends SqlMapClientDaoSupport implements CountryCodeDao {
+	@Resource
+	SqlMapClient metadataSqlMapClient;
+	@PostConstruct
+	public void initSqlMapClient() {
+		super.setSqlMapClient(metadataSqlMapClient);
+	}
+	@Override
+	public CountryCode findOne(long id) {
+		CountryCode countryCode = (CountryCode) getSqlMapClientTemplate().queryForObject(
+				"tb_country_code.findOne", id);
+		return countryCode;
+	}
+
+	@Override
+	public List<String> findAllType() {
+		List<String> list = getSqlMapClientTemplate().queryForList(
+				"tb_country_code.findAllType");
+		return list;
+	}
+
+	@Override
+	public List<CountryCode> findAll() {
+		List<CountryCode> list = getSqlMapClientTemplate().queryForList(
+				"tb_country_code.findAll");
+		return list;
+	}
+
+	@Override
+	public CountryCode saveOrUpdate(CountryCode countryCode) {
+		CountryCode temp = findOne(countryCode.getId());
+		if(temp==null){
+			Long id = (Long) getSqlMapClientTemplate().insert(
+					"tb_country_code.insert", countryCode);
+			if (id != null) {
+				countryCode.setId(id);
+				return countryCode;
+			} else {
+				return null;
+			}
+		}else{
+			getSqlMapClientTemplate().update("tb_country_code.update", countryCode);
+			return countryCode;
+		}
+	}
+
+	@Override
+	public void delete(long id) {
+		getSqlMapClientTemplate().delete("tb_country_code.delete", id);
+	}
+
+}

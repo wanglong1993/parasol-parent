@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="GB2312"?>
+<root>
+	<datasources>
+		<ds name="idCenterDS" 
+			driverClassName="com.mysql.jdbc.Driver" 
+			url="jdbc:mysql://192.168.101.131:3306/phoenix_metadata?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8"
+			username="zhangwei" 
+			password="zhangwei"
+			maxActive="" 
+			maxIdle="" 
+			maxWait="" 
+		/>
+        
+		<ds name="master" 
+			driverClassName="com.mysql.jdbc.Driver" 
+			url="jdbc:mysql://192.168.101.131:3306/phoenix_metadata?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8"
+			username="zhangwei" 
+			password="zhangwei"
+			maxActive="" 
+			maxIdle="" 
+			maxWait="" 
+		/>
+		<ds name="master" 
+			driverClassName="com.mysql.jdbc.Driver" 
+			url="jdbc:mysql://192.168.101.131:3306/phoenix_metadata?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8"
+			username="zhangwei" 
+			password="zhangwei"
+			maxActive="" 
+			maxIdle="" 
+			maxWait="" 
+		/>
+	</datasources>
+	<groups>
+		<group name="g2" master="master" salve="slave"/>	
+		<group name="g3" master="master" salve="slave"/>	
+	</groups>
+
+</root>
