@@ -28,4 +28,5 @@
 		</dependency>
 	</dependencies>
 
+	<groupId>com.ginkgocap.parasol</groupId>
 </project>
