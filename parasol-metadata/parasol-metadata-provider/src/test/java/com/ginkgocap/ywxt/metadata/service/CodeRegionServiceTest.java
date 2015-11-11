@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.ginkgocap.parasol.metadata.service.region.CodeRegionService;
 import com.ginkgocap.ywxt.metadata.base.TestBase;
 import com.ginkgocap.ywxt.metadata.model.CodeRegion;
-import com.ginkgocap.ywxt.metadata.service.region.CodeRegionService;
 
 /**
  * @author douyou

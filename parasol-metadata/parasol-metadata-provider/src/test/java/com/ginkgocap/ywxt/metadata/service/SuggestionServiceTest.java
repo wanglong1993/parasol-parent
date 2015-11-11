@@ -14,11 +14,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
+import com.ginkgocap.parasol.metadata.service.suggestion.SuggestionService;
 import com.ginkgocap.ywxt.metadata.base.TestBase;
 import com.ginkgocap.ywxt.metadata.form.DataGridModel;
 import com.ginkgocap.ywxt.metadata.model.Dic;
 import com.ginkgocap.ywxt.metadata.model.Suggestion;
-import com.ginkgocap.ywxt.metadata.service.suggestion.SuggestionService;
 /**
  * 
  * @author lk

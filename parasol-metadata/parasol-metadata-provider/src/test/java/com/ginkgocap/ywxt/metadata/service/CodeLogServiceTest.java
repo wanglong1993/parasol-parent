@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
+import com.ginkgocap.parasol.metadata.service.code.CodeLogService;
 import com.ginkgocap.ywxt.metadata.base.TestBase;
 import com.ginkgocap.ywxt.metadata.model.CodeLog;
-import com.ginkgocap.ywxt.metadata.service.code.CodeLogService;
 /**
  * 分词操作日志的service测试
  * @author 窦友

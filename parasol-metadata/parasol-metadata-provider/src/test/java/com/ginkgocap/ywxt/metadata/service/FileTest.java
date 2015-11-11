@@ -8,12 +8,12 @@ import org.junit.Test;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.Rollback;
 
+import com.ginkgocap.parasol.metadata.service.code.RCodeDockService;
+import com.ginkgocap.parasol.metadata.service.suggestion.SuggestionService;
 import com.ginkgocap.ywxt.metadata.base.TestBase;
 import com.ginkgocap.ywxt.metadata.model.Dic;
 import com.ginkgocap.ywxt.metadata.model.RCodeDock;
 import com.ginkgocap.ywxt.metadata.model.Suggestion;
-import com.ginkgocap.ywxt.metadata.service.code.RCodeDockService;
-import com.ginkgocap.ywxt.metadata.service.suggestion.SuggestionService;
 
 public class FileTest extends TestBase {
     @Resource

@@ -4,9 +4,9 @@ import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Configuration;
 
+import com.ginkgocap.parasol.metadata.service.code.RCodeDockService;
 import com.ginkgocap.ywxt.metadata.base.TestBase;
 import com.ginkgocap.ywxt.metadata.model.RCodeDock;
-import com.ginkgocap.ywxt.metadata.service.code.RCodeDockService;
 
 @Configuration
 public class RCodeDockTest  extends TestBase{

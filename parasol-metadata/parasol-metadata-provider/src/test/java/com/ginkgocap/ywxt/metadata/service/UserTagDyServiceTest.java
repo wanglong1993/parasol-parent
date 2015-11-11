@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.Rollback;
 
+import com.ginkgocap.parasol.metadata.service.userTag.UserTagService;
 import com.ginkgocap.ywxt.metadata.base.TestBase;
 import com.ginkgocap.ywxt.metadata.model.UserTag;
-import com.ginkgocap.ywxt.metadata.service.userTag.UserTagService;
 
 
 /**
