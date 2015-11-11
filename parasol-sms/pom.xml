@@ -17,4 +17,7 @@
 		<module>parasol-sms-api</module>
 		<module>parasol-sms-provider</module>
 	</modules>
+	<properties>
+		<sms.version>1.0.0-SNAPSHOT</sms.version>
+	</properties>
 </project>

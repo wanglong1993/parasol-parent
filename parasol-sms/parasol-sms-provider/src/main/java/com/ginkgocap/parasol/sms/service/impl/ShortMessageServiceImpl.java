@@ -7,6 +7,9 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.ginkgocap.parasol.sms.model.ShortMessage;
 import com.ginkgocap.parasol.sms.service.ShortMessageService;
 import com.ginkgocap.ywxt.framework.dal.cache.CacheFactory;
 import com.ginkgocap.ywxt.framework.dal.cache.exception.CacheException;
@@ -40,16 +44,28 @@ public class ShortMessageServiceImpl implements ShortMessageService {
     private final static String SEND_MESSAGE_USERNAME = "gintong";
     private final static String SEND_MESSAGE_PASSWORD = "ml150414";
     
+    
     @Override
-    public int sendMessage(String mobile, String msg) {
-        logger.debug("send a sms to {}:{}",mobile,msg);
+    public int sendMessage(String phoneNum, String content, long uid, int type) {
+        logger.debug("{} send a sms to {}:{}", uid, phoneNum, content);
         //调用校验手机号和短信内容
-        int flag = validateMobileAndMsg(mobile, msg);
-        if(flag == 1){//校验通过
-            try {
-				flag = sendMsg(mobile, msg);
-			} catch (IOException e) {
-				flag = -1;
+        int flag = validateMobileAndMsg(phoneNum, content);
+        if(flag == 1){//校验通过	
+        	ShortMessage sm = new ShortMessage();
+        	sm.setPhoneNum(phoneNum);
+        	sm.setUid(uid);
+        	sm.setContent(content);
+        	sm.setType(type);
+        	Date date=new Date();
+        	DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        	String createTime=format.format(date);
+        	sm.setCreateTime(createTime);
+        	
+			try {
+				CacheFactory rc = RemoteCacheFactoryImpl.getInstance();
+				flag = rc.getCache("sms-queue").save("shortMessage"+type, sm) ? 1:0;
+			} catch (CacheException e) {
+				logger.error("send sms result:{}",flag);
 			}
         }
         logger.debug("send sms result:{}",flag);
@@ -156,19 +172,23 @@ public class ShortMessageServiceImpl implements ShortMessageService {
     public static void main(String[] args) throws CacheException {
     	try {
     		System.out.print("aaaa");
-			MemcachedClient mm = new MemcachedClient(new InetSocketAddress("192.168.130.21", 22201));
+//			MemcachedClient mm = new MemcachedClient(new InetSocketAddress("192.168.130.21", 22201));
+//			ShortMessageService sms = new ShortMessageServiceImpl();
+//			int flag = sms.sendMessage("15011307812","123456",1347l, 1);
+//			System.out.println("flag="+flag);
+			
 			CacheFactory rc = RemoteCacheFactoryImpl.getInstance();
-			Object o1 = rc.getCache("q4").save("q8", "what nice");
-			Object o2 = rc.getCache("q4").get("q8");
+			ShortMessage o1 = (ShortMessage)rc.getCache("sms-queue").get("shortMessage1");
+//			Object o2 = rc.getCache("q4").get("q8");
 			System.out.println("ddd="+o1.toString());
-			System.out.println("eee="+o2.toString());
-			mm.set("q4", 0, "hello world");
-			mm.set("q5", 0, "what a fucking day!");
-			System.out.println("bbb");
-			Object o = mm.get("q4");
-			System.out.println("ccc="+o.toString());
-			mm.shutdown();
-		} catch (IOException e) {
+//			System.out.println("eee="+o2.toString());
+//			mm.set("q4", 0, "hello world");
+//			mm.set("q5", 0, "what a fucking day!");
+//			System.out.println("bbb");
+//			Object o = mm.get("q4");
+//			System.out.println("ccc="+o.toString());
+//			mm.shutdown();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {

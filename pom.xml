@@ -460,6 +460,8 @@
 	<properties>
 		<spring.version>4.2.1.RELEASE</spring.version>
 		<hibernate.version>5.0.1.Final</hibernate.version>
+		<!-- phoenix-util -->
+		<util.version>8.0.0-SNAPSHOT</util.version>
 		<!-- database -->
 		<mysql.version>5.1.36</mysql.version>
 		<maven.test.skip>false</maven.test.skip>
