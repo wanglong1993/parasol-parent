@@ -8,75 +8,38 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Persister;
 
 @Entity
 @Table(name = "tb_code")
 public class Code implements Serializable {
-
 	/**
-     * 
-     */
-	private static final long serialVersionUID = 1328788481921086194L;
-	private long id;
-	private String name;
-	private String type;
-	private int level;
-	private long creator;
-	private String createBy;
-	private String ctime;
-	private int useType;// 使用类型 0系统 1自定义
-	private String nameIndex;// 简拼音
-	private String nameIndexAll;// 全拼音
-	private long useCount;// 热度，使用次数
-	private int root;// 类型 1 投资 2 融资 3 专家
-	private int industry;// 0 不是行业 1 是行业
-	private String number;// 编号，1-2-3 带父id的id
-	private long sysItemId;// 自定义分词对应的系统分词
-	private String sysItem;// 自定义分词对应的系统分词
-	private int orderNo;// 展示顺序号
-	private String remark;// 提示信息
-
-	private String synsetIds;// 合并分词
-	private String synsetNames;
-
-	private int hasChild; // 是否有下一级
-
-	private int disabled;// '0:不禁用 1:禁用' (20150918 根据新需求添加)
-	
-	private transient int all = 1; // 选择全部字段使用
-
-
-	/**
-	 * @return the disabled
+	 * 
 	 */
-	@Column(name = "Disabled")
-	public int getDisabled() {
-		return disabled;
-	}
-
+	private static final long serialVersionUID = 8746712290836358492L;
 	/**
-	 * @param disabled
-	 *            the disabled to set
+	 * 
 	 */
-	public void setDisabled(int disabled) {
-		this.disabled = disabled;
-	}
+	private long id; // 主键',
+	private long pid; // 父主键',
+	private String name; // '类型名称',
+	private String nameIndex; // '简拼音',
+	private String nameIndexAll; // '全拼音',
+	private String remark; // 描述
+	private boolean isRoot; // 是根吗
+	private String levelType; // 级别类型（标示这个级别是行业或者啥）
+	private int useType; // 作用类型 0 系统类型，1 自定义类型
+	private int orderNo; // '展示顺序号',
+	private long creator; // '创建者',
+	private long ctime; // '创建时间',
+	private String createBy; // '创建人姓名
+	private boolean hasChild; // '是否有下级',
+	private boolean disabled; // '0:不禁用 1:禁用 '
+	private String numberCode; // 编码
 
-	@Column(name = "Number")
-	public String getNumber() {
-		return number;
-	}
-
-	public void setNumber(String number) {
-		this.number = number;
-	}
 
 	@Id
 	@Column(name = "Id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public long getId() {
 		return id;
 	}
@@ -85,7 +48,16 @@ public class Code implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "Name")
+	@Column(name = "pid")
+	public long getPid() {
+		return pid;
+	}
+
+	public void setPid(long pid) {
+		this.pid = pid;
+	}
+
+	@Column(name = "name")
 	public String getName() {
 		return name;
 	}
@@ -94,52 +66,7 @@ public class Code implements Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "Type")
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	@Column(name = "Level")
-	public int getLevel() {
-		return level;
-	}
-
-	public void setLevel(int level) {
-		this.level = level;
-	}
-
-	@Column(name = "Creator")
-	public long getCreator() {
-		return creator;
-	}
-
-	public void setCreator(long creator) {
-		this.creator = creator;
-	}
-
-	@Column(name = "Ctime")
-	public String getCtime() {
-		return ctime;
-	}
-
-	public void setCtime(String ctime) {
-		this.ctime = ctime;
-	}
-
-	@Column(name = "UseType")
-	public int getUseType() {
-		return useType;
-	}
-
-	public void setUseType(int useType) {
-		this.useType = useType;
-	}
-
-	@Column(name = "NameIndex")
+	@Column(name = "nameIndex")
 	public String getNameIndex() {
 		return nameIndex;
 	}
@@ -148,7 +75,7 @@ public class Code implements Serializable {
 		this.nameIndex = nameIndex;
 	}
 
-	@Column(name = "NameIndexAll")
+	@Column(name = "nameIndexAll")
 	public String getNameIndexAll() {
 		return nameIndexAll;
 	}
@@ -157,77 +84,7 @@ public class Code implements Serializable {
 		this.nameIndexAll = nameIndexAll;
 	}
 
-	@Column(name = "UseCount")
-	public long getUseCount() {
-		return useCount;
-	}
-
-	public void setUseCount(long useCount) {
-		this.useCount = useCount;
-	}
-
-	@Column(name = "Root")
-	public int getRoot() {
-		return root;
-	}
-
-	public void setRoot(int root) {
-		this.root = root;
-	}
-
-	@Column(name = "Industry")
-	public int getIndustry() {
-		return industry;
-	}
-
-	public void setIndustry(int industry) {
-		this.industry = industry;
-	}
-
-	@Column(name = "SysItemId")
-	public long getSysItemId() {
-		return sysItemId;
-	}
-
-	public void setSysItemId(long sysItemId) {
-		this.sysItemId = sysItemId;
-	}
-
-	@Column(name = "SysItem")
-	public String getSysItem() {
-		return sysItem;
-	}
-
-	public void setSysItem(String sysItem) {
-		this.sysItem = sysItem;
-	}
-
-	@Column(name = "OrderNo")
-	public int getOrderNo() {
-		if (orderNo == 9999) {
-			return 0;
-		}
-		return orderNo;
-	}
-
-	public void setOrderNo(int orderNo) {
-		if (orderNo == 0) {
-			this.orderNo = 9999;
-		} else {
-			this.orderNo = orderNo;
-		}
-	}
-
-	@Column(name = "CreateBy")
-	public String getCreateBy() {
-		return createBy;
-	}
-
-	public void setCreateBy(String createBy) {
-		this.createBy = createBy;
-	}
-
-	@Column(name = "Remark")
+	@Column(name = "remark")
 	public String getRemark() {
 		return remark;
 	}
@@ -236,55 +93,101 @@ public class Code implements Serializable {
 		this.remark = remark;
 	}
 
-
-	@Transient
-	public String getSynsetIds() {
-		return synsetIds;
+	@Column(name = "isRoot")
+	public boolean isRoot() {
+		return isRoot;
 	}
 
-	public void setSynsetIds(String synsetIds) {
-		this.synsetIds = synsetIds;
+	public void setRoot(boolean isRoot) {
+		this.isRoot = isRoot;
 	}
 
-
-	@Transient
-	public String getSynsetNames() {
-		return synsetNames;
+	@Column(name = "levelType")
+	public String getLevelType() {
+		return levelType;
 	}
-	
-	@Transient
-	public int getAll() {
-		return all;
+
+	public void setLevelType(String levelType) {
+		this.levelType = levelType;
+	}
+
+	@Column(name = "useType")
+	public int getUseType() {
+		return useType;
+	}
+
+	public void setUseType(int useType) {
+		this.useType = useType;
+	}
+
+	@Column(name = "orderNo")
+	public int getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(int orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	@Column(name = "creator")
+	public long getCreator() {
+		return creator;
+	}
+
+	public void setCreator(long creator) {
+		this.creator = creator;
+	}
+
+	@Column(name = "ctime")
+	public long getCtime() {
+		return ctime;
+	}
+
+	public void setCtime(long ctime) {
+		this.ctime = ctime;
+	}
+
+	@Column(name = "createBy")
+	public String getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+
+	@Column(name = "hasChild")
+	public boolean isHasChild() {
+		return hasChild;
+	}
+
+	public void setHasChild(boolean hasChild) {
+		this.hasChild = hasChild;
+	}
+
+	@Column(name = "disabled")
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	@Column(name = "numberCode")
+	public String getNumberCode() {
+		return numberCode;
+	}
+
+	public void setNumberCode(String numberCode) {
+		this.numberCode = numberCode;
 	}
 
 	
 	@Override
 	public String toString() {
-		return "Code [id=" + id + ", name=" + name + ", type=" + type
-				+ ", level=" + level + ", creator=" + creator + ", createBy="
-				+ createBy + ", ctime=" + ctime + ", useType=" + useType
-				+ ", nameIndex=" + nameIndex + ", nameIndexAll=" + nameIndexAll
-				+ ", useCount=" + useCount + ", root=" + root + ", industry="
-				+ industry + ", number=" + number + ", sysItemId=" + sysItemId
-				+ ", sysItem=" + sysItem + ", orderNo=" + orderNo + ", remark="
-				+ remark + ", synsetIds=" + synsetIds + ", synsetNames="
-				+ synsetNames + ", hasChild=" + hasChild + ", disabled="
-				+ disabled + "]";
+		return "Code [id=" + id + ", pid=" + pid + ", name=" + name + ", nameIndex=" + nameIndex + ", nameIndexAll=" + nameIndexAll + ", remark=" + remark + ", isRoot=" + isRoot
+				+ ", levelType=" + levelType + ", useType=" + useType + ", orderNo=" + orderNo + ", creator=" + creator + ", ctime=" + ctime + ", createBy=" + createBy
+				+ ", hasChild=" + hasChild + ", disabled=" + disabled + "]";
 	}
-
-	public void setSynsetNames(String synsetNames) {
-		this.synsetNames = synsetNames;
-	}
-
-	@Column(name = "HasChild")
-	public int getHasChild() {
-		return hasChild;
-	}
-
-	public void setHasChild(int hasChild) {
-		this.hasChild = hasChild;
-	}
-
-	
-
 }
