@@ -6,14 +6,21 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.metadata.exception.CodeServiceException;
 import com.ginkgocap.parasol.metadata.model.Code;
 import com.ginkgocap.parasol.metadata.service.CodeService;
-import com.mysql.fabric.xmlrpc.exceptions.MySQLFabricException;
-
+/**
+ * 
+ * @author allenshen
+ * @date 2015年11月12日
+ * @time 下午1:35:05
+ * @Copyright Copyright©2015 www.gintong.com
+ */
+@Service("codeService")
 public class CodeServiceImpl extends BaseService<Code> implements CodeService {
 
 	private static int error_duplicate = 100; // 重名
@@ -21,6 +28,13 @@ public class CodeServiceImpl extends BaseService<Code> implements CodeService {
 	private static int error_parentcode_null = 102; // 父对象不存在。
 
 	private static Logger logger = Logger.getLogger(CodeServiceImpl.class);
+
+	// dao const;
+	private static final String CODE_LIST_ID_ROOT = "Code_List_Id_Root"; // 父节点列表
+	private static final String CODE_LIST_ID_ROOT_DISABLED = "Code_List_Id_Root_Disabled"; // 父节点能不能使用的节点列表
+
+	private static final String CODE_LIST_ID_PID = "Code_List_Id_Pid"; // 父节点下边的子节点
+	private static final String CODE_LIST_ID_PID_DISABLED = "Code_List_Id_Pid_Disabled"; // 父节点下边能不能是使用的节点
 
 	/**
 	 * 创建根节点
@@ -47,7 +61,19 @@ public class CodeServiceImpl extends BaseService<Code> implements CodeService {
 					}
 				}
 			}
-			return (Long) saveEntity(code);
+			// 设置为根节点
+			code.setRoot(true);
+			code.setPid(0l);
+			Long id = (Long) saveEntity(code);
+			if (id != null) {
+				Code newCode = getCode(id);
+				if (newCode != null) {
+					newCode.setNumberCode(ObjectUtils.toString(id));
+					this.updateCode(newCode);
+				}
+			}
+			return id;
+
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -84,7 +110,19 @@ public class CodeServiceImpl extends BaseService<Code> implements CodeService {
 					}
 				}
 			}
-			return (Long) saveEntity(code);
+
+			code.setRoot(false); // 不是根节点
+			code.setPid(parentId); //设置父节点ID
+			Long id = (Long) saveEntity(code);
+			if (id != null) {
+				Code newCode = getCode(id);
+				if (newCode != null) {
+					newCode.setNumberCode(parentCode.getNumberCode() + "-" + id);
+					updateCode(newCode);
+				}
+			}
+
+			return id;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -111,7 +149,7 @@ public class CodeServiceImpl extends BaseService<Code> implements CodeService {
 				} else {
 					logger.warn("remove code don't exist by id [" + codeId + "]");
 				}
-				
+
 			} else {
 				logger.warn("codeId parameter is null");
 			}
@@ -135,6 +173,7 @@ public class CodeServiceImpl extends BaseService<Code> implements CodeService {
 			throw new CodeServiceException(e);
 		}
 	}
+
 	@Override
 	public Code getCode(Long codeId) throws CodeServiceException {
 		try {
@@ -146,22 +185,10 @@ public class CodeServiceImpl extends BaseService<Code> implements CodeService {
 			throw new CodeServiceException(e);
 		}
 	}
+
 	@Override
 	public boolean disabledCode(Long codeId) throws CodeServiceException {
-		if (codeId == null) {
-			Code code = getCode(codeId);
-			if (code != null) {
-				code.setDisabled(true);
-				return this.updateCode(code);
-			}
-		}
-		return true;
-	}
-	
-	
-	@Override
-	public boolean enabledCode(Long codeId) throws CodeServiceException {
-		if (codeId == null) {
+		if (codeId != null) {
 			Code code = getCode(codeId);
 			if (code != null) {
 				code.setDisabled(true);
@@ -172,26 +199,70 @@ public class CodeServiceImpl extends BaseService<Code> implements CodeService {
 	}
 
 	@Override
+	public boolean enabledCode(Long codeId) throws CodeServiceException {
+		if (codeId != null) {
+			Code code = getCode(codeId);
+			if (code != null) {
+				code.setDisabled(false);
+				return this.updateCode(code);
+			}
+		}
+		return true;
+	}
+	/**
+	 * 查询一个父节点下边的一级子节点
+	 * @param parentId 父节点ID
+	 * @param displayDisabled 是否显示禁用的Code，默认为false，不显示
+	 * @return
+	 * @throws CodeServiceException
+	 */
+	@Override
 	public List<Code> getCodesByParentId(Long parentId, boolean displayDisabled) throws CodeServiceException {
-		// TODO Auto-generated method stub
-		return null;
+
+		try {
+			return displayDisabled ? getEntitys(CodeServiceImpl.CODE_LIST_ID_PID, parentId) : getEntitys(CodeServiceImpl.CODE_LIST_ID_PID_DISABLED, parentId, false);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new CodeServiceException(e);
+		}
+
 	}
 
 	@Override
 	public int countCodesByParentId(Long parentId, boolean displayDisabled) throws CodeServiceException {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			return displayDisabled ? countEntitys(CODE_LIST_ID_PID, parentId) : countEntitys(CODE_LIST_ID_PID_DISABLED, parentId, false);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new CodeServiceException(e);
+		}
 	}
 
 	@Override
 	public List<Code> getCodesForRoot(boolean displayDisabled) throws CodeServiceException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return displayDisabled ? getEntitys(CODE_LIST_ID_ROOT, true) : getEntitys(CODE_LIST_ID_ROOT_DISABLED, true, false);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new CodeServiceException(e);
+		}
 	}
 
 	@Override
 	public int countCodesForRoot(boolean displayDisabled) throws CodeServiceException {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			return displayDisabled ? countEntitys(CODE_LIST_ID_ROOT, true) : countEntitys(CODE_LIST_ID_ROOT_DISABLED, true, false);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new CodeServiceException(e);
+		}
 	}
 }

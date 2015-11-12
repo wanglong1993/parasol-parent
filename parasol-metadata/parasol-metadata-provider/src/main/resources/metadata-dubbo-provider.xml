@@ -39,7 +39,6 @@
 	<dubbo:service interface="com.ginkgocap.ywxt.metadata.service.code.RCodeDockService" ref="rCodeDockService" version="2.0.0"/>
 	<dubbo:service interface="com.ginkgocap.ywxt.metadata.service.SensitiveWordService" ref="sensitiveWordService" version="2.0.0"/>
 	<dubbo:service interface="com.ginkgocap.ywxt.metadata.service.userTag.UserTagService" ref="userTagService" version="2.0.0"/>
-	
 	<dubbo:service interface="com.ginkgocap.ywxt.metadata.service.CountryCodeService" ref="countryCodeService"  version="2.0.0"/>
 	<dubbo:service interface="com.ginkgocap.ywxt.metadata.service.EmailSuffixService" ref="emailSuffixService"  version="2.0.0"/>
 </beans>
