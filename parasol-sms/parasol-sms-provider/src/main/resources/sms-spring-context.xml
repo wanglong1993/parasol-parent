@@ -15,10 +15,10 @@
 	
 	<!-- 短信运营商信息 -->
 	<bean id="smsTempalte" class="com.ginkgocap.parasol.sms.model.SmsTemplate">
-		<property name="IS_OPEN" value="${sms.is.open}" />
-		<property name="SEND_MESSAGE_URL" value="${sms.send.message.url}"></property>
-		<property name="SEND_MESSAGE_APIKEY" value="${sms.send.message.apikey}" />
-		<property name="SEND_MESSAGE_USERNAME" value="${sms.send.message.username}" />
-		<property name="SEND_MESSAGE_PASSWORD" value="${sms.send.message.password}" />
+		<property name="isOpen" value="${sms.is.open}" />
+		<property name="sendMessageUrl" value="${sms.send.message.url}"></property>
+		<property name="sendMessageApiKey" value="${sms.send.message.apikey}" />
+		<property name="sendMessageUsername" value="${sms.send.message.username}" />
+		<property name="sendMessagePassword" value="${sms.send.message.password}" />
 	</bean>
 </beans>

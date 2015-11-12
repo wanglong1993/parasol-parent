@@ -3,26 +3,42 @@ package com.ginkgocap.parasol.sms.model;
 public class SmsTemplate {
 	
 	
-	private final static String IS_OPEN = "false";
-	private final static String SEND_MESSAGE_URL ="";
-    private final static String SEND_MESSAGE_APIKEY = "";
-    private final static String SEND_MESSAGE_USERNAME = "";
-    private final static String SEND_MESSAGE_PASSWORD = "";
+	private String isOpen = "false";
+	private String sendMessageUrl ="";
+    private String sendMessageApiKey = "";
+    private String sendMessageUsername = "";
+    private String sendMessagePassword = "";
     
-	public static String getIsOpen() {
-		return IS_OPEN;
+	public String getIsOpen() {
+		return isOpen;
 	}
-	public static String getSendMessageUrl() {
-		return SEND_MESSAGE_URL;
+	public void setIsOpen(String isOpen) {
+		this.isOpen = isOpen;
 	}
-	public static String getSendMessageApikey() {
-		return SEND_MESSAGE_APIKEY;
+	public String getSendMessageUrl() {
+		return sendMessageUrl;
 	}
-	public static String getSendMessageUsername() {
-		return SEND_MESSAGE_USERNAME;
+	public void setSendMessageUrl(String sendMessageUrl) {
+		this.sendMessageUrl = sendMessageUrl;
 	}
-	public static String getSendMessagePassword() {
-		return SEND_MESSAGE_PASSWORD;
+	public String getSendMessageApiKey() {
+		return sendMessageApiKey;
 	}
+	public void setSendMessageApiKey(String sendMessageApiKey) {
+		this.sendMessageApiKey = sendMessageApiKey;
+	}
+	public String getSendMessageUsername() {
+		return sendMessageUsername;
+	}
+	public void setSendMessageUsername(String sendMessageUsername) {
+		this.sendMessageUsername = sendMessageUsername;
+	}
+	public String getSendMessagePassword() {
+		return sendMessagePassword;
+	}
+	public void setSendMessagePassword(String sendMessagePassword) {
+		this.sendMessagePassword = sendMessagePassword;
+	}
+    
     
 }

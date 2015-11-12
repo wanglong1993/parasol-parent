@@ -109,7 +109,7 @@
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-client</artifactId>
-			<version>5.12.1</version>
+			<version>5.8.0</version>
 		</dependency>
 		<!-- JSON begin -->
 		<dependency>
@@ -388,224 +388,35 @@
 			</activation>
 			<properties>
 				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-				<user.imageUrl>http://www.gintong.com/</user.imageUrl>
-				<behavior.data.searchUrl>http://192.168.130.221:8091/</behavior.data.searchUrl>
-				<behavior.data.pushUrl>http://192.168.130.119:8090/</behavior.data.pushUrl>
 				<!-- redis地址 -->
 				<redis.host>192.168.101.131</redis.host>
 				<!-- redis端口 -->
 				<redis.port>6379</redis.port>
+				<!-- 短信运营商参数 -->
+				<sms.is.open>1</sms.is.open>
+				<sms.send.message.url>http://m.5c.com.cn/api/send/?</sms.send.message.url>
+				<sms.send.message.apikey>abded701459c50a016766b4a9e823a39</sms.send.message.apikey>
+				<sms.send.message.username>gintong</sms.send.message.username>
+				<sms.send.message.password>ml150414</sms.send.message.password>
+				<!-- active-mq -->
+				<activemq.url>tcp://192.168.130.21:61616</activemq.url>
 				<!-- mongo地址 -->
 				<mongodb.address>192.168.101.131:27017</mongodb.address>
 				<mongodb.port>27017</mongodb.port>
 				<!-- mongo中数据库 -->
 				<mongodb.database>behaviorLog</mongodb.database>
-				<!-- 数据库连接地址和数据库名 -->
-				<jdbc.url>
-					jdbc:mysql://192.168.101.131:3306/phoenix_behavior?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8&amp;amp;zeroDateTimeBehavior=convertToNull
-				</jdbc.url>
-				<!-- 数据库访问帐号 -->
-				<jdbc.username>zhangwei</jdbc.username>
-				<!-- 数据库访问密码 -->
-				<jdbc.password>zhangwei</jdbc.password>
 				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
 				<log4j.level>debug</log4j.level>
 				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
 				<log4j.path>d:/log</log4j.path>
-				<logback.path>d:/behavior-provider</logback.path>	
+				<logback.path>d:/parasol-sms-provider</logback.path>	
 				<qatest.schema.skip>false</qatest.schema.skip>
 				<!-- dubbo注册中心的地址 -->
-				<dubbo.application.name>behaviordubboprovider</dubbo.application.name>
+				<dubbo.application.name>smsdubboprovider</dubbo.application.name>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.port>7766</dubbo.protocol.port>
-				<!-- 应用端的挂载配置路径 -->
-				<linux.mount.path>/webserver/upload/knowledge</linux.mount.path>
-				<webserver.path>/root/apache-tomcat-6.0.36/webapps</webserver.path>
-				<gen.path>/webserver/upload/knowledge/GENFILE</gen.path>
-				<nginx.root>http://file.dev.gintong.com</nginx.root>
 			</properties>
-		</profile>
-		<profile>
-			<!-- ci configuration -->
-			<id>server</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-				<!-- redis地址 -->
-				<redis.host>192.168.101.89</redis.host>
-				<!-- redis端口 -->
-				<redis.port>6379</redis.port>
-				<!-- mongo地址 -->
-				<mongodb.address>192.168.101.89:27017</mongodb.address>
-				<!-- mongo中数据库 -->
-				<mongodb.database>ywxt</mongodb.database>
-				<!-- 数据库连接地址和数据库名 -->
-				<jdbc.url>
-					jdbc:mysql://192.168.101.89:3306/phoenix_knowledge?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
-				</jdbc.url>
-				<!-- 数据库访问帐号 -->
-				<jdbc.username>root</jdbc.username>
-				<!-- 数据库访问密码 -->
-				<jdbc.password />
-				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
-				<log4j.level>debug</log4j.level>
-				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
-				<log4j.path>/home/zhangle/project/ci</log4j.path>
-				<qatest.schema.skip>false</qatest.schema.skip>
-				<dubbo.application.name>knowledgedubboprovider</dubbo.application.name>
-				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<dubbo.registry.address>zookeeper://192.168.101.88:2181?client=zkclient</dubbo.registry.address>
-				<dubbo.protocol.port>2015</dubbo.protocol.port>
-				<!-- 应用端的挂载配置路径 -->
-				<linux.mount.path>/webserver/upload/knowledge</linux.mount.path>
-				<webserver.path>/webserver/tomcat/phoenix-knowledge-web/ywxt</webserver.path>
-				<gen.path>/webserver/upload/knowledge/GENFILE</gen.path>
-				<nginx.root>http://file.server.gintong.com:81</nginx.root>
-			</properties>
-			<build>
-				<plugins>
-					<!-- sql plugin -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>sql-maven-plugin</artifactId>
-						<version>1.5</version>
-						<!-- common configuration shared by all executions -->
-						<dependencies>
-							<!-- specify the dependent jdbc driver here -->
-							<dependency>
-								<groupId>mysql</groupId>
-								<artifactId>mysql-connector-java</artifactId>
-								<version>5.1.12</version>
-							</dependency>
-						</dependencies>
-						<configuration>
-							<driver>${jdbc.driverClassName}</driver>
-							<username>${jdbc.username}</username>
-							<password>${jdbc.password}</password>
-							<url>${jdbc.url}</url>
-							<!--all executions are ignored if -Dmaven.test.skip=true -->
-						</configuration>
-						<executions>
-							<execution>
-								<id>create-schema-server</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<inherited>false</inherited>
-								<configuration>
-									<autocommit>true</autocommit>
-									<srcFiles>
-										<srcFile>src/test/resources/sql/mysql/schema.sql</srcFile>
-										<srcFile>src/test/resources/sql/mysql/default-data.sql</srcFile>
-									</srcFiles>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>dbunit-maven-plugin</artifactId>
-						<version>1.0-beta-3</version>
-						<executions>
-							<execution>
-								<id>test-compile</id>
-								<phase>process-test-classes</phase>
-								<goals>
-									<goal>operation</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<!-- qatest configuration -->
-			<id>qatest</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-				<!-- redis地址 -->
-				<redis.host>192.168.101.90</redis.host>
-				<!-- redis端口 -->
-				<redis.port>6379</redis.port>
-				<!-- mongo地址 -->
-				<mongodb.address>192.168.101.90:27017</mongodb.address>
-				<!-- mongo中数据库 -->
-				<mongodb.database>ywxt</mongodb.database>
-				<!-- 数据库连接地址和数据库名 -->
-				<jdbc.url>
-					jdbc:mysql://192.168.101.90:3306/phoenix_knowledge?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
-				</jdbc.url>
-				<!-- 数据库访问帐号 -->
-				<jdbc.username>root</jdbc.username>
-				<!-- 数据库访问密码 -->
-				<jdbc.password>111111</jdbc.password>
-				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
-				<log4j.level>debug</log4j.level>
-				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
-				<log4j.path>/home/zhangle/project/qatest</log4j.path>
-				<qatest.schema.skip>false</qatest.schema.skip>
-				<dubbo.application.name>knowledgedubboprovider</dubbo.application.name>
-				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<dubbo.registry.address>zookeeper://192.168.101.90:2181?client=zkclient</dubbo.registry.address>
-				<dubbo.protocol.port>2015</dubbo.protocol.port>
-				<!-- 应用端的挂载配置路径 -->
-				<linux.mount.path>/webserver/upload/knowledge</linux.mount.path>
-				<webserver.path>/webserver/tomcat/phoenix-knowledge-web/ywxt</webserver.path>
-				<gen.path>/webserver/upload/knowledge/GENFILE</gen.path>
-				<nginx.root>http://file.qatest.gintong.com:81</nginx.root>
-			</properties>
-			<build>
-				<plugins>
-					<!-- sql plugin -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>sql-maven-plugin</artifactId>
-						<version>1.5</version>
-						<!-- common configuration shared by all executions -->
-						<dependencies>
-							<!-- specify the dependent jdbc driver here -->
-							<dependency>
-								<groupId>mysql</groupId>
-								<artifactId>mysql-connector-java</artifactId>
-								<version>5.1.12</version>
-							</dependency>
-						</dependencies>
-						<configuration>
-							<driver>${jdbc.driverClassName}</driver>
-							<username>${jdbc.username}</username>
-							<password>${jdbc.password}</password>
-							<url>${jdbc.url}</url>
-							<!--all executions are ignored if -Dmaven.test.skip=true -->
-							<skip>${qatest.schema.skip}</skip>
-						</configuration>
-						<executions>
-							<execution>
-								<id>final-create-schema-qatest</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<inherited>false</inherited>
-								<configuration>
-									<autocommit>true</autocommit>
-									<srcFiles>
-										<srcFile>src/test/resources/sql/mysql/online.sql</srcFile>
-										<srcFile>src/test/resources/sql/mysql/ddl.sql</srcFile>
-									</srcFiles>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 
 		<profile>
@@ -619,47 +430,6 @@
 				</filters>
 			</build>
 		</profile>
-
-		<profile>
-			<id>online</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<filters>
-					<filter>${sa.config.file}</filter>
-				</filters>
-			</build>
-			<properties>
-				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-				<!-- redis地址 -->
-				<redis.host>${knowledge.online.redis.host}</redis.host>
-				<!-- redis端口 -->
-				<redis.port>${knowledge.online.redis.port}</redis.port>
-				<!-- mongo地址 -->
-				<mongodb.address>${knowledge.online.mongodb.address}</mongodb.address>
-				<!-- mongo中数据库 -->
-				<mongodb.database>${knowledge.online.mongodb.database}</mongodb.database>
-				<!-- 数据库连接地址和数据库名 -->
-				<jdbc.url>${knowledge.online.jdbc.url}</jdbc.url>
-				<!-- 数据库访问帐号 -->
-				<jdbc.username>${knowledge.online.jdbc.username}</jdbc.username>
-				<!-- 数据库访问密码 -->
-				<jdbc.password>${knowledge.online.jdbc.password}</jdbc.password>
-				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
-				<log4j.level>${knowledge.online.log4j.level}</log4j.level>
-				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
-				<log4j.path>${knowledge.online.log4j.path}</log4j.path>
-				<!-- dubbo注册中心的地址 -->
-				<dubbo.application.name>${knowledge.online.dubbo.application.name}</dubbo.application.name>
-				<dubbo.protocol.name>${knowledge.online.dubbo.protocol.name}</dubbo.protocol.name>
-				<dubbo.registry.address>${knowledge.online.dubbo.registry.address}</dubbo.registry.address>
-				<dubbo.protocol.port>${knowledge.online.dubbo.protocol.port}</dubbo.protocol.port>
-				<nginx.root>${knowledgeweb.online.nginx.root}</nginx.root>
-				<linux.mount.path>${knowledge.online.linux.mount.path}</linux.mount.path>
-				<webserver.path>${knowledge.online.webserver.path}</webserver.path>
-				<gen.path>${knowledge.online.gen.path}</gen.path>
-			</properties>
-		</profile>
+		
 	</profiles>
 </project>

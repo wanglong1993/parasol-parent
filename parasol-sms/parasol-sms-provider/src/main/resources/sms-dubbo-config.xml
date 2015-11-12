@@ -13,7 +13,7 @@
 	http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
-    <dubbo:application name="${sms.dubbo.application.name}" />
-    <dubbo:protocol name="${sms.dubbo.protocol.name}" port="${sms.dubbo.protocol.port}" />
-    <dubbo:registry address="${sms.dubbo.registry.address}" protocol="${sms.dubbo.protocol.name}"/>
+    <dubbo:application name="${dubbo.application.name}" />
+    <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />
+    <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
 </beans>
