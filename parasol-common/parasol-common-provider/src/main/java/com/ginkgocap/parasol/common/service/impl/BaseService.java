@@ -70,7 +70,9 @@ public abstract class BaseService<T> {
 				return null;
 			}
 		} catch (DaoException e) {
-			e.printStackTrace(System.out);
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
 			throw new BaseServiceException(e);
 
 		}
@@ -88,7 +90,9 @@ public abstract class BaseService<T> {
 				return null;
 			}
 		} catch (DaoException e) {
-			e.printStackTrace(System.err);
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
 			throw new BaseServiceException(e);
 		}
 	}
@@ -115,7 +119,9 @@ public abstract class BaseService<T> {
 			}
 			return false;
 		} catch (DaoException e) {
-			e.printStackTrace(System.err);
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
 			throw new BaseServiceException(e);
 		}
 	}
@@ -129,7 +135,9 @@ public abstract class BaseService<T> {
 				return false;
 			}
 		} catch (DaoException e) {
-			e.printStackTrace(System.err);
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
 			throw new BaseServiceException(e);
 		}
 	}
@@ -151,7 +159,9 @@ public abstract class BaseService<T> {
 					return ListUtils.EMPTY_LIST;
 				}
 			} catch (DaoException e) {
-				e.printStackTrace(System.err);
+				if (logger.isDebugEnabled()) {
+					e.printStackTrace(System.err);
+				}
 				throw new BaseServiceException(e);
 			}
 		}
@@ -179,7 +189,9 @@ public abstract class BaseService<T> {
 					return ListUtils.EMPTY_LIST;
 				}
 			} catch (DaoException e) {
-				e.printStackTrace(System.err);
+				if (logger.isDebugEnabled()) {
+					e.printStackTrace(System.err);
+				}
 				throw new BaseServiceException(e);
 			}
 		}
@@ -194,7 +206,9 @@ public abstract class BaseService<T> {
 			try {
 				return dao.count(region_name, parameters);
 			} catch (DaoException e) {
-				e.printStackTrace(System.err);
+				if (logger.isDebugEnabled()) {
+					e.printStackTrace(System.err);
+				}
 				throw new BaseServiceException(e);
 			}
 		}
@@ -213,7 +227,9 @@ public abstract class BaseService<T> {
 				List<Long> ids = dao.getIdList(region_name, parameters);
 				return ids == null ? ListUtils.EMPTY_LIST: ids;
 			} catch (DaoException e) {
-				e.printStackTrace(System.err);
+				if (logger.isDebugEnabled()) {
+					e.printStackTrace(System.err);
+				}
 				throw new BaseServiceException(e);
 			}
 		}
@@ -230,7 +246,9 @@ public abstract class BaseService<T> {
 				List<Long> ids = dao.getIdList(region_name, parameters, start, count);
 				return ids == null ? ListUtils.EMPTY_LIST: ids;
 			} catch (DaoException e) {
-				e.printStackTrace(System.err);
+				if (logger.isDebugEnabled()) {
+					e.printStackTrace(System.err);
+				}
 				throw new BaseServiceException(e);
 			}
 		}
