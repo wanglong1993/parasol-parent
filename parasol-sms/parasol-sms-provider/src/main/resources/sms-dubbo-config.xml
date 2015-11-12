@@ -13,17 +13,6 @@
 	http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
-    <alias name="" alias=""/>
-    <bean>
-	<description></description>
-    <bean>
-    	<meta key="" value=""/>
-    	<constructor-arg></constructor-arg>
-    	<property></property>
-    	<qualifier type="" value=""></qualifier>
-    	<lookup-method name="" bean=""/>
-    	<replaced-method></replaced-method>
-    </bean>
     <dubbo:application name="${sms.dubbo.application.name}" />
     <dubbo:protocol name="${sms.dubbo.protocol.name}" port="${sms.dubbo.protocol.port}" />
     <dubbo:registry address="${sms.dubbo.registry.address}" protocol="${sms.dubbo.protocol.name}"/>

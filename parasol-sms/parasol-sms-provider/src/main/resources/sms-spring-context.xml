@@ -1,56 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="   
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
-	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
-	http://www.springframework.org/schema/data/mongo
-    http://www.springframework.org/schema/data/mongo/spring-mongo-1.1.xsd
-    http://www.springframework.org/schema/mvc
-	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
-	http://www.springframework.org/schema/data/jpa 
-	http://www.springframework.org/schema/data/jpa/spring-jpa-1.2.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+	>
 	
-	<context:component-scan base-package="com.ginkgocap.ywxt.sms">
+	<context:component-scan base-package="com.ginkgocap.parasol.sms">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
-	<!-- 下面是处理上行短信相关bean -->
-	<bean id="dealReceivedSmsFactory" class="com.ginkgocap.ywxt.sms.receive.DealReceivedSmsFactory">
-		<property name="tasks">
-			<list>
-				<ref bean="mobileRegistService"/>
-			</list>
-		</property>
-	</bean>
-	<!-- 处理上行短信相关bean结束 -->
-	<!-- 下面定义定时调用Emay客户端查询上行邮件 -->
-	<bean id="emayReceiveSmsMethodSchedulerFactory"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="emayReceiveSmsTask" />
-		<property name="targetMethod" value="execute" />
-		<property name="concurrent"><!--配置为false不允许任务并发执行--> 
-	    	<value>false</value>
-	    </property>
-	</bean>
-	<bean id="emayReceiveSmsCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="emayReceiveSmsMethodSchedulerFactory" />
-		<property name="cronExpression" value="0/5 * * * * ?"/><!--   每5秒触发 -->
-	</bean>
-	<!--调度工厂 -->
-	<bean id="schedulerFactoryBeanForSms" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-		<property name="triggers">
-			<list>
-				<!-- <ref bean="emayReceiveSmsCronTriggerBean" /> -->
-			</list>
-		</property>
+	
+	<!-- 短信运营商信息 -->
+	<bean id="smsTempalte" class="com.ginkgocap.parasol.sms.model.SmsTemplate">
+		<property name="IS_OPEN" value="${sms.is.open}" />
+		<property name="SEND_MESSAGE_URL" value="${sms.send.message.url}"></property>
+		<property name="SEND_MESSAGE_APIKEY" value="${sms.send.message.apikey}" />
+		<property name="SEND_MESSAGE_USERNAME" value="${sms.send.message.username}" />
+		<property name="SEND_MESSAGE_PASSWORD" value="${sms.send.message.password}" />
 	</bean>
 </beans>
