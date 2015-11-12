@@ -4,7 +4,7 @@ CREATE TABLE `tb_code` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `pid` bigint(20) NOT NULL COMMENT '父主键',
   `name` varchar(20) DEFAULT '' COMMENT '类型名称',
-  `codeNumber` varchar(20) DEFAULT '' COMMENT '编码',
+  `numberCode` varchar(20) DEFAULT '' COMMENT '编码',
   `nameIndex` varchar(50) DEFAULT '' COMMENT '简拼音',
   `nameIndexAll` varchar(200) DEFAULT '' COMMENT '全拼音',
   `remark` varchar(500) DEFAULT '' COMMENT '提示信息',
