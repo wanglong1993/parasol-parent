@@ -35,11 +35,11 @@ public interface CodeService {
 	
 	/**
 	 * 删除一个Code 会把Code下边的子Code也删除
-	 * @param code
+	 * @param codeId 
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	public boolean removeCode(Code code) throws CodeServiceException;
+	public boolean removeCode(Long codeId) throws CodeServiceException;
 	
 	
 	/**
@@ -53,14 +53,29 @@ public interface CodeService {
 	
 	
 	/**
+	 * 通过一个Id查询一个Code
+	 * @param codeId
+	 * @return
+	 * @throws CodeServiceException
+	 */
+	public Code getCode(Long codeId) throws CodeServiceException;
+		
+	
+	/**
 	 * 禁用一个Code，Code下边的子节点也不能使用
 	 * @param code
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	public boolean disabledCode(Code code) throws CodeServiceException;
+	public boolean disabledCode(Long codeId) throws CodeServiceException;
 	
-	
+	/**
+	 * 启用一个Code，Code下边的子节点也不能使用
+	 * @param codeId
+	 * @return
+	 * @throws CodeServiceException
+	 */
+	public boolean enabledCode(Long codeId) throws CodeServiceException;	
 	/**
 	 * 查询一个父节点下边的一级子节点
 	 * @param parentId 父节点ID

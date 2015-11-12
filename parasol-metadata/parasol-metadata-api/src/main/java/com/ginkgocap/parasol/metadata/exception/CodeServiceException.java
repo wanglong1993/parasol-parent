@@ -8,8 +8,11 @@ package com.ginkgocap.parasol.metadata.exception;
  * @Copyright Copyright©2015 www.gintong.com
  */
 public class CodeServiceException extends Exception {
+	private int errorCode = -1;
+	public CodeServiceException(Throwable cause) {
+		super(cause);
+	}
 
-	
 	/**
 	 * 
 	 */
@@ -21,6 +24,12 @@ public class CodeServiceException extends Exception {
 
 	public CodeServiceException(String message) {
 		super(message);
+	}
+
+	
+	public CodeServiceException(int errorCode, String message) {
+		super(message);
+		this.errorCode = errorCode;
 	}
 
 }
