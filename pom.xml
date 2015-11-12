@@ -13,8 +13,9 @@
 	<url>http://192.168.101.101:3000/</url>
 	<modules>
 		<module>parasol-metadata</module>
-    	<module>parasol-sms</module>
-  </modules>
+    		<module>parasol-sms</module>
+		<module>parasol-common</module>
+  	</modules>
 	<repositories>
 		<repository>
 			<id>nexus</id>
