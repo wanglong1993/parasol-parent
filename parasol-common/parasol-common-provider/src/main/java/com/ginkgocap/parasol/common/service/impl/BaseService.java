@@ -1,6 +1,8 @@
 package com.ginkgocap.parasol.common.service.impl;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,12 +27,20 @@ import com.ginkgocap.ywxt.framework.dal.dao.exception.DaoException;
 public abstract class BaseService<T> {
 	private static Logger logger = Logger.getLogger(BaseService.class);
 	protected static final int TAKE_SIZE = 500; 
-
+	private Class<T> entitlClass;
 	
 	@Autowired(required = true)
 	private Dao dao;
 
-	public abstract Class<T> getEntityClass();
+	@SuppressWarnings("unchecked")
+	public Class<T> getEntityClass() {
+		if (entitlClass == null) {
+			Type type = getClass().getGenericSuperclass();
+	        Type[] params = ((ParameterizedType) type).getActualTypeArguments();  
+	        entitlClass = (Class<T>) params[0]; 
+		}
+		return entitlClass;
+	}
 	
 	@SuppressWarnings("unchecked")
 	protected T getEntity(Serializable id) throws BaseServiceException {
