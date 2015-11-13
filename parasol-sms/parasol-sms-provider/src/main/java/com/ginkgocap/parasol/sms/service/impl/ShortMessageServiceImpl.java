@@ -12,11 +12,15 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import com.ginkgocap.parasol.common.CommonService;
 import com.ginkgocap.parasol.sms.model.ShortMessage;
 import com.ginkgocap.parasol.sms.service.ShortMessageService;
 import com.ginkgocap.ywxt.framework.dal.cache.CacheFactory;
@@ -41,6 +45,11 @@ public class ShortMessageServiceImpl implements ShortMessageService {
     private final static String SEND_MESSAGE_USERNAME = "gintong";
     private final static String SEND_MESSAGE_PASSWORD = "ml150414";
     
+    @Resource
+    private MongoTemplate mongoTemplate;
+    
+    @Resource
+    private CommonService commonService;
     
     @Override
     public int sendMessage(String phoneNum, String content, long uid, int type) {
@@ -49,6 +58,7 @@ public class ShortMessageServiceImpl implements ShortMessageService {
         int flag = validateMobileAndMsg(phoneNum, content);
         if(flag == 1){//校验通过	
         	ShortMessage sm = new ShortMessage();
+        	sm.setId(commonService.getShortMessageIncreaseId());
         	sm.setPhoneNum(phoneNum);
         	sm.setUid(uid);
         	sm.setContent(content);
@@ -57,7 +67,7 @@ public class ShortMessageServiceImpl implements ShortMessageService {
         	DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         	String createTime=format.format(date);
         	sm.setCreateTime(createTime);
-        	
+        	mongoTemplate.save(sm);
 			try {
 				CacheFactory rc = RemoteCacheFactoryImpl.getInstance();
 				flag = rc.getCache("sms-queue").save("shortMessage"+type, sm) ? 1:0;
