@@ -18,7 +18,7 @@ import com.ginkgocap.parasol.metadata.type.CodeRegionType;
 public class CodeRegionServiceImpl extends BaseService<CodeRegion> implements CodeRegionService {
 
 	@Override
-	public Long createCodeRegionForRoot(CodeRegion codeRegion) throws CodeRegionServiceException {
+	public Long createCodeRegionForRoot(CodeRegion codeRegion, CodeRegionType type) throws CodeRegionServiceException {
 		// TODO Auto-generated method stub
 		return null;
 	}

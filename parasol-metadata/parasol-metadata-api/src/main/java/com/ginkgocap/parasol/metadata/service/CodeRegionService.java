@@ -6,7 +6,6 @@ import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
 import com.ginkgocap.parasol.metadata.type.CodeRegionType;
 
-
 /**
  * 操作CodeRegion的接口定义
  * 
@@ -18,14 +17,13 @@ import com.ginkgocap.parasol.metadata.type.CodeRegionType;
 public interface CodeRegionService {
 
 	/**
-	 * 创建根节点
-	 * 
+	 * 创建根节点，
 	 * @param codeRegion
-	 * @return
-	 * @throws CodeServiceException
-	 *             不能重名
+	 * @param type
+	 * @return 
+	 * @throws CodeRegionServiceException 不能重名
 	 */
-	public Long createCodeRegionForRoot(CodeRegion codeRegion) throws CodeRegionServiceException;
+	public Long createCodeRegionForRoot(CodeRegion codeRegion, CodeRegionType type) throws CodeRegionServiceException;
 
 	/**
 	 * 创建父节点的子节点
@@ -88,16 +86,14 @@ public interface CodeRegionService {
 	 */
 	public int countCodeRegionsByParentId(Long parentId) throws CodeRegionServiceException;
 
-	
-
 	/**
 	 * 查询大类（根节点，比如：海外、国内省、香港、澳门、马来西亚）
+	 * 
 	 * @param parentId
 	 * @param type
 	 * @return
 	 * @throws CodeRegionServiceException
 	 */
 	public List<CodeRegion> getCodeRegionsForRootByType(long parentId, CodeRegionType type) throws CodeRegionServiceException;
-	
-	
+
 }
