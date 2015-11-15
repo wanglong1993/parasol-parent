@@ -13,6 +13,7 @@ import com.alibaba.dubbo.common.json.ParseException;
 import com.alibaba.dubbo.common.utils.IOUtils;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
 import com.ginkgocap.parasol.metadata.service.AdressRegionService;
+import com.ginkgocap.parasol.metadata.type.CodeRegionType;
 
 public class DataImport {
 
@@ -45,7 +46,7 @@ public class DataImport {
 					CodeRegion codeRegion = new CodeRegion();
 					codeRegion.setCname(pri.getArray(1).getString(0));
 					codeRegion.setTbId(pri.getString(0));
-					codeRegion.setType(AdressRegionService.TYPE_CHINAINLAND);
+					codeRegion.setType(CodeRegionType.TYPE_CHINAINLAND.getValue());
 					codeRegions.add(codeRegion);
 				}
 
@@ -81,7 +82,7 @@ public class DataImport {
 				codeRegion.setCname(pri.getArray(1).getString(0));
 				codeRegion.setTbId(pri.getString(0));
 				codeRegion.setTbParentId(pri.getString(2));
-				codeRegion.setType(AdressRegionService.TYPE_CHINAINLAND_CITY);
+				codeRegion.setType(CodeRegionType.TYPE_CHINAINLAND_CITY.getValue());
 				codeRegions.add(codeRegion);
 			}
 		}
@@ -114,7 +115,7 @@ public class DataImport {
 				codeRegion.setCname(pri.getArray(1).getString(0));
 				codeRegion.setTbId(pri.getString(0));
 				codeRegion.setTbParentId(pri.getString(2));
-				codeRegion.setType(AdressRegionService.TYPE_GANGAOTAI);
+				codeRegion.setType(CodeRegionType.TYPE_GANGAOTAI.getValue());
 				codeRegions.add(codeRegion);
 			}
 		}
@@ -147,7 +148,7 @@ public class DataImport {
 				codeRegion.setCname(pri.getArray(1).getString(0));
 				codeRegion.setTbId(pri.getString(0));
 				codeRegion.setTbParentId(pri.getString(2));
-				codeRegion.setType(AdressRegionService.TYPE_CHINAINLAND_CITY);
+				codeRegion.setType(CodeRegionType.TYPE_CHINAINLAND_CITY.getValue());
 				codeRegions.add(codeRegion);
 			}
 		}
@@ -182,7 +183,7 @@ public class DataImport {
 				codeRegion.setEname(pri.getArray(1).getString(2));
 				codeRegion.setTbId(pri.getString(0));
 				codeRegion.setTbParentId(pri.getString(2));
-				codeRegion.setType(AdressRegionService.TYPE_MALAYSIA);
+				codeRegion.setType(CodeRegionType.TYPE_MALAYSIA.getValue());
 				codeRegions.add(codeRegion);
 			}
 		}
@@ -219,7 +220,7 @@ public class DataImport {
 				codeRegion.setEname(haiwai.getString(2));
 				codeRegion.setTbId(number);
 				// codeRegion.setTbParentId();
-				codeRegion.setType(AdressRegionService.TYPE_FOREIGNCOUNTRY);
+				codeRegion.setType(CodeRegionType.TYPE_FOREIGNCOUNTRY.getValue());
 				codeRegions.add(codeRegion);
 			}
 		}
