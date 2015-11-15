@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
+import com.ginkgocap.parasol.metadata.type.CodeRegionType;
 
 
 /**
@@ -14,7 +15,7 @@ import com.ginkgocap.parasol.metadata.model.CodeRegion;
  * @time 下午5:46:44
  * @Copyright Copyright©2015 www.gintong.com
  */
-public interface AdressRegionService {
+public interface CodeRegionService {
 
 	/**
 	 * 创建根节点
@@ -96,7 +97,7 @@ public interface AdressRegionService {
 	 * @return
 	 * @throws CodeRegionServiceException
 	 */
-	public List<CodeRegion> getCodeRegionsForRootByType(long parentId, int type) throws CodeRegionServiceException;
+	public List<CodeRegion> getCodeRegionsForRootByType(long parentId, CodeRegionType type) throws CodeRegionServiceException;
 	
 	
 }
