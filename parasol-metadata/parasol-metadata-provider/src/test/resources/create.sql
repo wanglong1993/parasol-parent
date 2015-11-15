@@ -20,3 +20,20 @@ CREATE TABLE `tb_code` (
   PRIMARY KEY (`id`),
   index pid (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1307 DEFAULT CHARSET=utf8
+
+
+
+
+CREATE TABLE `tb_code_region` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `parentId` bigint(20) DEFAULT NULL COMMENT '父节点',
+  `cname` varchar(50) DEFAULT NULL COMMENT '中文名',
+  `ename` varchar(50) DEFAULT NULL COMMENT '英文名',
+  `type` int(2) DEFAULT NULL COMMENT '0:省(大陆)，1:市，2:县，3:港澳，4:马来西亚，5:海外',
+  `orders` int(10) DEFAULT '0' COMMENT '序号',
+  `tbId` varchar(50) DEFAULT '' comment '淘宝的编码',
+  PRIMARY KEY (`id`),
+  index (`parentId`),
+  index (`tbId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4900 DEFAULT CHARSET=utf8 
+
