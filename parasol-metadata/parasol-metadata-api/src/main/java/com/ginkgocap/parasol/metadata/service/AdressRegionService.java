@@ -2,11 +2,12 @@ package com.ginkgocap.parasol.metadata.service;
 
 import java.util.List;
 
-import com.ginkgocap.parasol.metadata.exception.CodeServiceException;
-import com.ginkgocap.parasol.metadata.model.Code;
+import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
+import com.ginkgocap.parasol.metadata.model.CodeRegion;
+
 
 /**
- * 操作Code的接口定义
+ * 操作CodeRegion的接口定义
  * 
  * @author allenshen
  * @date 2015年11月11日
@@ -16,96 +17,51 @@ import com.ginkgocap.parasol.metadata.model.Code;
 public interface AdressRegionService {
 
 	/**
-	 * 国内
-	 */
-	public static final int TYPE_CHINAINLAND = 0;
-	/**
-	 * 国内
-	 */
-	public static final int TYPE_CHINAINLAND_CITY = 10;
-
-	/**
-	 * 台湾
-	 */
-	public static final int TYPE_TAIWAN = 1;
-
-	/**
-	 * 港澳台
-	 */
-	public static final int TYPE_GANGAOTAI = 2;
-	/**
-	 * 马来西亚
-	 */
-	public static final int TYPE_MALAYSIA = 3;
-	/**
-	 * 国外
-	 */
-	public static final int TYPE_FOREIGNCOUNTRY = 4;
-
-	/**
 	 * 创建根节点
 	 * 
-	 * @param code
+	 * @param codeRegion
 	 * @return
 	 * @throws CodeServiceException
 	 *             不能重名
 	 */
-	public Long createCodeForRoot(Code code) throws CodeServiceException;
+	public Long createCodeRegionForRoot(CodeRegion codeRegion) throws CodeRegionServiceException;
 
 	/**
 	 * 创建父节点的子节点
 	 * 
-	 * @param code
+	 * @param codeRegion
 	 * @return
 	 * @throws CodeServiceException
 	 *             不能重名
 	 */
-	public Long createCodeForChildren(Long parentId, Code code) throws CodeServiceException;
+	public Long createCodeForChildren(Long parentId, CodeRegion codeRegion) throws CodeRegionServiceException;
 
 	/**
 	 * 删除一个Code 会把Code下边的子Code也删除
 	 * 
-	 * @param codeId
+	 * @param codeRegionId
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	public boolean removeCode(Long codeId) throws CodeServiceException;
+	public boolean removeCodeRegion(Long codeRegionId) throws CodeRegionServiceException;
 
 	/**
 	 * 删除一个Code 会把Code下边的子Code也删除
 	 * 
-	 * @param code
+	 * @param codeRegion
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	public boolean updateCode(Code code) throws CodeServiceException;
+	public boolean updateCodeRegion(CodeRegion codeRegion) throws CodeRegionServiceException;
 
 	/**
 	 * 通过一个Id查询一个Code
 	 * 
-	 * @param codeId
+	 * @param codeRegionId
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	public Code getCode(Long codeId) throws CodeServiceException;
-
-	/**
-	 * 禁用一个Code，Code下边的子节点也不能使用
-	 * 
-	 * @param code
-	 * @return
-	 * @throws CodeServiceException
-	 */
-	public boolean disabledCode(Long codeId) throws CodeServiceException;
-
-	/**
-	 * 启用一个Code，Code下边的子节点也不能使用
-	 * 
-	 * @param codeId
-	 * @return
-	 * @throws CodeServiceException
-	 */
-	public boolean enabledCode(Long codeId) throws CodeServiceException;
+	public CodeRegion getCodeRegionById(Long codeRegionId) throws CodeRegionServiceException;
 
 	/**
 	 * 查询一个父节点下边的一级子节点
@@ -117,7 +73,7 @@ public interface AdressRegionService {
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	public List<Code> getCodesByParentId(Long parentId, boolean displayDisabled) throws CodeServiceException;
+	public List<CodeRegion> getCodeRegionsByParentId(Long parentId) throws CodeRegionServiceException;
 
 	/**
 	 * 查询一个父节点下边的一级子节点数量
@@ -129,30 +85,18 @@ public interface AdressRegionService {
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	public int countCodesByParentId(Long parentId, boolean displayDisabled) throws CodeServiceException;
+	public int countCodeRegionsByParentId(Long parentId) throws CodeRegionServiceException;
+
+	
 
 	/**
-	 * 查询父节点的列表
-	 * 
+	 * 查询大类（根节点，比如：海外、国内省、香港、澳门、马来西亚）
 	 * @param parentId
-	 *            父节点ID
-	 * @param displayDisabled
-	 *            是否显示禁用的Code，默认为false，不显示
+	 * @param type
 	 * @return
-	 * @throws CodeServiceException
+	 * @throws CodeRegionServiceException
 	 */
-	public List<Code> getCodesForRoot(boolean displayDisabled) throws CodeServiceException;
-
-	/**
-	 * 查询父节点的总数
-	 * 
-	 * @param parentId
-	 *            父节点ID
-	 * @param displayDisabled
-	 *            是否显示禁用的Code，默认为false，不显示
-	 * @return
-	 * @throws CodeServiceException
-	 */
-	public int countCodesForRoot(boolean displayDisabled) throws CodeServiceException;
-
+	public List<CodeRegion> getCodeRegionsForRootByType(long parentId, int type) throws CodeRegionServiceException;
+	
+	
 }
