@@ -12,7 +12,6 @@ import com.alibaba.dubbo.common.json.JSONObject;
 import com.alibaba.dubbo.common.json.ParseException;
 import com.alibaba.dubbo.common.utils.IOUtils;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
-import com.ginkgocap.parasol.metadata.service.AdressRegionService;
 import com.ginkgocap.parasol.metadata.type.CodeRegionType;
 
 public class DataImport {
