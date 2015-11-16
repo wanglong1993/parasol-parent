@@ -42,6 +42,34 @@
                   sqlitem="select id from tb_code where pid=? and disabled=? order by orderNo"
                   sqlType="hsql" keyProperty="pid,disabled" valueProperty="id"  update="true"/>
 		</object>
+		
+		<object name="com.ginkgocap.parasol.metadata.model.CodeRegion" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="parentId">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+			<!-- 	
+			<map name="VctlUser_Map_userId_passport"
+                 sqlitem="select user_id from vctl_user where passport=?"
+                 keyProperty="passport" valueProperty="userId" />
+			 
+			 <list name="User_List_userId_gender"
+                  sqlitem="select user_id from vctl_user where gender =? order by update_at desc"
+                  sqlType="hsql" keyProperty="gender" valueProperty="userId"  update="false"/>
+            -->
+           
+           <!-- Í¨¹ýÃû×ÖÕÒCode --> 
+           <list name="CodeRegion_List_Id_ParentId"
+                  sqlitem="select id from tb_code_region where parentId=? order by orders"
+                  sqlType="hsql" keyProperty="parentId" valueProperty="id"  update="true"/>
+           <list name="CodeRegion_List_Id_ParentId_Type"
+                  sqlitem="select id from tb_code_region where parentId=? and type=? order by orders"
+                  sqlType="hsql" keyProperty="parentId,type" valueProperty="id"  update="true"/>
+           <map name="CodeRegion_Map_Id_TbId"
+                 sqlitem="select id from tb_code_region where tbId=?"
+                 keyProperty="tbId=?" valueProperty="id" />
+            
+		</object>
 	</route>
 </dal>
 
