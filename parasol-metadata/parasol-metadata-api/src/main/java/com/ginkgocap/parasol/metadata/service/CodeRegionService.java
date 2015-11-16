@@ -15,6 +15,11 @@ import com.ginkgocap.parasol.metadata.type.CodeRegionType;
  * @Copyright Copyright©2015 www.gintong.com
  */
 public interface CodeRegionService {
+	
+	/**
+	 * Root PARENT_ID
+	 */
+	public static final Long ROOT_PARENT_ID = 0l; 
 
 	/**
 	 * 创建根节点，
