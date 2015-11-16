@@ -42,10 +42,8 @@ public class CodeRegionServiceTest extends TestBase implements Test {
 
 	@org.junit.Test
 	public void testSave() throws IOException, ParseException, CodeRegionServiceException {
-		// 保存省份数据
+		// 1. 保存省份数据和城市数据
 		List<CodeRegion> codeRegions = DataImport.getProvs();
-
-		// 保存城市
 		List<CodeRegion> townCodeRegions = DataImport.getTowns();
 		for (CodeRegion codeRegion : townCodeRegions) {
 			String tbId = codeRegion.getTbParentId();
@@ -65,7 +63,7 @@ public class CodeRegionServiceTest extends TestBase implements Test {
 		}
 
 		
-		//保存港澳
+		//2. 保存港澳
 		List<CodeRegion> gangaoCodeRegions = DataImport.getHkAomeng();
 		mapCodeRetion.clear();
 		for (CodeRegion codeRegion : gangaoCodeRegions) {
@@ -89,7 +87,7 @@ public class CodeRegionServiceTest extends TestBase implements Test {
 		
 		
 		
-		//保存台湾
+		//3. 保存台湾
 		List<CodeRegion> taiwanCodeRegions = DataImport.getTaiwan();
 		mapCodeRetion.clear();
 		for (CodeRegion codeRegion : taiwanCodeRegions) {
@@ -112,7 +110,7 @@ public class CodeRegionServiceTest extends TestBase implements Test {
 		}
 		
 		
-		//保存马来西亚
+		//4. 保存马来西亚
 		List<CodeRegion> CodeRegions = DataImport.getManlaixiya();
 		mapCodeRetion.clear();
 		for (CodeRegion codeRegion : CodeRegions) {
@@ -135,11 +133,7 @@ public class CodeRegionServiceTest extends TestBase implements Test {
 		}
 		
 		
-		
-
-		
-		
-		//保存海外
+		//5. 保存海外
 		List<CodeRegion> haiWaiCodeRegions = DataImport.getHaiWai();
 		mapCodeRetion.clear();
 		for (CodeRegion codeRegion : haiWaiCodeRegions) {
