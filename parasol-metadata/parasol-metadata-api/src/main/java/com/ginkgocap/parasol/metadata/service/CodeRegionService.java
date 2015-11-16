@@ -3,6 +3,7 @@ package com.ginkgocap.parasol.metadata.service;
 import java.util.List;
 
 import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
+import com.ginkgocap.parasol.metadata.exception.CodeServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
 import com.ginkgocap.parasol.metadata.type.CodeRegionType;
 
@@ -38,7 +39,7 @@ public interface CodeRegionService {
 	 * @throws CodeServiceException
 	 *             不能重名
 	 */
-	public Long createCodeForChildren(Long parentId, CodeRegion codeRegion) throws CodeRegionServiceException;
+	public Long createCodeRegionForChildren(Long parentId, CodeRegion codeRegion) throws CodeRegionServiceException;
 
 	/**
 	 * 删除一个Code 会把Code下边的子Code也删除
@@ -100,5 +101,15 @@ public interface CodeRegionService {
 	 * @throws CodeRegionServiceException
 	 */
 	public List<CodeRegion> getCodeRegionsForRootByType(long parentId, CodeRegionType type) throws CodeRegionServiceException;
+	
+	
+	/**
+	 * 根据淘宝的Id编码查询CodeRegionId。
+	 * 主要用来导数据使用
+	 * @param tbId
+	 * @return
+	 * @throws CodeRegionServiceException
+	 */
+	public Long getCodeRegionIdByTbId(String tbId) throws CodeRegionServiceException;
 
 }
