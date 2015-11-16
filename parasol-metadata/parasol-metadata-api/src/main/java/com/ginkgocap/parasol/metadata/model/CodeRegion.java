@@ -22,9 +22,10 @@ public class CodeRegion implements Serializable {
 	 */
 	private long id;
 	private long parentId; // '父节点',
+	private String numberCode; // 编码
 	private String cname; // '中文名',
 	private String ename;// '英文名',
-	private int type; // '0:省，1：市，2，县，3，',
+	private int type; 	// 0：国内，1：台湾，2：港澳台，3：马来西亚，4：国外, 参考 CodeRegionType
 	private int orders = 0; // '序号',
 	private String tbId; // '淘宝的编码',
 	
@@ -106,6 +107,15 @@ public class CodeRegion implements Serializable {
 		this.tbParentId = tbParentId;
 	}
 	
+	@Column(name="numberCode")
+	public String getNumberCode() {
+		return numberCode;
+	}
+
+	public void setNumberCode(String numberCode) {
+		this.numberCode = numberCode;
+	}
+
 	@Override
 	public String toString() {
 		return "CodeRegion [id=" + id + ", parentId=" + parentId + ", cname=" + cname + ", ename=" + ename + ", type=" + type + ", orders=" + orders + ", tbId=" + tbId
