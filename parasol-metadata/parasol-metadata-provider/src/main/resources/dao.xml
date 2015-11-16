@@ -65,9 +65,11 @@
            <list name="CodeRegion_List_Id_ParentId_Type"
                   sqlitem="select id from tb_code_region where parentId=? and type=? order by orders"
                   sqlType="hsql" keyProperty="parentId,type" valueProperty="id"  update="true"/>
-           <map name="CodeRegion_Map_Id_TbId"
-                 sqlitem="select id from tb_code_region where tbId=?"
-                 keyProperty="tbId=?" valueProperty="id" />
+                  
+           <list name="CodeRegion_List_Id_TbId"
+                  sqlitem="select id from tb_code_region where tbId=?"
+                  sqlType="hsql" keyProperty="tbId" valueProperty="id"  update="true"/>
+           
             
 		</object>
 	</route>
