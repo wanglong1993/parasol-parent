@@ -32,7 +32,7 @@ public class CodeRegionServiceImpl extends BaseService<CodeRegion> implements Co
 	
 	private static final String CODEREGION_LIST_ID_PID = "CodeRegion_List_Id_ParentId";
 	private static final String CODEREGION_LIST_ID_PID_TYPE = "CodeRegion_List_Id_ParentId_Type";
-	private static final String CODEREGION_MAP_ID_TBID="CodeRegion_Map_Id_TbId";
+	private static final String CODEREGION_LIST_ID_TBID="CodeRegion_List_Id_TbId";
 
 	@Override
 	public Long createCodeRegionForRoot(CodeRegion codeRegion, CodeRegionType type) throws CodeRegionServiceException {
@@ -47,7 +47,8 @@ public class CodeRegionServiceImpl extends BaseService<CodeRegion> implements Co
 			if (CollectionUtils.isNotEmpty(codeRegions)) {
 				for (CodeRegion existCodeRegion : codeRegions) {
 					if (existCodeRegion != null && ObjectUtils.equals(existCodeRegion.getCname(), codeRegion.getCname())) {
-						throw new CodeRegionServiceException(error_duplicate, "Name is " + existCodeRegion.getCname() + " already exists");
+						// throw new CodeRegionServiceException(error_duplicate, "Name is " + existCodeRegion.getCname() + " already exists");
+						logger.info("Name is " + existCodeRegion.getCname() + " already exists");
 					}
 				}
 			}
@@ -102,7 +103,8 @@ public class CodeRegionServiceImpl extends BaseService<CodeRegion> implements Co
 			if (CollectionUtils.isNotEmpty(codeRegions)) {
 				for (CodeRegion existCodeRegion : codeRegions) {
 					if (existCodeRegion != null && ObjectUtils.equals(existCodeRegion.getCname(), codeRegion.getCname())) {
-						throw new CodeRegionServiceException(error_duplicate, "Name is " + codeRegion.getCname() + " already exists");
+						//throw new CodeRegionServiceException(error_duplicate, "Name is " + codeRegion.getCname() + " already exists");
+						logger.error("Name is " + codeRegion.getCname() + " already exists");
 					}
 				}
 			}
@@ -221,8 +223,12 @@ public class CodeRegionServiceImpl extends BaseService<CodeRegion> implements Co
 	@Override
 	public Long getCodeRegionIdByTbId(String tbId) throws CodeRegionServiceException {
 		try {
-			Long id = (Long) getMapId(CODEREGION_MAP_ID_TBID, tbId);
-			return id;
+			List<Long> ids = getIds(CODEREGION_LIST_ID_TBID, tbId);
+			if (CollectionUtils.isNotEmpty(ids)) {
+				return ids.get(0);
+			} else {
+				return null;
+			}
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()){
 				e.printStackTrace(System.err);
