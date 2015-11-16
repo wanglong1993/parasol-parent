@@ -19,6 +19,7 @@ import com.alibaba.dubbo.common.json.ParseException;
 import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
 import com.ginkgocap.parasol.metadata.service.CodeRegionService;
+import com.ginkgocap.parasol.metadata.service.CodeService;
 import com.ginkgocap.parasol.metadata.type.CodeRegionType;
 
 public class CodeRegionServiceTest extends TestBase implements Test {
@@ -40,7 +41,7 @@ public class CodeRegionServiceTest extends TestBase implements Test {
 
 	}
 
-	@org.junit.Test
+	//@org.junit.Test
 	public void testSave() throws IOException, ParseException, CodeRegionServiceException {
 		// 1. 保存省份数据和城市数据
 		List<CodeRegion> codeRegions = DataImport.getProvs();
@@ -155,12 +156,6 @@ public class CodeRegionServiceTest extends TestBase implements Test {
 		}		
 		
 		
-		
-		
-		
-		
-		
-		
 	}
 
 	private void saveCodeRegion(String tbParentId, Map<String, List<CodeRegion>> map) throws CodeRegionServiceException {
@@ -177,4 +172,189 @@ public class CodeRegionServiceTest extends TestBase implements Test {
 
 	}
 
+	/**
+	 * 查询国内省
+	 * @throws CodeRegionServiceException 
+	 */
+	@org.junit.Test
+	public void testGetPri() throws CodeRegionServiceException{
+		List<CodeRegion> codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_CHINAINLAND);
+		Assert.assertTrue(CollectionUtils.isNotEmpty(codeRegions)); 
+		for (CodeRegion codeRegion : codeRegions) {
+			System.out.println(codeRegion.getCname());
+		}
+	}
+	
+	/**
+	 * 查询国内省、市、区县
+	 * @throws CodeRegionServiceException 
+	 */
+	@org.junit.Test
+	public void testGetCity() throws CodeRegionServiceException{
+		List<CodeRegion> codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_CHINAINLAND);
+		Assert.assertTrue(CollectionUtils.isNotEmpty(codeRegions)); 
+		for (CodeRegion codeRegion : codeRegions) {
+			
+			System.out.println(codeRegion.getCname() + ": -> ");     //省
+			List<CodeRegion> cityRegions = codeRegionService.getCodeRegionsByParentId(codeRegion.getId());
+			
+			if (CollectionUtils.isNotEmpty(cityRegions)){
+				for (CodeRegion city : cityRegions) {
+					System.out.print ("    " + city.getCname()+ "-> "); //城市
+					
+					List<CodeRegion> areaRegions = codeRegionService.getCodeRegionsByParentId(city.getId());
+					if (CollectionUtils.isNotEmpty(areaRegions)) {
+						for (CodeRegion area : areaRegions) {
+							System.out.print(area.getCname()+ " ");   //区县
+						}
+					}
+					System.out.println ("  ");
+
+				}
+				
+			}
+			System.out.println(" ");
+
+			
+		}
+	}
+
+	/**
+	 * 查询港澳
+	 * @throws CodeRegionServiceException 
+	 */
+	@org.junit.Test
+	public void testGetGangao() throws CodeRegionServiceException{
+		List<CodeRegion> codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_GANGAOTAI);
+		Assert.assertTrue(CollectionUtils.isNotEmpty(codeRegions)); 
+		for (CodeRegion codeRegion : codeRegions) {
+			
+			System.out.println(codeRegion.getCname() + ": -> ");     //省
+			List<CodeRegion> cityRegions = codeRegionService.getCodeRegionsByParentId(codeRegion.getId());
+			
+			if (CollectionUtils.isNotEmpty(cityRegions)){
+				for (CodeRegion city : cityRegions) {
+					System.out.print ("    " + city.getCname()+ "-> "); //城市
+					
+					List<CodeRegion> areaRegions = codeRegionService.getCodeRegionsByParentId(city.getId());
+					if (CollectionUtils.isNotEmpty(areaRegions)) {
+						for (CodeRegion area : areaRegions) {
+							System.out.print(area.getCname()+ " ");   //区县
+						}
+					}
+					System.out.println ("  ");
+
+				}
+				
+			}
+			System.out.println(" ");
+
+			
+		}
+	}
+
+	/**
+	 * 查询台湾
+	 * @throws CodeRegionServiceException 
+	 */
+	@org.junit.Test
+	public void testGetTaiWan() throws CodeRegionServiceException{
+		List<CodeRegion> codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_TAIWAN);
+		Assert.assertTrue(CollectionUtils.isNotEmpty(codeRegions)); 
+		for (CodeRegion codeRegion : codeRegions) {
+			
+			System.out.println(codeRegion.getCname() + ": -> ");     //省
+			List<CodeRegion> cityRegions = codeRegionService.getCodeRegionsByParentId(codeRegion.getId());
+			
+			if (CollectionUtils.isNotEmpty(cityRegions)){
+				for (CodeRegion city : cityRegions) {
+					System.out.print ("    " + city.getCname()+ "-> "); //城市
+					
+					List<CodeRegion> areaRegions = codeRegionService.getCodeRegionsByParentId(city.getId());
+					if (CollectionUtils.isNotEmpty(areaRegions)) {
+						for (CodeRegion area : areaRegions) {
+							System.out.print(area.getCname()+ " ");   //区县
+						}
+					}
+					System.out.println ("  ");
+
+				}
+				
+			}
+			System.out.println(" ");
+
+			
+		}
+	}	
+	
+	
+	
+	/**
+	 * 查询海外
+	 * @throws CodeRegionServiceException 
+	 */
+	@org.junit.Test
+	public void testGetHaiWai() throws CodeRegionServiceException{
+		List<CodeRegion> codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_FOREIGNCOUNTRY);
+		Assert.assertTrue(CollectionUtils.isNotEmpty(codeRegions)); 
+		for (CodeRegion codeRegion : codeRegions) {
+			
+			System.out.println(codeRegion.getCname() + ": -> ");     //省
+			List<CodeRegion> cityRegions = codeRegionService.getCodeRegionsByParentId(codeRegion.getId());
+			
+			if (CollectionUtils.isNotEmpty(cityRegions)){
+				for (CodeRegion city : cityRegions) {
+					System.out.print ("    " + city.getCname()+ "-> "); //城市
+					
+					List<CodeRegion> areaRegions = codeRegionService.getCodeRegionsByParentId(city.getId());
+					if (CollectionUtils.isNotEmpty(areaRegions)) {
+						for (CodeRegion area : areaRegions) {
+							System.out.print(area.getCname()+ " ");   //区县
+						}
+					}
+					System.out.println ("  ");
+
+				}
+				
+			}
+			System.out.println(" ");
+
+			
+		}
+	}	
+	
+	
+	/**
+	 * 查询马来西亚
+	 * @throws CodeRegionServiceException 
+	 */
+	@org.junit.Test
+	public void testGetMailaixy() throws CodeRegionServiceException{
+		List<CodeRegion> codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_MALAYSIA);
+		Assert.assertTrue(CollectionUtils.isNotEmpty(codeRegions)); 
+		for (CodeRegion codeRegion : codeRegions) {
+			
+			System.out.println(codeRegion.getCname() + ": -> ");     //省
+			List<CodeRegion> cityRegions = codeRegionService.getCodeRegionsByParentId(codeRegion.getId());
+			
+			if (CollectionUtils.isNotEmpty(cityRegions)){
+				for (CodeRegion city : cityRegions) {
+					System.out.print ("    " + city.getCname()+ "-> "); //城市
+					
+					List<CodeRegion> areaRegions = codeRegionService.getCodeRegionsByParentId(city.getId());
+					if (CollectionUtils.isNotEmpty(areaRegions)) {
+						for (CodeRegion area : areaRegions) {
+							System.out.print(area.getCname()+ " ");   //区县
+						}
+					}
+					System.out.println ("  ");
+
+				}
+				
+			}
+			System.out.println(" ");
+
+			
+		}
+	}	
 }
