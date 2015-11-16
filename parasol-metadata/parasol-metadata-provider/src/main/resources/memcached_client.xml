@@ -27,7 +27,10 @@
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
         
- 
+        <region name="com.ginkgocap.parasol.metadata.model.CodeRegion"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" >
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region>
 		<!--  List cache config -->        
 		<region name="Code_List_Id_Root"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[0-9A-Za-z]$" datasource="list1" />
@@ -40,7 +43,18 @@
         </region>
 		<region name="Code_List_Id_Pid_Disabled"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[0-9A-Za-z]$" datasource="list1" />
-        </region>                
+        </region>
+        
+        
+		<region name="CodeRegion_List_Id_ParentId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
+            <keyPattern value="[0-9A-Za-z]$" datasource="list1" />
+        </region>        
+		<region name="CodeRegion_List_Id_ParentId_Type"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
+            <keyPattern value="[0-9A-Za-z]$" datasource="list1" />
+        </region> 
+		<region name="CodeRegion_Map_Id_TbId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
+            <keyPattern value="[0-9A-Za-z]$" datasource="list1" />
+        </region>                                   
       </regions>
 </root>
 
