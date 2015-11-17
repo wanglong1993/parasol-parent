@@ -7,6 +7,7 @@
 		<groupId>com.ginkgocap.parasol</groupId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+	<groupId>com.ginkgocap.parasol</groupId>
 	<artifactId>parasol-metadata-provider</artifactId>
 	<name>${project.artifactId}</name>
 	<version>1.0.0-SNAPSHOT</version>
@@ -98,9 +99,9 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>com.ginkgocap.ywxt</groupId>
-									<artifactId>phoenix-util</artifactId>
-									<version>8.0.0-SNAPSHOT</version>
+									<groupId>com.ginkgocap.parasol</groupId>
+									<artifactId>parasol-common-provider</artifactId>
+									<version>1.0.0-SNAPSHOT</version>
 									<outputDirectory>${project.build.directory}/dubbo</outputDirectory>
 									<includes>META-INF/assembly/**</includes>
 								</artifactItem>
@@ -134,162 +135,20 @@
 		</plugins>
 	</build>
 	<profiles>
-		<!-- 开发打包使用的profile -->
 		<profile>
 			<id>dev</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
 			<properties>
-				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-				<!-- redis地址 -->
-				<redis.host>192.168.101.131</redis.host>
-				<!-- redis端口 -->
-				<redis.port>6379</redis.port>
-				<!-- 数据库连接地址和数据库名 -->
-				<jdbc.url>
-					jdbc:mysql://192.168.101.131:3306/phoenix_metadata?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
-				</jdbc.url>
-				<!-- 数据库访问帐号 -->
+				<!-- database -->
+				<jdbc.url>jdbc:mysql://192.168.120.135:3306/parasol_metadata?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8</jdbc.url>
 				<jdbc.username>zhangwei</jdbc.username>
-				<!-- 数据库访问密码 -->
 				<jdbc.password>zhangwei</jdbc.password>
-				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
-				<log4j.level>debug</log4j.level>
-				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
-				<log4j.path>d:/log</log4j.path>
-				<qatest.schema.skip>false</qatest.schema.skip>
-				<!-- dubbo注册中心的地址 -->
-				<dubbo.application.name>metadatadubboprovider</dubbo.application.name>
+
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
-				<dubbo.protocol.port>2011</dubbo.protocol.port>
-			</properties>
-			<build>
-				<plugins>
-					<!-- sql plugin -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>sql-maven-plugin</artifactId>
-						<version>1.5</version>
-						<!-- common configuration shared by all executions -->
-						<dependencies>
-							<!-- specify the dependent jdbc driver here -->
-							<dependency>
-								<groupId>mysql</groupId>
-								<artifactId>mysql-connector-java</artifactId>
-								<version>5.1.12</version>
-							</dependency>
-						</dependencies>
-						<configuration>
-							<driver>${jdbc.driverClassName}</driver>
-							<username>${jdbc.username}</username>
-							<password>${jdbc.password}</password>
-							<url>${jdbc.url}</url>
-							<!--all executions are ignored if -Dmaven.test.skip=true -->
-							<skip>${maven.test.skip}</skip>
-						</configuration>
-						<executions>
-							<execution>
-								<id>create-schema-default</id>
-								<phase>process-test-classes</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<inherited>false</inherited>
-								<configuration>
-									<skip>${maven.test.skip}</skip>
-									<autocommit>true</autocommit>
-									<srcFiles>
-										<srcFile>src/test/resources/sql/mysql/schema.sql</srcFile>
-										<srcFile>src/test/resources/sql/mysql/default-data.sql</srcFile>
-									</srcFiles>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>dbunit-maven-plugin</artifactId>
-						<version>1.0-beta-3</version>
-						<executions>
-							<execution>
-								<id>test-compile</id>
-								<phase>process-test-classes</phase>
-								<goals>
-									<goal>operation</goal>
-								</goals>
-							</execution>
-						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>${jdbc.groupId}</groupId>
-								<artifactId>${jdbc.artifactId}</artifactId>
-								<version>${jdbc.version}</version>
-							</dependency>
-						</dependencies>
-						<configuration>
-							<dataTypeFactoryName> ${dbuint.dataTypeFactoryName}
-							</dataTypeFactoryName>
-							<driver>${jdbc.driverClassName}</driver>
-							<username>${jdbc.username}</username>
-							<password>${jdbc.password}</password>
-							<url>${jdbc.url}</url>
-							<src>src/test/resources/data/sample-data.xml</src>
-							<type>CLEAN_INSERT</type>
-							<skip>${maven.test.skip}</skip>
-							<format>flat</format>
-							<encoding>UTF-8</encoding>
-							<dest>target/dbunit/export.xml</dest>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>delivery</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<filters>
-					<filter>${sa.config.file}</filter>
-				</filters>
-			</build>
-		</profile>
-		<profile>
-			<id>online</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<filters>
-					<filter>${sa.config.file}</filter>
-				</filters>
-			</build>
-			<properties>
-				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-				<!-- redis地址 -->
-				<redis.host>${metadata.online.redis.host}</redis.host>
-				<!-- redis端口 -->
-				<redis.port>${metadata.online.redis.port}</redis.port>
-				<!-- 数据库连接地址和数据库名 -->
-				<jdbc.url>${metadata.online.jdbc.url}</jdbc.url>
-				<!-- 数据库访问帐号 -->
-				<jdbc.username>${metadata.online.jdbc.username}</jdbc.username>
-				<!-- 数据库访问密码 -->
-				<jdbc.password>${metadata.online.jdbc.password}</jdbc.password>
-				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
-				<log4j.level>${metadata.online.log4j.level}</log4j.level>
-				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
-				<log4j.path>${metadata.online.log4j.path}</log4j.path>
-				<!-- dubbo注册中心的地址 -->
-				<dubbo.application.name>${metadata.online.dubbo.application.name}</dubbo.application.name>
-				<dubbo.protocol.name>${metadata.online.dubbo.protocol.name}</dubbo.protocol.name>
-				<dubbo.registry.address>${metadata.online.dubbo.registry.address}</dubbo.registry.address>
-				<dubbo.protocol.port>${metadata.online.dubbo.protocol.port}</dubbo.protocol.port>
+				<dubbo.protocol.port>20884</dubbo.protocol.port>
 			</properties>
 		</profile>
 	</profiles>
-	<groupId>com.ginkgocap.parasol</groupId>
 </project>
