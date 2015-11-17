@@ -11,7 +11,7 @@
 			<param name="ConversionPattern" value="%p %d{yyyyMMddHHmmss} %c %t %m%n" />
 		</layout>
 	</appender>
-	<logger name="com.ginkgocap.ywxt">
+	<logger name="com.ginkgocap.parasol">
 		<level value="info"></level>
 	</logger>
 	<root>
