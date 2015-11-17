@@ -9,7 +9,7 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
 	>
 	
-	<context:component-scan base-package="com.ginkgocap.parasol.sms">
+	<context:component-scan base-package="com.ginkgocap.parasol.*">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 	
@@ -20,5 +20,7 @@
 		<property name="sendMessageApiKey" value="${sms.send.message.apikey}" />
 		<property name="sendMessageUsername" value="${sms.send.message.username}" />
 		<property name="sendMessagePassword" value="${sms.send.message.password}" />
+	</bean>
+	<bean class="com.ginkgocap.parasol.common.InitDealShortMessageMQ" init-method="init">
 	</bean>
 </beans>
