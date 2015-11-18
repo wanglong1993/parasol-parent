@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+	>
+	
+	<context:component-scan base-package="com.ginkgocap.parasol.*">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<!-- 短信运营商信息 -->
+	<bean id="smsTempalte" class="com.ginkgocap.parasol.sms.model.SmsTemplate">
+		<property name="isOpen" value="${sms.is.open}" />
+		<property name="sendMessageUrl" value="${sms.send.message.url}"></property>
+		<property name="sendMessageApiKey" value="${sms.send.message.apikey}" />
+		<property name="sendMessageUsername" value="${sms.send.message.username}" />
+		<property name="sendMessagePassword" value="${sms.send.message.password}" />
+	</bean>
+	<bean class="com.ginkgocap.parasol.common.InitDealShortMessageMQ" init-method="init">
+	</bean>
+</beans>
