@@ -61,7 +61,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime2;
+	private Date ctime;
 	/**
 	 * 修改时间.
 	 */
@@ -75,7 +75,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	}
 
 	public UserLoginRegister(int id, String passport, String password,
-			byte virtual, String salt, String source, Date ctime2, Date utime,
+			byte virtual, String salt, String source, Date ctime, Date utime,
 			String ipRegistered) {
 		this.id = id;
 		this.passport = passport;
@@ -83,14 +83,14 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.virtual = virtual;
 		this.salt = salt;
 		this.source = source;
-		this.ctime2 = ctime2;
+		this.ctime = ctime;
 		this.utime = utime;
 		this.ipRegistered = ipRegistered;
 	}
 
 	public UserLoginRegister(int id, String passport, String mobile,
 			String email, String userName, String password, byte virtual,
-			String salt, String source, Date ctime2, Date utime,
+			String salt, String source, Date ctime, Date utime,
 			String ipRegistered) {
 		this.id = id;
 		this.passport = passport;
@@ -101,7 +101,7 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.virtual = virtual;
 		this.salt = salt;
 		this.source = source;
-		this.ctime2 = ctime2;
+		this.ctime = ctime;
 		this.utime = utime;
 		this.ipRegistered = ipRegistered;
 	}
@@ -189,13 +189,13 @@ public class UserLoginRegister implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "ctime2", nullable = false, length = 19)
-	public Date getCtime2() {
-		return this.ctime2;
+	@Column(name = "ctime", nullable = false, length = 19)
+	public Date getCtime() {
+		return this.ctime;
 	}
 
-	public void setCtime2(Date ctime2) {
-		this.ctime2 = ctime2;
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
