@@ -1,7 +1,7 @@
 package com.ginkgocap.parasol.user.exception;
 
 public class UserServiceException extends Exception {
-	private int errorCode = -1;
+	private int errorCode = -1; 
 	public UserServiceException(Throwable cause) {
 		super(cause);
 	}
