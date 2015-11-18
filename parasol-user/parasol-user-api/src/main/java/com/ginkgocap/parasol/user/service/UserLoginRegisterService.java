@@ -15,7 +15,7 @@ public interface UserLoginRegisterService {
 	 * @return
 	 * @throws UserServiceException
 	 */
-	public Long createUser(UserLoginRegister userLoginRegister) throws UserServiceException; 
+	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserServiceException; 
 	
 
 	/**
@@ -42,7 +42,7 @@ public interface UserLoginRegisterService {
 	 * @return
 	 * @throws UserServiceException
 	 */
-	public Long passportIsExist(String passport) throws UserServiceException;
+	public boolean passportIsExist(String passport,String value) throws UserServiceException;
 	
 
 	
