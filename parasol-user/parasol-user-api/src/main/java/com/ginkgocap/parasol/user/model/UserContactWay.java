@@ -1,24 +1,64 @@
 package com.ginkgocap.parasol.user.model;
+
+
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 /**
  * 联系方式
  */
-
-import java.util.Date;
+@Entity
+@Table(name = "tb_user_contact_way", catalog = "parasol_user")
 public class UserContactWay implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 525251088829953176L;
+	/**
+	 * 个人用户id.
+	 */
 	private int userId;
+	/**
+	 * 手机.
+	 */
 	private String cellphone;
+	/**
+	 * 邮箱.
+	 */
 	private String email;
+	/**
+	 * 微信.
+	 */
 	private String weixin;
+	/**
+	 * QQ.
+	 */
 	private String qq;
+	/**
+	 * 微博.
+	 */
 	private String weibo;
+	/**
+	 * 好友可见 1.公开，2.好友可见.
+	 */
 	private byte isVisible;
+	/**
+	 * 创建时间.
+	 */
 	private Date ctime;
+	/**
+	 * 修改时间.
+	 */
 	private Date utime;
+	/**
+	 * 用户IP.
+	 */
 	private String ipRegistered;
 
 	public UserContactWay() {
@@ -49,6 +89,8 @@ public class UserContactWay implements java.io.Serializable {
 		this.ipRegistered = ipRegistered;
 	}
 
+	@Id
+	@Column(name = "user_id", unique = true, nullable = false)
 	public int getUserId() {
 		return this.userId;
 	}
@@ -57,6 +99,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.userId = userId;
 	}
 
+	@Column(name = "cellphone", nullable = false, length = 16)
 	public String getCellphone() {
 		return this.cellphone;
 	}
@@ -65,6 +108,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.cellphone = cellphone;
 	}
 
+	@Column(name = "email", length = 50)
 	public String getEmail() {
 		return this.email;
 	}
@@ -73,6 +117,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.email = email;
 	}
 
+	@Column(name = "weixin", length = 50)
 	public String getWeixin() {
 		return this.weixin;
 	}
@@ -81,6 +126,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.weixin = weixin;
 	}
 
+	@Column(name = "qq", length = 16)
 	public String getQq() {
 		return this.qq;
 	}
@@ -89,6 +135,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.qq = qq;
 	}
 
+	@Column(name = "weibo", length = 50)
 	public String getWeibo() {
 		return this.weibo;
 	}
@@ -97,6 +144,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.weibo = weibo;
 	}
 
+	@Column(name = "is_visible", nullable = false)
 	public byte getIsVisible() {
 		return this.isVisible;
 	}
@@ -105,6 +153,8 @@ public class UserContactWay implements java.io.Serializable {
 		this.isVisible = isVisible;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "ctime", nullable = false, length = 19)
 	public Date getCtime() {
 		return this.ctime;
 	}
@@ -113,6 +163,8 @@ public class UserContactWay implements java.io.Serializable {
 		this.ctime = ctime;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "utime", nullable = false, length = 19)
 	public Date getUtime() {
 		return this.utime;
 	}
@@ -121,6 +173,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.utime = utime;
 	}
 
+	@Column(name = "ip_registered", nullable = false, length = 16)
 	public String getIpRegistered() {
 		return this.ipRegistered;
 	}
