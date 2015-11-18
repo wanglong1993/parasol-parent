@@ -20,7 +20,7 @@
 			maxIdle="" 
 			maxWait="" 
 		/>
-		<ds name="master" 
+		<ds name="slave" 
 			driverClassName="com.mysql.jdbc.Driver" 
 			url="${jdbc.url}"
 			username="${jdbc.username}" 
