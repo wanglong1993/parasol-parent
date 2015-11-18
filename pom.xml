@@ -16,7 +16,8 @@
     	<module>parasol-sms</module>
 		<module>parasol-common</module>
     	<module>parasol-message</module>
-  </modules>
+		<module>parasol-user</module>
+	</modules>
 	<repositories>
 		<repository>
 			<id>nexus</id>
