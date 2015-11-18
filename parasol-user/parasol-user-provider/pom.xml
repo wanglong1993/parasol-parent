@@ -3,19 +3,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>parasol-metadata</artifactId>
+		<artifactId>parasol-user</artifactId>
 		<groupId>com.ginkgocap.parasol</groupId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.ginkgocap.parasol</groupId>
-	<artifactId>parasol-metadata-provider</artifactId>
+	<artifactId>parasol-user-provider</artifactId>
 	<name>${project.artifactId}</name>
-	<version>1.0.0-SNAPSHOT</version>
 
 	<properties>
 		<skip_maven_deploy>true</skip_maven_deploy>
 		<h2.version>1.3.161</h2.version>
-		<maven.test.skip>false</maven.test.skip>
+		<maven.test.skip>true</maven.test.skip>
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 	</properties>
 
@@ -36,7 +34,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
-			<artifactId>parasol-metadata-api</artifactId>
+			<artifactId>parasol-user-api</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
@@ -139,13 +137,13 @@
 			<id>dev</id>
 			<properties>
 				<!-- database -->
-				<jdbc.url>jdbc:mysql://192.168.120.135:3306/parasol_metadata?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
+				<jdbc.url>jdbc:mysql://192.168.101.131:3306/parasol_user?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8</jdbc.url>
 				<jdbc.username>zhangwei</jdbc.username>
 				<jdbc.password>zhangwei</jdbc.password>
 
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
-				<dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>20884</dubbo.protocol.port>
 			</properties>

@@ -38,6 +38,7 @@ public class InitDealShortMessageMQ {
     
 
     public void init() {
+    	// 创建新的线程处理消息队列
     	new Thread(new Runnable(){
 					@Override
 					public void run() {
