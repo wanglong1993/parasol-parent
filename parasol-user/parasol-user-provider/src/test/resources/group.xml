@@ -3,9 +3,9 @@
 	<datasources>
 		<ds name="idCenterDS" 
 			driverClassName="com.mysql.jdbc.Driver" 
-			url="jdbc:mysql://192.168.101.131:3306/parasol_user?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8"
-			username="zhangwei" 
-			password="zhangwei"
+			url="${jdbc.url}"
+			username="${jdbc.username}" 
+			password="${jdbc.password}"
 			maxActive="" 
 			maxIdle="" 
 			maxWait="" 
@@ -13,18 +13,18 @@
         
 		<ds name="master" 
 			driverClassName="com.mysql.jdbc.Driver" 
-			url="jdbc:mysql://192.168.101.131:3306/parasol_user?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8"
-			username="zhangwei" 
-			password="zhangwei"
+			url="${jdbc.url}"
+			username="${jdbc.username}" 
+			password="${jdbc.password}"
 			maxActive="" 
 			maxIdle="" 
 			maxWait="" 
 		/>
 		<ds name="master" 
 			driverClassName="com.mysql.jdbc.Driver" 
-			url="jdbc:mysql://192.168.101.131:3306/parasol_user?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8"
-			username="zhangwei" 
-			password="zhangwei"
+			url="${jdbc.url}"
+			username="${jdbc.username}" 
+			password="${jdbc.password}"
 			maxActive="" 
 			maxIdle="" 
 			maxWait="" 
@@ -36,3 +36,4 @@
 	</groups>
 
 </root>
+
