@@ -18,8 +18,8 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
 	
-	public int countTestCases() {
-		return 0;
+	public int countTestCases() { 
+		return 0;  
 	}
 
 	public void run(TestResult result) {

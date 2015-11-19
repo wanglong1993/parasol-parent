@@ -15,7 +15,7 @@ public class TestBase {
 	
 	@BeforeClass
 	public static void beforeClass(){
-	}
+	} 
 	
 	@Before
 	public void before(){
