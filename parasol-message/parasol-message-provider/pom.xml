@@ -105,6 +105,12 @@
 		</dependency>
 		<!-- logging begin -->
 		
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-common-provider</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		
 		<!-- activemq-client -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
@@ -392,6 +398,11 @@
 				<redis.host>192.168.101.131</redis.host>
 				<!-- redis端口 -->
 				<redis.port>6379</redis.port>
+				<!-- mysql -->
+				<jdbc.url>jdbc:mysql://192.168.101.131:3306/parasol_message?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
+				<jdbc.username>zhangwei</jdbc.username>
+				<jdbc.password>zhangwei</jdbc.password>
+				
 				<!-- 短信运营商参数 -->
 				<sms.is.open>1</sms.is.open>
 				<sms.send.message.url>http://m.5c.com.cn/api/send/?</sms.send.message.url>

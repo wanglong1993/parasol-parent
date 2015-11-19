@@ -1,7 +1,10 @@
 package com.ginkgocap.parasol.message.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.ginkgocap.parasol.message.service.MessageRelationService;
 
+@Service("messageRelationService")
 public class MessageRelationServiceImpl implements MessageRelationService {
 
 	@Override

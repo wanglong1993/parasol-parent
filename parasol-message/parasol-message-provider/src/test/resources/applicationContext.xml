@@ -20,10 +20,10 @@
 			</list>
 		</property>
 	</bean>
-	<import resource="classpath:sms-dubbo-config.xml" />
-	<import resource="classpath:sms-mongo-config.xml"/>
-	<import resource="classpath:sms-dubbo-provider.xml" />
-	<import resource="classpath:sms-jms-config.xml" />
-	<import resource="classpath:sms-jms-message.xml" />
-	<import resource="classpath:sms-spring-context.xml" />
+	<import resource="classpath:message-dubbo-config.xml" />
+	<import resource="classpath:message-mongo-config.xml"/>
+	<import resource="classpath:message-dubbo-provider.xml" />
+	<import resource="classpath:message-jms-config.xml" />
+	<import resource="classpath:message-spring-context.xml" />
+	<bean name="dao" class="com.ginkgocap.ywxt.framework.dal.dao.impl.CompositeDaoImpl"/>
 </beans>

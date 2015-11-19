@@ -14,6 +14,7 @@
 	</context:component-scan>
 	
 	<!-- 短信运营商信息 -->
+	<!-- 
 	<bean id="smsTempalte" class="com.ginkgocap.parasol.sms.model.SmsTemplate">
 		<property name="isOpen" value="${sms.is.open}" />
 		<property name="sendMessageUrl" value="${sms.send.message.url}"></property>
@@ -23,4 +24,5 @@
 	</bean>
 	<bean class="com.ginkgocap.parasol.common.InitDealShortMessageMQ" init-method="init">
 	</bean>
+	 -->
 </beans>

@@ -1,6 +1,14 @@
 package com.ginkgocap.parasol.message.model;
 
-import org.springframework.data.annotation.Transient;
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * 
@@ -11,9 +19,16 @@ import org.springframework.data.annotation.Transient;
 * @date 2015-11-18 
 * @version 1.0
  */
-public class MessageEntity {
+@Entity
+@Table(name = "tb_message_entity")
+public class MessageEntity implements Serializable{
 	
-	 // 消息实体id，long类型时间+随机数生成
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8708045139473656554L;
+
+	// 消息实体id，long类型时间+随机数生成
 	private long id;
 	
 	// 消息类型
@@ -52,6 +67,9 @@ public class MessageEntity {
 	@Transient
 	private long dealTime;
 
+	@Id
+	@Column(name = "Id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public long getId() {
 		return id;
 	}
@@ -59,7 +77,8 @@ public class MessageEntity {
 	public void setId(long id) {
 		this.id = id;
 	}
-
+	
+	@Column(name = "type")
 	public int getType() {
 		return type;
 	}
@@ -68,6 +87,7 @@ public class MessageEntity {
 		this.type = type;
 	}
 
+	@Column(name = "createrId")
 	public long getCreaterId() {
 		return createrId;
 	}
@@ -76,6 +96,7 @@ public class MessageEntity {
 		this.createrId = createrId;
 	}
 
+	@Column(name = "content")
 	public String getContent() {
 		return content;
 	}
@@ -84,6 +105,7 @@ public class MessageEntity {
 		this.content = content;
 	}
 
+	@Column(name = "sourceId")
 	public long getSourceId() {
 		return sourceId;
 	}
@@ -92,6 +114,7 @@ public class MessageEntity {
 		this.sourceId = sourceId;
 	}
 
+	@Column(name = "sourceType")
 	public String getSourceType() {
 		return sourceType;
 	}
@@ -100,6 +123,7 @@ public class MessageEntity {
 		this.sourceType = sourceType;
 	}
 
+	@Column(name = "sourceTitle")
 	public String getSourceTitle() {
 		return sourceTitle;
 	}
@@ -108,6 +132,7 @@ public class MessageEntity {
 		this.sourceTitle = sourceTitle;
 	}
 
+	@Column(name = "appid")
 	public String getAppid() {
 		return appid;
 	}
