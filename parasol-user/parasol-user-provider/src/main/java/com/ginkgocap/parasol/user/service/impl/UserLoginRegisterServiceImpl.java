@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.user.exception.UserServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
-
+@Service("userLoginRegisterService")
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
 	private static int error_passport_blank = 1000;
 	private static int error_user_is_exist=1001;
@@ -19,7 +20,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserServiceException {
 		try {
 			// 检查通行证是否为空
-			if (userLoginRegister != null || StringUtils.isBlank(userLoginRegister.getPassport())) {
+			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) {
 				throw new UserServiceException(error_passport_blank,"Passport property of code must have a value");
 			}
 			//检查通行证是否存在
