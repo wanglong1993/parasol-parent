@@ -23,11 +23,11 @@ public class UserWorkHistory implements java.io.Serializable {
 	/**
 	 * 主键.
 	 */
-	private int id;
+	private long id;
 	/**
 	 * 个人用户id.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * 单位名称.
 	 */
@@ -68,7 +68,7 @@ public class UserWorkHistory implements java.io.Serializable {
 	public UserWorkHistory() {
 	}
 
-	public UserWorkHistory(int id, int userId, Date ctime, Date utime,
+	public UserWorkHistory(long id, long userId, Date ctime, Date utime,
 			String ipRegistered) {
 		this.id = id;
 		this.userId = userId;
@@ -77,7 +77,7 @@ public class UserWorkHistory implements java.io.Serializable {
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserWorkHistory(int id, int userId, String incName,
+	public UserWorkHistory(long id, long userId, String incName,
 			String position, String beginTime, String endTime,
 			String description, Byte isVisible, Date ctime, Date utime,
 			String ipRegistered) {
@@ -96,20 +96,20 @@ public class UserWorkHistory implements java.io.Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
 	@Column(name = "user_id", nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 

@@ -23,7 +23,7 @@ public class UserBasic implements java.io.Serializable {
 	/**
 	 * 个人用户id.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * 若为组织则为全称，不可更改；若为个人则为昵称，不可修改。.
 	 */
@@ -85,7 +85,7 @@ public class UserBasic implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime2;
+	private Date ctime;
 	/**
 	 * 修改时间.
 	 */
@@ -98,9 +98,9 @@ public class UserBasic implements java.io.Serializable {
 	public UserBasic() {
 	}
 
-	public UserBasic(int userId, String name, byte sex, byte status,
+	public UserBasic(long userId, String name, byte sex, byte status,
 			String nameFirst, String nameIndex, String nameIndexAll,
-			Date ctime2, Date utime, String ipRegistered) {
+			Date ctime, Date utime, String ipRegistered) {
 		this.userId = userId;
 		this.name = name;
 		this.sex = sex;
@@ -108,16 +108,16 @@ public class UserBasic implements java.io.Serializable {
 		this.nameFirst = nameFirst;
 		this.nameIndex = nameIndex;
 		this.nameIndexAll = nameIndexAll;
-		this.ctime2 = ctime2;
+		this.ctime = ctime;
 		this.utime = utime;
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserBasic(int userId, String name, byte sex, Integer provinceId,
+	public UserBasic(long userId, String name, byte sex, Integer provinceId,
 			Integer cityId, Integer countyId, String companyName,
 			String companyJob, String shortName, String picPath,
 			String description, String regFrom, byte status, String nameFirst,
-			String nameIndex, String nameIndexAll, Date ctime2, Date utime,
+			String nameIndex, String nameIndexAll, Date ctime, Date utime,
 			String ipRegistered) {
 		this.userId = userId;
 		this.name = name;
@@ -135,18 +135,18 @@ public class UserBasic implements java.io.Serializable {
 		this.nameFirst = nameFirst;
 		this.nameIndex = nameIndex;
 		this.nameIndexAll = nameIndexAll;
-		this.ctime2 = ctime2;
+		this.ctime = ctime;
 		this.utime = utime;
 		this.ipRegistered = ipRegistered;
 	}
 
 	@Id
 	@Column(name = "user_id", unique = true, nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
@@ -286,13 +286,13 @@ public class UserBasic implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "ctime2", nullable = false, length = 19)
-	public Date getCtime2() {
-		return this.ctime2;
+	@Column(name = "ctime", nullable = false, length = 19)
+	public Date getCtime() {
+		return this.ctime;
 	}
 
-	public void setCtime2(Date ctime2) {
-		this.ctime2 = ctime2;
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

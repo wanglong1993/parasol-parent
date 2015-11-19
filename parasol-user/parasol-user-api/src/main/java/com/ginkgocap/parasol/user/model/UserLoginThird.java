@@ -23,11 +23,11 @@ public class UserLoginThird implements java.io.Serializable {
 	/**
 	 * 主键.
 	 */
-	private int id;
+	private long id;
 	/**
 	 * 个人用户id和组织用户id.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * openid即为tb_user表中的通行证。.
 	 */
@@ -60,7 +60,7 @@ public class UserLoginThird implements java.io.Serializable {
 	public UserLoginThird() {
 	}
 
-	public UserLoginThird(int id, int userId, String openid, byte loginType,
+	public UserLoginThird(long id, long userId, String openid, byte loginType,
 			String accesstoken, Date ctime, Date utime, String ipRegistered) {
 		this.id = id;
 		this.userId = userId;
@@ -72,7 +72,7 @@ public class UserLoginThird implements java.io.Serializable {
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserLoginThird(int id, int userId, String openid, byte loginType,
+	public UserLoginThird(long id, long userId, String openid, byte loginType,
 			Byte expiresday, String accesstoken, Date ctime, Date utime,
 			String ipRegistered) {
 		this.id = id;
@@ -88,20 +88,20 @@ public class UserLoginThird implements java.io.Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
 	@Column(name = "user_id", nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 

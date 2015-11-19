@@ -28,17 +28,18 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testCreateUserLoginRegister(){
 		UserLoginRegister userLoginRegister = new UserLoginRegister();
-		userLoginRegister.setPassport("13677687632");
+		userLoginRegister.setPassport("13677687620");
 		userLoginRegister.setPassword("111111");
 		byte virtual=1;
 		userLoginRegister.setVirtual(virtual);;
 		userLoginRegister.setSalt("12121111");
 		userLoginRegister.setSource("app");
+		userLoginRegister.setIpRegistered("111.111.11.11");
 		userLoginRegister.setCtime(new Date());
 		userLoginRegister.setUtime(new Date());
 		try {
 			Long id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
-			Assert.assertTrue(id !=null && id > 0l);
+			Assert.assertTrue(id !=null && id > 0L);
 		} catch (UserServiceException e) {
 			
 			e.printStackTrace();

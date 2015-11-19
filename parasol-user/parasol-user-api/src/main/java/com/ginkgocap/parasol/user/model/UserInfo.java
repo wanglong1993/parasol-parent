@@ -24,7 +24,7 @@ public class UserInfo implements java.io.Serializable {
 	/**
 	 * 个人用户id.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * 若为组织则为全称，不可更改；若为个人则为昵称，可修改。.
 	 */
@@ -32,7 +32,7 @@ public class UserInfo implements java.io.Serializable {
 	/**
 	 * 省份id.
 	 */
-	private int provinceId2;
+	private int provinceId;
 	/**
 	 * 城市id.
 	 */
@@ -61,11 +61,11 @@ public class UserInfo implements java.io.Serializable {
 	public UserInfo() {
 	}
 
-	public UserInfo(int userId, Date birthday, int provinceId2, int cityId,
+	public UserInfo(long userId, Date birthday, int provinceId, int cityId,
 			int countyId, Date ctime, Date utime, String ipRegistered) {
 		this.userId = userId;
 		this.birthday = birthday;
-		this.provinceId2 = provinceId2;
+		this.provinceId = provinceId;
 		this.cityId = cityId;
 		this.countyId = countyId;
 		this.ctime = ctime;
@@ -73,12 +73,12 @@ public class UserInfo implements java.io.Serializable {
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserInfo(int userId, Date birthday, int provinceId2, int cityId,
+	public UserInfo(long userId, Date birthday, int provinceId, int cityId,
 			int countyId, Byte isVisible, Date ctime, Date utime,
 			String ipRegistered) {
 		this.userId = userId;
 		this.birthday = birthday;
-		this.provinceId2 = provinceId2;
+		this.provinceId = provinceId;
 		this.cityId = cityId;
 		this.countyId = countyId;
 		this.isVisible = isVisible;
@@ -89,11 +89,11 @@ public class UserInfo implements java.io.Serializable {
 
 	@Id
 	@Column(name = "user_id", unique = true, nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
@@ -107,13 +107,13 @@ public class UserInfo implements java.io.Serializable {
 		this.birthday = birthday;
 	}
 
-	@Column(name = "province_id2", nullable = false)
-	public int getProvinceId2() {
-		return this.provinceId2;
+	@Column(name = "province_id", nullable = false)
+	public int getProvinceId() {
+		return this.provinceId;
 	}
 
-	public void setProvinceId2(int provinceId2) {
-		this.provinceId2 = provinceId2;
+	public void setProvinceId(int provinceId) {
+		this.provinceId = provinceId;
 	}
 
 	@Column(name = "city_id", nullable = false)

@@ -23,11 +23,11 @@ public class UserEducationHistory implements java.io.Serializable {
 	/**
 	 * 主键.
 	 */
-	private int id;
+	private long id;
 	/**
 	 * 个人用户id.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * 学校.
 	 */
@@ -59,7 +59,7 @@ public class UserEducationHistory implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime2;
+	private Date ctime;
 	/**
 	 * 修改时间.
 	 */
@@ -72,22 +72,22 @@ public class UserEducationHistory implements java.io.Serializable {
 	public UserEducationHistory() {
 	}
 
-	public UserEducationHistory(int id, int userId, char degree,
-			String beginTime, String endTime, Date ctime2, Date utime,
+	public UserEducationHistory(long id, long userId, char degree,
+			String beginTime, String endTime, Date ctime, Date utime,
 			String ipRegistered) {
 		this.id = id;
 		this.userId = userId;
 		this.degree = degree;
 		this.beginTime = beginTime;
 		this.endTime = endTime;
-		this.ctime2 = ctime2;
+		this.ctime = ctime;
 		this.utime = utime;
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserEducationHistory(int id, int userId, String school,
+	public UserEducationHistory(long id, long userId, String school,
 			String major, char degree, String beginTime, String endTime,
-			String description, Byte isVisible, Date ctime2, Date utime,
+			String description, Byte isVisible, Date ctime, Date utime,
 			String ipRegistered) {
 		this.id = id;
 		this.userId = userId;
@@ -98,27 +98,27 @@ public class UserEducationHistory implements java.io.Serializable {
 		this.endTime = endTime;
 		this.description = description;
 		this.isVisible = isVisible;
-		this.ctime2 = ctime2;
+		this.ctime = ctime;
 		this.utime = utime;
 		this.ipRegistered = ipRegistered;
 	}
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
 	@Column(name = "user_id", nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
@@ -186,13 +186,13 @@ public class UserEducationHistory implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "ctime2", nullable = false, length = 19)
-	public Date getCtime2() {
-		return this.ctime2;
+	@Column(name = "ctime", nullable = false, length = 19)
+	public Date getCtime() {
+		return this.ctime;
 	}
 
-	public void setCtime2(Date ctime2) {
-		this.ctime2 = ctime2;
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

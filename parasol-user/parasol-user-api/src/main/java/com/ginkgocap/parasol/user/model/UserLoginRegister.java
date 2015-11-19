@@ -25,7 +25,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -4229992793845063007L;
-	private int id;
+	private long id;
 	/**
 	 * 通行证：用户注册时使用的登录名.
 	 */
@@ -74,7 +74,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	public UserLoginRegister() {
 	}
 
-	public UserLoginRegister(int id, String passport, String password,
+	public UserLoginRegister(long id, String passport, String password,
 			byte virtual, String salt, String source, Date ctime, Date utime,
 			String ipRegistered) {
 		this.id = id;
@@ -88,7 +88,7 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserLoginRegister(int id, String passport, String mobile,
+	public UserLoginRegister(long id, String passport, String mobile,
 			String email, String userName, String password, byte virtual,
 			String salt, String source, Date ctime, Date utime,
 			String ipRegistered) {
@@ -108,11 +108,11 @@ public class UserLoginRegister implements java.io.Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

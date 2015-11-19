@@ -23,11 +23,11 @@ public class UserDefined implements java.io.Serializable {
 	/**
 	 * 主键.
 	 */
-	private int id;
+	private long id;
 	/**
 	 * 用户id.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * 自定义模块名.
 	 */
@@ -56,7 +56,7 @@ public class UserDefined implements java.io.Serializable {
 	public UserDefined() {
 	}
 
-	public UserDefined(int id, int userId, char userDefinedValue, Date ctime,
+	public UserDefined(long id, long userId, char userDefinedValue, Date ctime,
 			Date utime, String ipRegistered) {
 		this.id = id;
 		this.userId = userId;
@@ -66,7 +66,7 @@ public class UserDefined implements java.io.Serializable {
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserDefined(int id, int userId, String userDefinedModel,
+	public UserDefined(long id, long userId, String userDefinedModel,
 			String userDefinedFiled, char userDefinedValue, Date ctime,
 			Date utime, String ipRegistered) {
 		this.id = id;
@@ -81,20 +81,20 @@ public class UserDefined implements java.io.Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
 	@Column(name = "user_id", nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 

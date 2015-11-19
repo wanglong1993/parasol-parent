@@ -23,11 +23,11 @@ public class UserInterestIndustry implements java.io.Serializable {
 	/**
 	 * 主键.
 	 */
-	private int id;
+	private long id;
 	/**
 	 * 个人用户id和组织用户id.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * 一级行业ID.
 	 */
@@ -56,7 +56,7 @@ public class UserInterestIndustry implements java.io.Serializable {
 	public UserInterestIndustry() {
 	}
 
-	public UserInterestIndustry(int id, int userId, Date ctime, Date utime,
+	public UserInterestIndustry(long id, long userId, Date ctime, Date utime,
 			String ipRegistered) {
 		this.id = id;
 		this.userId = userId;
@@ -65,7 +65,7 @@ public class UserInterestIndustry implements java.io.Serializable {
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserInterestIndustry(int id, int userId, Integer firstIndustryId,
+	public UserInterestIndustry(long id, long userId, Integer firstIndustryId,
 			Integer secondIndustryId, Integer threeIndustryId, Date ctime,
 			Date utime, String ipRegistered) {
 		this.id = id;
@@ -80,20 +80,20 @@ public class UserInterestIndustry implements java.io.Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
 	@Column(name = "user_id", nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 

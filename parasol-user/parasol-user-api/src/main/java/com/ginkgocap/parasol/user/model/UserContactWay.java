@@ -23,7 +23,7 @@ public class UserContactWay implements java.io.Serializable {
 	/**
 	 * 个人用户id.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * 手机.
 	 */
@@ -64,7 +64,7 @@ public class UserContactWay implements java.io.Serializable {
 	public UserContactWay() {
 	}
 
-	public UserContactWay(int userId, String cellphone, byte isVisible,
+	public UserContactWay(long userId, String cellphone, byte isVisible,
 			Date ctime, Date utime, String ipRegistered) {
 		this.userId = userId;
 		this.cellphone = cellphone;
@@ -74,7 +74,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserContactWay(int userId, String cellphone, String email,
+	public UserContactWay(long userId, String cellphone, String email,
 			String weixin, String qq, String weibo, byte isVisible, Date ctime,
 			Date utime, String ipRegistered) {
 		this.userId = userId;
@@ -91,11 +91,11 @@ public class UserContactWay implements java.io.Serializable {
 
 	@Id
 	@Column(name = "user_id", unique = true, nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 

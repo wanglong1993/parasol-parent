@@ -23,7 +23,7 @@ public class UserOrganBasic implements java.io.Serializable {
 	/**
 	 * 组织用户id.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * 若为组织则为全称，不可更改；若为个人则为昵称，可修改。.
 	 */
@@ -86,7 +86,7 @@ public class UserOrganBasic implements java.io.Serializable {
 	public UserOrganBasic() {
 	}
 
-	public UserOrganBasic(int userId, String name, String picPath, byte status,
+	public UserOrganBasic(long userId, String name, String picPath, byte status,
 			String regFrom, String shortName, byte auth, String nameFirst,
 			String nameIndex, String nameIndexAll, Date ctime2, Date utime,
 			String ipRegistered) {
@@ -105,7 +105,7 @@ public class UserOrganBasic implements java.io.Serializable {
 		this.ipRegistered = ipRegistered;
 	}
 
-	public UserOrganBasic(int userId, String name, String picPath, byte status,
+	public UserOrganBasic(long userId, String name, String picPath, byte status,
 			String regFrom, String brief, String shortName, String phone,
 			String orgType, byte auth, String nameFirst, String nameIndex,
 			String nameIndexAll, Date ctime2, Date utime, String ipRegistered) {
@@ -129,11 +129,11 @@ public class UserOrganBasic implements java.io.Serializable {
 
 	@Id
 	@Column(name = "user_id", unique = true, nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 

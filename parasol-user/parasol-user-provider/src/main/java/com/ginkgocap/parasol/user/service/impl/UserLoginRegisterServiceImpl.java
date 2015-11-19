@@ -21,26 +21,26 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			// 检查通行证是否为空
 			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) {
-				throw new UserServiceException(error_passport_blank,"Passport property of code must have a value");
+				throw new UserServiceException(error_passport_blank,"Passport property  must have a value");
 			}
-			//检查通行证是否存在
-			boolean bl = passportIsExist("passport", userLoginRegister.getPassport());
-			
-			//用户已经存在
-			if(bl){
-				throw new UserServiceException(error_user_is_exist, "User already exist");
-			}
+//			//检查通行证是否存在
+//			boolean bl = passportIsExist("passport", userLoginRegister.getPassport());
+//			
+//			//用户已经存在b.
+//			if(bl){
+//				throw new UserServiceException(error_user_is_exist, "User already exist");
+//			}
 			//用户不存在
-			if(!bl){
+//			if(!bl){  
 				return (Long) saveEntity(userLoginRegister);
-			}
+//			}
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
 			throw new UserServiceException(e);
 		}
-		return null;
+//		return null;
 	}
 
 	public UserLoginRegister getUserLoginRegister(String passport,String value) throws UserServiceException {

@@ -23,11 +23,11 @@ public class UserReleation implements java.io.Serializable {
 	/**
 	 * 主键.
 	 */
-	private int id;
+	private long id;
 	/**
 	 * 用户ID.
 	 */
-	private int userId;
+	private long userId;
 	/**
 	 * 组织/用户/客户/人脉ID.
 	 */
@@ -56,7 +56,7 @@ public class UserReleation implements java.io.Serializable {
 	public UserReleation() {
 	}
 
-	public UserReleation(int id, int userId, long friendId, int status,
+	public UserReleation(long id, long userId, long friendId, int status,
 			byte releationType, Date ctime, Date utime) {
 		this.id = id;
 		this.userId = userId;
@@ -67,7 +67,7 @@ public class UserReleation implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	public UserReleation(int id, int userId, long friendId, int status,
+	public UserReleation(long id, long userId, long friendId, int status,
 			byte releationType, String name2, Date ctime, Date utime) {
 		this.id = id;
 		this.userId = userId;
@@ -81,20 +81,20 @@ public class UserReleation implements java.io.Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
 	@Column(name = "user_id", nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
