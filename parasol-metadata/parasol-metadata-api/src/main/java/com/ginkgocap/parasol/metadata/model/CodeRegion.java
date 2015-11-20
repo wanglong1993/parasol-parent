@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
+@JsonFilter("com.ginkgocap.parasol.metadata.model.CodeRegion")
 @Entity
 @Table(name = "tb_code_region")
 public class CodeRegion implements Serializable {
