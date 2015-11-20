@@ -21,28 +21,37 @@ public interface UserLoginRegisterService {
 	/**
 	 * 根据passport获取用户登录注册信息
 	 * @param passport
-	 * @param value
 	 * @return
 	 * @throws UserLoginRegisterServiceException 
 	 */
-	public UserLoginRegister getUserLoginRegister(String passport,String value) throws UserLoginRegisterServiceException; 
+	public UserLoginRegister getUserLoginRegister(String passport) throws UserLoginRegisterServiceException; 
+
+	/**
+	 * 根据id获取用户登录注册信息
+	 * @param id
+	 * @return
+	 * @throws UserLoginRegisterServiceException 
+	 */
+	public UserLoginRegister getUserLoginRegister(Long id) throws UserLoginRegisterServiceException; 
 	
 	
 	/**
 	 * 修改密码
-	 * @param code
+	 * @param id
+	 * @param password
 	 * @return
 	 * @throws UserLoginRegisterServiceException
 	 */
-	public boolean updatePassword(Integer id,String password) throws UserLoginRegisterServiceException;
+	public boolean updatePassword(Long id,String password) throws UserLoginRegisterServiceException;
 	
 	/**
-	 * 判断用户是否存在
-	 * @param code
+	 * 根据passport判断用户是否存在
+	 * @param mapping_region
+	 * @param passport
 	 * @return
 	 * @throws UserLoginRegisterServiceException
 	 */
-	public boolean passportIsExist(String passport,String value) throws UserLoginRegisterServiceException;
+	public boolean passportIsExist(String mapping_region,String passport) throws UserLoginRegisterServiceException;
 	
 
 	
