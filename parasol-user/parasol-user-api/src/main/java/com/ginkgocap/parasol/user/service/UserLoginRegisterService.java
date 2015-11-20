@@ -1,6 +1,6 @@
 package com.ginkgocap.parasol.user.service;
 
-import com.ginkgocap.parasol.user.exception.UserServiceException;
+import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 
 /**
@@ -13,9 +13,9 @@ public interface UserLoginRegisterService {
 	 * 注册
 	 * @param userLoginRegister
 	 * @return
-	 * @throws UserServiceException
+	 * @throws UserLoginRegisterServiceException
 	 */
-	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserServiceException; 
+	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException; 
 	
 
 	/**
@@ -23,26 +23,26 @@ public interface UserLoginRegisterService {
 	 * @param passport
 	 * @param value
 	 * @return
-	 * @throws UserServiceException 
+	 * @throws UserLoginRegisterServiceException 
 	 */
-	public UserLoginRegister getUserLoginRegister(String passport,String value) throws UserServiceException; 
+	public UserLoginRegister getUserLoginRegister(String passport,String value) throws UserLoginRegisterServiceException; 
 	
 	
 	/**
 	 * 修改密码
 	 * @param code
 	 * @return
-	 * @throws UserServiceException
+	 * @throws UserLoginRegisterServiceException
 	 */
-	public boolean updatePassword(Integer id,String password) throws UserServiceException;
+	public boolean updatePassword(Integer id,String password) throws UserLoginRegisterServiceException;
 	
 	/**
 	 * 判断用户是否存在
 	 * @param code
 	 * @return
-	 * @throws UserServiceException
+	 * @throws UserLoginRegisterServiceException
 	 */
-	public boolean passportIsExist(String passport,String value) throws UserServiceException;
+	public boolean passportIsExist(String passport,String value) throws UserLoginRegisterServiceException;
 	
 
 	

@@ -15,7 +15,10 @@
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
-
+ 		<!-- 通过通行证查找用户 --> 
+          <map name="UserLoginRegister_Map_Passport"
+                 sqlitem="select id from tb_user_login_register where passport=? "
+                 sqlType="hsql" keyProperty="passport" valueProperty="id"  update="true"/>
 		</object>
 	</route>
 </dal>

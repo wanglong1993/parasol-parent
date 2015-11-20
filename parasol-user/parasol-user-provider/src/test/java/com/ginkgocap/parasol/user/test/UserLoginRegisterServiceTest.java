@@ -9,7 +9,7 @@ import junit.framework.TestResult;
 
 import org.junit.Assert;
 
-import com.ginkgocap.parasol.user.exception.UserServiceException;
+import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 
@@ -28,7 +28,7 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testCreateUserLoginRegister(){
 		UserLoginRegister userLoginRegister = new UserLoginRegister();
-		userLoginRegister.setPassport("13677687620");
+		userLoginRegister.setPassport("13677687622");
 		userLoginRegister.setPassword("111111");
 		byte virtual=1;
 		userLoginRegister.setVirtual(virtual);;
@@ -40,7 +40,7 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 		try {
 			Long id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 			Assert.assertTrue(id !=null && id > 0L);
-		} catch (UserServiceException e) {
+		} catch (UserLoginRegisterServiceException e) {
 			
 			e.printStackTrace();
 		}
