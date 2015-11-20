@@ -20,4 +20,11 @@ public class MessageEntityServiceTest extends TestBase{
 		entity.setSourceId(111l);
 		messageEntityService.insertMessageEntity(entity);
 	}
+	
+	@Test
+	public void TestGetMessageEntity() {
+		long id = 3911302733103109l;
+		MessageEntity entity = messageEntityService.getMessageEntityById(id);
+		System.out.println("entity = "+entity.getContent());
+	}
 }

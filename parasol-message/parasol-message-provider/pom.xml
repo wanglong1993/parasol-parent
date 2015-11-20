@@ -402,13 +402,12 @@
 				<jdbc.url>jdbc:mysql://192.168.101.131:3306/parasol_message?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
 				<jdbc.username>zhangwei</jdbc.username>
 				<jdbc.password>zhangwei</jdbc.password>
+				<!-- memcached -->
+				<memcached.list_1.ip>192.168.101.22</memcached.list_1.ip>
+				<memcached.list_1.port>11211</memcached.list_1.port>
+				<memcached.object_1.ip>192.168.101.22</memcached.object_1.ip>
+				<memcached.object_1.port>11211</memcached.object_1.port>
 				
-				<!-- 短信运营商参数 -->
-				<sms.is.open>1</sms.is.open>
-				<sms.send.message.url>http://m.5c.com.cn/api/send/?</sms.send.message.url>
-				<sms.send.message.apikey>abded701459c50a016766b4a9e823a39</sms.send.message.apikey>
-				<sms.send.message.username>gintong</sms.send.message.username>
-				<sms.send.message.password>ml150414</sms.send.message.password>
 				<!-- active-mq -->
 				<activemq.url>tcp://192.168.130.21:61616</activemq.url>
 				<!-- mongo地址 -->

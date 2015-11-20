@@ -17,6 +17,7 @@
 			</dbStrategy>
            
            <!-- 通过名字找Code --> 
+           <!-- 
            <list name="Code_List_Id_Root"
                   sqlitem="select id from tb_code where isRoot=? order by orderNo"
                   sqlType="hsql" keyProperty="root" valueProperty="id"  update="true"/>
@@ -32,6 +33,7 @@
            <list name="Code_List_Id_Pid_Disabled"
                   sqlitem="select id from tb_code where pid=? and disabled=? order by orderNo"
                   sqlType="hsql" keyProperty="pid,disabled" valueProperty="id"  update="true"/>
+            -->
 		</object>
 		
 		<object name="com.ginkgocap.parasol.message.model.MessageRelation" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="parentId">
@@ -41,6 +43,7 @@
 			</dbStrategy>
 			
            <!-- 通过名字找Code --> 
+           <!-- 
            <list name="CodeRegion_List_Id_ParentId"
                   sqlitem="select id from tb_code_region where parentId=? order by orders"
                   sqlType="hsql" keyProperty="parentId" valueProperty="id"  update="true"/>
@@ -52,7 +55,7 @@
                   sqlitem="select id from tb_code_region where tbId=?"
                   sqlType="hsql" keyProperty="tbId" valueProperty="id"  update="true"/>
            
-            
+           -->
 		</object>
 	</route>
 </dal>

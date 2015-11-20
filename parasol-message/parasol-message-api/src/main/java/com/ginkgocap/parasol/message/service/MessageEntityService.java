@@ -14,6 +14,8 @@ import com.ginkgocap.parasol.message.model.MessageEntity;
  */
 public interface MessageEntityService {
 	
+	public MessageEntity getMessageEntityById(long id);
+	
 	public int insertMessageEntity(MessageEntity entity);
 	
 	public int updateMessageEntity(MessageEntity entity);

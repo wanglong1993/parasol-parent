@@ -21,6 +21,18 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 		return 0;
 	}
 
+
+	@Override
+	public MessageEntity getMessageEntityById(long id) {
+		try {
+			return getEntity(id);
+		} catch (BaseServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}	
+	
 	@Override
 	public int updateMessageEntity(MessageEntity entity) {
 		// TODO Auto-generated method stub
@@ -32,5 +44,6 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 
 }

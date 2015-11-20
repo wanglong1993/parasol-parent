@@ -5,10 +5,12 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * 
@@ -68,8 +70,9 @@ public class MessageEntity implements Serializable{
 	private long dealTime;
 
 	@Id
-	@Column(name = "Id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator", parameters = { @Parameter(name = "sequence", value = "tb_message_entity") })
+	@Column(name = "id")
 	public long getId() {
 		return id;
 	}
@@ -141,32 +144,16 @@ public class MessageEntity implements Serializable{
 		this.appid = appid;
 	}
 
-	public long getReceiverId() {
-		return receiverId;
-	}
-
 	public void setReceiverId(long receiverId) {
 		this.receiverId = receiverId;
-	}
-
-	public int getStatus() {
-		return status;
 	}
 
 	public void setStatus(int status) {
 		this.status = status;
 	}
 
-	public int getIsRead() {
-		return isRead;
-	}
-
 	public void setIsRead(int isRead) {
 		this.isRead = isRead;
-	}
-
-	public long getDealTime() {
-		return dealTime;
 	}
 
 	public void setDealTime(long dealTime) {
