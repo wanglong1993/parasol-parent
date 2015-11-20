@@ -32,4 +32,10 @@ public class CodeServiceException extends Exception {
 		this.errorCode = errorCode;
 	}
 
+	public int getErrorCode() {
+		return errorCode;
+	}
+
+
+
 }
