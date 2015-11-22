@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.message.service;
 
+import com.ginkgocap.parasol.message.model.MessageRelation;
+
 /**
  * 
 * <p>Title: MessageRelation.java<／p> 
@@ -11,7 +13,7 @@ package com.ginkgocap.parasol.message.service;
  */
 public interface MessageRelationService {
 	
-	public int insertMessageRelation();
+	public MessageRelation insertMessageRelation(MessageRelation relation);
 	
 	public int insertBatchMessageRelation();
 	
