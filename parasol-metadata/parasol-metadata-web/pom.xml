@@ -10,8 +10,8 @@
 	</parent>
 	<artifactId>parasol-metadata-web</artifactId>
 	<groupId>com.ginkgocap.parasol</groupId>
-	<name>Spring Boot Jetty Sample</name>
-	<description>Spring Boot Jetty Sample</description>
+	<name>parasol metadata web</name>
+	<description>parasol metadata web project</description>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://projects.spring.io/spring-boot/</url>
 	<organization>
