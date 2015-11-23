@@ -1,11 +1,15 @@
 package com.ginkgocap.parasol.message.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * 
@@ -18,7 +22,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "tb_message_relation")
-public class MessageRelation {
+public class MessageRelation implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2565570809635060021L;
 	
 	// 消息关联id
 	private long id;
@@ -36,8 +45,9 @@ public class MessageRelation {
 	private int type;
 	
 	@Id
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator", parameters = { @Parameter(name = "sequence", value = "tb_message_relation") })
 	@Column(name = "Id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public long getId() {
 		return id;
 	}

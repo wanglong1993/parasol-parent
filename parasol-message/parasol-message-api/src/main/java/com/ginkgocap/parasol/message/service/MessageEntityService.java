@@ -1,5 +1,8 @@
 package com.ginkgocap.parasol.message.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.ginkgocap.parasol.message.model.MessageEntity;
 
 
@@ -14,9 +17,34 @@ import com.ginkgocap.parasol.message.model.MessageEntity;
  */
 public interface MessageEntityService {
 	
+	/**
+	 * 通过Id获取消息实体
+	 * @param id
+	 * @return
+	 */
 	public MessageEntity getMessageEntityById(long id);
 	
+	/**
+	 * 
+	 * @param entity
+	 * @return
+	 */
 	public int insertMessageEntity(MessageEntity entity);
+	
+	/**
+	 * 插入消息实体及消息关系
+	 * @param params
+	 * @return
+	 */
+	public Map<String, Object> insertMessageByParams(Map<String,String> params);
+	
+	/**
+	 * 获取用户消息列表
+	 * @param userId
+	 * @param type
+	 * @return entity列表
+	 */
+	public List<MessageEntity> getMessagesByUserId(long userId, int type);
 	
 	public int updateMessageEntity(MessageEntity entity);
 	

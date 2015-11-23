@@ -33,7 +33,7 @@ public class MessageEntity implements Serializable{
 	// 消息实体id，long类型时间+随机数生成
 	private long id;
 	
-	// 消息类型
+	// 消息类型 1:添加好友；2：@好友；3：点赞；4：评论；5：留言
 	private int type;
 	
 	// 创建者id

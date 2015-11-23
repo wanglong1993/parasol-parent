@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.message.service;
 
+import java.util.List;
+
 import com.ginkgocap.parasol.message.model.MessageRelation;
 
 /**
@@ -13,9 +15,32 @@ import com.ginkgocap.parasol.message.model.MessageRelation;
  */
 public interface MessageRelationService {
 	
+	/**
+	 * 插入消息关系
+	 * @param relation
+	 * @return
+	 */
 	public MessageRelation insertMessageRelation(MessageRelation relation);
 	
-	public int insertBatchMessageRelation();
+	/**
+	 * 批量插入消息关系
+	 * @return
+	 */
+	public int insertBatchMessageRelation(List<MessageRelation> relations);
+	
+	/**
+	 * 获取用户未读消息数
+	 * @param userId
+	 * @return
+	 */
+	public long countMessageRelationByUserId(long userId);
+	
+	/**
+	 * 获取用户未读消息列表
+	 * @param userId
+	 * @return
+	 */
+	public List<MessageRelation> getMessageRelationsByUserId(long userId);
 	
 	public int delMessageRelation();
 	
