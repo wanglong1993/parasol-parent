@@ -17,6 +17,7 @@
 package com.ginkgocap.parasol.metadata.web.jetty.web.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,14 +52,11 @@ import com.ginkgocap.parasol.metadata.web.jetty.web.ResponseError;
  * @Copyright Copyright©2015 www.gintong.com
  */
 @RestController
-public class MetadataController extends BaseControl{
-	private static Logger logger = Logger.getLogger(MetadataController.class);
+public class MetadataCodeController extends BaseControl {
+	private static Logger logger = Logger.getLogger(MetadataCodeController.class);
 
 	private static final String paramenterFields = "fields";
 	private static final String paramenterDebug = "debug";
-
-	@Autowired
-	private HelloWorldService helloWorldService;
 
 	@Autowired
 	private CodeService codeService;
@@ -69,33 +68,58 @@ public class MetadataController extends BaseControl{
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/metadata/getFunctionClassList", method = { RequestMethod.GET })
-	public MappingJacksonValue getFunctionClassList(@RequestParam(name = MetadataController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataController.paramenterDebug, defaultValue = "") String debug) {
+	@RequestMapping(path = "/metadata/code/getFunctionClassList", method = { RequestMethod.GET })
+	public MappingJacksonValue getFunctionClassList(@RequestParam(name = MetadataCodeController.paramenterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			//0.校验输入参数（框架搞定，如果业务业务搞定）
+			//1.查询后台服务
 			List<Code> codes = codeService.getCodesForRoot(true);
+			//2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(codes);
-			SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-
-			// 请求指定字段
-			String[] filedNames = StringUtils.split(fileds, ",");
-			Set<String> filter = new HashSet<String>();
-			if (filedNames != null && filedNames.length > 0) {
-				for (int i = 0; i < filedNames.length; i++) {
-					String filedName = filedNames[i];
-
-					if (!StringUtils.isEmpty(filedName)) {
-						filter.add(filedName);
-					}
-				}
-			} else {
-				filter.add("id"); // 主键',
-				filter.add("pid"); // 父主键',
-				filter.add("name"); // '类型名称',
+			//3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			//4.返回结果
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
 			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;
+		} catch (CodeServiceException e) {
+			e.printStackTrace(System.err);
+		}
+		return null;
+	}
 
-			filterProvider.addFilter(Code.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+	/**
+	 * 查询大类下面的子类
+	 * 
+	 * @param request
+	 * @return
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = "/metadata/code/getSubFuctionClassList", method = { RequestMethod.GET })
+	public MappingJacksonValue getSubFuctionClassList(@RequestParam(name = "pid", required = true) Long pid,
+			@RequestParam(name = MetadataCodeController.paramenterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			List<Code> codes = codeService.getCodesByParentId(pid, false);
+			codes = CollectionUtils.isEmpty(codes) ? new ArrayList<Code>() : codes;
+			mappingJacksonValue = new MappingJacksonValue(codes);
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		} catch (RpcException e) {
@@ -119,15 +143,15 @@ public class MetadataController extends BaseControl{
 	}
 
 	/**
-	 * 查询有哪些大分类
+	 * 创建一个大分类（提供测试使用，上线时候不能使用）
 	 * 
 	 * @param request
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/metadata/createCodeForRoot", method = { RequestMethod.GET })
+	@RequestMapping(path = "/metadata/code/createCodeForRoot", method = { RequestMethod.GET })
 	public MappingJacksonValue createCodeForRoot(@RequestParam(name = "name", required = true) String name, @RequestParam(name = "remark", defaultValue = "") String remark,
-			@RequestParam(name = "orderNo", defaultValue = "0") int orderNo, @RequestParam(name = MetadataController.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = "orderNo", defaultValue = "0") int orderNo, @RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 
@@ -174,52 +198,42 @@ public class MetadataController extends BaseControl{
 		}
 	}
 
-
-
-	/**
-	 * 处理RpcException
-	 * 
-	 * @param exception
-	 * @return
-	 */
-	private  ResponseError processResponseError(Exception exception) {
-		if (exception != null) {
-			ResponseError error = new ResponseError();
-			if (exception instanceof RpcException) {
-				RpcException rpcException = (RpcException) exception;
-				if (rpcException.isBiz()) { // 业务错误
-					error.setType("RpcException");
-					error.setMessage("业务错误");
-				} else if (rpcException.isNetwork()) {
-					error.setType("RpcException");
-					error.setMessage("网络故障");
-				} else if (rpcException.isSerialization()) {
-					error.setType("RpcException");
-					error.setMessage("无法序列化");
-				} else if (rpcException.isTimeout()) {
-					error.setType("RpcException");
-					error.setMessage("请求超时");
-				} else {
-					String serviceName_err = getServiceNameByRpcMessage(rpcException);
-					if (serviceName_err != null) {
-						logger.info(serviceName_err + " error");
-						error.setType("RpcException");
-						error.setMessage(serviceName_err + "停止服务，请稍后重试！");
-					}
-				}
-
-			}
-
-			if (exception instanceof CodeServiceException) {
-				CodeServiceException codeServiceException = (CodeServiceException) exception;
-				error.setType("BizException");
-				error.setCode(codeServiceException.getErrorCode());
-				error.setMessage(codeServiceException.getMessage());
-			}
-			return error;
-		} else {
-			return null;
+	@Override
+	protected void processBusinessException(ResponseError error, Exception ex) {
+		if (ex instanceof CodeServiceException) {
+			CodeServiceException codeServiceException = (CodeServiceException) ex;
+			error.setType("BizException");
+			error.setCode(codeServiceException.getErrorCode());
+			error.setMessage(codeServiceException.getMessage());
 		}
 	}
 
+	/**
+	 * 指定显示那些字段
+	 * 
+	 * @param fileds
+	 * @return
+	 */
+	private SimpleFilterProvider builderSimpleFilterProvider(String fileds) {
+		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+		// 请求指定字段
+		String[] filedNames = StringUtils.split(fileds, ",");
+		Set<String> filter = new HashSet<String>();
+		if (filedNames != null && filedNames.length > 0) {
+			for (int i = 0; i < filedNames.length; i++) {
+				String filedName = filedNames[i];
+
+				if (!StringUtils.isEmpty(filedName)) {
+					filter.add(filedName);
+				}
+			}
+		} else {
+			filter.add("id"); // 主键',
+			//filter.add("pid"); // 父主键',
+			filter.add("name"); // '类型名称',
+		}
+
+		filterProvider.addFilter(Code.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		return filterProvider;
+	}
 }

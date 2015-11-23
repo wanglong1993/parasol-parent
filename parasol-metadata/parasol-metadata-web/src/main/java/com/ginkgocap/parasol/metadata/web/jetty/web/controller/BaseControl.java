@@ -5,11 +5,21 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.alibaba.dubbo.rpc.RpcException;
-
+import com.ginkgocap.parasol.metadata.exception.CodeServiceException;
+import com.ginkgocap.parasol.metadata.web.jetty.web.ResponseError;
+/**
+ * 
+ * @author allenshen
+ * @date 2015年11月23日
+ * @time 上午8:47:57
+ * @Copyright Copyright©2015 www.gintong.com
+ */
 public abstract class BaseControl {
 	private static Pattern service_method_parttern = Pattern.compile("Failed to invoke the method (.+?) in the service (.+?). No provider");
+	private static Logger logger = Logger.getLogger(BaseControl.class);
 
 	/**
 	 * 从错误日志中找到服务名称
@@ -26,4 +36,49 @@ public abstract class BaseControl {
 		}
 		return null;
 	}
+	
+	
+	
+	/**
+	 * 处理RpcException
+	 * 
+	 * @param exception
+	 * @return
+	 */
+	protected  ResponseError processResponseError(Exception exception) {
+		if (exception != null) {
+			ResponseError error = new ResponseError();
+			if (exception instanceof RpcException) {
+				RpcException rpcException = (RpcException) exception;
+				if (rpcException.isBiz()) { // 业务错误
+					error.setType("RpcException");
+					error.setMessage("业务错误");
+				} else if (rpcException.isNetwork()) {
+					error.setType("RpcException");
+					error.setMessage("网络故障");
+				} else if (rpcException.isSerialization()) {
+					error.setType("RpcException");
+					error.setMessage("无法序列化");
+				} else if (rpcException.isTimeout()) {
+					error.setType("RpcException");
+					error.setMessage("请求超时");
+				} else {
+					String serviceName_err = getServiceNameByRpcMessage(rpcException);
+					if (serviceName_err != null) {
+						logger.info(serviceName_err + " error");
+						error.setType("RpcException");
+						error.setMessage(serviceName_err + "停止服务，请稍后重试！");
+					}
+				}
+
+			}
+
+			processBusinessException(error,exception);
+			return error;
+		} else {
+			return null;
+		}
+	}
+
+	protected abstract <T> void processBusinessException(ResponseError error, Exception ex);
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
@@ -39,7 +40,11 @@ public class MetadataErrorControl {
 	@ResponseBody
 	public ResponseEntity<ResponseError> defaultErrorHandler(HttpServletRequest request, Exception ex) {
 		ResponseError responseError = new ResponseError();
-		ResponseEntity<ResponseError> responseEntity = new ResponseEntity<ResponseError>(responseError, getStatus(request, ex));
+		HttpStatus status = getStatus(request, ex);
+		if (ObjectUtils.equals(status, HttpStatus.BAD_REQUEST)) {
+			responseError.setMessage(ex.getLocalizedMessage());
+		}
+		ResponseEntity<ResponseError> responseEntity = new ResponseEntity<ResponseError>(responseError, status);
 		return responseEntity;
 	}
 
