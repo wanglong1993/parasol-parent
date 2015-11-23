@@ -54,14 +54,27 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * 测试查询方法
+	 */
 	@org.junit.Test
 	public void testGetUserLoginRegister(){
 		try {
 			UserLoginRegister userLoginRegister = userLoginRegisterService.getUserLoginRegister("13677687623");
+			UserLoginRegister userLoginRegister2 = userLoginRegisterService.getUserLoginRegister(3912310074900481l);
+			boolean bl = userLoginRegisterService.passportIsExist("13677687625");
+			boolean  bl2 =userLoginRegisterService.updateIpAndLoginTime(3912310074900481l, "192.168.101.178");
+			String salt=userLoginRegisterService.setSalt();
+			String password=userLoginRegisterService.setSha256Hash(salt, "123456");
 			Assert.assertTrue(userLoginRegister!=null);
+			Assert.assertTrue(userLoginRegister2!=null);
+			Assert.assertTrue(bl);
+			Assert.assertTrue(bl2);
+			Assert.assertTrue(password!=null);
 		} catch (UserLoginRegisterServiceException e) {
 			e.printStackTrace();
 		}
 	}
+	
 	
 }

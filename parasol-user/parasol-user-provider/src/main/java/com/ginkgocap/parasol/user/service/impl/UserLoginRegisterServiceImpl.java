@@ -20,7 +20,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private static int error_passport_is_exist=1001;
 	
 	//dao const
-	private static final String USER_LOGIN_REGISTER_MAP_PASSPORT = "UserLoginRegister_Map_Passport"; // 用户id列表
+	private static final String USER_LOGIN_REGISTER_MAP_PASSPORT = "UserLoginRegister_Map_Passport"; 
 	private static Logger logger = Logger.getLogger(UserLoginRegisterServiceImpl.class);
 
 	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException {
@@ -30,7 +30,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 				throw new UserLoginRegisterServiceException(error_passport_blank,"Field passport must be a value");
 			}
 			//检查通行证是否存在
-			boolean bl = passportIsExist(USER_LOGIN_REGISTER_MAP_PASSPORT, userLoginRegister.getPassport());
+			boolean bl = passportIsExist(userLoginRegister.getPassport());
 			
 			//用户已经存在
 			if(bl){
@@ -90,9 +90,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		}
 	}
 
-	public boolean passportIsExist(String mapping_region,String value) throws UserLoginRegisterServiceException {
+	public boolean passportIsExist(String value) throws UserLoginRegisterServiceException {
 		try {
-			Long userId =(Long)getMapId(mapping_region,value);
+			Long userId =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,value);
 			return userId==null?false:true;
 					
 		} catch (BaseServiceException e) {
@@ -104,14 +104,13 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	}
 
 	@Override
-	public boolean updateIpAndLoginTime(Long id, String ip, Date utime)throws UserLoginRegisterServiceException {
+	public boolean updateIpAndLoginTime(Long id, String ip)throws UserLoginRegisterServiceException {
 		try {
 			// 根据id查找实体
 			UserLoginRegister userLoginRegister = getEntity(id);
 			userLoginRegister.setIp(ip);
-			userLoginRegister.setUtime(utime);
-			saveEntity(userLoginRegister);
-			return true;
+			userLoginRegister.setUtime(new Date());
+			return updateEntity(userLoginRegister);
 		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

@@ -48,12 +48,11 @@ public interface UserLoginRegisterService {
 	
 	/**
 	 * 根据passport判断用户是否存在
-	 * @param mapping_region 
 	 * @param passport
 	 * @return
 	 * @throws UserLoginRegisterServiceException
 	 */
-	public boolean passportIsExist(String mapping_region,String passport) throws UserLoginRegisterServiceException;
+	public boolean passportIsExist(String passport) throws UserLoginRegisterServiceException;
 	
 	/**
 	 * 修改用户登录IP和登录时间
@@ -63,7 +62,7 @@ public interface UserLoginRegisterService {
 	 * @return
 	 * @throws UserLoginRegisterServiceException
 	 */
-	public boolean updateIpAndLoginTime(Long id,String ip,Date utime) throws UserLoginRegisterServiceException;
+	public boolean updateIpAndLoginTime(Long id,String ip) throws UserLoginRegisterServiceException;
 	/**
 	 * 生成salt
 	 * @return
