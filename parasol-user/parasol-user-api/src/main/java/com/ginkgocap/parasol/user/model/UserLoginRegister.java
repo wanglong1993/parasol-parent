@@ -13,7 +13,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 /**
  * 用户注册登录表
@@ -112,8 +111,8 @@ public class UserLoginRegister implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue(generator = "userId")
-	@GenericGenerator(name = "userId", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator", parameters = { @Parameter(name = "sequence", value = "contacts_vctl_user") })
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
 	@Column(name = "id")
 	public long getId() {
 		return this.id;
