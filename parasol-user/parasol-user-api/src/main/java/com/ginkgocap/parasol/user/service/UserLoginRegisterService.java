@@ -74,6 +74,20 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public String setSha256Hash(String salt,String password) throws UserLoginRegisterServiceException;
+	/**
+	 * 真删除登录注册用户
+	 * @param id
+	 * @return
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Boolean realDeleteUserLoginRegister(Long id) throws UserLoginRegisterServiceException;
+	/**
+	 * 假删除登录注册用户
+	 * @param id
+	 * @return
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Boolean fakeDeleteUserLoginRegister(Long id) throws UserLoginRegisterServiceException;
 	
 
 	

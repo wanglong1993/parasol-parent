@@ -64,12 +64,16 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 			UserLoginRegister userLoginRegister2 = userLoginRegisterService.getUserLoginRegister(3912310074900481l);
 			boolean bl = userLoginRegisterService.passportIsExist("13677687625");
 			boolean  bl2 =userLoginRegisterService.updateIpAndLoginTime(3912310074900481l, "192.168.101.178");
+			boolean  bl3 =userLoginRegisterService.realDeleteUserLoginRegister(3912310074900481l);
+			boolean  bl4 =userLoginRegisterService.fakeDeleteUserLoginRegister(3912310074900481l);
 			String salt=userLoginRegisterService.setSalt();
 			String password=userLoginRegisterService.setSha256Hash(salt, "123456");
 			Assert.assertTrue(userLoginRegister!=null);
 			Assert.assertTrue(userLoginRegister2!=null);
 			Assert.assertTrue(bl);
 			Assert.assertTrue(bl2);
+			Assert.assertTrue(bl3);
+			Assert.assertTrue(bl4);
 			Assert.assertTrue(password!=null);
 		} catch (UserLoginRegisterServiceException e) {
 			e.printStackTrace();

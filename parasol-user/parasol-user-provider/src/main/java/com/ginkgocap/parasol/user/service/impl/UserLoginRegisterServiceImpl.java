@@ -79,9 +79,12 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			// 根据id查找实体
 			UserLoginRegister userLoginRegister = getEntity(id);
-			userLoginRegister.setSalt(setSalt());
-			userLoginRegister.setPassword(setSha256Hash(userLoginRegister.getSalt(),password));
-			return updateEntity(userLoginRegister);
+			if(userLoginRegister!=null){
+				userLoginRegister.setSalt(setSalt());
+				userLoginRegister.setPassword(setSha256Hash(userLoginRegister.getSalt(),password));
+				return updateEntity(userLoginRegister);
+			}
+			return  false;
 		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -108,9 +111,12 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			// 根据id查找实体
 			UserLoginRegister userLoginRegister = getEntity(id);
-			userLoginRegister.setIp(ip);
-			userLoginRegister.setUtime(new Date());
-			return updateEntity(userLoginRegister);
+			if(userLoginRegister!=null){
+				userLoginRegister.setIp(ip);
+				userLoginRegister.setUtime(new Date());
+				return updateEntity(userLoginRegister);
+			}
+			return false;
 		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -129,6 +135,30 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	public String setSha256Hash(String salt,String password)throws UserLoginRegisterServiceException {
 		String newPass=new Sha256Hash(password, salt,5000).toHex();
 		return  newPass;
+	}
+
+	@Override
+	public Boolean realDeleteUserLoginRegister(Long id) throws UserLoginRegisterServiceException {
+		try {
+			return deleteEntity(id);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
+	}
+	
+	@Override
+	public Boolean fakeDeleteUserLoginRegister(Long id)throws UserLoginRegisterServiceException {
+		try {
+			return fakeDeleteEntity(id);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
 	}
 
 }
