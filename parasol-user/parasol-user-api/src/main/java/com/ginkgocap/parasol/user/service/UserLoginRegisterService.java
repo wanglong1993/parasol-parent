@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.user.service;
 
+import java.util.Date;
+
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 
@@ -11,7 +13,7 @@ public interface UserLoginRegisterService {
 
 	/**
 	 * 注册
-	 * @param userLoginRegister
+	 * @param userLoginRegister 
 	 * @return
 	 * @throws UserLoginRegisterServiceException
 	 */
@@ -46,12 +48,35 @@ public interface UserLoginRegisterService {
 	
 	/**
 	 * 根据passport判断用户是否存在
-	 * @param mapping_region
+	 * @param mapping_region 
 	 * @param passport
 	 * @return
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public boolean passportIsExist(String mapping_region,String passport) throws UserLoginRegisterServiceException;
+	
+	/**
+	 * 修改用户登录IP和登录时间
+	 * @param id
+	 * @param ip
+	 * @param utime 登录时间
+	 * @return
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public boolean updateIpAndLoginTime(Long id,String ip,Date utime) throws UserLoginRegisterServiceException;
+	/**
+	 * 生成salt
+	 * @return
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public String setSalt() throws UserLoginRegisterServiceException;
+	/**
+	 * Sha256加密密码
+	 * @param password
+	 * @return
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public String setSha256Hash(String salt,String password) throws UserLoginRegisterServiceException;
 	
 
 	

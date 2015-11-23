@@ -28,13 +28,13 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testCreateUserLoginRegister(){
 		UserLoginRegister userLoginRegister = new UserLoginRegister();
-		userLoginRegister.setPassport("13677687623");
+		userLoginRegister.setPassport("13677687625");
 		userLoginRegister.setPassword("111111");
 		byte virtual=1;
 		userLoginRegister.setVirtual(virtual);;
 		userLoginRegister.setSalt("12121111");
 		userLoginRegister.setSource("app");
-		userLoginRegister.setIpRegistered("111.111.11.11");
+		userLoginRegister.setIp("111.111.11.11");
 		userLoginRegister.setCtime(new Date());
 		userLoginRegister.setUtime(new Date());
 		try {
@@ -46,6 +46,15 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 		}
 	}
 	@org.junit.Test
+	public void testUpdatePassword(){
+		try {
+			boolean bl = userLoginRegisterService.updatePassword(3912310074900481l,"222222");
+			Assert.assertTrue(bl==true);
+		} catch (UserLoginRegisterServiceException e) {
+			e.printStackTrace();
+		}
+	}
+	@org.junit.Test
 	public void testGetUserLoginRegister(){
 		try {
 			UserLoginRegister userLoginRegister = userLoginRegisterService.getUserLoginRegister("13677687623");
@@ -53,6 +62,6 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 		} catch (UserLoginRegisterServiceException e) {
 			e.printStackTrace();
 		}
-		
 	}
+	
 }

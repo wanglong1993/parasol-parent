@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.user.service.impl;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
@@ -22,7 +24,6 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private static Logger logger = Logger.getLogger(UserLoginRegisterServiceImpl.class);
 
 	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException {
-		Long id = null;
 		try {
 			// 检查通行证是否为空
 			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) {
@@ -36,16 +37,13 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 				throw new UserLoginRegisterServiceException(error_passport_is_exist, "passport already exists");
 			}
 			//用户不存在
-			if(!bl){  
-				id=(Long) saveEntity(userLoginRegister);
-			}
+			return (Long) saveEntity(userLoginRegister);
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
 			throw new UserLoginRegisterServiceException(e);
 		}
-		return id;
 	}
 
 	public UserLoginRegister getUserLoginRegister(String passport) throws UserLoginRegisterServiceException {
@@ -79,16 +77,11 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	}
 	public boolean updatePassword(Long id, String password) throws UserLoginRegisterServiceException {
 		try {
-			//设置salt
-			RandomNumberGenerator saltGenerator = new SecureRandomNumberGenerator();
-			String salt = saltGenerator.nextBytes().toHex();
-			String newPass = new Sha256Hash(password, salt,5000).toHex();
 			// 根据id查找实体
 			UserLoginRegister userLoginRegister = getEntity(id);
-			userLoginRegister.setSalt(salt);
-			userLoginRegister.setPassword(newPass);
-			saveEntity(userLoginRegister);
-			return true;
+			userLoginRegister.setSalt(setSalt());
+			userLoginRegister.setPassword(setSha256Hash(userLoginRegister.getSalt(),password));
+			return updateEntity(userLoginRegister);
 		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -108,6 +101,35 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			}
 			throw new UserLoginRegisterServiceException(e);
 		}
+	}
+
+	@Override
+	public boolean updateIpAndLoginTime(Long id, String ip, Date utime)throws UserLoginRegisterServiceException {
+		try {
+			// 根据id查找实体
+			UserLoginRegister userLoginRegister = getEntity(id);
+			userLoginRegister.setIp(ip);
+			userLoginRegister.setUtime(utime);
+			saveEntity(userLoginRegister);
+			return true;
+		}catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
+	}
+
+	@Override
+	public String setSalt() throws UserLoginRegisterServiceException {
+		RandomNumberGenerator saltGenerator = new SecureRandomNumberGenerator();
+		return saltGenerator.nextBytes().toHex();
+	}
+
+	@Override
+	public String setSha256Hash(String salt,String password)throws UserLoginRegisterServiceException {
+		String newPass=new Sha256Hash(password, salt,5000).toHex();
+		return  newPass;
 	}
 
 }
