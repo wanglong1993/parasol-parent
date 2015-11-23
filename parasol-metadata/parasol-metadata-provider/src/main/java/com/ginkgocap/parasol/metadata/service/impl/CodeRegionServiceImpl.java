@@ -237,4 +237,28 @@ public class CodeRegionServiceImpl extends BaseService<CodeRegion> implements Co
 		}
 	}
 
+	
+	
+	/**
+	 * 
+	 * @param pid
+	 * @param codeRegionType
+	 * @return
+	 * @throws CodeRegionServiceException 
+	 */
+	private boolean checkParentIdCodeRegionType(Long pid, CodeRegionType codeRegionType) throws CodeRegionServiceException {
+		if (pid != null && pid > 0) {
+			CodeRegion codeRegion = getCodeRegionById(pid);
+			if (codeRegion != null && ObjectUtils.equals(codeRegion.getParentId(), 0l)) {
+				if (ObjectUtils.equals(codeRegion.getType(), codeRegionType.getValue())) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 }

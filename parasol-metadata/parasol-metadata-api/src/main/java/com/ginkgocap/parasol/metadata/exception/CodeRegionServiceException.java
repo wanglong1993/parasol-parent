@@ -9,6 +9,7 @@ package com.ginkgocap.parasol.metadata.exception;
  */
 public class CodeRegionServiceException extends Exception {
 	private int errorCode = -1;
+
 	public CodeRegionServiceException(Throwable cause) {
 		super(cause);
 	}
@@ -26,10 +27,12 @@ public class CodeRegionServiceException extends Exception {
 		super(message);
 	}
 
-	
 	public CodeRegionServiceException(int errorCode, String message) {
 		super(message);
 		this.errorCode = errorCode;
 	}
 
+	public int getErrorCode() {
+		return errorCode;
+	}
 }
