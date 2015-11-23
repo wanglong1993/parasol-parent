@@ -55,13 +55,13 @@ public class UserLoginThird implements java.io.Serializable {
 	/**
 	 * 用户IP.
 	 */
-	private String ipRegistered;
+	private String ip;
 
 	public UserLoginThird() {
 	}
 
 	public UserLoginThird(long id, long userId, String openid, byte loginType,
-			String accesstoken, Date ctime, Date utime, String ipRegistered) {
+			String accesstoken, Date ctime, Date utime, String ip) {
 		this.id = id;
 		this.userId = userId;
 		this.openid = openid;
@@ -69,12 +69,12 @@ public class UserLoginThird implements java.io.Serializable {
 		this.accesstoken = accesstoken;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	public UserLoginThird(long id, long userId, String openid, byte loginType,
 			Byte expiresday, String accesstoken, Date ctime, Date utime,
-			String ipRegistered) {
+			String ip) {
 		this.id = id;
 		this.userId = userId;
 		this.openid = openid;
@@ -83,7 +83,7 @@ public class UserLoginThird implements java.io.Serializable {
 		this.accesstoken = accesstoken;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	@Id
@@ -161,13 +161,13 @@ public class UserLoginThird implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip_registered", nullable = false, length = 16)
-	public String getIpRegistered() {
-		return this.ipRegistered;
+	@Column(name = "ip", nullable = false, length = 16)
+	public String getIp() {
+		return this.ip;
 	}
 
-	public void setIpRegistered(String ipRegistered) {
-		this.ipRegistered = ipRegistered;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }

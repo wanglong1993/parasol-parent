@@ -93,14 +93,14 @@ public class UserBasic implements java.io.Serializable {
 	/**
 	 * 用户IP.
 	 */
-	private String ipRegistered;
+	private String ip;
 
 	public UserBasic() {
 	}
 
 	public UserBasic(long userId, String name, byte sex, byte status,
 			String nameFirst, String nameIndex, String nameIndexAll,
-			Date ctime, Date utime, String ipRegistered) {
+			Date ctime, Date utime, String ip) {
 		this.userId = userId;
 		this.name = name;
 		this.sex = sex;
@@ -110,7 +110,7 @@ public class UserBasic implements java.io.Serializable {
 		this.nameIndexAll = nameIndexAll;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	public UserBasic(long userId, String name, byte sex, Integer provinceId,
@@ -118,7 +118,7 @@ public class UserBasic implements java.io.Serializable {
 			String companyJob, String shortName, String picPath,
 			String description, String regFrom, byte status, String nameFirst,
 			String nameIndex, String nameIndexAll, Date ctime, Date utime,
-			String ipRegistered) {
+			String ip) {
 		this.userId = userId;
 		this.name = name;
 		this.sex = sex;
@@ -137,7 +137,7 @@ public class UserBasic implements java.io.Serializable {
 		this.nameIndexAll = nameIndexAll;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	@Id
@@ -305,13 +305,13 @@ public class UserBasic implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip_registered", nullable = false, length = 16)
-	public String getIpRegistered() {
-		return this.ipRegistered;
+	@Column(name = "ip", nullable = false, length = 16)
+	public String getIp() {
+		return this.ip;
 	}
 
-	public void setIpRegistered(String ipRegistered) {
-		this.ipRegistered = ipRegistered;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }

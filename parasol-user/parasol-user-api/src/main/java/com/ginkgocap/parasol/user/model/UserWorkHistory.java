@@ -63,24 +63,24 @@ public class UserWorkHistory implements java.io.Serializable {
 	/**
 	 * 用户IP.
 	 */
-	private String ipRegistered;
+	private String ip;
 
 	public UserWorkHistory() {
 	}
 
 	public UserWorkHistory(long id, long userId, Date ctime, Date utime,
-			String ipRegistered) {
+			String ip) {
 		this.id = id;
 		this.userId = userId;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	public UserWorkHistory(long id, long userId, String incName,
 			String position, String beginTime, String endTime,
 			String description, Byte isVisible, Date ctime, Date utime,
-			String ipRegistered) {
+			String ip) {
 		this.id = id;
 		this.userId = userId;
 		this.incName = incName;
@@ -91,7 +91,7 @@ public class UserWorkHistory implements java.io.Serializable {
 		this.isVisible = isVisible;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	@Id
@@ -187,13 +187,13 @@ public class UserWorkHistory implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip_registered", nullable = false, length = 16)
-	public String getIpRegistered() {
-		return this.ipRegistered;
+	@Column(name = "ip", nullable = false, length = 16)
+	public String getIp() {
+		return this.ip;
 	}
 
-	public void setIpRegistered(String ipRegistered) {
-		this.ipRegistered = ipRegistered;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }

@@ -56,13 +56,13 @@ public class UserInfo implements java.io.Serializable {
 	/**
 	 * 用户IP.
 	 */
-	private String ipRegistered;
+	private String ip;
 
 	public UserInfo() {
 	}
 
 	public UserInfo(long userId, Date birthday, int provinceId, int cityId,
-			int countyId, Date ctime, Date utime, String ipRegistered) {
+			int countyId, Date ctime, Date utime, String ip) {
 		this.userId = userId;
 		this.birthday = birthday;
 		this.provinceId = provinceId;
@@ -70,12 +70,12 @@ public class UserInfo implements java.io.Serializable {
 		this.countyId = countyId;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	public UserInfo(long userId, Date birthday, int provinceId, int cityId,
 			int countyId, Byte isVisible, Date ctime, Date utime,
-			String ipRegistered) {
+			String ip) {
 		this.userId = userId;
 		this.birthday = birthday;
 		this.provinceId = provinceId;
@@ -84,7 +84,7 @@ public class UserInfo implements java.io.Serializable {
 		this.isVisible = isVisible;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	@Id
@@ -163,13 +163,13 @@ public class UserInfo implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip_registered", nullable = false, length = 16)
-	public String getIpRegistered() {
-		return this.ipRegistered;
+	@Column(name = "ip", nullable = false, length = 16)
+	public String getIp() {
+		return this.ip;
 	}
 
-	public void setIpRegistered(String ipRegistered) {
-		this.ipRegistered = ipRegistered;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }

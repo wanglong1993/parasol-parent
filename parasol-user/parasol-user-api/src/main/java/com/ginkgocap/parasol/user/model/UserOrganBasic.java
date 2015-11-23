@@ -73,7 +73,7 @@ public class UserOrganBasic implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime2;
+	private Date ctime;
 	/**
 	 * 修改时间.
 	 */
@@ -81,15 +81,15 @@ public class UserOrganBasic implements java.io.Serializable {
 	/**
 	 * 用户IP.
 	 */
-	private String ipRegistered;
+	private String ip;
 
 	public UserOrganBasic() {
 	}
 
 	public UserOrganBasic(long userId, String name, String picPath, byte status,
 			String regFrom, String shortName, byte auth, String nameFirst,
-			String nameIndex, String nameIndexAll, Date ctime2, Date utime,
-			String ipRegistered) {
+			String nameIndex, String nameIndexAll, Date ctime, Date utime,
+			String ip) {
 		this.userId = userId;
 		this.name = name;
 		this.picPath = picPath;
@@ -100,15 +100,15 @@ public class UserOrganBasic implements java.io.Serializable {
 		this.nameFirst = nameFirst;
 		this.nameIndex = nameIndex;
 		this.nameIndexAll = nameIndexAll;
-		this.ctime2 = ctime2;
+		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	public UserOrganBasic(long userId, String name, String picPath, byte status,
 			String regFrom, String brief, String shortName, String phone,
 			String orgType, byte auth, String nameFirst, String nameIndex,
-			String nameIndexAll, Date ctime2, Date utime, String ipRegistered) {
+			String nameIndexAll, Date ctime, Date utime, String ip) {
 		this.userId = userId;
 		this.name = name;
 		this.picPath = picPath;
@@ -122,9 +122,9 @@ public class UserOrganBasic implements java.io.Serializable {
 		this.nameFirst = nameFirst;
 		this.nameIndex = nameIndex;
 		this.nameIndexAll = nameIndexAll;
-		this.ctime2 = ctime2;
+		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	@Id
@@ -246,13 +246,13 @@ public class UserOrganBasic implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "ctime2", nullable = false, length = 19)
-	public Date getCtime2() {
-		return this.ctime2;
+	@Column(name = "ctime", nullable = false, length = 19)
+	public Date getCtime() {
+		return this.ctime;
 	}
 
-	public void setCtime2(Date ctime2) {
-		this.ctime2 = ctime2;
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -265,13 +265,13 @@ public class UserOrganBasic implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip_registered", nullable = false, length = 16)
-	public String getIpRegistered() {
-		return this.ipRegistered;
+	@Column(name = "ip", nullable = false, length = 16)
+	public String getIp() {
+		return this.ip;
 	}
 
-	public void setIpRegistered(String ipRegistered) {
-		this.ipRegistered = ipRegistered;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }

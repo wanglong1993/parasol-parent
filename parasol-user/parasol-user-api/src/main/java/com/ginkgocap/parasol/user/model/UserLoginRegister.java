@@ -74,14 +74,14 @@ public class UserLoginRegister implements java.io.Serializable {
 	/**
 	 * 用户IP.
 	 */
-	private String ipRegistered;
+	private String ip;
 
 	public UserLoginRegister() {
 	}
 
 	public UserLoginRegister(long id, String passport, String password,
 			byte virtual, String salt, String source, Date ctime, Date utime,
-			String ipRegistered) {
+			String ip) {
 		this.id = id;
 		this.passport = passport;
 		this.password = password;
@@ -90,13 +90,13 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.source = source;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	public UserLoginRegister(long id, String passport, String mobile,
 			String email, String userName, String password, byte virtual,
 			String salt, String source, Date ctime, Date utime,
-			String ipRegistered) {
+			String ip) {
 		this.id = id;
 		this.passport = passport;
 		this.mobile = mobile;
@@ -108,7 +108,7 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.source = source;
 		this.ctime = ctime;
 		this.utime = utime;
-		this.ipRegistered = ipRegistered;
+		this.ip = ip;
 	}
 
 	@Id
@@ -215,13 +215,13 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip_registered", nullable = false, length = 16)
-	public String getIpRegistered() {
-		return this.ipRegistered;
+	@Column(name = "ip", nullable = false, length = 16)
+	public String getIp() {
+		return this.ip;
 	}
 
-	public void setIpRegistered(String ipRegistered) {
-		this.ipRegistered = ipRegistered;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }

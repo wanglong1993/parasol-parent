@@ -43,7 +43,7 @@ public class UserReleation implements java.io.Serializable {
 	/**
 	 * 好友备注名.
 	 */
-	private String name2;
+	private String name;
 	/**
 	 * 创建时间.
 	 */
@@ -68,13 +68,13 @@ public class UserReleation implements java.io.Serializable {
 	}
 
 	public UserReleation(long id, long userId, long friendId, int status,
-			byte releationType, String name2, Date ctime, Date utime) {
+			byte releationType, String name, Date ctime, Date utime) {
 		this.id = id;
 		this.userId = userId;
 		this.friendId = friendId;
 		this.status = status;
 		this.releationType = releationType;
-		this.name2 = name2;
+		this.name = name;
 		this.ctime = ctime;
 		this.utime = utime;
 	}
@@ -125,13 +125,13 @@ public class UserReleation implements java.io.Serializable {
 		this.releationType = releationType;
 	}
 
-	@Column(name = "name2", length = 100)
-	public String getName2() {
-		return this.name2;
+	@Column(name = "name", length = 100)
+	public String getName() {
+		return this.name;
 	}
 
-	public void setName2(String name2) {
-		this.name2 = name2;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
