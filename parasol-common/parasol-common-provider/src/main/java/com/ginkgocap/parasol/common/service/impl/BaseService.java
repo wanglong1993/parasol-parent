@@ -125,7 +125,21 @@ public abstract class BaseService<T> {
 			throw new BaseServiceException(e);
 		}
 	}
-
+	protected Boolean fakeDeleteEntity(Serializable id) throws BaseServiceException {
+		try {
+			if (id != null) {
+				return dao.fakeDelete(getEntityClass(), id);
+			} else {
+				logger.error("delete entity by null id");
+			}
+			return false;
+		} catch (DaoException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new BaseServiceException(e);
+		}
+	}
 	protected Boolean updateEntity(Serializable entity) throws BaseServiceException {
 		try {
 			if (entity != null) {
