@@ -2,7 +2,7 @@ package com.ginkgocap.parasol.user.service.impl;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -48,6 +48,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 
 	public UserLoginRegister getUserLoginRegister(String passport) throws UserLoginRegisterServiceException {
 		try {
+			if(StringUtils.isEmpty(passport)) return null;
 			UserLoginRegister userLoginRegister=null;
 			//根据passport查找id
 			Long id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
@@ -66,6 +67,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 
 	public UserLoginRegister getUserLoginRegister(Long id) throws UserLoginRegisterServiceException {
 		try {
+			if(id==null || id<=0l)return null;
 			// 根据id查找实体
 			return getEntity(id);
 		}catch (BaseServiceException e) {
@@ -77,6 +79,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	}
 	public boolean updatePassword(Long id, String password) throws UserLoginRegisterServiceException {
 		try {
+			if(id==null || id<=0l)return false;
+			if(StringUtils.isEmpty(password)) return false;
 			// 根据id查找实体
 			UserLoginRegister userLoginRegister = getEntity(id);
 			if(userLoginRegister!=null){
@@ -93,9 +97,10 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		}
 	}
 
-	public boolean passportIsExist(String value) throws UserLoginRegisterServiceException {
+	public boolean passportIsExist(String passport) throws UserLoginRegisterServiceException {
 		try {
-			Long userId =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,value);
+			if(StringUtils.isEmpty(passport)) return false;
+			Long userId =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
 			return userId==null?false:true;
 					
 		} catch (BaseServiceException e) {
@@ -109,6 +114,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	@Override
 	public boolean updateIpAndLoginTime(Long id, String ip)throws UserLoginRegisterServiceException {
 		try {
+			if(id==null || id<=0l)return false;
+			if(StringUtils.isEmpty(ip)) return false;
 			// 根据id查找实体
 			UserLoginRegister userLoginRegister = getEntity(id);
 			if(userLoginRegister!=null){
@@ -140,6 +147,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	@Override
 	public Boolean realDeleteUserLoginRegister(Long id) throws UserLoginRegisterServiceException {
 		try {
+			if(id==null || id<=0l) return false;
 			return deleteEntity(id);
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
@@ -152,7 +160,21 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	@Override
 	public Boolean fakeDeleteUserLoginRegister(Long id)throws UserLoginRegisterServiceException {
 		try {
+			if(id==null || id<=0l) return false;
 			return fakeDeleteEntity(id);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
+	}
+
+	@Override
+	public Long getId(String passport) throws UserLoginRegisterServiceException {
+		try {
+			if(StringUtils.isEmpty(passport)) return null;
+			return (Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

@@ -51,6 +51,13 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public boolean passportIsExist(String passport) throws UserLoginRegisterServiceException;
+	/**
+	 * 根据passport获取用户id
+	 * @param passport
+	 * @return
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Long getId(String passport) throws UserLoginRegisterServiceException;
 	
 	/**
 	 * 修改用户登录IP和登录时间

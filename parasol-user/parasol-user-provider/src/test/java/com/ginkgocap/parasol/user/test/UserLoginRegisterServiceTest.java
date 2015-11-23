@@ -28,7 +28,7 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testCreateUserLoginRegister(){
 		UserLoginRegister userLoginRegister = new UserLoginRegister();
-		userLoginRegister.setPassport("13677687625");
+		userLoginRegister.setPassport("13677687623");
 		userLoginRegister.setPassword("111111");
 		byte virtual=1;
 		userLoginRegister.setVirtual(virtual);;
@@ -66,6 +66,8 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 			boolean  bl2 =userLoginRegisterService.updateIpAndLoginTime(3912310074900481l, "192.168.101.178");
 			boolean  bl3 =userLoginRegisterService.realDeleteUserLoginRegister(3912310074900481l);
 			boolean  bl4 =userLoginRegisterService.fakeDeleteUserLoginRegister(3912310074900481l);
+			Long id=userLoginRegisterService.getId("13677687625");
+			boolean bl5=userLoginRegisterService.realDeleteUserLoginRegister(id);
 			String salt=userLoginRegisterService.setSalt();
 			String password=userLoginRegisterService.setSha256Hash(salt, "123456");
 			Assert.assertTrue(userLoginRegister!=null);
@@ -74,6 +76,7 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test  {
 			Assert.assertTrue(bl2);
 			Assert.assertTrue(bl3);
 			Assert.assertTrue(bl4);
+			Assert.assertTrue(bl5);
 			Assert.assertTrue(password!=null);
 		} catch (UserLoginRegisterServiceException e) {
 			e.printStackTrace();
