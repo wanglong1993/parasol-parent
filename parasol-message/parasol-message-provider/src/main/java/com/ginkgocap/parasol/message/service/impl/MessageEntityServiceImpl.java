@@ -98,14 +98,50 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 
 
 	@Override
-	public List<MessageEntity> getMessagesByUserId(long userId, int type) {
+	public List<MessageEntity> getMessagesByUserIdAndType(long userId, int type) {
+		logger.info("进入通过用户名称，消息类型获取消息列表：参数userId：{}, type:{}", userId,type);
+		
 		List<MessageEntity> entities = new ArrayList<MessageEntity>();
+		
+		// 通过userId获取消息关系列表
+		List<MessageRelation> relations = messageRelationService.getMessageRelationsByUserId(userId);
+		
+		// 新建map，用于存放消息关系
+		Map<Long, MessageRelation> mapRel = new HashMap<Long, MessageRelation>();
+		
+		// 消息实体id列表
+		List<Long> ids = new ArrayList<Long>();
+		// 
+		for (MessageRelation rel : relations) {
+			ids.add(rel.getEntityId());
+			mapRel.put(rel.getEntityId(), rel);
+		}
+		
 		try {
-			entities = getSubEntitys("MessageEntity_List_Id_ReceiverId", 0,20, userId);
+			// 通过id列表获取实体列表
+			entities = getEntityByIds(ids);
+		} catch (BaseServiceException e1) {
+			logger.error("进入通过用户名称，消息类型获取消息列表出错：参数userId：{}, type:{}, exception:{}", userId,type,e1.getMessage());
+			return entities;
+		}
+		for(MessageEntity entity : entities) {
+			mapRel.get(entity.getId());
+			entity.setIsRead(mapRel.get(entity.getId()).getIsRead());
+		}
+		
+		return entities;
+	}
+	
+	@Override
+	public List<MessageEntity> getMessagesByIds(List<Long> ids) {
+		List<MessageEntity> entities = null;
+		try {
+			entities = getEntityByIds(ids);
 		} catch (BaseServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+			
 		return entities;
 	}
 	

@@ -50,7 +50,7 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 		
 		List<MessageRelation> relations = null;
 		try {
-			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId", 0,20, userId);
+			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId_Type", 0,20, userId , 0);
 		} catch (BaseServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

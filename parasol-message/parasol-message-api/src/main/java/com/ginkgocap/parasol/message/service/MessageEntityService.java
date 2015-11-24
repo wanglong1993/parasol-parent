@@ -44,8 +44,20 @@ public interface MessageEntityService {
 	 * @param type
 	 * @return entity列表
 	 */
-	public List<MessageEntity> getMessagesByUserId(long userId, int type);
+	public List<MessageEntity> getMessagesByUserIdAndType(long userId, int type);
 	
+	/**
+	 * 通过消息实体列表获取消息
+	 * @param ids
+	 * @return
+	 */
+	public List<MessageEntity> getMessagesByIds(List<Long> ids);
+	
+	/**
+	 * 
+	 * @param entity
+	 * @return
+	 */
 	public int updateMessageEntity(MessageEntity entity);
 	
 	public int deleteMessageEntity(long entityId);

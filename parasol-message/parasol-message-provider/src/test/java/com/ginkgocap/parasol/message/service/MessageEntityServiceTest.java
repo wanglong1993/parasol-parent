@@ -52,7 +52,7 @@ public class MessageEntityServiceTest extends TestBase{
 	
 	@Test
 	public void TestGetMessagesByUserId() {
-		List<MessageEntity> entities = messageEntityService.getMessagesByUserId(1, 0);
+		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1, 0);
 		System.out.println("entities="+entities);
 	}
 }
