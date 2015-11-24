@@ -2,12 +2,16 @@ package com.ginkgocap.parasol.user.model;
 
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 用户感兴趣行业
@@ -31,15 +35,15 @@ public class UserInterestIndustry implements java.io.Serializable {
 	/**
 	 * 一级行业ID.
 	 */
-	private Integer firstIndustryId;
+	private Long firstIndustryId;
 	/**
 	 * 二级行业ID.
 	 */
-	private Integer secondIndustryId;
+	private Long secondIndustryId;
 	/**
 	 * 三级行业ID.
 	 */
-	private Integer threeIndustryId;
+	private Long thirdIndustryId;
 	/**
 	 * 创建时间.
 	 */
@@ -65,21 +69,23 @@ public class UserInterestIndustry implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	public UserInterestIndustry(long id, long userId, Integer firstIndustryId,
-			Integer secondIndustryId, Integer threeIndustryId, Date ctime,
+	public UserInterestIndustry(long id, long userId, Long firstIndustryId,
+			Long secondIndustryId, Long thirdIndustryId, Date ctime,
 			Date utime, String ip) {
 		this.id = id;
 		this.userId = userId;
 		this.firstIndustryId = firstIndustryId;
 		this.secondIndustryId = secondIndustryId;
-		this.threeIndustryId = threeIndustryId;
+		this.thirdIndustryId = thirdIndustryId;
 		this.ctime = ctime;
 		this.utime = utime;
 		this.ip = ip;
 	}
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
+	@Column(name = "id")
 	public long getId() {
 		return this.id;
 	}
@@ -98,30 +104,30 @@ public class UserInterestIndustry implements java.io.Serializable {
 	}
 
 	@Column(name = "first_industry_id")
-	public Integer getFirstIndustryId() {
+	public Long getFirstIndustryId() {
 		return this.firstIndustryId;
 	}
 
-	public void setFirstIndustryId(Integer firstIndustryId) {
+	public void setFirstIndustryId(Long firstIndustryId) {
 		this.firstIndustryId = firstIndustryId;
 	}
 
 	@Column(name = "second_industry_id")
-	public Integer getSecondIndustryId() {
+	public Long getSecondIndustryId() {
 		return this.secondIndustryId;
 	}
 
-	public void setSecondIndustryId(Integer secondIndustryId) {
+	public void setSecondIndustryId(Long secondIndustryId) {
 		this.secondIndustryId = secondIndustryId;
 	}
 
-	@Column(name = "three_industry_id")
-	public Integer getThreeIndustryId() {
-		return this.threeIndustryId;
+	@Column(name = "third_industry_id")
+	public Long getThirdIndustryId() {
+		return this.thirdIndustryId;
 	}
 
-	public void setThreeIndustryId(Integer threeIndustryId) {
-		this.threeIndustryId = threeIndustryId;
+	public void setThirdIndustryId(Long thirdIndustryId) {
+		this.thirdIndustryId = thirdIndustryId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

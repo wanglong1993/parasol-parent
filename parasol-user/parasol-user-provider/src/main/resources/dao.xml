@@ -19,6 +19,29 @@
           <map name="UserLoginRegister_Map_Passport"
                  sqlitem="select id from tb_user_login_register where passport=? "
                  sqlType="hsql" keyProperty="passport" valueProperty="id"  update="true"/>
+                                               
+		</object>
+		
+		<object name="com.ginkgocap.parasol.user.model.UserInterestIndustry" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+          <map name="UserInterestIndustry_Map_UserId"
+                 sqlitem="select id from tb_user_interest_industry where user_id=?"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+        <!-- 通过一级行业id查找用户id列表 --> 
+		  <list name="UserInterestIndustry_List_Id_FirstIndustryId"
+                 sqlitem="select user_id from tb_user_interest_industry where first_industry_id =? order by utime desc"
+                 sqlType="hsql" keyProperty="firstIndustryId" valueProperty="userId"  update="false"/>
+        <!-- 通过二级行业id查找用户id列表 --> 
+		  <list name="UserInterestIndustry_List_Id_SecondIndustryId"
+                 sqlitem="select user_id from tb_user_interest_industry where second_industry_id =? order by utime desc"
+                 sqlType="hsql" keyProperty="secondIndustryId" valueProperty="userId"  update="false"/>                 
+        <!-- 通过三级行业id查找用户id列表 --> 
+		  <list name="UserInterestIndustry_List_Id_ThirdIndustryId"
+                 sqlitem="select user_id from tb_user_interest_industry where third_industry_id =? order by utime desc"
+                 sqlType="hsql" keyProperty="thirdIndustryId" valueProperty="userId"  update="false"/>   			
 		</object>
 	</route>
 </dal>
