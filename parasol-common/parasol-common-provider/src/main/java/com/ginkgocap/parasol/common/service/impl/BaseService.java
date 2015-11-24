@@ -181,6 +181,25 @@ public abstract class BaseService<T> {
 		}
 	}
 
+
+	@SuppressWarnings("unchecked")
+	protected List<T> getEntityByIds(List<Long> ids) throws BaseServiceException {
+		try {
+			if (CollectionUtils.isNotEmpty(ids)) {
+				return dao.getList(getEntityClass(), ids);
+			} else {
+				// logger.warn("ids is empty or null in " + region_name + " by "
+				// + ArrayUtils.toString(parameters));
+				return ListUtils.EMPTY_LIST;
+			}
+		} catch (DaoException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new BaseServiceException(e);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected List<T> getSubEntitys(String region_name, int start, int count, Object... parameters) throws BaseServiceException {
 		
