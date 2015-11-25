@@ -2,7 +2,6 @@ package com.ginkgocap.parasol.user.test;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -37,35 +36,17 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 	@org.junit.Test
 	public void testCreateUserInterestIndustry(){
 		try {
-			Long id=userLoginRegisterService.getId("13677687622");
-			Long id2=userInterestIndustryService.createUserInterestIndustry(setUserInterestIndustry(id));
-			Assert.assertTrue(id !=null && id > 0L);
-			Assert.assertTrue(id2 !=null && id2 > 0L);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	/**
-	 * 修改感兴趣行业
-	 */
-	@org.junit.Test
-	public void testUpdateUserInterestIndustry(){
-		try {
-			boolean bl=userInterestIndustryService.updateUserInterestIndustry(3912415138021384l, 1l, "192.168.101.178");
-			Assert.assertTrue(bl);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	/**
-	 * 根据userId获取id
-	 */
-	@org.junit.Test
-	public void testGetId(){
-		try {
-			Long id=userLoginRegisterService.getId("13677687626");
-			Long id2=userInterestIndustryService.getId(id);
-			Assert.assertTrue(id2!=null && id2>0l);
+			Long id=userLoginRegisterService.getId("13677687623");
+			List<UserInterestIndustry> list =setUserInterestIndustryList(id);
+//			List<Serializable> ids =userInterestIndustryService.createUserInterestIndustryByList(list,id);
+//			for (Serializable id1 : ids) {
+//				UserInterestIndustry entity=(UserInterestIndustry)id1;
+//				Assert.assertTrue(entity!=null && entity.getId()>0l);
+//			}
+			List<UserInterestIndustry> ids =userInterestIndustryService.createUserInterestIndustryByList(list,id);
+			for (UserInterestIndustry id1 : ids) {
+			Assert.assertTrue(id1!=null && id1.getId()>0l);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -74,22 +55,23 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 	 * 根据行业id获取userId分页列表
 	 */
 	@org.junit.Test
-	public void testGetUserIdList(){
+	public void testGetUserIdListByIndustryId(){
 		try {
-			List<Long> list =userInterestIndustryService.getUserIdList(1, 2, 1l, null, null, 1);
+			List<Long> list =userInterestIndustryService.getUserIdListByIndustryId(1, 2, 2l);
 			Assert.assertTrue(list.size()>0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	/**
-	 * 用户Id是否存在
+	 * 根据用户Id获取感兴趣的id
 	 */
 	@org.junit.Test
-	public void testUserIdExists(){
+	public void testGetIdList(){
 		try {
-			boolean bl = userInterestIndustryService.userIdExists(3912310074900481l);
-			Assert.assertTrue(bl);
+			Long id=userLoginRegisterService.getId("13677687623");
+			List<Long> ids = userInterestIndustryService.getIdList(id);
+			Assert.assertTrue(ids!=null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -100,13 +82,8 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 	@org.junit.Test
 	public void testRealDeleteUserInterestIndustryList(){
 		try {
-			List<Serializable> list = new ArrayList<Serializable>();
-			list.add(3912777630744581l);
-			list.add(3912780604506117l);
-			list.add(3912793120309253l);
-			list.add(3913011702267911l);
-			list.add(3913012595654663l);
-			boolean bl = userInterestIndustryService.realDeleteUserInterestIndustryList(list);
+			Long id=userLoginRegisterService.getId("13677687623");
+			boolean bl = userInterestIndustryService.realDeleteUserInterestIndustryList(userInterestIndustryService.getIdList(id));
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -138,15 +115,29 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 		return null;
 	}
 	/**
+	 * 初始化用户感兴趣的对象列表.
+	 * @param userId
+	 * @param count
+	 * @return userInterestIndustry
+	 */
+	public List<UserInterestIndustry> setUserInterestIndustryList(Long userId){
+		List<UserInterestIndustry> list = new ArrayList<UserInterestIndustry>();
+		Long[] industryIds =new Long[]{1l,2l,3l,4l,5l};
+		for (int i = 0; i < industryIds.length; i++) {
+			list.add(setUserInterestIndustry(userId,industryIds[i]));
+		}
+		return list;
+	}
+	/**
 	 * 初始化用户感兴趣的对象.
 	 * @param userId
 	 * @return userInterestIndustry
 	 */
-	public UserInterestIndustry setUserInterestIndustry(Long userId){
+	public UserInterestIndustry setUserInterestIndustry(Long userId,Long industryId){
 		Long ctime=System.currentTimeMillis();
 		UserInterestIndustry userInterestIndustry = new  UserInterestIndustry();
 		userInterestIndustry.setUserId(userId);
-		userInterestIndustry.setFirstIndustryId(1l);
+		userInterestIndustry.setFirstIndustryId(industryId);
 		userInterestIndustry.setCtime(ctime);
 		userInterestIndustry.setUtime(ctime);
 		userInterestIndustry.setIp("119.10.29.28");

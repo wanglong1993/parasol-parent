@@ -19,47 +19,34 @@ public interface UserInterestIndustryService {
 	 * @return Long
 	 * @throws UserLoginRegisterServiceException
 	 */
-	public Long createUserInterestIndustry(UserInterestIndustry userInterestIndustry) throws UserInterestIndustryServiceException; 
+	public List<UserInterestIndustry> createUserInterestIndustryByList(List<UserInterestIndustry> list,Long userId) throws UserInterestIndustryServiceException; 
 	
-	
-	/**
-	 * 修改感兴趣行业
-	 * @param id
-	 * @param firstIndustryId 
-	 * @param ip
-	 * @return boolean
-	 * @throws UserInterestIndustryServiceException
-	 */
-	public boolean updateUserInterestIndustry(Long id,Long firstIndustryId,String ip) throws UserInterestIndustryServiceException;
-	
-	/**
-	 * 根据userId获取id
-	 * @param userId
-	 * @return Long
-	 * @throws UserInterestIndustryServiceException
-	 */
-	public Long getId(Long userId) throws UserInterestIndustryServiceException;
 	
 	/**
 	 * 根据行业id获取userId分页列表
 	 * @param start 
 	 * @param count 
-	 * @param firstInterestId 一级行业
-	 * @param secondInterestId 二级行业
-	 * @param thireInterestId 三级行业
-	 * @param level 其值为1,2,3;分别表示按1,2,3级行业id查 此参数必填
+	 * @param firstInterestId
 	 * @return List
 	 * @throws UserInterestIndustryServiceException
 	 */
-	public List<Long> getUserIdList(int start,int count,Long firstInterestId,Long secondInterestId,Long thireInterestId,int level) throws UserInterestIndustryServiceException;
+	public List<Long> getUserIdListByIndustryId(int start,int count,Long firstInterestId) throws UserInterestIndustryServiceException;
 	
 	/**
-	 * 用户Id是否存在
+	 * 根据用户Id获取感兴趣的id
 	 * @param userId 
+	 * @return list
+	 * @throws UserInterestIndustryServiceException
+	 */
+	public List<Long> getIdList(Long userId) throws UserInterestIndustryServiceException;
+
+	/**
+	 * Id是否存在
+	 * @param id 
 	 * @return boolean
 	 * @throws UserInterestIndustryServiceException
 	 */
-	public boolean userIdExists(Long userId) throws UserInterestIndustryServiceException;
+	public boolean idExists(Long id) throws UserInterestIndustryServiceException;
 	
 	/**
 	 * 根据id列表批量删除用户感兴趣行业
@@ -67,6 +54,6 @@ public interface UserInterestIndustryService {
 	 * @return boolean
 	 * @throws UserInterestIndustryServiceException
 	 */
-	public boolean realDeleteUserInterestIndustryList(List<Serializable> list) throws UserInterestIndustryServiceException;
+	public boolean realDeleteUserInterestIndustryList(List<Long> list) throws UserInterestIndustryServiceException;
 	
 }

@@ -96,7 +96,7 @@ public interface UserLoginRegisterService {
 	 * @return Boolean
 	 * @throws UserLoginRegisterServiceException
 	 */
-	public boolean realDeleteUserLoginRegisterList(List<Serializable> list) throws UserLoginRegisterServiceException;	
+	public boolean realDeleteUserLoginRegisterList(List<Long> list) throws UserLoginRegisterServiceException;	
 	/**
 	 * 根据id假删除登录注册用户
 	 * @param id

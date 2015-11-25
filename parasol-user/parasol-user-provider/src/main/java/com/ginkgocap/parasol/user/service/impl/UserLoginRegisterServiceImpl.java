@@ -36,10 +36,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			// 检查通行证是否为空
 			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) throw new UserLoginRegisterServiceException(error_passport_blank,"Field passport must be a value");
-			//检查通行证是否存在
-			boolean bl = passportIsExist(userLoginRegister.getPassport());
 			//用户已经存在
-			if(bl)throw new UserLoginRegisterServiceException(error_passport_is_exist, "passport already exists");
+			if(passportIsExist(userLoginRegister.getPassport()))throw new UserLoginRegisterServiceException(error_passport_is_exist, "passport already exists");
 			//用户不存在
 			return (Long) saveEntity(userLoginRegister);
 		} catch (BaseServiceException e) {
@@ -186,7 +184,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	}
 
 	@Override
-	public boolean realDeleteUserLoginRegisterList(List<Serializable> list)throws UserLoginRegisterServiceException {
+	public boolean realDeleteUserLoginRegisterList(List<Long> list)throws UserLoginRegisterServiceException {
 		try {
 			if(list==null || list.size()==0) return false;
 			return deleteEntityByIds(list);

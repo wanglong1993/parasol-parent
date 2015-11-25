@@ -2,7 +2,6 @@ package com.ginkgocap.parasol.user.test;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -142,7 +141,7 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testRealDeleteUserLoginRegisterList(){
 		try {
-			List<Serializable> list = new ArrayList<Serializable>();
+			List<Long> list = new ArrayList<Long>();
 			list.add(3913007629598721l);
 			list.add(3913016060149761l);
 			boolean  result =userLoginRegisterService.realDeleteUserLoginRegisterList(list);
@@ -170,8 +169,9 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	 */
 	public UserLoginRegister setUserLoginRegister(){
 		try {
+			Long ctime=System.currentTimeMillis();
 			UserLoginRegister userLoginRegister = new UserLoginRegister();
-			userLoginRegister.setPassport("13677687623");
+			userLoginRegister.setPassport("13677687629");
 			byte virtual=1;
 			userLoginRegister.setVirtual(virtual);;
 			String salt=userLoginRegisterService.setSalt();
@@ -180,8 +180,8 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 			userLoginRegister.setPassword(password);
 			userLoginRegister.setSource("app");
 			userLoginRegister.setIp("111.111.11.11");
-			userLoginRegister.setCtime(new Date().getTime());
-			userLoginRegister.setUtime(new Date().getTime());
+			userLoginRegister.setCtime(ctime);
+			userLoginRegister.setUtime(ctime);
 			return userLoginRegister;
 		} catch (Exception e) {
 			e.printStackTrace();
