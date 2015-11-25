@@ -31,7 +31,7 @@ public class UserBasic implements java.io.Serializable {
 	/**
 	 * 性别 男：1，女：2，0：保密.
 	 */
-	private byte sex;
+	private Byte sex;
 	/**
 	 * 省份id.
 	 */
@@ -67,13 +67,9 @@ public class UserBasic implements java.io.Serializable {
 
 	private String description;
 	/**
-	 * 1. gintongweb、2.gintongapp.
-	 */
-	private String regFrom;
-	/**
 	 * 1：正常；0：锁定；-1：注销 ；2： 删除.
 	 */
-	private byte status;
+	private Byte status;
 	/**
 	 * 姓名首字母.
 	 */
@@ -102,7 +98,7 @@ public class UserBasic implements java.io.Serializable {
 	public UserBasic() {
 	}
 
-	public UserBasic(Long userId, String name, byte sex, byte status,
+	public UserBasic(Long userId, String name, Byte sex, Byte status,
 			String nameFirst, String nameIndex, String nameIndexAll,
 			Long ctime, Long utime, String ip) {
 		this.userId = userId;
@@ -117,10 +113,10 @@ public class UserBasic implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	public UserBasic(Long userId, String name, byte sex, Long provinceId,
+	public UserBasic(Long userId, String name, Byte sex, Long provinceId,
 			Long cityId, Long countyId, String companyName,
 			String companyJob, String shortName, String picPath,
-			String description, String regFrom, byte status, String nameFirst,
+			String description,  Byte status, String nameFirst,
 			String nameIndex, String nameIndexAll, Long ctime, Long utime,
 			String ip) {
 		this.userId = userId;
@@ -134,7 +130,6 @@ public class UserBasic implements java.io.Serializable {
 		this.shortName = shortName;
 		this.picPath = picPath;
 		this.description = description;
-		this.regFrom = regFrom;
 		this.status = status;
 		this.nameFirst = nameFirst;
 		this.nameIndex = nameIndex;
@@ -145,8 +140,6 @@ public class UserBasic implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue(generator = "userId")
-	@GenericGenerator(name = "userId", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
 	@Column(name = "user_id")
 	public Long getUserId() {
 		return this.userId;
@@ -166,11 +159,11 @@ public class UserBasic implements java.io.Serializable {
 	}
 
 	@Column(name = "sex", nullable = false)
-	public byte getSex() {
+	public Byte getSex() {
 		return this.sex;
 	}
 
-	public void setSex(byte sex) {
+	public void setSex(Byte sex) {
 		this.sex = sex;
 	}
 
@@ -254,21 +247,12 @@ public class UserBasic implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@Column(name = "regFrom", length = 20)
-	public String getRegFrom() {
-		return this.regFrom;
-	}
-
-	public void setRegFrom(String regFrom) {
-		this.regFrom = regFrom;
-	}
-
 	@Column(name = "status", nullable = false)
-	public byte getStatus() {
+	public Byte getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(byte status) {
+	public void setStatus(Byte status) {
 		this.status = status;
 	}
 

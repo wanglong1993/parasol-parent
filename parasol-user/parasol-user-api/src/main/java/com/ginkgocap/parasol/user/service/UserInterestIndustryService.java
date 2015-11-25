@@ -14,8 +14,9 @@ public interface UserInterestIndustryService {
 
 	/**
 	 * 添加感兴趣行业
-	 * @param userInterestIndustry 
-	 * @return Long
+	 * @param list 
+	 * @param userId
+	 * @return List
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public List<UserInterestIndustry> createUserInterestIndustryByList(List<UserInterestIndustry> list,Long userId) throws UserInterestIndustryServiceException; 

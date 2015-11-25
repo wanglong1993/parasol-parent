@@ -171,8 +171,8 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 		try {
 			Long ctime=System.currentTimeMillis();
 			UserLoginRegister userLoginRegister = new UserLoginRegister();
-			userLoginRegister.setPassport("13677687629");
-			byte virtual=1;
+			userLoginRegister.setPassport("13677687625");
+			byte virtual=0;
 			userLoginRegister.setVirtual(virtual);;
 			String salt=userLoginRegisterService.setSalt();
 			String password=userLoginRegisterService.setSha256Hash(salt, "123456");

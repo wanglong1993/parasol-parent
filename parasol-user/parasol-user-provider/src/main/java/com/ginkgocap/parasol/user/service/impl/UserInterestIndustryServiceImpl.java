@@ -24,7 +24,6 @@ public class UserInterestIndustryServiceImpl extends BaseService<UserInterestInd
 	/**
 	 * 检查数据
 	 * @param list
-	 * @param type
 	 * @return
 	 * @throws UserInterestIndustryServiceException
 	 */
@@ -70,11 +69,6 @@ public class UserInterestIndustryServiceImpl extends BaseService<UserInterestInd
 		try {
 			if((userId==null || userId<=0l)) return ListUtils.EMPTY_LIST;
 			return getIds(USER_INTEREST_INDUSTRY_LIST_USERID,userId);
-//			List<Serializable> ids = new ArrayList<Serializable>();
-//			for(Long id:getIds(USER_INTEREST_INDUSTRY_LIST_USERID,userId)){
-//				ids.add(id);
-//			}
-//			return ids;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
