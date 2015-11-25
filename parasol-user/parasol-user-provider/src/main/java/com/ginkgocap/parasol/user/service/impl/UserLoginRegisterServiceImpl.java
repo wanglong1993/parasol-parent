@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.user.service.impl;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -20,11 +19,15 @@ import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
 	private static int error_passport_blank = 1000;
 	private static int error_passport_is_exist=1001;
+	private static int error_usertype_is_error=1002;
+	private static int error_source_is_error=1003;
+	private static int error_ip_is_error=1004;
+	private static int error_salt_is_error=1005;
+	private static int error_password_is_error=1006;
 	private static SecureRandomNumberGenerator ecureRandomNumberGenerator;
 	
 	//dao const
 	private static final String USER_LOGIN_REGISTER_MAP_PASSPORT = "UserLoginRegister_Map_Passport"; 
-	private static final String USER_LOGIN_REGISTER_List_ID = "UserLoginRegister_List_Id"; 
 	private static Logger logger = Logger.getLogger(UserLoginRegisterServiceImpl.class);
 	
 	private static synchronized SecureRandomNumberGenerator getSecureRandomNumberGeneratorInstance(){
@@ -34,10 +37,15 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 
 	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException {
 		try {
-			// 检查通行证是否为空
 			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) throw new UserLoginRegisterServiceException(error_passport_blank,"Field passport must be a value");
-			//用户已经存在
 			if(passportIsExist(userLoginRegister.getPassport()))throw new UserLoginRegisterServiceException(error_passport_is_exist, "passport already exists");
+			if(userLoginRegister.getVirtual()!=0)throw new UserLoginRegisterServiceException(error_usertype_is_error, "virtual must be 0");
+			if(StringUtils.isBlank(userLoginRegister.getSource()))throw new UserLoginRegisterServiceException(error_source_is_error, "source is null or empty");
+			if(StringUtils.isBlank(userLoginRegister.getIp()))throw new UserLoginRegisterServiceException(error_ip_is_error, "ip is null or empty");
+			if(StringUtils.isBlank(userLoginRegister.getSalt()))throw new UserLoginRegisterServiceException(error_salt_is_error, "salt is null or empty");
+			if(StringUtils.isBlank(userLoginRegister.getPassword()))throw new UserLoginRegisterServiceException(error_password_is_error, "password is null or empty");
+			if(userLoginRegister.getCtime()==null || userLoginRegister.getCtime()<=0l) userLoginRegister.setCtime(System.currentTimeMillis());
+			if(userLoginRegister.getUtime()==null || userLoginRegister.getUtime()<=0l) userLoginRegister.setUtime(System.currentTimeMillis());
 			//用户不存在
 			return (Long) saveEntity(userLoginRegister);
 		} catch (BaseServiceException e) {

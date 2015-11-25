@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.user.test;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +37,6 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 		try {
 			Long id=userLoginRegisterService.getId("13677687623");
 			List<UserInterestIndustry> list =setUserInterestIndustryList(id);
-//			List<Serializable> ids =userInterestIndustryService.createUserInterestIndustryByList(list,id);
-//			for (Serializable id1 : ids) {
-//				UserInterestIndustry entity=(UserInterestIndustry)id1;
-//				Assert.assertTrue(entity!=null && entity.getId()>0l);
-//			}
 			List<UserInterestIndustry> ids =userInterestIndustryService.createUserInterestIndustryByList(list,id);
 			for (UserInterestIndustry id1 : ids) {
 			Assert.assertTrue(id1!=null && id1.getId()>0l);

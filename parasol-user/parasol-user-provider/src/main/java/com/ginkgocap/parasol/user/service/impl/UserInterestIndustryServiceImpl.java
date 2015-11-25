@@ -1,7 +1,5 @@
 package com.ginkgocap.parasol.user.service.impl;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.ListUtils;

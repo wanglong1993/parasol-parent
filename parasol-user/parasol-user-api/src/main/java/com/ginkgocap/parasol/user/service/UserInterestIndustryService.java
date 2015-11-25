@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.user.service;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.ginkgocap.parasol.user.exception.UserInterestIndustryServiceException;

@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.user.test;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,14 +55,15 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	/**
 	 * 根据passport获取用户登录注册信息
 	 * 根据id获取用户登录注册信息
+	 * 用户登录
 	 */
 	@org.junit.Test
 	public void testGetUserLoginRegister(){
 		try {
 			UserLoginRegister userLoginRegister = userLoginRegisterService.getUserLoginRegister("13677687623");
-			UserLoginRegister userLoginRegister2 = userLoginRegisterService.getUserLoginRegister(3912310074900481l);
-			Assert.assertTrue(userLoginRegister!=null);
-			Assert.assertTrue(userLoginRegister2!=null);
+			if(userLoginRegister.getPassword().equals(userLoginRegisterService.setSha256Hash(userLoginRegister.getSalt(), "123456"))){
+				Assert.assertTrue(true);
+			}else Assert.assertTrue(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
