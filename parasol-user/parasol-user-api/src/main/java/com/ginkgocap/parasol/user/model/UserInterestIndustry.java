@@ -1,15 +1,12 @@
 package com.ginkgocap.parasol.user.model;
 
 
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -27,31 +24,23 @@ public class UserInterestIndustry implements java.io.Serializable {
 	/**
 	 * 主键.
 	 */
-	private long id;
+	private Long id;
 	/**
 	 * 个人用户id和组织用户id.
 	 */
-	private long userId;
+	private Long userId;
 	/**
 	 * 一级行业ID.
 	 */
 	private Long firstIndustryId;
 	/**
-	 * 二级行业ID.
-	 */
-	private Long secondIndustryId;
-	/**
-	 * 三级行业ID.
-	 */
-	private Long thirdIndustryId;
-	/**
 	 * 创建时间.
 	 */
-	private Date ctime;
+	private Long ctime;
 	/**
 	 * 修改时间.
 	 */
-	private Date utime;
+	private Long utime;
 	/**
 	 * 用户IP.
 	 */
@@ -60,7 +49,7 @@ public class UserInterestIndustry implements java.io.Serializable {
 	public UserInterestIndustry() {
 	}
 
-	public UserInterestIndustry(long id, long userId, Date ctime, Date utime,
+	public UserInterestIndustry(Long id, Long userId, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
 		this.userId = userId;
@@ -69,14 +58,12 @@ public class UserInterestIndustry implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	public UserInterestIndustry(long id, long userId, Long firstIndustryId,
-			Long secondIndustryId, Long thirdIndustryId, Date ctime,
-			Date utime, String ip) {
+	public UserInterestIndustry(Long id, Long userId, Long firstIndustryId,
+			Long ctime,
+			Long utime, String ip) {
 		this.id = id;
 		this.userId = userId;
 		this.firstIndustryId = firstIndustryId;
-		this.secondIndustryId = secondIndustryId;
-		this.thirdIndustryId = thirdIndustryId;
 		this.ctime = ctime;
 		this.utime = utime;
 		this.ip = ip;
@@ -86,20 +73,20 @@ public class UserInterestIndustry implements java.io.Serializable {
 	@GeneratedValue(generator = "id")
 	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
 	@Column(name = "id")
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "user_id", nullable = false)
-	public long getUserId() {
+	public Long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -112,41 +99,21 @@ public class UserInterestIndustry implements java.io.Serializable {
 		this.firstIndustryId = firstIndustryId;
 	}
 
-	@Column(name = "second_industry_id")
-	public Long getSecondIndustryId() {
-		return this.secondIndustryId;
-	}
-
-	public void setSecondIndustryId(Long secondIndustryId) {
-		this.secondIndustryId = secondIndustryId;
-	}
-
-	@Column(name = "third_industry_id")
-	public Long getThirdIndustryId() {
-		return this.thirdIndustryId;
-	}
-
-	public void setThirdIndustryId(Long thirdIndustryId) {
-		this.thirdIndustryId = thirdIndustryId;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "ctime", nullable = false, length = 19)
-	public Date getCtime() {
+	public Long getCtime() {
 		return this.ctime;
 	}
 
-	public void setCtime(Date ctime) {
+	public void setCtime(Long ctime) {
 		this.ctime = ctime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "utime", nullable = false, length = 19)
-	public Date getUtime() {
+	public Long getUtime() {
 		return this.utime;
 	}
 
-	public void setUtime(Date utime) {
+	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
 

@@ -1,13 +1,9 @@
 package com.ginkgocap.parasol.user.model;
 
-
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * 联系方式
@@ -51,11 +47,11 @@ public class UserContactWay implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime;
+	private Long ctime;
 	/**
 	 * 修改时间.
 	 */
-	private Date utime;
+	private Long utime;
 	/**
 	 * 用户IP.
 	 */
@@ -65,7 +61,7 @@ public class UserContactWay implements java.io.Serializable {
 	}
 
 	public UserContactWay(long userId, String cellphone, byte isVisible,
-			Date ctime, Date utime, String ip) {
+			Long ctime, Long utime, String ip) {
 		this.userId = userId;
 		this.cellphone = cellphone;
 		this.isVisible = isVisible;
@@ -75,8 +71,8 @@ public class UserContactWay implements java.io.Serializable {
 	}
 
 	public UserContactWay(long userId, String cellphone, String email,
-			String weixin, String qq, String weibo, byte isVisible, Date ctime,
-			Date utime, String ip) {
+			String weixin, String qq, String weibo, byte isVisible, Long ctime,
+			Long utime, String ip) {
 		this.userId = userId;
 		this.cellphone = cellphone;
 		this.email = email;
@@ -153,23 +149,23 @@ public class UserContactWay implements java.io.Serializable {
 		this.isVisible = isVisible;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "ctime", nullable = false, length = 19)
-	public Date getCtime() {
+	public Long getCtime() {
 		return this.ctime;
 	}
 
-	public void setCtime(Date ctime) {
+	public void setCtime(Long ctime) {
 		this.ctime = ctime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "utime", nullable = false, length = 19)
-	public Date getUtime() {
+	public Long getUtime() {
 		return this.utime;
 	}
 
-	public void setUtime(Date utime) {
+	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
 

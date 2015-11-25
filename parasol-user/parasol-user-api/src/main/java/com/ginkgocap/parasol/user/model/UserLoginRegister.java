@@ -1,15 +1,12 @@
 package com.ginkgocap.parasol.user.model;
 
 
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -65,11 +62,11 @@ public class UserLoginRegister implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime;
+	private Long ctime;
 	/**
 	 * 修改时间.
 	 */
-	private Date utime;
+	private Long utime;
 	/**
 	 * 用户IP.
 	 */
@@ -79,7 +76,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	}
 
 	public UserLoginRegister(long id, String passport, String password,
-			byte virtual, String salt, String source, Date ctime, Date utime,
+			byte virtual, String salt, String source, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
 		this.passport = passport;
@@ -94,7 +91,7 @@ public class UserLoginRegister implements java.io.Serializable {
 
 	public UserLoginRegister(long id, String passport, String mobile,
 			String email, String userName, String password, byte virtual,
-			String salt, String source, Date ctime, Date utime,
+			String salt, String source, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
 		this.passport = passport;
@@ -194,23 +191,22 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.source = source;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "ctime", nullable = false, length = 19)
-	public Date getCtime() {
+	public Long getCtime() {
 		return this.ctime;
 	}
 
-	public void setCtime(Date ctime) {
+	public void setCtime(Long ctime) {
 		this.ctime = ctime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "utime", nullable = false, length = 19)
-	public Date getUtime() {
+	public Long getUtime() {
 		return this.utime;
 	}
 
-	public void setUtime(Date utime) {
+	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
 

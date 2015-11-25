@@ -1,6 +1,9 @@
 package com.ginkgocap.parasol.user.test;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -9,12 +12,11 @@ import junit.framework.TestResult;
 
 import org.junit.Assert;
 
-import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 
-public class UserLoginRegisterServiceTest  extends TestBase implements Test{
+public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 
 	@Resource
 	private UserInterestIndustryService userInterestIndustryService;
@@ -127,12 +129,28 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test{
 	@org.junit.Test
 	public void testRealDeleteUserLoginRegister(){
 		try {
-			boolean  bl3 =userLoginRegisterService.realDeleteUserLoginRegister(3912310074900481l);
+			boolean  bl3 =userLoginRegisterService.realDeleteUserLoginRegister(3912417600077834l);
 			Assert.assertTrue(bl3);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 *根据id数组批量删除登录注册用户
+	 * 
+	 */
+	@org.junit.Test
+	public void testRealDeleteUserLoginRegisterList(){
+		try {
+			List<Serializable> list = new ArrayList<Serializable>();
+			list.add(3913007629598721l);
+			list.add(3913016060149761l);
+			boolean  result =userLoginRegisterService.realDeleteUserLoginRegisterList(list);
+			Assert.assertTrue(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
 	/**
 	 * 假删除登录注册用户
 	 * 
@@ -153,7 +171,7 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test{
 	public UserLoginRegister setUserLoginRegister(){
 		try {
 			UserLoginRegister userLoginRegister = new UserLoginRegister();
-			userLoginRegister.setPassport("13677687627");
+			userLoginRegister.setPassport("13677687623");
 			byte virtual=1;
 			userLoginRegister.setVirtual(virtual);;
 			String salt=userLoginRegisterService.setSalt();
@@ -162,8 +180,8 @@ public class UserLoginRegisterServiceTest  extends TestBase implements Test{
 			userLoginRegister.setPassword(password);
 			userLoginRegister.setSource("app");
 			userLoginRegister.setIp("111.111.11.11");
-			userLoginRegister.setCtime(new Date());
-			userLoginRegister.setUtime(new Date());
+			userLoginRegister.setCtime(new Date().getTime());
+			userLoginRegister.setUtime(new Date().getTime());
 			return userLoginRegister;
 		} catch (Exception e) {
 			e.printStackTrace();

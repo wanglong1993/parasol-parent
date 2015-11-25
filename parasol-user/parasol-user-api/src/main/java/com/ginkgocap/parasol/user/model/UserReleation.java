@@ -1,13 +1,10 @@
 package com.ginkgocap.parasol.user.model;
 
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * 好友人脉组织客户关系
@@ -47,17 +44,17 @@ public class UserReleation implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime;
+	private Long ctime;
 	/**
 	 * 成为好友时间.
 	 */
-	private Date utime;
+	private Long utime;
 
 	public UserReleation() {
 	}
 
 	public UserReleation(long id, long userId, long friendId, int status,
-			byte releationType, Date ctime, Date utime) {
+			byte releationType, Long ctime, Long utime) {
 		this.id = id;
 		this.userId = userId;
 		this.friendId = friendId;
@@ -68,7 +65,7 @@ public class UserReleation implements java.io.Serializable {
 	}
 
 	public UserReleation(long id, long userId, long friendId, int status,
-			byte releationType, String name, Date ctime, Date utime) {
+			byte releationType, String name, Long ctime, Long utime) {
 		this.id = id;
 		this.userId = userId;
 		this.friendId = friendId;
@@ -134,23 +131,23 @@ public class UserReleation implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "ctime", nullable = false, length = 19)
-	public Date getCtime() {
+	public Long getCtime() {
 		return this.ctime;
 	}
 
-	public void setCtime(Date ctime) {
+	public void setCtime(Long ctime) {
 		this.ctime = ctime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "utime", nullable = false, length = 19)
-	public Date getUtime() {
+	public Long getUtime() {
 		return this.utime;
 	}
 
-	public void setUtime(Date utime) {
+	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
 

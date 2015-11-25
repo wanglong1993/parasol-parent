@@ -1,13 +1,10 @@
 package com.ginkgocap.parasol.user.model;
 
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * 教育经历
@@ -59,11 +56,11 @@ public class UserEducationHistory implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime;
+	private Long ctime;
 	/**
 	 * 修改时间.
 	 */
-	private Date utime;
+	private Long utime;
 	/**
 	 * 用户IP.
 	 */
@@ -73,7 +70,7 @@ public class UserEducationHistory implements java.io.Serializable {
 	}
 
 	public UserEducationHistory(long id, long userId, char degree,
-			String beginTime, String endTime, Date ctime, Date utime,
+			String beginTime, String endTime, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
 		this.userId = userId;
@@ -87,7 +84,7 @@ public class UserEducationHistory implements java.io.Serializable {
 
 	public UserEducationHistory(long id, long userId, String school,
 			String major, char degree, String beginTime, String endTime,
-			String description, Byte isVisible, Date ctime, Date utime,
+			String description, Byte isVisible, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
 		this.userId = userId;
@@ -185,23 +182,23 @@ public class UserEducationHistory implements java.io.Serializable {
 		this.isVisible = isVisible;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "ctime", nullable = false, length = 19)
-	public Date getCtime() {
+	public Long getCtime() {
 		return this.ctime;
 	}
 
-	public void setCtime(Date ctime) {
+	public void setCtime(Long ctime) {
 		this.ctime = ctime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "utime", nullable = false, length = 19)
-	public Date getUtime() {
+	public Long getUtime() {
 		return this.utime;
 	}
 
-	public void setUtime(Date utime) {
+	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
 

@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.user.test;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 	@org.junit.Test
 	public void testCreateUserInterestIndustry(){
 		try {
-			Long id=userLoginRegisterService.getId("13677687626");
+			Long id=userLoginRegisterService.getId("13677687622");
 			Long id2=userInterestIndustryService.createUserInterestIndustry(setUserInterestIndustry(id));
 			Assert.assertTrue(id !=null && id > 0L);
 			Assert.assertTrue(id2 !=null && id2 > 0L);
@@ -49,7 +51,7 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 	@org.junit.Test
 	public void testUpdateUserInterestIndustry(){
 		try {
-			boolean bl=userInterestIndustryService.updateUserInterestIndustry(3912415138021384l, 1l, null, null, "192.168.101.178");
+			boolean bl=userInterestIndustryService.updateUserInterestIndustry(3912415138021384l, 1l, "192.168.101.178");
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -93,11 +95,27 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 		}
 	}
 	/**
+	 * 根据id列表批量删除登录注册用户
+	 */
+	@org.junit.Test
+	public void testRealDeleteUserInterestIndustryList(){
+		try {
+			List<Serializable> list = new ArrayList<Serializable>();
+			list.add(3912415834275843l);
+			list.add(3912417767849991l);
+			boolean bl = userInterestIndustryService.realDeleteUserInterestIndustryList(list);
+			Assert.assertTrue(bl);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
+	/**
 	 * 初始化登录注册用户对象
 	 * @return userLoginRegister
 	 */
 	public UserLoginRegister setUserLoginRegister(){
 		try {
+			Long ctime=System.currentTimeMillis();
 			UserLoginRegister userLoginRegister = new UserLoginRegister();
 			userLoginRegister.setPassport("13677687627");
 			byte virtual=1;
@@ -108,8 +126,8 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 			userLoginRegister.setPassword(password);
 			userLoginRegister.setSource("app");
 			userLoginRegister.setIp("111.111.11.11");
-			userLoginRegister.setCtime(new Date());
-			userLoginRegister.setUtime(new Date());
+			userLoginRegister.setCtime(ctime);
+			userLoginRegister.setUtime(ctime);
 			return userLoginRegister;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -122,13 +140,12 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 	 * @return userInterestIndustry
 	 */
 	public UserInterestIndustry setUserInterestIndustry(Long userId){
+		Long ctime=System.currentTimeMillis();
 		UserInterestIndustry userInterestIndustry = new  UserInterestIndustry();
 		userInterestIndustry.setUserId(userId);
 		userInterestIndustry.setFirstIndustryId(1l);
-		userInterestIndustry.setSecondIndustryId(11l);
-		userInterestIndustry.setThirdIndustryId(111l);
-		userInterestIndustry.setCtime(new Date());
-		userInterestIndustry.setUtime(new Date());
+		userInterestIndustry.setCtime(ctime);
+		userInterestIndustry.setUtime(ctime);
 		userInterestIndustry.setIp("119.10.29.28");
 		return userInterestIndustry;
 	}

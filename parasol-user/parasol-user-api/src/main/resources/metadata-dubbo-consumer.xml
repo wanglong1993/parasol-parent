@@ -33,4 +33,5 @@
 	
     <dubbo:reference id="userLoginRegisterService" interface="com.ginkgocap.parasol.user.service.UserLoginRegisterService" version="2.0.0"/>
     <dubbo:reference id="userInterestIndustryService" interface="com.ginkgocap.parasol.user.service.UserInterestIndustryService" version="2.0.0"/>
+    <dubbo:reference id="userBasicService" interface="com.ginkgocap.parasol.user.service.UserBasicService" version="2.0.0"/>
 </beans>

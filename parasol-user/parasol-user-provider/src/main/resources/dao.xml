@@ -19,6 +19,10 @@
           <map name="UserLoginRegister_Map_Passport"
                  sqlitem="select id from tb_user_login_register where passport=? "
                  sqlType="hsql" keyProperty="passport" valueProperty="id"  update="true"/>
+        <!-- 通过id删除列表 --> 
+		  <list name="UserLoginRegister_List_Id"
+                 sqlitem="select id  from tb_user_login_register where passport in(:id)"
+                 sqlType="hsql" keyProperty="list" valueProperty="id"  update="true"/>
                                                
 		</object>
 		
@@ -43,6 +47,13 @@
                  sqlitem="select user_id from tb_user_interest_industry where third_industry_id =? order by utime desc"
                  sqlType="hsql" keyProperty="thirdIndustryId" valueProperty="userId"  update="false"/>   			
 		</object>
+		
+		<object name="com.ginkgocap.parasol.user.model.UserBasic" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>		
 	</route>
 </dal>
 

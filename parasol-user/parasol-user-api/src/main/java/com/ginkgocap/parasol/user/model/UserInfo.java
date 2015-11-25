@@ -1,13 +1,10 @@
 package com.ginkgocap.parasol.user.model;
 
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * 
@@ -28,7 +25,7 @@ public class UserInfo implements java.io.Serializable {
 	/**
 	 * 若为组织则为全称，不可更改；若为个人则为昵称，可修改。.
 	 */
-	private Date birthday;
+	private Long birthday;
 	/**
 	 * 省份id.
 	 */
@@ -48,11 +45,11 @@ public class UserInfo implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime;
+	private Long ctime;
 	/**
 	 * 修改时间.
 	 */
-	private Date utime;
+	private Long utime;
 	/**
 	 * 用户IP.
 	 */
@@ -61,8 +58,8 @@ public class UserInfo implements java.io.Serializable {
 	public UserInfo() {
 	}
 
-	public UserInfo(long userId, Date birthday, int provinceId, int cityId,
-			int countyId, Date ctime, Date utime, String ip) {
+	public UserInfo(long userId, Long birthday, int provinceId, int cityId,
+			int countyId, Long ctime, Long utime, String ip) {
 		this.userId = userId;
 		this.birthday = birthday;
 		this.provinceId = provinceId;
@@ -73,8 +70,8 @@ public class UserInfo implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	public UserInfo(long userId, Date birthday, int provinceId, int cityId,
-			int countyId, Byte isVisible, Date ctime, Date utime,
+	public UserInfo(long userId, Long birthday, int provinceId, int cityId,
+			int countyId, Byte isVisible, Long ctime, Long utime,
 			String ip) {
 		this.userId = userId;
 		this.birthday = birthday;
@@ -97,13 +94,12 @@ public class UserInfo implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Temporal(TemporalType.DATE)
 	@Column(name = "birthday", nullable = false, length = 10)
-	public Date getBirthday() {
+	public Long getBirthday() {
 		return this.birthday;
 	}
 
-	public void setBirthday(Date birthday) {
+	public void setBirthday(Long birthday) {
 		this.birthday = birthday;
 	}
 
@@ -143,23 +139,23 @@ public class UserInfo implements java.io.Serializable {
 		this.isVisible = isVisible;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "ctime", nullable = false, length = 19)
-	public Date getCtime() {
+	public Long getCtime() {
 		return this.ctime;
 	}
 
-	public void setCtime(Date ctime) {
+	public void setCtime(Long ctime) {
 		this.ctime = ctime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "utime", nullable = false, length = 19)
-	public Date getUtime() {
+	public Long getUtime() {
 		return this.utime;
 	}
 
-	public void setUtime(Date utime) {
+	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
 

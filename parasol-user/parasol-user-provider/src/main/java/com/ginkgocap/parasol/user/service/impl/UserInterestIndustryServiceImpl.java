@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.user.service.impl;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,6 @@ import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
 public class UserInterestIndustryServiceImpl extends BaseService<UserInterestIndustry> implements UserInterestIndustryService {
 	private static int error_userInterestIndustry_null = 1000;	
 	private static int error_userId_null = 1001;	
-	private static int error_userId_already_exists = 1002;
 	private static final String USER_INTEREST_INDUSTRY_MAP_USERID = "UserInterestIndustry_Map_UserId";
 	private static final String UserInterestIndustry_List_Id_FirstIndustryId = "UserInterestIndustry_List_Id_FirstIndustryId";
 	private static final String UserInterestIndustry_List_Id_SecondIndustryId = "UserInterestIndustry_List_Id_SecondIndustryId";
@@ -26,8 +26,6 @@ public class UserInterestIndustryServiceImpl extends BaseService<UserInterestInd
 		try {
 			if(userInterestIndustry==null) throw new UserInterestIndustryServiceException(error_userInterestIndustry_null,"UserInterestIndustry is null");
 			if(userInterestIndustry!=null && userInterestIndustry.getUserId()==0) throw new UserInterestIndustryServiceException(error_userId_null,"userId must be a value");
-			// 检查用户id是否存在
-			if (userIdExists(userInterestIndustry.getUserId())) throw new UserInterestIndustryServiceException(error_userId_already_exists,"userId already exists");
 			return (Long) saveEntity(userInterestIndustry);
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
@@ -37,16 +35,14 @@ public class UserInterestIndustryServiceImpl extends BaseService<UserInterestInd
 		}
 	}
 	@Override
-	public boolean updateUserInterestIndustry(Long id, Long firstIndustryId,Long secondIndustryId, Long thirdIndustryId, String ip)throws UserInterestIndustryServiceException {
+	public boolean updateUserInterestIndustry(Long id, Long firstIndustryId, String ip)throws UserInterestIndustryServiceException {
 		try {
 			if((id==null || id<=0l)) return false;
 			UserInterestIndustry userInterestIndustry=getEntity(id);
 			if(userInterestIndustry!=null){
 				if(firstIndustryId!=null && firstIndustryId > 0l)userInterestIndustry.setFirstIndustryId(firstIndustryId);
-				if(secondIndustryId!=null && secondIndustryId > 0l)userInterestIndustry.setSecondIndustryId(secondIndustryId);
-				if(thirdIndustryId!=null && thirdIndustryId >0l)userInterestIndustry.setThirdIndustryId(thirdIndustryId);
 				userInterestIndustry.setIp(ip);
-				userInterestIndustry.setUtime(new Date());
+				userInterestIndustry.setUtime(new Date().getTime());
 			}
 			return updateEntity(userInterestIndustry);
 		} catch (BaseServiceException e) {
@@ -87,6 +83,18 @@ public class UserInterestIndustryServiceImpl extends BaseService<UserInterestInd
 		try {
 			if((userId==null || userId<=0l)) return false;
 			return (Long)getMapId(USER_INTEREST_INDUSTRY_MAP_USERID,userId)==null?false:true;
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserInterestIndustryServiceException(e);
+		}
+	}
+	@Override
+	public boolean realDeleteUserInterestIndustryList(List<Serializable> list)throws UserInterestIndustryServiceException {
+		try {
+			if(list==null || list.size()==0) return false;
+			return deleteEntityByIds(list);
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

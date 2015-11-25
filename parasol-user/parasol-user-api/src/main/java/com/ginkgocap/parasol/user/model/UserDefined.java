@@ -1,13 +1,8 @@
 package com.ginkgocap.parasol.user.model;
-
-
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * 用户自定义
@@ -43,11 +38,11 @@ public class UserDefined implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime;
+	private Long ctime;
 	/**
 	 * 修改时间.
 	 */
-	private Date utime;
+	private Long utime;
 	/**
 	 * 用户IP.
 	 */
@@ -56,8 +51,8 @@ public class UserDefined implements java.io.Serializable {
 	public UserDefined() {
 	}
 
-	public UserDefined(long id, long userId, char userDefinedValue, Date ctime,
-			Date utime, String ip) {
+	public UserDefined(long id, long userId, char userDefinedValue, Long ctime,
+			Long utime, String ip) {
 		this.id = id;
 		this.userId = userId;
 		this.userDefinedValue = userDefinedValue;
@@ -67,8 +62,8 @@ public class UserDefined implements java.io.Serializable {
 	}
 
 	public UserDefined(long id, long userId, String userDefinedModel,
-			String userDefinedFiled, char userDefinedValue, Date ctime,
-			Date utime, String ip) {
+			String userDefinedFiled, char userDefinedValue, Long ctime,
+			Long utime, String ip) {
 		this.id = id;
 		this.userId = userId;
 		this.userDefinedModel = userDefinedModel;
@@ -125,23 +120,23 @@ public class UserDefined implements java.io.Serializable {
 		this.userDefinedValue = userDefinedValue;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "ctime", nullable = false, length = 19)
-	public Date getCtime() {
+	public Long getCtime() {
 		return this.ctime;
 	}
 
-	public void setCtime(Date ctime) {
+	public void setCtime(Long ctime) {
 		this.ctime = ctime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "utime", nullable = false, length = 19)
-	public Date getUtime() {
+	public Long getUtime() {
 		return this.utime;
 	}
 
-	public void setUtime(Date utime) {
+	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
 

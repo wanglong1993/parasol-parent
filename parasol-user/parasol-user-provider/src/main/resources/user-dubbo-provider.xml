@@ -32,4 +32,6 @@
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
     
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserLoginRegisterService" ref="userLoginRegisterService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserBasicService" ref="userBasicService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserInterestIndustryService" ref="userInterestIndustryService" version="2.0.0"/>
 </beans>

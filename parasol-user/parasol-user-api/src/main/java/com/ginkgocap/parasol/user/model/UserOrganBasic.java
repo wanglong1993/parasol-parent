@@ -1,13 +1,10 @@
 package com.ginkgocap.parasol.user.model;
 
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * 组织用户基本信息
@@ -73,11 +70,11 @@ public class UserOrganBasic implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime;
+	private Long ctime;
 	/**
 	 * 修改时间.
 	 */
-	private Date utime;
+	private Long utime;
 	/**
 	 * 用户IP.
 	 */
@@ -88,7 +85,7 @@ public class UserOrganBasic implements java.io.Serializable {
 
 	public UserOrganBasic(long userId, String name, String picPath, byte status,
 			String regFrom, String shortName, byte auth, String nameFirst,
-			String nameIndex, String nameIndexAll, Date ctime, Date utime,
+			String nameIndex, String nameIndexAll, Long ctime, Long utime,
 			String ip) {
 		this.userId = userId;
 		this.name = name;
@@ -108,7 +105,7 @@ public class UserOrganBasic implements java.io.Serializable {
 	public UserOrganBasic(long userId, String name, String picPath, byte status,
 			String regFrom, String brief, String shortName, String phone,
 			String orgType, byte auth, String nameFirst, String nameIndex,
-			String nameIndexAll, Date ctime, Date utime, String ip) {
+			String nameIndexAll, Long ctime, Long utime, String ip) {
 		this.userId = userId;
 		this.name = name;
 		this.picPath = picPath;
@@ -245,23 +242,23 @@ public class UserOrganBasic implements java.io.Serializable {
 		this.nameIndexAll = nameIndexAll;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "ctime", nullable = false, length = 19)
-	public Date getCtime() {
+	public Long getCtime() {
 		return this.ctime;
 	}
 
-	public void setCtime(Date ctime) {
+	public void setCtime(Long ctime) {
 		this.ctime = ctime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "utime", nullable = false, length = 19)
-	public Date getUtime() {
+	public Long getUtime() {
 		return this.utime;
 	}
 
-	public void setUtime(Date utime) {
+	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
 

@@ -1,13 +1,13 @@
 package com.ginkgocap.parasol.user.model;
 
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 个人用户基本资料
@@ -23,7 +23,7 @@ public class UserBasic implements java.io.Serializable {
 	/**
 	 * 个人用户id.
 	 */
-	private long userId;
+	private Long userId;
 	/**
 	 * 若为组织则为全称，不可更改；若为个人则为昵称，不可修改。.
 	 */
@@ -35,15 +35,19 @@ public class UserBasic implements java.io.Serializable {
 	/**
 	 * 省份id.
 	 */
-	private Integer provinceId;
+	private Long provinceId;
 	/**
 	 * 城市id.
 	 */
-	private Integer cityId;
+	private Long cityId;
 	/**
 	 * 县id.
 	 */
-	private Integer countyId;
+	private Long countyId;
+	/**
+	 * 用户所在行业第三级id
+	 */
+	private Long thirdIndustryId;
 	/**
 	 * 公司.
 	 */
@@ -85,11 +89,11 @@ public class UserBasic implements java.io.Serializable {
 	/**
 	 * 创建时间.
 	 */
-	private Date ctime;
+	private Long ctime;
 	/**
 	 * 修改时间.
 	 */
-	private Date utime;
+	private Long utime;
 	/**
 	 * 用户IP.
 	 */
@@ -98,9 +102,9 @@ public class UserBasic implements java.io.Serializable {
 	public UserBasic() {
 	}
 
-	public UserBasic(long userId, String name, byte sex, byte status,
+	public UserBasic(Long userId, String name, byte sex, byte status,
 			String nameFirst, String nameIndex, String nameIndexAll,
-			Date ctime, Date utime, String ip) {
+			Long ctime, Long utime, String ip) {
 		this.userId = userId;
 		this.name = name;
 		this.sex = sex;
@@ -113,11 +117,11 @@ public class UserBasic implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	public UserBasic(long userId, String name, byte sex, Integer provinceId,
-			Integer cityId, Integer countyId, String companyName,
+	public UserBasic(Long userId, String name, byte sex, Long provinceId,
+			Long cityId, Long countyId, String companyName,
 			String companyJob, String shortName, String picPath,
 			String description, String regFrom, byte status, String nameFirst,
-			String nameIndex, String nameIndexAll, Date ctime, Date utime,
+			String nameIndex, String nameIndexAll, Long ctime, Long utime,
 			String ip) {
 		this.userId = userId;
 		this.name = name;
@@ -141,12 +145,14 @@ public class UserBasic implements java.io.Serializable {
 	}
 
 	@Id
-	@Column(name = "user_id", unique = true, nullable = false)
-	public long getUserId() {
+	@GeneratedValue(generator = "userId")
+	@GenericGenerator(name = "userId", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
+	@Column(name = "user_id")
+	public Long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -169,30 +175,38 @@ public class UserBasic implements java.io.Serializable {
 	}
 
 	@Column(name = "province_id")
-	public Integer getProvinceId() {
+	public Long getProvinceId() {
 		return this.provinceId;
 	}
 
-	public void setProvinceId(Integer provinceId) {
+	public void setProvinceId(Long provinceId) {
 		this.provinceId = provinceId;
 	}
 
 	@Column(name = "city_id")
-	public Integer getCityId() {
+	public Long getCityId() {
 		return this.cityId;
 	}
 
-	public void setCityId(Integer cityId) {
+	public void setCityId(Long cityId) {
 		this.cityId = cityId;
 	}
 
 	@Column(name = "county_id")
-	public Integer getCountyId() {
+	public Long getCountyId() {
 		return this.countyId;
 	}
 
-	public void setCountyId(Integer countyId) {
+	public void setCountyId(Long countyId) {
 		this.countyId = countyId;
+	}
+	@Column(name = "third_industry_id")
+	public Long getThirdIndustryId() {
+		return thirdIndustryId;
+	}
+
+	public void setThirdIndustryId(Long thirdIndustryId) {
+		this.thirdIndustryId = thirdIndustryId;
 	}
 
 	@Column(name = "company_name", length = 50)
@@ -285,23 +299,23 @@ public class UserBasic implements java.io.Serializable {
 		this.nameIndexAll = nameIndexAll;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "ctime", nullable = false, length = 19)
-	public Date getCtime() {
+	public Long getCtime() {
 		return this.ctime;
 	}
 
-	public void setCtime(Date ctime) {
+	public void setCtime(Long ctime) {
 		this.ctime = ctime;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	
 	@Column(name = "utime", nullable = false, length = 19)
-	public Date getUtime() {
+	public Long getUtime() {
 		return this.utime;
 	}
 
-	public void setUtime(Date utime) {
+	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
 

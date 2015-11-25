@@ -1,6 +1,8 @@
 package com.ginkgocap.parasol.user.service.impl;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -18,24 +20,26 @@ import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
 	private static int error_passport_blank = 1000;
 	private static int error_passport_is_exist=1001;
+	private static SecureRandomNumberGenerator ecureRandomNumberGenerator;
 	
 	//dao const
 	private static final String USER_LOGIN_REGISTER_MAP_PASSPORT = "UserLoginRegister_Map_Passport"; 
+	private static final String USER_LOGIN_REGISTER_List_ID = "UserLoginRegister_List_Id"; 
 	private static Logger logger = Logger.getLogger(UserLoginRegisterServiceImpl.class);
+	
+	private static synchronized SecureRandomNumberGenerator getSecureRandomNumberGeneratorInstance(){
+		if (ecureRandomNumberGenerator==null)ecureRandomNumberGenerator=new SecureRandomNumberGenerator();
+			return ecureRandomNumberGenerator;
+		}
 
 	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException {
 		try {
 			// 检查通行证是否为空
-			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) {
-				throw new UserLoginRegisterServiceException(error_passport_blank,"Field passport must be a value");
-			}
+			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) throw new UserLoginRegisterServiceException(error_passport_blank,"Field passport must be a value");
 			//检查通行证是否存在
 			boolean bl = passportIsExist(userLoginRegister.getPassport());
-			
 			//用户已经存在
-			if(bl){
-				throw new UserLoginRegisterServiceException(error_passport_is_exist, "passport already exists");
-			}
+			if(bl)throw new UserLoginRegisterServiceException(error_passport_is_exist, "passport already exists");
 			//用户不存在
 			return (Long) saveEntity(userLoginRegister);
 		} catch (BaseServiceException e) {
@@ -52,10 +56,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			UserLoginRegister userLoginRegister=null;
 			//根据passport查找id
 			Long id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
-			if(id!=null && id>0l){
-			//根据id查找实体	
-			userLoginRegister=getEntity(id);
-			}
+			//根据id查找实体
+			if(id!=null && id>0l)	userLoginRegister=getEntity(id);
 			return userLoginRegister;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
@@ -120,7 +122,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			UserLoginRegister userLoginRegister = getEntity(id);
 			if(userLoginRegister!=null){
 				userLoginRegister.setIp(ip);
-				userLoginRegister.setUtime(new Date());
+				userLoginRegister.setUtime(new Date().getTime());
 				return updateEntity(userLoginRegister);
 			}
 			return false;
@@ -134,14 +136,14 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 
 	@Override
 	public String setSalt() throws UserLoginRegisterServiceException {
-		RandomNumberGenerator saltGenerator = new SecureRandomNumberGenerator();
+		RandomNumberGenerator saltGenerator = UserLoginRegisterServiceImpl.getSecureRandomNumberGeneratorInstance();
 		return saltGenerator.nextBytes().toHex();
 	}
 
 	@Override
 	public String setSha256Hash(String salt,String password)throws UserLoginRegisterServiceException {
 		String newPass=new Sha256Hash(password, salt,5000).toHex();
-		return  newPass;
+		return newPass;
 	}
 
 	@Override
@@ -181,6 +183,24 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			}
 			throw new UserLoginRegisterServiceException(e);
 		}
+	}
+
+	@Override
+	public boolean realDeleteUserLoginRegisterList(List<Serializable> list)throws UserLoginRegisterServiceException {
+		try {
+			if(list==null || list.size()==0) return false;
+			return deleteEntityByIds(list);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
+	}
+
+	@Override
+	public int fakeDeleteUserLoginRegister(List<Long> list)throws UserLoginRegisterServiceException {
+		return 0;
 	}
 
 }
