@@ -108,6 +108,19 @@ public abstract class BaseService<T> {
 		}
 	}
 	
+	protected boolean updateEntitys(List<T> entitys) throws BaseServiceException {
+		try {
+			if (CollectionUtils.isNotEmpty(entitys)) {
+				return dao.batchUpdate(entitys);
+			} else {
+				return false;
+			}
+		} catch (DaoException e) {
+			e.printStackTrace(System.err);
+			throw new BaseServiceException(e);
+		}
+	}
+	
 	protected Boolean deleteEntity(Serializable id) throws BaseServiceException {
 		try {
 			if (id != null) {
@@ -124,7 +137,7 @@ public abstract class BaseService<T> {
 		}
 	}
 	
-	protected boolean deleteEntityByIds(List<Serializable> ids) throws BaseServiceException{
+	protected boolean deleteEntityByIds(List<Long> ids) throws BaseServiceException{
 		try {
 			if(ids != null && ids.size()!=0){
 				return dao.deleteList(getEntityClass(), ids);
