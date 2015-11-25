@@ -95,14 +95,17 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 		}
 	}
 	/**
-	 * 根据id列表批量删除登录注册用户
+	 * 根据id列表批量删除用户感兴趣行业
 	 */
 	@org.junit.Test
 	public void testRealDeleteUserInterestIndustryList(){
 		try {
 			List<Serializable> list = new ArrayList<Serializable>();
-			list.add(3912415834275843l);
-			list.add(3912417767849991l);
+			list.add(3912777630744581l);
+			list.add(3912780604506117l);
+			list.add(3912793120309253l);
+			list.add(3913011702267911l);
+			list.add(3913012595654663l);
 			boolean bl = userInterestIndustryService.realDeleteUserInterestIndustryList(list);
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
