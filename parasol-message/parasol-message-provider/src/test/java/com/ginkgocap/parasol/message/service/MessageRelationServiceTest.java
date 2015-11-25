@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.message.service;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -29,5 +31,24 @@ public class MessageRelationServiceTest extends TestBase{
 	public void TestGetMessageRelationsByUserId() {
 		List<MessageRelation> rels = messageRelationService.getMessageRelationsByUserId(1);
 		System.out.println("rels="+rels.toString());
+	}
+	
+	@Test
+	public void TestCountMessageRelationByUserId() {
+		
+		int count = messageRelationService.countMessageRelationByUserId(1l);
+		System.out.println("count===="+count);
+		int count2 = messageRelationService.countMessageRelationByUserIdAndType(1l,0);
+		System.out.println("count2====="+count2);
+	}
+	
+	@Test
+	public void TestDeleteMessageRelationByIds() {
+		List<Serializable> ids = new ArrayList<Serializable>();
+		ids.add(3913017205194757l);
+		long userId = 1;
+		boolean flag = messageRelationService.delBatchMessageRelation(ids, userId);
+		
+		System.out.println("flag : ===="+flag);
 	}
 }

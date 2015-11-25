@@ -39,6 +39,10 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
 			
+           <list name="MessageRelation_List_Id_ReceiverId"
+                  sqlitem="select id from tb_message_relation where receiverId=? and status=0 order by entityId desc"
+                  sqlType="hsql" keyProperty="receiverId" valueProperty="id"  update="true"/>			
+			
            <list name="MessageRelation_List_Id_ReceiverId_Type"
                   sqlitem="select id from tb_message_relation where receiverId=? and type=? and status=0 order by entityId desc"
                   sqlType="hsql" keyProperty="receiverId,type" valueProperty="id"  update="true"/>

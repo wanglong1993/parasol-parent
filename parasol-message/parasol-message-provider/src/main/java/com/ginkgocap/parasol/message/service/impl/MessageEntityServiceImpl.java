@@ -80,7 +80,7 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 			rel.setIsRead(0);
 			rel.setReceiverId(Long.valueOf(id));
 			rel.setStatus(0);
-			rel.setType(0);
+			rel.setType(Integer.valueOf(type));
 			rel.setDealTime(System.currentTimeMillis());
 			relations.add(rel);
 		}

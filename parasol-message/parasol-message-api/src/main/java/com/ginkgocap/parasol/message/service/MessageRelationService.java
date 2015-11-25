@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.message.service;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.ginkgocap.parasol.message.model.MessageRelation;
@@ -30,10 +31,18 @@ public interface MessageRelationService {
 	
 	/**
 	 * 获取用户未读消息数
-	 * @param userId
-	 * @return
+	 * @param userId 用户id
+	 ** @return 消息总数
 	 */
-	public long countMessageRelationByUserId(long userId);
+	public int countMessageRelationByUserId(long userId);
+	
+	/**
+	 * 获取用户未读消息数
+	 * @param userId
+	 * @param type
+	 * @return 消息总数
+	 */
+	public int countMessageRelationByUserIdAndType(long userId, int type);
 	
 	/**
 	 * 获取用户未读消息列表
@@ -42,8 +51,19 @@ public interface MessageRelationService {
 	 */
 	public List<MessageRelation> getMessageRelationsByUserId(long userId);
 	
-	public int delMessageRelation();
 	
-	public int delBatchMessageRelation();
+	/**
+	 * 删除提醒消息
+	 * @return
+	 */
+	public int delMessageRelation(List<Serializable> entityIds, long userId);
+	
+	/**
+	 * 根据entity id列表批量删除消息关系
+	 * @param entityIds
+	 * @param userId
+	 * @return
+	 */
+	public boolean delBatchMessageRelation(List<Serializable> entityIds, long userId);
 	
 }
