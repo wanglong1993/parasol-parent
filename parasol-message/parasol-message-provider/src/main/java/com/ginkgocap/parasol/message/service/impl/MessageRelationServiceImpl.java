@@ -20,25 +20,26 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 	
 	@Override
 	public MessageRelation insertMessageRelation (MessageRelation relation) {
-		
+		logger.info("进入添加消息提醒：参数relation.entityId", relation.getEntityId());
 		Long rel = null;
 		try {
 			rel = (Long)saveEntity(relation);
 			relation.setId(rel);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+			logger.error("添加消息提醒失败：参数relation.entityId", relation.getEntityId());
 			e.printStackTrace();
 		}
-		
 		return relation;
 	}
 
 	@Override
 	public int insertBatchMessageRelation(List<MessageRelation> relations) {
+		logger.info("进入批量添加消息提醒：参数relations.size:{}", relations.size());	
 		List<Serializable> relationIds = null;
 		try {
 			relationIds = saveEntitys(relations);
 		} catch (BaseServiceException e) {
+			logger.error("批量添加消息提醒失败：参数relations.size:{}", relations.size());
 			e.printStackTrace();
 		}
 		return relationIds==null ? 0 : relationIds.size();
@@ -72,12 +73,12 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 
 	@Override
 	public List<MessageRelation> getMessageRelationsByUserId(long userId) {
-		
+		logger.info("进入获取我的消息列表：参数userId:{}", userId);
 		List<MessageRelation> relations = null;
 		try {
 			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId", 0,20, userId);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+			logger.info("获取我的消息列表失败：参数userId:{}", userId);
 			e.printStackTrace();
 		}
 		return relations;

@@ -29,7 +29,7 @@ public interface MessageEntityService {
 	 * @param entity
 	 * @return
 	 */
-	public int insertMessageEntity(MessageEntity entity);
+	public long insertMessageEntity(MessageEntity entity);
 	
 	/**
 	 * 插入消息实体及消息关系
@@ -58,8 +58,8 @@ public interface MessageEntityService {
 	 * @param entity
 	 * @return
 	 */
-	public int updateMessageEntity(MessageEntity entity);
+	public boolean updateMessageEntity(MessageEntity entity);
 	
-	public int deleteMessageEntity(long entityId);
+	public boolean deleteMessageEntity(long entityId);
 	
 }

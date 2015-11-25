@@ -28,14 +28,16 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
     private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Override
-	public int insertMessageEntity(MessageEntity entity) {
+	public long insertMessageEntity(MessageEntity entity) {
+		logger.info("进入保存消息提醒实体，entity.id：{},entity.content:{}", entity.getCreaterId(), entity.getContent());
+		long id = 0;
 		try {
-			saveEntity(entity);
+			id = (Long)saveEntity(entity);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+			logger.error("保存消息提醒实体失败，entity.id：{},entity.content:{}", entity.getCreaterId(), entity.getContent());
 			e.printStackTrace();
 		}
-		return 0;
+		return id;
 	}
 
 
@@ -134,11 +136,12 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 	
 	@Override
 	public List<MessageEntity> getMessagesByIds(List<Long> ids) {
+		logger.info("进入根据id列表获取消息提醒实体方法，ids：{}", ids);
 		List<MessageEntity> entities = null;
 		try {
 			entities = getEntityByIds(ids);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+			logger.error("根据id列表获取消息提醒实体失败，ids：{}", ids);
 			e.printStackTrace();
 		}
 			
@@ -147,28 +150,40 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 	
 	@Override
 	public MessageEntity getMessageEntityById(long id) {
+		logger.info("进入根据id获取消息提醒实体方法，id：{}", id);
 		try {
 			return getEntity(id);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+			logger.error("根据id获取消息提醒实体失败，id：{}", id);
 			e.printStackTrace();
 		}
 		return null;
 	}	
 	
 	@Override
-	public int updateMessageEntity(MessageEntity entity) {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean updateMessageEntity(MessageEntity entity) {
+		logger.info("进入更新消息实体，entityId：{}", entity.getId());
+		boolean flag = false;
+		try {
+			flag = updateEntity(entity);
+		} catch (BaseServiceException e) {
+			logger.error("更新消息实体失败，entityId：{}", entity.getId());
+			e.printStackTrace();
+		}
+		return flag;
 	}
 
 	@Override
-	public int deleteMessageEntity(long entityId) {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean deleteMessageEntity(long entityId) {
+		logger.info("进入通过id，删除消息：参数entityId：{}", entityId);
+		boolean flag = false;
+		try {
+			flag = deleteEntity(entityId);
+		} catch (BaseServiceException e) {
+			logger.error("通过id，删除消息失败：参数entityId：{}", entityId);
+			e.printStackTrace();
+		}
+		return flag;
 	}
-
-
-
 
 }
