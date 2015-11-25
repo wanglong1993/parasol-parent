@@ -124,7 +124,7 @@ public abstract class BaseService<T> {
 		}
 	}
 	
-	protected boolean deleteEntityByIds(List<Serializable> ids) throws BaseServiceException{
+	protected boolean deleteEntityByIds(List<Long> ids) throws BaseServiceException{
 		try {
 			if(ids != null && ids.size()!=0){
 				return dao.deleteList(getEntityClass(), ids);
