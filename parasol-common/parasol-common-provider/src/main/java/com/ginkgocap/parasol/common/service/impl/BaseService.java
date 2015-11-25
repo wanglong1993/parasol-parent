@@ -95,7 +95,7 @@ public abstract class BaseService<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<Serializable> saveEntitys(List<T> entitys) throws BaseServiceException {
+	protected List<T> saveEntitys(List<T> entitys) throws BaseServiceException {
 		try {
 			if (CollectionUtils.isNotEmpty(entitys)) {
 				return dao.batchSave(entitys);
