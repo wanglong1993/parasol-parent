@@ -78,9 +78,6 @@ public abstract class BaseService<T> {
 		}
 	}
 	
-	
-	
-
 	protected Serializable saveEntity(T entity) throws BaseServiceException {
 		try {
 			if (entity != null) {
@@ -110,6 +107,7 @@ public abstract class BaseService<T> {
 			throw new BaseServiceException(e);
 		}
 	}
+	
 	protected Boolean deleteEntity(Serializable id) throws BaseServiceException {
 		try {
 			if (id != null) {
@@ -125,7 +123,8 @@ public abstract class BaseService<T> {
 			throw new BaseServiceException(e);
 		}
 	}
-	public boolean deleteEntityByIds(List<Serializable> ids) throws BaseServiceException{
+	
+	protected boolean deleteEntityByIds(List<Serializable> ids) throws BaseServiceException{
 		try {
 			if(ids != null && ids.size()!=0){
 				return dao.deleteList(getEntityClass(), ids);
@@ -156,6 +155,7 @@ public abstract class BaseService<T> {
 			throw new BaseServiceException(e);
 		}
 	}
+	
 	protected Boolean updateEntity(Serializable entity) throws BaseServiceException {
 		try {
 			if (entity != null) {
