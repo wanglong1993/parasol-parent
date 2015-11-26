@@ -1,0 +1,40 @@
+CREATE DATABASE IF NOT EXISTS `parasol_message`  DEFAULT CHARACTER SET utf8 ;
+
+USE `parasol_message`;
+
+drop table if exists tb_message_entity;
+
+/*==============================================================*/
+/* Table: tb_message_entity                                     */
+/*==============================================================*/
+create table tb_message_entity 
+(
+   id                   bigint(20)                     not null,
+   type                 tinyint                        null,
+   createrId            bigint(20)                     null,
+   content              varchar(255)                   null,
+   sourceId             bigint(20)                     null,
+   sourceType           tinyint                        null,
+   sourceTitle          varchar(255)                   null,
+   appid                varchar(50)                    null,
+   PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
+drop table if exists tb_message_relation;
+
+/*==============================================================*/
+/* Table: MessageRelation                                       */
+/*==============================================================*/
+create table tb_message_relation 
+(
+   id                   bigint(20)                     not null,
+   entityId             bigint(20)                     null,
+   receiverId           bigint(20)                     null,
+   status               tinyint                        null,
+   isRead               tinyint                        null,
+   dealTime             bigint(20)                     null,
+   type                 tinyint                        null,
+   PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
