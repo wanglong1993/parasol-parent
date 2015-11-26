@@ -110,6 +110,29 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public int fakeDeleteUserLoginRegister(List<Long> list) throws UserLoginRegisterServiceException;
+	/**
+	 * 绑定手机号
+	 * @param  mobile
+	 * @param  id
+	 * @return Boolean
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Boolean setMobile(String mobile,Long id) throws UserLoginRegisterServiceException;
+	/**
+	 * 绑定邮箱
+	 * @param  email
+	 * @param  id
+	 * @return Boolean
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Boolean setEmail(String email,Long id) throws UserLoginRegisterServiceException;
+	/**
+	 * 发送验证码
+	 * @param  mobile
+	 * @return Boolean
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public String sendIdentifyingCode(String mobile)throws UserLoginRegisterServiceException;
 	
 
 	

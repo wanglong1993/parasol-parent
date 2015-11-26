@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import junit.framework.Test;
 import junit.framework.TestResult;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
@@ -151,14 +152,14 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 		}
 	}	
 	/**
-	 * 假删除登录注册用户
+	 * 发送手机验证码
 	 * 
 	 */
 	@org.junit.Test
-	public void testFakeDeleteUserLoginRegister(){
+	public void testSendIdentifyingCode(){
 		try {
-			boolean  bl4 =userLoginRegisterService.fakeDeleteUserLoginRegister(3912310074900481l);
-			Assert.assertTrue(bl4);
+			String  identifyingCode =userLoginRegisterService.sendIdentifyingCode("13716683972");
+			Assert.assertTrue(StringUtils.isEmpty(identifyingCode));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
