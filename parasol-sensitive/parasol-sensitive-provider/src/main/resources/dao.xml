@@ -10,19 +10,19 @@
 	</default>
 	<route>
 		<!-- 在一个侦听器中实现before after -->
-		<object name="com.ginkgocap.parasol.message.model.MessageEntity" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="pid">
+		<object name="com.ginkgocap.parasol.sensitive.model.SensitiveWord" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="pid">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
            
            <!-- 通过名字找Code --> 
-
+           <!--  
            <list name="MessageEntity_List_Id_ReceiverId"
                   sqlitem="select entityId from tb_message_relation where receiverId=? and status=0 order by entityId desc"
                   sqlType="hsql" keyProperty="id" valueProperty="id"  update="true"/>
                   
-           <!--         
+       
            <list name="Code_List_Id_Pid"
                   sqlitem="select id from tb_code where pid=? order by orderNo"
                   sqlType="hsql" keyProperty="pid" valueProperty="id"  update="true"/>
@@ -33,30 +33,6 @@
             -->
 		</object>
 		
-		<object name="com.ginkgocap.parasol.message.model.MessageRelation" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="parentId">
-			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
-				<pattern value="[02468]$" group="g2" />
-				<pattern value="[13579]$" group="g3" />
-			</dbStrategy>
-			
-           <list name="MessageRelation_List_Id_ReceiverId"
-                  sqlitem="select id from tb_message_relation where receiverId=? and status=0 order by entityId desc"
-                  sqlType="hsql" keyProperty="receiverId" valueProperty="id"  update="true"/>			
-			
-           <list name="MessageRelation_List_Id_ReceiverId_Type"
-                  sqlitem="select id from tb_message_relation where receiverId=? and type=? and status=0 order by entityId desc"
-                  sqlType="hsql" keyProperty="receiverId,type" valueProperty="id"  update="true"/>
-           <!-- 
-           <list name="CodeRegion_List_Id_ParentId_Type"
-                  sqlitem="select id from tb_code_region where parentId=? and type=? order by orders"
-                  sqlType="hsql" keyProperty="parentId,type" valueProperty="id"  update="true"/>
-                  
-           <list name="CodeRegion_List_Id_TbId"
-                  sqlitem="select id from tb_code_region where tbId=?"
-                  sqlType="hsql" keyProperty="tbId" valueProperty="id"  update="true"/>
-           
-           -->
-		</object>
 	</route>
 </dal>
 
