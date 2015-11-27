@@ -37,9 +37,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private static SecureRandomNumberGenerator ecureRandomNumberGenerator;
 	private static Random random;
 	private static StringBuffer sfb;
-	@Autowired
+//	@Autowired
 	private ShortMessageService shortMessageService;
-	@Autowired
+//	@Autowired
 	private Cache cache;
 	
 	

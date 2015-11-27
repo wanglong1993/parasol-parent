@@ -20,23 +20,23 @@ public class UserReleation implements java.io.Serializable {
 	/**
 	 * 主键.
 	 */
-	private long id;
+	private Long id;
 	/**
 	 * 用户ID.
 	 */
-	private long userId;
+	private Long userId;
 	/**
 	 * 组织/用户/客户/人脉ID.
 	 */
-	private long friendId;
+	private Long friendId;
 	/**
 	 * 状态 0:待审核 1:同意.
 	 */
-	private int status;
+	private Byte status;
 	/**
 	 * 1.个人好友，组织好友，2收藏的人脉，3，保存的人脉，4，好友转人脉，5，自己创建的人脉，5，保存的客户，6，收藏的客户，7，组织转客户，8，自己创建的客户.
 	 */
-	private byte releationType;
+	private Byte releationType;
 	/**
 	 * 好友备注名.
 	 */
@@ -53,8 +53,8 @@ public class UserReleation implements java.io.Serializable {
 	public UserReleation() {
 	}
 
-	public UserReleation(long id, long userId, long friendId, int status,
-			byte releationType, Long ctime, Long utime) {
+	public UserReleation(Long id, Long userId, Long friendId, Byte status,
+			Byte releationType, Long ctime, Long utime) {
 		this.id = id;
 		this.userId = userId;
 		this.friendId = friendId;
@@ -64,8 +64,8 @@ public class UserReleation implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	public UserReleation(long id, long userId, long friendId, int status,
-			byte releationType, String name, Long ctime, Long utime) {
+	public UserReleation(Long id, Long userId, Long friendId, Byte status,
+			Byte releationType, String name, Long ctime, Long utime) {
 		this.id = id;
 		this.userId = userId;
 		this.friendId = friendId;
@@ -78,47 +78,47 @@ public class UserReleation implements java.io.Serializable {
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "user_id", nullable = false)
-	public long getUserId() {
+	public Long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
 	@Column(name = "friend_id", nullable = false)
-	public long getFriendId() {
+	public Long getFriendId() {
 		return this.friendId;
 	}
 
-	public void setFriendId(long friendId) {
+	public void setFriendId(Long friendId) {
 		this.friendId = friendId;
 	}
 
 	@Column(name = "status", nullable = false)
-	public int getStatus() {
+	public Byte getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(Byte status) {
 		this.status = status;
 	}
 
 	@Column(name = "releation_type", nullable = false)
-	public byte getReleationType() {
+	public Byte getReleationType() {
 		return this.releationType;
 	}
 
-	public void setReleationType(byte releationType) {
+	public void setReleationType(Byte releationType) {
 		this.releationType = releationType;
 	}
 

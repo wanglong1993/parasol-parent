@@ -170,6 +170,10 @@
 				<memcached.list_1.port>11211</memcached.list_1.port>
 				<memcached.object_1.ip>192.168.101.22</memcached.object_1.ip>
 				<memcached.object_1.port>11211</memcached.object_1.port>
+				<!-- redis -->
+				<user.cache.expiredTime>1800</user.cache.expiredTime>
+				<redis.host>192.168.101.131</redis.host>
+				<redis.port>6379</redis.port>
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
@@ -177,5 +181,17 @@
 				<dubbo.protocol.port>20884</dubbo.protocol.port>
 			</properties>
 		</profile>
+		<profile>
+			<id>delivery</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<filters>
+					<filter>${sa.config.file}</filter>
+				</filters>
+			</build>
+		</profile>
+		
 	</profiles>
 </project>
