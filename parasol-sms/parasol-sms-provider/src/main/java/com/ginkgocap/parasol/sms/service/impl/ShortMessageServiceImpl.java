@@ -41,10 +41,6 @@ public class ShortMessageServiceImpl implements ShortMessageService {
     
     private Logger logger = LoggerFactory.getLogger(getClass());
     
-    private final static String SEND_MESSAGE_APIKEY = "abded701459c50a016766b4a9e823a39";
-    private final static String SEND_MESSAGE_USERNAME = "gintong";
-    private final static String SEND_MESSAGE_PASSWORD = "ml150414";
-    
     @Resource
     private MongoTemplate mongoTemplate;
     
@@ -71,29 +67,12 @@ public class ShortMessageServiceImpl implements ShortMessageService {
 			try {
 				CacheFactory rc = RemoteCacheFactoryImpl.getInstance();
 				flag = rc.getCache("sms-queue").save("shortMessage"+type, sm) ? 1:0;
+				
 			} catch (CacheException e) {
 				logger.error("send sms result:{}",flag);
 			}
         }
-        logger.debug("send sms result:{}",flag);
         logger.info("send sms result:{}",flag);
-        return flag;
-    }
-
-    @Override
-    public int sendMiniMessage(String mobile, String msg) {
-        logger.debug("send a mini sms to {}:{}",mobile,msg);
-        //调用校验手机号和短信内容
-        int flag = validateMobileAndMsg(mobile, msg);
-        if(flag == 1){//校验通过
-            try {
-				flag = sendMsg(mobile, msg);
-			} catch (IOException e) {
-				flag = -1;
-			}
-        }
-        logger.debug("send mini sms result:{}",flag);
-        logger.info("send mini sms result:{}",flag);
         return flag;
     }
 
@@ -114,92 +93,6 @@ public class ShortMessageServiceImpl implements ShortMessageService {
             flag = -2;
         }
         return flag;
-    }
-    
-    /**
-     * 美联软通国际 签订日期2015-04-15 仅支持国内版
-     * 平台地址：http://m.5c.com.cn        国内
-	 * 帐号：gintong
-	 * 密码：ml150414  
-	 * @author zhangzhen
-     * @throws IOException 
-     * 注意: 内容中必须带 "验证码" 三个字，发送会更快
-     * */
-    private int sendMsg(String mobile, String msg) throws IOException {
-		
-    	int result = 1;
-    	
-		// 创建StringBuffer对象用来操作字符串
-		StringBuffer sb = new StringBuffer("http://m.5c.com.cn/api/send/?");
-		
-		// APIKEY
-		sb.append("apikey="+SEND_MESSAGE_APIKEY);
-		
-		//用户名
-		sb.append("&username="+SEND_MESSAGE_USERNAME);
-
-		// 向StringBuffer追加密码
-		sb.append("&password="+SEND_MESSAGE_PASSWORD);
-
-		// 向StringBuffer追加手机号码
-		sb.append("&mobile="+mobile);
-
-		// 向StringBuffer追加消息内容转URL标准码
-		sb.append("&content="+URLEncoder.encode(msg,"GBK"));
-
-		// 创建url对象
-		URL url = new URL(sb.toString());
-
-		// 打开url连接
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-		// 设置url请求方式 ‘get’ 或者 ‘post’
-		connection.setRequestMethod("POST");
-
-		// 发送
-		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-
-		// 返回发送结果
-		String inputline = in.readLine();
-
-		// 输出结果
-		logger.debug("mobile send sms result:{}",inputline);
-		logger.info("mobile send sms result:{}",inputline);
-		
-		//反馈判断
-		if(!inputline.contains("success")) {
-			
-			result = 0;
-		
-		}
-		
-		return result;
-    }
-    
-    public static void main(String[] args) throws CacheException {
-    	try {
-    		System.out.print("aaaa");
-//			MemcachedClient mm = new MemcachedClient(new InetSocketAddress("192.168.130.21", 22201));
-//			ShortMessageService sms = new ShortMessageServiceImpl();
-//			int flag = sms.sendMessage("15011307812","123456",1347l, 1);
-//			System.out.println("flag="+flag);
-			
-			CacheFactory rc = RemoteCacheFactoryImpl.getInstance();
-			ShortMessage o1 = (ShortMessage)rc.getCache("sms-queue").get("shortMessage1");
-//			Object o2 = rc.getCache("q4").get("q8");
-			System.out.println("ddd="+o1.toString());
-//			System.out.println("eee="+o2.toString());
-//			mm.set("q4", 0, "hello world");
-//			mm.set("q5", 0, "what a fucking day!");
-//			System.out.println("bbb");
-//			Object o = mm.get("q4");
-//			System.out.println("ccc="+o.toString());
-//			mm.shutdown();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-		} 
     }
     
 }

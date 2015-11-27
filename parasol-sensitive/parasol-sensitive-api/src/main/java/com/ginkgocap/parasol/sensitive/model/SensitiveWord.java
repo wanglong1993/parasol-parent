@@ -37,13 +37,11 @@ public class SensitiveWord implements Serializable {
 	private int level;
 	// 类别 0 一般 、1时政 、2涉黄
 	private int type; 
-	// 创建人
-	private String creater;
 	// 创建人姓名
 	private long createrId;
- 	// 创建时间
-	private long ctime;
-	
+	// 应用id
+	private String appid;
+
 	@Id
 	@GeneratedValue(generator = "id")
 	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator", parameters = { @Parameter(name = "sequence", value = "tb_sensitive_word") })
@@ -79,14 +77,6 @@ public class SensitiveWord implements Serializable {
 		this.type = type;
 	}
 	
-	@Column(name = "creater")
-	public String getCreater() {
-		return creater;
-	}
-	public void setCreater(String creater) {
-		this.creater = creater;
-	}
-	
 	@Column(name="createrId")
 	public long getCreaterId() {
 		return createrId;
@@ -95,12 +85,12 @@ public class SensitiveWord implements Serializable {
 		this.createrId = createrId;
 	}
 	
-	@Column(name="ctime")
-	public long getCtime() {
-		return ctime;
+	@Column(name="appid")
+	public String getAppid() {
+		return appid;
 	}
-	public void setCtime(long ctime) {
-		this.ctime = ctime;
+	public void setAppid(String appid) {
+		this.appid = appid;
 	}
 	
 }

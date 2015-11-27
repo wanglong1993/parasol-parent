@@ -88,10 +88,6 @@ public class InitDealShortMessageMQ {
     	}
     }
     
-    public void dealMessageTest() {
-    	System.out.println("what a fucking day!!");
-    }
-    
     /**
      * 美联软通国际 签订日期2015-04-15 仅支持国内版
      * 平台地址：http://m.5c.com.cn        国内
