@@ -3,15 +3,18 @@ package com.ginkgocap.parasol.user.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 好友人脉组织客户关系
  */
 @Entity
-@Table(name = "tb_r_user", catalog = "parasol_user")
-public class UserReleation implements java.io.Serializable {
+@Table(name = "tb_user_org_per_cus_rel", catalog = "parasol_user")
+public class UserOrgPerCusRel implements java.io.Serializable {
 
 	/**
 	 * 
@@ -30,11 +33,7 @@ public class UserReleation implements java.io.Serializable {
 	 */
 	private Long friendId;
 	/**
-	 * 状态 0:待审核 1:同意.
-	 */
-	private Byte status;
-	/**
-	 * 1.个人好友，组织好友，2收藏的人脉，3，保存的人脉，4，好友转人脉，5，自己创建的人脉，5，保存的客户，6，收藏的客户，7，组织转客户，8，自己创建的客户.
+	 * 1.个人好友，2.组织好友，3.收藏的人脉，4.保存的人脉，5.好友转人脉，6.自己创建的人脉，7.保存的客户，8.收藏的客户，9.组织转客户，10.自己创建的客户
 	 */
 	private Byte releationType;
 	/**
@@ -50,26 +49,24 @@ public class UserReleation implements java.io.Serializable {
 	 */
 	private Long utime;
 
-	public UserReleation() {
+	public UserOrgPerCusRel() {
 	}
 
-	public UserReleation(Long id, Long userId, Long friendId, Byte status,
+	public UserOrgPerCusRel(Long id, Long userId, Long friendId, 
 			Byte releationType, Long ctime, Long utime) {
 		this.id = id;
 		this.userId = userId;
 		this.friendId = friendId;
-		this.status = status;
 		this.releationType = releationType;
 		this.ctime = ctime;
 		this.utime = utime;
 	}
 
-	public UserReleation(Long id, Long userId, Long friendId, Byte status,
+	public UserOrgPerCusRel(Long id, Long userId, Long friendId, 
 			Byte releationType, String name, Long ctime, Long utime) {
 		this.id = id;
 		this.userId = userId;
 		this.friendId = friendId;
-		this.status = status;
 		this.releationType = releationType;
 		this.name = name;
 		this.ctime = ctime;
@@ -77,7 +74,9 @@ public class UserReleation implements java.io.Serializable {
 	}
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
+	@Column(name = "id")
 	public Long getId() {
 		return this.id;
 	}
@@ -102,15 +101,6 @@ public class UserReleation implements java.io.Serializable {
 
 	public void setFriendId(Long friendId) {
 		this.friendId = friendId;
-	}
-
-	@Column(name = "status", nullable = false)
-	public Byte getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(Byte status) {
-		this.status = status;
 	}
 
 	@Column(name = "releation_type", nullable = false)

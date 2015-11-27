@@ -1,7 +1,7 @@
 package com.ginkgocap.parasol.user.exception;
 
 public class UserInterestIndustryServiceException extends Exception {
-	private int errorCode = -1; 
+	private int errorCode = -1;
 	public UserInterestIndustryServiceException(Throwable cause) {
 		super(cause);
 	}
@@ -23,6 +23,10 @@ public class UserInterestIndustryServiceException extends Exception {
 	public UserInterestIndustryServiceException(int errorCode, String message) {
 		super(message);
 		this.errorCode = errorCode;
+	}
+
+	public int getErrorCode() {
+		return errorCode;
 	}
 
 }

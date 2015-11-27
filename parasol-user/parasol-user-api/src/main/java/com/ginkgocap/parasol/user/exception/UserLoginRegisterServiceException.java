@@ -1,7 +1,8 @@
 package com.ginkgocap.parasol.user.exception;
 
+
 public class UserLoginRegisterServiceException extends Exception {
-	private int errorCode = -1; 
+	private int errorCode = -1;
 	public UserLoginRegisterServiceException(Throwable cause) {
 		super(cause);
 	}
@@ -25,4 +26,7 @@ public class UserLoginRegisterServiceException extends Exception {
 		this.errorCode = errorCode;
 	}
 
+	public int getErrorCode() {
+		return errorCode;
+	}
 }

@@ -41,7 +41,29 @@
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
-		</object>		
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserOrgPerCusRel" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+        <!-- 通过用户id查找用户个人和组织好友列表 --> 
+		  <list name="UserOrgPerCusRel_UserAndOrg_Friendly_UserId"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=1 or releation_type=2 order by utime desc"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true" />
+        <!-- 通过用户id查找用户个人好友列表 --> 
+		  <list name="UserOrgPerCusRel_User_Friendly_UserId"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=1 order by utime desc"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+        <!-- 通过用户id查找用户组织好友列表 --> 
+		  <list name="UserOrgPerCusRel_Org_Friendly_UserId"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=2 order by utime desc"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+ 		<!-- 通过好友friendId查找id --> 
+          <map name="UserOrgPerCusRel_Map_FriendId"
+                 sqlitem="select id from tb_user_org_per_cus_rel where friend_id=? "
+                 sqlType="hsql" keyProperty="friendId" valueProperty="id"  update="true"/>                                  	                 			
+		</object>				
 	</route>
 </dal>
 
