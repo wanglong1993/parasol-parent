@@ -70,7 +70,7 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 	@Override
 	public List<UserOrgPerCusRel> getUserAndOrgFriendlyList(int start,int count,Long userId)throws UserOrgPerCusRelServiceException {
 		try {
-			if(start <=0)throw new UserOrgPerCusRelServiceException(error_start,"start must be greater than zero.");
+			if(start <0)throw new UserOrgPerCusRelServiceException(error_start,"start must be greater than zero.");
 			if(count <=0)throw new UserOrgPerCusRelServiceException(error_count,"count must be greater than zero.");
 			return getEntityByIds(getIds(UserOrgPerCusRel_UserAndOrg_Friendly_UserId, start, count, new Object[]{userId}));
 		} catch (BaseServiceException e) {

@@ -84,12 +84,14 @@ public class UserOrgPerCusRelServiceTest  extends TestBase  implements Test{
 	 */
 	@org.junit.Test
 	public void testGetUserAndOrgFriendlyList(){
+		List<UserOrgPerCusRel> list =null;
 		try {
 			Long userId= userLoginRegisterService.getId("13677687623");
-			List<UserOrgPerCusRel> list =userOrgPerCusRelService.getUserAndOrgFriendlyList(-1,2,userId);
+			list =userOrgPerCusRelService.getUserAndOrgFriendlyList(0,2,userId);
 			Assert.assertTrue(list.size()>0);
 		} catch (Exception e) {
 			e.printStackTrace();
+			Assert.assertTrue(list!=null && list.size()>0);
 //			e.getMessage();
 //			e.getErrorCode();
 		}
