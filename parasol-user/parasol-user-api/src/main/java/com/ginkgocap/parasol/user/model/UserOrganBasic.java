@@ -32,7 +32,7 @@ public class UserOrganBasic implements java.io.Serializable {
 	/**
 	 * 1：正常；0：锁定；-1：注销 ；2： 删除.
 	 */
-	private byte status;
+	private Byte status;
 	/**
 	 * 1. gintongweb、2.gintongapp.
 	 */
@@ -54,7 +54,7 @@ public class UserOrganBasic implements java.io.Serializable {
 	/**
 	 * 审核是否通过: 认证状态-1 未进行认证 0认证进行中 1认证失败 2认证成功.
 	 */
-	private byte auth;
+	private Byte auth;
 	/**
 	 * 组织首字母.
 	 */
@@ -83,8 +83,8 @@ public class UserOrganBasic implements java.io.Serializable {
 	public UserOrganBasic() {
 	}
 
-	public UserOrganBasic(long userId, String name, String picPath, byte status,
-			String regFrom, String shortName, byte auth, String nameFirst,
+	public UserOrganBasic(long userId, String name, String picPath, Byte status,
+			String regFrom, String shortName, Byte auth, String nameFirst,
 			String nameIndex, String nameIndexAll, Long ctime, Long utime,
 			String ip) {
 		this.userId = userId;
@@ -102,9 +102,9 @@ public class UserOrganBasic implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	public UserOrganBasic(long userId, String name, String picPath, byte status,
+	public UserOrganBasic(long userId, String name, String picPath, Byte status,
 			String regFrom, String brief, String shortName, String phone,
-			String orgType, byte auth, String nameFirst, String nameIndex,
+			String orgType, Byte auth, String nameFirst, String nameIndex,
 			String nameIndexAll, Long ctime, Long utime, String ip) {
 		this.userId = userId;
 		this.name = name;
@@ -153,11 +153,11 @@ public class UserOrganBasic implements java.io.Serializable {
 	}
 
 	@Column(name = "status", nullable = false)
-	public byte getStatus() {
+	public Byte getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(byte status) {
+	public void setStatus(Byte status) {
 		this.status = status;
 	}
 
@@ -207,11 +207,11 @@ public class UserOrganBasic implements java.io.Serializable {
 	}
 
 	@Column(name = "auth", nullable = false)
-	public byte getAuth() {
+	public Byte getAuth() {
 		return this.auth;
 	}
 
-	public void setAuth(byte auth) {
+	public void setAuth(Byte auth) {
 		this.auth = auth;
 	}
 

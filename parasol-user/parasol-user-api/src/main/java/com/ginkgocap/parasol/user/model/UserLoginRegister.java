@@ -50,7 +50,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	/**
 	 * 1 组织用户，0.个人用户.
 	 */
-	private byte virtual;
+	private Byte virtual;
 	/**
 	 * 密码加密码.
 	 */
@@ -76,7 +76,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	}
 
 	public UserLoginRegister(long id, String passport, String password,
-			byte virtual, String salt, String source, Long ctime, Long utime,
+			Byte virtual, String salt, String source, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
 		this.passport = passport;
@@ -90,7 +90,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	}
 
 	public UserLoginRegister(long id, String passport, String mobile,
-			String email, String userName, String password, byte virtual,
+			String email, String userName, String password, Byte virtual,
 			String salt, String source, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
@@ -165,11 +165,11 @@ public class UserLoginRegister implements java.io.Serializable {
 	}
 
 	@Column(name = "virtual", nullable = false)
-	public byte getVirtual() {
+	public Byte getVirtual() {
 		return this.virtual;
 	}
 
-	public void setVirtual(byte virtual) {
+	public void setVirtual(Byte virtual) {
 		this.virtual = virtual;
 	}
 

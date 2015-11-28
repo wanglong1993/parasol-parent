@@ -35,7 +35,7 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testCreateUserLoginRegister(){
 		try {
-			Long id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister());
+			Long id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister("51022036@qq.com",new Byte("1")));
 			Assert.assertTrue(id !=null && id > 0L);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -168,12 +168,11 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	 * 初始化登录注册用户对象
 	 * @return userLoginRegister
 	 */
-	public UserLoginRegister setUserLoginRegister(){
+	public UserLoginRegister setUserLoginRegister(String passport,Byte virtual){
 		try {
 			Long ctime=System.currentTimeMillis();
 			UserLoginRegister userLoginRegister = new UserLoginRegister();
-			userLoginRegister.setPassport("13677687625");
-			byte virtual=0;
+			userLoginRegister.setPassport(passport);
 			userLoginRegister.setVirtual(virtual);;
 			String salt=userLoginRegisterService.setSalt();
 			String password=userLoginRegisterService.setSha256Hash(salt, "123456");

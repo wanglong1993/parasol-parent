@@ -65,7 +65,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) throw new UserLoginRegisterServiceException(error_passport_blank,"Field passport must be a value");
 			if(passportIsExist(userLoginRegister.getPassport()))throw new UserLoginRegisterServiceException(error_passport_is_exist, "passport already exists");
-			if(userLoginRegister.getVirtual()!=0)throw new UserLoginRegisterServiceException(error_usertype_is_null, "virtual must be 0");
+			if(userLoginRegister.getVirtual().intValue()!=0 && userLoginRegister.getVirtual().intValue()!=1)throw new UserLoginRegisterServiceException(error_usertype_is_null, "virtual must be 0");
 			if(StringUtils.isBlank(userLoginRegister.getSource()))throw new UserLoginRegisterServiceException(error_source_is_null, "source is null or empty");
 			if(StringUtils.isBlank(userLoginRegister.getIp()))throw new UserLoginRegisterServiceException(error_ip_is_null, "ip is null or empty");
 			if(StringUtils.isBlank(userLoginRegister.getSalt()))throw new UserLoginRegisterServiceException(error_salt_is_null, "salt is null or empty");

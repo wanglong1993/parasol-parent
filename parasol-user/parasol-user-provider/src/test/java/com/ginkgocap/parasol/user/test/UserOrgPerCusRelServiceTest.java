@@ -9,7 +9,6 @@ import junit.framework.TestResult;
 
 import org.junit.Assert;
 
-import com.ginkgocap.parasol.user.exception.UserOrgPerCusRelServiceException;
 import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
@@ -46,8 +45,9 @@ public class UserOrgPerCusRelServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testUpdateName(){
 		try {
-			Long friendId=userLoginRegisterService.getId("13677687625");
-			boolean bl =userOrgPerCusRelService.updateName(friendId, "张三锋");
+			Long userId=userLoginRegisterService.getId("13677687623");
+			Long friendId=userLoginRegisterService.getId("13677687629");
+			boolean bl =userOrgPerCusRelService.updateName(userId,friendId, "张三锋");
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
 			e.printStackTrace();

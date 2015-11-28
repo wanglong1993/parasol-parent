@@ -3,14 +3,17 @@ package com.ginkgocap.parasol.user.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 用户好友关系
  */
 @Entity
-@Table(name = "tb_user_friendlhy", catalog = "parasol_user")
+@Table(name = "tb_user_friendly", catalog = "parasol_user")
 public class UserFriendly implements java.io.Serializable {
 
 	/**
@@ -56,7 +59,9 @@ public class UserFriendly implements java.io.Serializable {
 	}
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
+	@Column(name = "id")
 	public Long getId() {
 		return this.id;
 	}
