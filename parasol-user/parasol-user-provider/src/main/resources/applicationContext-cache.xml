@@ -47,9 +47,6 @@
 			</list>
 		</constructor-arg>
 	</bean>
-	<bean id="jedisCacheClient" class="com.ginkgocap.ywxt.utils.JedisCacheClient">
-		<property name="jedisPool" ref="jedisPool"></property>
-	</bean>
 	<!-- 不分片的redis客户端，管理使用 -->
 	<bean id="singleClient" class="redis.clients.jedis.Client">
 		<constructor-arg index="0" value="${redis.host}" />
@@ -57,12 +54,7 @@
 	</bean>
 	<bean id="cache" class="com.ginkgocap.ywxt.cache.Cache">
 		<property name="jedisPool" ref="jedisPool"></property>
-		<!-- <property name="memcachedClient" ref="memcachedClient"></property> -->
         <property name="local" value="true"></property>
         <property name="localTTL" value="${user.cache.expiredTime}"></property>
 	</bean>
-	<!-- <bean id="sessionManager" class="com.ginkgocap.ywxt.util.sso.session.SessionManager">
-	
-	</bean> -->
-	
 </beans>

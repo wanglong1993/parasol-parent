@@ -6,6 +6,8 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
@@ -37,9 +39,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private static SecureRandomNumberGenerator ecureRandomNumberGenerator;
 	private static Random random;
 	private static StringBuffer sfb;
-//	@Autowired
+//	@Resource
 	private ShortMessageService shortMessageService;
-//	@Autowired
+	@Resource
 	private Cache cache;
 	
 	
@@ -293,9 +295,11 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private  boolean setCache(String mobile,String identifyingCode){
 		boolean bl =false;
 		String key=cache.getCacheHelper().buildKey(CacheModule.REGISTER, mobile);
-		String value =cache.get(key).toString();
+		Object object =cache.get(key);
+		String value=null;
+		if(object!=null)value=object.toString();
 		if(StringUtils.isEmpty(value))
-		bl = cache.set(key, 1 * 60 * 30, identifyingCode);
+		bl = cache.set(key, 1 * 60 * 1, identifyingCode);
 		return bl;
 	}	
 	/**
@@ -315,14 +319,17 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	@Override
 	public String sendIdentifyingCode(String mobile)throws UserLoginRegisterServiceException {
 		try {
-			if(isMobileNo(mobile)){
-				String identifyingCode=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mobile)).toString();
+			if(isMobileNo(mobile)){ 
+				Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mobile));
+				String identifyingCode=null;
+				if(value!=null)identifyingCode=value.toString();
 				if(StringUtils.isEmpty(identifyingCode)){
 					identifyingCode=generationIdentifyingCode();
-					setCache(mobile,identifyingCode);
-					if(shortMessageService.sendMessage(mobile, geStringBuffer().append("您的短信验证码为").append("，有效期30分钟，请及时验证").toString(), getId(mobile), 1)==1)
-					return identifyingCode;
-					else return "";
+					if(setCache(mobile,identifyingCode)){
+						if(shortMessageService.sendMessage(mobile, geStringBuffer().append("您的短信验证码为").append("，有效期30分钟，请及时验证").toString(), getId(mobile), 1)==1)
+							return identifyingCode;
+						else return "";
+					}
 				}else{
 					return identifyingCode;
 				}
@@ -333,5 +340,6 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			}
 			throw new UserLoginRegisterServiceException(e);
 		}
+		return mobile;
 	}
 }
