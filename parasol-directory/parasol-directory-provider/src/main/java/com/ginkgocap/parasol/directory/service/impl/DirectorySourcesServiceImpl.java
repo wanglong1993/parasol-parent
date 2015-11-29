@@ -1,9 +1,7 @@
 package com.ginkgocap.parasol.directory.service.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +27,8 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 
 	private static Logger logger = Logger.getLogger(DirectorySourcesServiceImpl.class);
 	private static String LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID = "List_DirectorySources_Id_userId_appId_sourceType_sourceId";
+	private static String LIST_DIRECTORYSOURCE_ID_DIRECTORYID = "List_DirectorySource_Id_DirectoryId";
+	private static String MAP_DIRECTORYSOURCE_ID_USERID_DIRECTORYID_APPID_SOURCETYPE_SOURICEID = "Map_DirectorySource_Id_UserId_DirectoryId_AppId_SourceType_SouriceId";
 
 	@Autowired
 	private DirectoryService directoryService;
@@ -132,24 +132,50 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	}
 
 	@Override
-	public List<DirectorySource> getDirectorySourcesByDirectoryId(Long appId, Long directoryId) throws DirectorySourceServiceException {
+	public List<DirectorySource> getDirectorySourcesByDirectoryId(Long appId, Long userId, Long directoryId) throws DirectorySourceServiceException {
+		try {
+			Directory directory = directoryService.getDirectory(appId, userId, directoryId);
+			if (directory == null) {
+				StringBuilder builder = new StringBuilder();
+				builder.append("appId=").append(appId);
+				builder.append(" and ").append("userId=").append(userId);
+				builder.append(" and ").append("id=").append(directoryId);
+				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, "don't find directory by : " + builder.toString());
+			}
+			List<DirectorySource> directorySources = this.getEntitys(LIST_DIRECTORYSOURCE_ID_DIRECTORYID, directoryId);
+			return directorySources;
+		} catch (DirectoryServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
 
-		Directory directory = directoryService.getDirectory(appId, userId, id)
-		
-		
-		
-		return null;
 	}
 
 	@Override
-	public int countDirectorySourcesByDirectoryId(Long appId, Long directoryId) throws DirectorySourceServiceException {
-		// TODO Auto-generated method stub
-		return 0;
+	public int countDirectorySourcesByDirectoryId(Long appId, Long userId, Long directoryId) throws DirectorySourceServiceException {
+		try {
+			return this.countEntitys(LIST_DIRECTORYSOURCE_ID_DIRECTORYID, directoryId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
 	}
 
 	@Override
 	public DirectorySource getDirectorySource(Long userId, Long directoryId, Long sourceAppId, Integer sourceType, Long souriceId) throws DirectorySourceServiceException {
-		// TODO Auto-generated method stub
+		try {
+			Long id = (Long) this.getMapId(MAP_DIRECTORYSOURCE_ID_USERID_DIRECTORYID_APPID_SOURCETYPE_SOURICEID, userId, directoryId, sourceAppId, sourceType, souriceId);
+			if (id != null) {
+				return this.getDirectorySourceById(sourceAppId, id);
+			}
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
+
 		return null;
 	}
 
