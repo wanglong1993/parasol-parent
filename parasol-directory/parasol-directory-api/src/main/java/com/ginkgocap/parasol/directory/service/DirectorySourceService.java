@@ -76,7 +76,7 @@ public interface DirectorySourceService {
 	 * @return
 	 * @throws DirectorySourceServiceException
 	 */
-	public List<DirectorySource> getDirectorySourcesByDirectoryId(Long appId, Long directoryId) throws DirectorySourceServiceException;
+	public List<DirectorySource> getDirectorySourcesByDirectoryId(Long appId, Long userId, Long directoryId) throws DirectorySourceServiceException;
 
 	/**
 	 * 统计目录下的资源数量
@@ -85,10 +85,11 @@ public interface DirectorySourceService {
 	 * @return
 	 * @throws DirectorySourceServiceException
 	 */
-	public int countDirectorySourcesByDirectoryId(Long appId, Long directoryId) throws DirectorySourceServiceException;
-	
+	public int countDirectorySourcesByDirectoryId(Long appId, Long userId, Long directoryId) throws DirectorySourceServiceException;
+
 	/**
 	 * 查询某个资源是否在指定的目录下，存在就返回这个DirectorSource，否则, 返回 null
+	 * 
 	 * @param userId
 	 * @param appId
 	 * @param directoryId
@@ -97,7 +98,6 @@ public interface DirectorySourceService {
 	 * @return
 	 * @throws DirectorySourceServiceException
 	 */
-	public DirectorySource getDirectorySource(Long userId, Long directoryId, Long sourceAppId,  Integer sourceType, Long souriceId) throws DirectorySourceServiceException;
-	
+	public DirectorySource getDirectorySource(Long userId, Long directoryId, Long sourceAppId, Integer sourceType, Long souriceId) throws DirectorySourceServiceException;
 
 }
