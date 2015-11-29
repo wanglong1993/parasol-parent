@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="GB2312"?>
+<dal>
+	<default>
+		<dbStrategy name=""
+			clazz="com.lenovo.vctl.dal.dao.route.strategy.DefaultStrategy">
+			<pattern value="[0-9]$" group="g2" />
+		</dbStrategy>
+		<listenerClass className="" />
+		<idCenterDS ds="idCenterDS" />   <!-- 缺省IdCenter使用的数据源配置 -->
+	</default>
+	<route>
+		<!-- 在一个侦听器中实现before after -->
+		<object name="com.ginkgocap.parasol.directory.model.Directory" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="pid">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+			<!-- 	
+			<map name="VctlUser_Map_userId_passport"
+                 sqlitem="select user_id from vctl_user where passport=?"
+                 keyProperty="passport" valueProperty="userId" />
+			 
+			 <list name="User_List_userId_gender"
+                  sqlitem="select user_id from vctl_user where gender =? order by update_at desc"
+                  sqlType="hsql" keyProperty="gender" valueProperty="userId"  update="false"/>
+            -->
+           
+           <!-- 通过父目录ID找字目录 --> 
+           <list name="List_Directory_Id_Pid"
+                  sqlitem="select id from tb_directory where pid=? order by orderNo"
+                  sqlType="hsql" keyProperty="pid" valueProperty="id"/>
+
+           <!-- 查询一个用户应用分类下指定的目录列表 --> 
+           <list name="List_Directory_Id_AppId_UserId_TypeId_Pid"
+                  sqlitem="select id from tb_directory where appId=? and userId=? and typeId=? and pid=? order by orderNo"
+                  sqlType="hsql" keyProperty="appId,userId,typeId,pid" valueProperty="id"/>
+                  
+		</object>
+		
+		<object name="com.ginkgocap.parasol.directory.model.DirectoryType" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+			<!-- 	
+			<map name="VctlUser_Map_userId_passport"
+                 sqlitem="select user_id from vctl_user where passport=?"
+                 keyProperty="passport" valueProperty="userId" />
+            -->
+           
+           <!-- 通过AppId找应用的分类ID（组织，用户、知识等） --> 
+           <list name="List_DirectoryType_Id_AppId"
+                  sqlitem="select id from tb_directory_type where appId=?"
+                  sqlType="hsql" keyProperty="appId" valueProperty="id"  update="true"/>
+
+           <!-- 通过AppId找应用的AppId 和 Name 查询 Id --> 
+		   <map name="Map_DirectoryType_Id_AppId_Name"
+                 sqlitem="select id from tb_directory_type where appId=? and name=?"
+                 keyProperty="appId,name" valueProperty="id" />
+
+                  
+		</object>
+	</route>
+</dal>
+
