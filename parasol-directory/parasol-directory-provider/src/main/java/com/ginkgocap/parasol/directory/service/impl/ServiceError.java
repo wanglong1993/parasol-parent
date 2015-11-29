@@ -134,6 +134,10 @@ public abstract class ServiceError {
 		}
 	}
 
+
+	
+	
+	
 	public static void assertPropertiesHaveValue(DirectorySource directorySource, String[] fileds) throws DirectorySourceServiceException {
 		if (directorySource != null) {
 			Object value;
