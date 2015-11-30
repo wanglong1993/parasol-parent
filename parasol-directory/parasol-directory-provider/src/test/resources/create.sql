@@ -35,7 +35,7 @@ CREATE TABLE `tb_directory_source` (
   `sourceId` bigint(20) NOT NULL COMMENT '资源ID',
   `sourceType` int(20) NOT NULL COMMENT '资源类型 知识、人脉',
   `sourceUrl` varchar(250) DEFAULT NULL COMMENT '自己地址',
-  `sourceTitle` bigint(100) DEFAULT NULL COMMENT '资源标题',
+  `sourceTitle` varchar(100) DEFAULT NULL COMMENT '资源标题',
   `sourceData` varchar(250) DEFAULT NULL COMMENT '资源的关键数据，备用',   
   `invokeMethod` varchar(50) DEFAULT NULL COMMENT '资源可以使用的方法，备用',
   `createAt` bigint(20) DEFAULT '0' COMMENT '更新时间',
