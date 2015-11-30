@@ -44,7 +44,7 @@ public class MessageRelationServiceTest extends TestBase{
 	
 	@Test
 	public void TestDeleteMessageRelationByIds() {
-		List<Serializable> ids = new ArrayList<Serializable>();
+		List<Long> ids = new ArrayList<Long>();
 		ids.add(3913017205194757l);
 		long userId = 1;
 		boolean flag = messageRelationService.delBatchMessageRelation(ids, userId);

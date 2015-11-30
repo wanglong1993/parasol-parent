@@ -35,7 +35,7 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 	@Override
 	public int insertBatchMessageRelation(List<MessageRelation> relations) {
 		logger.info("进入批量添加消息提醒：参数relations.size:{}", relations.size());	
-		List<Serializable> relationIds = null;
+		List<MessageRelation> relationIds = null;
 		try {
 			relationIds = saveEntitys(relations);
 		} catch (BaseServiceException e) {
@@ -91,7 +91,7 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 	}
 
 	@Override
-	public boolean delBatchMessageRelation(List<Serializable> relIds, long userId) {
+	public boolean delBatchMessageRelation(List<Long> relIds, long userId) {
 		logger.info("进入批量删除消息关系列表：参数relIds：{}, userId:{}", relIds,userId);
 		boolean flag = false;
 		// 通过id列表批量删除消息关系

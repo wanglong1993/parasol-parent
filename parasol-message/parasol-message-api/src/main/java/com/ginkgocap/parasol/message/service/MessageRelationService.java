@@ -64,6 +64,6 @@ public interface MessageRelationService {
 	 * @param userId
 	 * @return
 	 */
-	public boolean delBatchMessageRelation(List<Serializable> entityIds, long userId);
+	public boolean delBatchMessageRelation(List<Long> entityIds, long userId);
 	
 }
