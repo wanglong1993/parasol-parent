@@ -13,16 +13,15 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ginkgocap.parasol.cache.Cache;
+import com.ginkgocap.parasol.cache.CacheModule;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.sms.service.ShortMessageService;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
-import com.ginkgocap.ywxt.cache.Cache;
-import com.ginkgocap.ywxt.cache.CacheModule;
 @Service("userLoginRegisterService")
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
 	private static int error_passport_blank = 1000;
@@ -43,7 +42,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private ShortMessageService shortMessageService;
 	@Resource
 	private Cache cache;
-	
+
 	
 	//dao const
 	private static final String USER_LOGIN_REGISTER_MAP_PASSPORT = "UserLoginRegister_Map_Passport"; 
