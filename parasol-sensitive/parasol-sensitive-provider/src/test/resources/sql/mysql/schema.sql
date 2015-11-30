@@ -1,40 +1,21 @@
-CREATE DATABASE IF NOT EXISTS `parasol_message`  DEFAULT CHARACTER SET utf8 ;
+CREATE DATABASE IF NOT EXISTS `parasol_sensitive`  DEFAULT CHARACTER SET utf8 ;
 
-USE `parasol_message`;
+USE `parasol_sensitive`;
 
-drop table if exists tb_message_entity;
+drop table if exists tb_sensitive_word;
 
 /*==============================================================*/
-/* Table: tb_message_entity                                     */
+/* Table: tb_sensitive_word                                     */
 /*==============================================================*/
-create table tb_message_entity 
+create table tb_sensitive_word
 (
-   id                   bigint(20)                     not null,
-   type                 tinyint                        null,
-   createrId            bigint(20)                     null,
-   content              varchar(255)                   null,
-   sourceId             bigint(20)                     null,
-   sourceType           tinyint                        null,
-   sourceTitle          varchar(255)                   null,
-   appid                varchar(50)                    null,
-   PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+   id                   bigint not null,
+   word                 varchar(50),
+   level                int,
+   type                 int,
+   createrId            bigint,
+   appid                varchar(50),
+   primary key (id)
+);  ENGINE=INNODB DEFAULT CHARSET=utf8;
 
-
-drop table if exists tb_message_relation;
-
-/*==============================================================*/
-/* Table: MessageRelation                                       */
-/*==============================================================*/
-create table tb_message_relation 
-(
-   id                   bigint(20)                     not null,
-   entityId             bigint(20)                     null,
-   receiverId           bigint(20)                     null,
-   status               tinyint                        null,
-   isRead               tinyint                        null,
-   dealTime             bigint(20)                     null,
-   type                 tinyint                        null,
-   PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
+alter table tb_sensitive_word comment 'sensitive word database';

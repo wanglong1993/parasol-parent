@@ -1,11 +1,12 @@
 package com.ginkgocap.parasol.sensitive.service.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
@@ -30,13 +31,15 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	
 	SWSeeker sw = new SWSeeker();
 
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	@Override
 	public SensitiveWord findOne(long id) {
+		logger.info("进入通过id获取敏感词，参数id:{}", id);
 		SensitiveWord word = null;
 		try {
 			word = getEntity(Long.valueOf(id));
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+			logger.error("通过id获取敏感词失败，参数id:{}", id);
 			e.printStackTrace();
 		}
 		return word;
@@ -44,36 +47,63 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 
 	@Override
 	public SensitiveWord saveOrUpdate(SensitiveWord sensitiveWord) {
-		if(sensitiveWord!=null ){
-			if(sensitiveWord.getId()>0){
-				try {
-					saveEntity(sensitiveWord);
-				} catch (BaseServiceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return sensitiveWord;
-			}else{
-				try {
-					saveEntity(sensitiveWord);
-				} catch (BaseServiceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return sensitiveWord;
+		
+		logger.info("进入保存或修改敏感词，参数word:{}", sensitiveWord.getWord());
+		if(sensitiveWord.getId()>0){
+			try {
+				updateEntity(sensitiveWord);
+			} catch (BaseServiceException e) {
+				logger.info("修改敏感词失败，参数word:{}", sensitiveWord.getWord());
+				e.printStackTrace();
 			}
+			return sensitiveWord;
 		}else{
-			return null;
+			try {
+				Long id = (Long)saveEntity(sensitiveWord);
+				sensitiveWord.setId(id);
+			} catch (BaseServiceException e) {
+				logger.error("保存敏感词失败，参数word:{}", sensitiveWord.getWord());
+				e.printStackTrace();
+			}
+			return sensitiveWord;
 		}
 	}
 
 	@Override
-	public boolean deleteByIds(List<Serializable> ids) {
+	public boolean checkSensitiveWordExist(String word) {
+		logger.info("进入检查敏感词是否已存在，参数word:{}", word);
+		int count = 0;
+		try {
+			count = countEntitys("SensitiveWord_Id_Name",word);
+		} catch (BaseServiceException e) {
+			logger.info("检查敏感词是否已存在失败，参数word:{}", word);
+			e.printStackTrace();
+		}
+		return count>0? true : false;
+	}	
+
+
+	@Override
+	public boolean deleteById(Long id) {
+		logger.info("进入根据id删除敏感词，参数id:{}", id);
+		boolean flag = false;
+		try {
+			flag = deleteEntity(id);
+		} catch (BaseServiceException e) {
+			logger.error("根据id删除敏感词失败，参数id:{}", id);
+			e.printStackTrace();
+		}
+		return flag;
+	}	
+	
+	@Override
+	public boolean deleteByIds(List<Long> ids) {
+		logger.info("进入根据id列表删除敏感词，参数id:{}", ids);
 		boolean flag = false;
 		try {
 			flag = deleteEntityByIds(ids);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+			logger.error("根据id列表删除敏感词失败，参数id:{}", ids);
 			e.printStackTrace();
 		}
 		return flag;
@@ -172,4 +202,5 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.sensitive.service;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.ginkgocap.parasol.sensitive.model.SensitiveWord;
@@ -28,12 +27,27 @@ public interface SensitiveWordService {
 	 * @return
 	 */
 	public SensitiveWord saveOrUpdate(SensitiveWord sensitiveWord);
+	
+	/**
+	 * 根据id删除敏感词
+	 * @param id
+	 * @return
+	 */
+	public boolean deleteById(Long id);
+	
 	/**
 	 * 批量删除
 	 * @param ids
 	 * @return
 	 */
-	public boolean deleteByIds(List<Serializable> ids);
+	public boolean deleteByIds(List<Long> ids);
+	
+	/**
+	 * 检查敏感词是否存在
+	 * @param word
+	 * @return true:存在，false：不存在
+	 */
+	public boolean checkSensitiveWordExist(String word);
 	
 	/**
 	 * 更新敏感词
