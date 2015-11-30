@@ -23,7 +23,7 @@
                   sqlType="hsql" keyProperty="word" valueProperty="id"  update="true"/>
                   
 			<list name="SensitiveWord_Id_Level"
-                  sqlitem="select id from tb_sensitive_word where level>? desc id"
+                  sqlitem="select id from tb_sensitive_word where level>?"
                   sqlType="hsql" keyProperty="level" valueProperty="id"  update="true"/>  
 			
 			<list name="SensitiveWord_Id_Level_Type"

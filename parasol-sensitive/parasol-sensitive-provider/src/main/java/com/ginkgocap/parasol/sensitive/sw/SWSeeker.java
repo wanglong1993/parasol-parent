@@ -91,9 +91,11 @@ public class SWSeeker {
 	public List<String> sensitiveWord(String text){
 		return new Highlight().processWord(keysMap, text, wordLeastLen);
 	}
+	
 	public String replaceSensitive(String text){
 		return new Highlight().processReplaceWord(keysMap, text, wordLeastLen);
 	}
+	
 	public static void main(String[] args){
 		String[] keyWords = new String[]{"关键字11","关键字1","过滤"};
 		String test = "这是一段测试文本，在这个文本中含有的关键字文本关键字11关键字1没有其他关键字";

@@ -112,9 +112,9 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 		SWSeeker sw2 = new SWSeeker();
 		try {
 			if(!sw2.isReady()){
-				long start=0;
-				long step=100;
-				List<SensitiveWord> list = getEntitys("SensitiveWord_Id_Level", start ,step, -1);
+				int start=0;
+				int step=100;
+				List<SensitiveWord> list = getSubEntitys("SensitiveWord_Id_Level", start ,step, -1);
 				while(list.size()>0){
 					List<String> words = new ArrayList<String>();
 					for(SensitiveWord s:list){
@@ -166,9 +166,9 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 		logger.info("进入初始化敏感词！");
 		if(!sw.isReady()){
 			try {
-				long start=0;
-				long step=100;
-				List<SensitiveWord> list = getEntitys("SensitiveWord_Id_Level", start ,step, -1);
+				int start=0;
+				int step=100;
+				List<SensitiveWord> list = getSubEntitys("SensitiveWord_Id_Level", start ,step, -1);
 				while(list.size()>0){
 					List<String> words = new ArrayList<String>();
 					for(SensitiveWord s:list){
@@ -176,7 +176,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 					}
 					sw.initData(words);
 					start+=100;
-					list = getEntitys("SensitiveWord_Id_Level", start ,step, -1);
+					list = getSubEntitys("SensitiveWord_Id_Level", start ,step, -1);
 				}
 			}catch(Exception e) {
 				logger.error("初始化敏感词失败！错误信息"+e.getMessage());

@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.ginkgocap.parasol.sensitive.model.SensitiveWord;
 import com.ginkgocap.parasol.sensitive.service.SensitiveWordService;
+import com.ginkgocap.parasol.util.sw.format.HTMLFormat;
 
 public class SensitiveWordServiceTest extends TestBase{
 	
@@ -63,5 +64,19 @@ public class SensitiveWordServiceTest extends TestBase{
 		}
 		boolean flag = sensitiveWordService.batchInsertSensitiveWords(sensitiveWords);
 		System.out.println("批量保存敏感词"+flag);
+	}
+	
+	@Test
+	public void TestSensitiveWord() {
+		String text = "线上发布的时候，如果失败，不能在5分钟之内解决。立即选择回滚。发布之前需要执行的一切脚本和Sql都需要由开发工程师在Wiki上存放。运维只需要按操作步骤执行，发布的时候工程师必须在场,打倒李克强";
+		List<String> result = sensitiveWordService.sensitiveWord(text);
+		System.out.println("result===="+result);
+	}
+	
+	@Test
+	public void TestHighlight() {
+		String text = "线上发布的时候，如果失败，不能在5分钟之内解决。立即选择回滚。发布之前需要执行的一切脚本和Sql都需要由开发工程师在Wiki上存放。运维只需要按操作步骤执行，发布的时候工程师必须在场,打倒李克强";
+		String result = sensitiveWordService.highlight(text,1,new HTMLFormat("<font color='red'>", "</font>"));
+		System.out.println("result===="+result);
 	}
 }
