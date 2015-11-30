@@ -16,7 +16,7 @@
     http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
     http://www.springframework.org/schema/mvc
 			   http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
-<!-- SpyMemcached客户端 
+<!-- SpyMemcached
 	<bean id="memcacheClient" class="com.ginkgocap.ywxt.utils.SpyMemcachedClient">
 		<property name="memcachedClient" ref="memcachedClient">
 		</property>
@@ -47,7 +47,6 @@
 			</list>
 		</constructor-arg>
 	</bean>
-	<!-- 不分片的redis客户端，管理使用 -->
 	<bean id="singleClient" class="redis.clients.jedis.Client">
 		<constructor-arg index="0" value="${redis.host}" />
 		<constructor-arg index="1" value="${redis.port}" />
