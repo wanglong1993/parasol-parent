@@ -1,6 +1,4 @@
-﻿package com.ginkgocap.parasol.util;
-
-import org.apache.commons.lang.StringUtils;
+package com.ginkgocap.parasol.util;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -8,15 +6,15 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 将单个字符转换成拼音
+ * @author 
  * 
- * @author clive
- * @param src
- * @return
+ *
  */
 public class PinyinUtils {
-
 	private static String charToPinyin(final char src,
 			final boolean isPolyphone, final String separator) {
 		// 创建汉语拼音处理类
