@@ -35,7 +35,7 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testCreateUserLoginRegister(){
 		try {
-			Long id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister("51022036@qq.com",new Byte("1")));
+			Long id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister("13716683970",new Byte("1")));
 			Assert.assertTrue(id !=null && id > 0L);
 		} catch (Exception e) {
 			e.printStackTrace();

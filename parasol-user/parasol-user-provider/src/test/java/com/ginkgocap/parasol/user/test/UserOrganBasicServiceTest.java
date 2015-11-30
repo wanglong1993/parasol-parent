@@ -113,9 +113,6 @@ public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 			userOrganBasic.setAuth(new Byte("-1"));
 			userOrganBasic.setPicPath("/webserver/data/pic/140/11.jgp");
 			userOrganBasic.setStatus(new Byte("1"));
-			userOrganBasic.setNameFirst("bpkjyxgs");
-			userOrganBasic.setNameIndex("bpkjyxgs");
-			userOrganBasic.setNameIndexAll("bpkjyxgs");
 			userOrganBasic.setCtime(ctime);
 			userOrganBasic.setUtime(ctime);
 			userOrganBasic.setIp("192.168.110.119");

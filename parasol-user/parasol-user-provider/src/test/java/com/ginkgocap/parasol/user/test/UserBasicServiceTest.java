@@ -36,7 +36,7 @@ public class UserBasicServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testCreateUserBasic(){
 		try {
-			Long id=userLoginRegisterService.getId("13677687623");
+			Long id=userLoginRegisterService.getId("13716683970");
 			Long id2 =userBasicService.createUserBasic(setUserBasic(id));
 			Assert.assertTrue(id2!=null && id2>0l);
 		} catch (Exception e) {
@@ -140,7 +140,7 @@ public class UserBasicServiceTest  extends TestBase implements Test  {
 			Long ctime=System.currentTimeMillis();
 			UserBasic userBasic = new UserBasic();
 			userBasic.setUserId(userId);
-			userBasic.setName("张三月");
+			userBasic.setName("张家口");
 			Byte sex=1;
 			userBasic.setSex(sex);
 			userBasic.setProvinceId(null);
@@ -149,14 +149,11 @@ public class UserBasicServiceTest  extends TestBase implements Test  {
 			userBasic.setUtime(ctime);
 			userBasic.setCompanyName("金桐网");
 			userBasic.setCompanyJob("科学家");
-			userBasic.setShortName("张三月");
+			userBasic.setShortName("张家口");
 			userBasic.setPicPath("/webserver/data/pic/140/11.jgp");
 			userBasic.setDescription("");
 			Byte status=1;
 			userBasic.setStatus(status);
-			userBasic.setNameFirst("zsy");
-			userBasic.setNameIndex("zhangshangyue");
-			userBasic.setNameIndexAll("zhangshangyue");
 			userBasic.setCtime(System.currentTimeMillis());
 			userBasic.setUtime(System.currentTimeMillis());
 			userBasic.setIp("192.168.110.119");
