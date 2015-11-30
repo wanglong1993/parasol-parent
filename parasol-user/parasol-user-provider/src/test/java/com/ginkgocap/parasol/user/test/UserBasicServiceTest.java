@@ -108,6 +108,30 @@ public class UserBasicServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
+	 * 根据用户所在县地区id获取用户id列表
+	 */
+	@org.junit.Test
+	public void testGetUserBasecListByCountryId(){
+		try {
+			List<UserBasic> list = userBasicService.getUserBasecListByCountryId(1, 1, 111l);
+			Assert.assertTrue(list.size()>0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
+	/**
+	 * 根据用户所在地区省id获取用户id列表
+	 */
+	@org.junit.Test
+	public void testGetUserBasecListByProvinceId(){
+		try {
+			List<UserBasic> list = userBasicService.getUserBasecListByProvinceId(1, 1, 1l);
+			Assert.assertTrue(list.size()>0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
+	/**
 	 * 初始化用户基本信息对象
 	 * @return userLoginRegister
 	 */

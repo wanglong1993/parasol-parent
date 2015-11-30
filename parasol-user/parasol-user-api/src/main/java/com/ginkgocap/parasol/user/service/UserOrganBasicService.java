@@ -13,7 +13,7 @@ import com.ginkgocap.parasol.user.model.UserOrganBasic;
 public interface UserOrganBasicService {
 
 	/**
-	 * 创建用户基本信息
+	 * 创建组织用户基本信息
 	 * @param userOrganBasic 
 	 * @return Long
 	 * @throws UserOrganBasicServiceException
@@ -22,12 +22,29 @@ public interface UserOrganBasicService {
 	
 
 	/**
-	 * 修改用户基本信息
+	 * 修改组织用户基本信息
 	 * @param userOrganBasic
 	 * @return boolean
 	 * @throws UserOrganBasicServiceException 
 	 */
 	public boolean updateUserOrganBasic(UserOrganBasic userOrganBasic) throws UserOrganBasicServiceException,UserLoginRegisterServiceException; 
+
+	/**
+	 * 审核组织
+	 * @param id
+	 * @param auth
+	 * @return boolean
+	 * @throws UserOrganBasicServiceException 
+	 */
+	public boolean updateAuth(Long userId, Byte auth) throws UserOrganBasicServiceException,UserLoginRegisterServiceException; 
+	/**
+	 * 修改组织状态
+	 * @param id
+	 * @param status
+	 * @return boolean
+	 * @throws UserOrganBasicServiceException 
+	 */
+	public boolean updateStatus(Long userId, Byte status) throws UserOrganBasicServiceException,UserLoginRegisterServiceException; 
 
 	/**
 	 * 根据id获取用户基本信息
@@ -44,6 +61,6 @@ public interface UserOrganBasicService {
 	 * @return List
 	 * @throws UserOrganBasicServiceException
 	 */
-	public List<UserOrganBasic> getUserBasecList(List<Long> userIds) throws UserOrganBasicServiceException;	
+	public List<UserOrganBasic> getUserOrganBasecList(List<Long> userIds) throws UserOrganBasicServiceException;	
 
 }

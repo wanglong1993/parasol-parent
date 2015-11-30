@@ -24,7 +24,6 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	private static int error_name_null = 1004;
 	private static int error_sex_incorrect = 1005;
 	private static int error_provinceId_incorrect = 1005;
-	private static int error_cityId_incorrect = 1006;
 	private static int error_countyId_incorrect = 1007;
 	private static int error_ip_incorrect = 1008;
 	private static int error_status_incorrect = 1009;
@@ -35,7 +34,8 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	private static int error_name_index_all_null = 1014;
 	private static int error_userId_not_exists_in_userBasic = 1015;	
 	private static Logger logger = Logger.getLogger(UserBasicServiceImpl.class);
-	
+	private static String UserBasic_List_Id_ProvinceId="UserBasic_List_Id_ProvinceId";
+	private static String UserBasic_List_Id_CountyId="UserBasic_List_Id_CountyId";
 	/**
 	 * 检查数据
 	 * @param userBasic
@@ -110,6 +110,32 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 		try {
 			if(userIds==null || userIds.size()==0)throw new UserBasicServiceException(error_userIds_null,"userIds is null or empty");
 			return getEntityByIds(userIds);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserBasicServiceException(e);
+		}
+	}
+
+	@Override
+	public List<UserBasic> getUserBasecListByCountryId(int start,int count,Long countyId)throws UserBasicServiceException {
+		try {
+			if(countyId==null || countyId<=0l)throw new UserBasicServiceException(error_countyId_incorrect,"countyId is null or empty");
+			return getEntityByIds(getIds(UserBasic_List_Id_CountyId, start, count, new Object[]{countyId}));
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserBasicServiceException(e);
+		}
+	}
+
+	@Override
+	public List<UserBasic> getUserBasecListByProvinceId(int start,int count,Long provinceId)throws UserBasicServiceException {
+		try {
+			if(provinceId==null || provinceId<=0l)throw new UserBasicServiceException(error_provinceId_incorrect,"provinceId is null or empty");
+			return getEntityByIds(getIds(UserBasic_List_Id_ProvinceId, start, count, new Object[]{provinceId}));
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

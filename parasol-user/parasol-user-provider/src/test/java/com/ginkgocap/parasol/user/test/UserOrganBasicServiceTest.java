@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.user.test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,14 +11,11 @@ import junit.framework.TestResult;
 import org.junit.Assert;
 
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
-import com.ginkgocap.parasol.user.service.UserOrganBasicService;
-import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
+import com.ginkgocap.parasol.user.service.UserOrganBasicService;
 
 public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 
-	@Resource
-	private UserInterestIndustryService userInterestIndustryService;
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
 	@Resource
@@ -31,7 +29,7 @@ public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 		
 	}
 	/**
-	 * 创建用户基本信息
+	 * 创建组织用户基本信息
 	 */
 	@org.junit.Test
 	public void testCreateUserOrganBasic(){
@@ -44,7 +42,7 @@ public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
-	 * 修改用户基本信息
+	 * 修改组织用户基本信息
 	 */
 	@org.junit.Test
 	public void testUpdateUserOrganBasic(){
@@ -57,56 +55,46 @@ public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
-	 * 根据行业id获取userId分页列表
+	 * 根据userId列表获取用户基本信息列表
 	 */
 	@org.junit.Test
-	public void testGetUserIdListByIndustryId(){
+	public void testGetUserBasecList(){
 		try {
-			List<Long> list =userInterestIndustryService.getUserIdListByIndustryId(1, 2, 2l);
+			Long id=userLoginRegisterService.getId("51022036@qq.com");
+			List<Long> userIds=new ArrayList<Long>();
+			userIds.add(id);
+			List<UserOrganBasic> list = userOrganBasicService.getUserOrganBasecList(userIds);
 			Assert.assertTrue(list.size()>0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	/**
-	 * 根据用户Id获取感兴趣的id
+	 * 审核组织
 	 */
 	@org.junit.Test
-	public void testGetIdList(){
+	public void testUpdateAuth(){
 		try {
-			Long id=userLoginRegisterService.getId("13677687623");
-			List<Long> ids = userInterestIndustryService.getIdList(id);
-			Assert.assertTrue(ids!=null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	/**
-	 * 根据id列表批量删除用户感兴趣行业
-	 */
-	@org.junit.Test
-	public void testRealDeleteUserInterestIndustryList(){
-		try {
-			Long id=userLoginRegisterService.getId("13677687623");
-			boolean bl = userInterestIndustryService.realDeleteUserInterestIndustryList(userInterestIndustryService.getIdList(id));
+			Long id=userLoginRegisterService.getId("51022036@qq.com");
+			boolean bl = userOrganBasicService.updateAuth(id, new Byte("1"));
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	/**
-	 * 根据userId列表获取用户基本信息列表
+	 * 修改组织状态
 	 */
 	@org.junit.Test
-	public void testGetUserBasecList(){
+	public void testUpdateStatus(){
 		try {
-			List<Long> userIds=userInterestIndustryService.getUserIdListByIndustryId(0, 1, 3l);
-			List<UserOrganBasic> list = userOrganBasicService.getUserBasecList(userIds);
-			Assert.assertTrue(list.size()>0);
+			Long id=userLoginRegisterService.getId("51022036@qq.com");
+			boolean bl = userOrganBasicService.updateStatus(id, new Byte("2"));
+			Assert.assertTrue(bl);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}	
 	/**
 	 * 初始化用户基本信息对象
 	 * @return userLoginRegister

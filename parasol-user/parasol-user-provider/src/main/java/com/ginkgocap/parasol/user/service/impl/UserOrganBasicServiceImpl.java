@@ -30,6 +30,8 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 	private static int error_name_index_null = 1013;	
 	private static int error_name_index_all_null = 1014;
 	private static int error_userId_not_exists_in_userOrganBasic = 1015;	
+	private static int error_auth_is_error = 1016;	
+	private static int error_status_is_error = 1016;	
 	private static Logger logger = Logger.getLogger(UserOrganBasicServiceImpl.class);
 	
 	/**
@@ -97,11 +99,43 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 	}
 
 	@Override
-	public List<UserOrganBasic> getUserBasecList(List<Long> userIds)throws UserOrganBasicServiceException {
+	public List<UserOrganBasic> getUserOrganBasecList(List<Long> userIds)throws UserOrganBasicServiceException {
 		try {
 			if(userIds==null || userIds.size()==0)throw new UserOrganBasicServiceException(error_userIds_null,"userIds is null or empty");
 			return getEntityByIds(userIds);
 		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserOrganBasicServiceException(e);
+		}
+	}
+
+	@Override
+	public boolean updateAuth(Long userId, Byte auth)throws UserOrganBasicServiceException,UserLoginRegisterServiceException {
+		try {
+			if(auth.intValue()!=-1 && auth.intValue()!=0 && auth.intValue()!=1 && auth.intValue()!=2)throw new UserOrganBasicServiceException(error_auth_is_error,"auth  is error, must be -1 or 0 or 1 or 2.");
+			UserOrganBasic userOrganBasic=getUserOrganBasic(userId);
+			if(userOrganBasic==null)throw new UserOrganBasicServiceException(error_userId_not_exists_in_userOrganBasic,"userId not exists in userOrganBasic");
+			userOrganBasic.setAuth(auth);
+			return updateEntity(userOrganBasic);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserOrganBasicServiceException(e);
+		}
+	}
+
+	@Override
+	public boolean updateStatus(Long userId, Byte status)throws UserOrganBasicServiceException,UserLoginRegisterServiceException {
+		try {
+			if(status.intValue()!=-1 && status.intValue()!=0 && status.intValue()!=1 && status.intValue()!=2)throw new UserOrganBasicServiceException(error_status_is_error,"status is error, must be -1 or 0 or 1 or 2.");
+			UserOrganBasic userOrganBasic=getUserOrganBasic(userId);
+			if(userOrganBasic==null)throw new UserOrganBasicServiceException(error_userId_not_exists_in_userOrganBasic,"userId not exists in userOrganBasic");
+			userOrganBasic.setStatus(status);
+			return updateEntity(userOrganBasic);
+		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}

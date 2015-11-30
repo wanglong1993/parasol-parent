@@ -45,5 +45,23 @@ public interface UserBasicService {
 	 * @throws UserBasicServiceException
 	 */
 	public List<UserBasic> getUserBasecList(List<Long> userIds) throws UserBasicServiceException;	
+	/**
+	 * 根据用户所在县id获取用户id列表
+	 * @param start 
+	 * @param count
+	 * @param countyId  
+	 * @return List
+	 * @throws UserBasicServiceException
+	 */
+	public List<UserBasic> getUserBasecListByCountryId(int start,int count,Long countyId) throws UserBasicServiceException;	
+	/**
+	 * 根据用户所在地区省id获取用户id列表
+	 * @param start 
+	 * @param count 
+	 * @param ProvinceId 
+	 * @return List
+	 * @throws UserBasicServiceException
+	 */
+	public List<UserBasic> getUserBasecListByProvinceId(int start,int count,Long ProvinceId) throws UserBasicServiceException;
 
 }
