@@ -51,13 +51,6 @@ public interface MessageRelationService {
 	 */
 	public List<MessageRelation> getMessageRelationsByUserId(long userId);
 	
-	
-	/**
-	 * 删除提醒消息
-	 * @return
-	 */
-	public int delMessageRelation(List<Serializable> entityIds, long userId);
-	
 	/**
 	 * 根据entity id列表批量删除消息关系
 	 * @param entityIds

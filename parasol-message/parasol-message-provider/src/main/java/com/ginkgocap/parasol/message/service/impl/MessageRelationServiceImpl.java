@@ -83,12 +83,6 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 		}
 		return relations;
 	}
-	
-	@Override
-	public int delMessageRelation(List<Serializable> entityIds, long userId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public boolean delBatchMessageRelation(List<Long> relIds, long userId) {
