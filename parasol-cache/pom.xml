@@ -53,89 +53,50 @@
 		</dependency>		
 	</dependencies>
 
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/assembly</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<filtering>true</filtering>
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<filtering>true</filtering>
+				<directory>src/main/webapp</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</testResource>
+		</testResources>
+	</build>
 	<profiles>
 		<profile>
-			<id>snapshotsjar</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
+			<id>dev</id>
 			<properties>
-				<packtype>jar</packtype>
-				<currentversion>${cache.snapshot}</currentversion>
+				<user.cache.expiredTime>1800</user.cache.expiredTime>
+				<redis.host>192.168.101.131</redis.host>
+				<redis.port>6379</redis.port>
 			</properties>
-			<!-- 打jar包并发布到私服 -->
-			<distributionManagement>
-				<snapshotRepository>
-					<id>Snapshots</id>
-					<url>http://192.168.101.89:8081/nexus/content/repositories/snapshots/</url>
-				</snapshotRepository>
-			</distributionManagement>
-			<build>
-				<plugins>
-					<!-- mvn jar:jar -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jar-plugin</artifactId>
-						<version>2.3.2</version>
-					</plugin>
-					<!-- mvn source:jar -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>2.1.2</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 		<profile>
-			<id>releasesjar</id>
+			<id>delivery</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<properties>
-				<packtype>jar</packtype>
-				<currentversion>${cache.releases}</currentversion>
-			</properties>
-			<!-- 打jar包并发布到私服 -->
-			<distributionManagement>
-				<repository>
-					<id>Releases</id>
-					<url>http://192.168.101.89:8081/nexus/content/repositories/releases/</url>
-				</repository>
-			</distributionManagement>
 			<build>
-				<plugins>
-					<!-- mvn jar:jar -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jar-plugin</artifactId>
-						<version>2.3.2</version>
-					</plugin>
-					<!-- mvn source:jar -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>2.1.2</version>
-						<configuration>
-							<excludeResources>true</excludeResources>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
+				<filters>
+					<filter>${sa.config.file}</filter>
+				</filters>
 			</build>
 		</profile>
-	</profiles>
+	</profiles>	
 </project>
