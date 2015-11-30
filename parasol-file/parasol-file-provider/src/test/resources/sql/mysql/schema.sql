@@ -17,7 +17,7 @@ create table tb_file_index
    status               tinyint,
    creater_id           bigint,
    md5                  varchar(255),
-   tast_id              varchar(255),
+   task_id              varchar(255),
    module_type          tinyint,
    crc32                varchar(24),
    file_type            tinyint,

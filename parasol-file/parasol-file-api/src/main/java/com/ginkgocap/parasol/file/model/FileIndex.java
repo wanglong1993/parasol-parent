@@ -2,7 +2,14 @@ package com.ginkgocap.parasol.file.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Transient;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * 
@@ -13,28 +20,48 @@ import javax.persistence.Transient;
 * @date 2015-11-30 
 * @version 1.0
  */
+@Entity
+@Table(name = "tb_file_index")
 public class FileIndex implements Serializable {
 
 	/**
      * 
      */
 	private static final long serialVersionUID = 6755175107258258053L;
-	private long id;// 主键
-	private String filePath;// 文件存放的物理路径
-	private String fileTitle;// 源文件的名称
-	private long fileSize; // 文件大小
-	private boolean status; //文件状态
-	@Transient
-	private long author; //创建人
-	private String md5; // 加密形式
-	private String taskId; //taskId
-	private String ctime; //创建时间
-	private int moduleType; //类型
-	private int fileType; //类型
-	private String authorName; //创建人姓名
-	private String crc32;      //解压缩
-
 	
+	// 主键
+	private long id;
+	// 文件存放的物理路径
+	private String filePath;
+	// 附件所在服务器地址
+	private String serverHost;
+	// 源文件的名称	
+	private String fileTitle;
+	// 文件大小	
+	private long fileSize;
+	// 文件状态	
+	private int status;
+	// 创建人
+	private long createrId;
+	// 加密形式
+	private String md5;
+	// taskId
+	private String taskId;
+	// 类型
+	private int moduleType;
+	// 类型	
+	private int fileType;
+    // 解压缩
+	private String crc32;
+	// 是否转码
+	private int transcoding;
+	// 缩略图地址
+	private String thumbnailsPath;
+
+	@Id
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator", parameters = { @Parameter(name = "sequence", value = "tb_file_index") })
+	@Column(name = "id")	
 	public long getId() {
 		return id;
 	}
@@ -43,6 +70,7 @@ public class FileIndex implements Serializable {
 		this.id = id;
 	}
 
+	@Column(name = "file_type")
 	public int getFileType() {
         return fileType;
     }
@@ -51,6 +79,7 @@ public class FileIndex implements Serializable {
         this.fileType = fileType;
     }
 
+	@Column(name = "file_path")
 	public String getFilePath() {
 		return filePath;
 	}
@@ -59,6 +88,7 @@ public class FileIndex implements Serializable {
 		this.filePath = filePath;
 	}
 
+	@Column(name = "file_title")
 	public String getFileTitle() {
 		return fileTitle;
 	}
@@ -67,6 +97,7 @@ public class FileIndex implements Serializable {
 		this.fileTitle = fileTitle;
 	}
 
+	@Column(name = "file_size")
 	public long getFileSize() {
 		return fileSize;
 	}
@@ -74,25 +105,17 @@ public class FileIndex implements Serializable {
 	public void setFileSize(long fileSize) {
 		this.fileSize = fileSize;
 	}
-
-	public boolean isStatus() {
+	
+	@Column(name = "status")
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 
-	
-
-	public long getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(long author) {
-		this.author = author;
-	}
-
+	@Column(name = "md5")
 	public String getMd5() {
 		return md5;
 	}
@@ -101,6 +124,7 @@ public class FileIndex implements Serializable {
 		this.md5 = md5;
 	}
 
+	@Column(name = "task_id")
 	public String getTaskId() {
 		return taskId;
 	}
@@ -109,36 +133,58 @@ public class FileIndex implements Serializable {
 		this.taskId = taskId;
 	}
 
-	public String getCtime() {
-		return ctime;
-	}
-
-	public void setCtime(String ctime) {
-		this.ctime = ctime;
-	}
-
+	@Column(name = "module_type")
 	public int getModuleType() {
 		return moduleType;
 	}
-
-	public String getAuthorName() {
-        return authorName;
-    }
-
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
-    }
 
     public void setModuleType(int moduleType) {
 		this.moduleType = moduleType;
 	}
 
+	@Column(name = "crc32")
 	public String getCrc32() {
 		return crc32;
 	}
 
 	public void setCrc32(String crc32) {
 		this.crc32 = crc32;
+	}
+
+	@Column(name = "server_host")
+	public String getServerHost() {
+		return serverHost;
+	}
+
+	public void setServerHost(String serverHost) {
+		this.serverHost = serverHost;
+	}
+
+	@Column(name = "creater_id")
+	public long getCreaterId() {
+		return createrId;
+	}
+
+	public void setCreaterId(long createrId) {
+		this.createrId = createrId;
+	}
+
+	@Column(name = "transcoding")	
+	public int getTranscoding() {
+		return transcoding;
+	}
+
+	public void setTranscoding(int transcoding) {
+		this.transcoding = transcoding;
+	}
+
+	@Column(name = "thumbnails_path")
+	public String getThumbnailsPath() {
+		return thumbnailsPath;
+	}
+
+	public void setThumbnailsPath(String thumbnailsPath) {
+		this.thumbnailsPath = thumbnailsPath;
 	}
 
 }

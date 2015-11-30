@@ -7,6 +7,6 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
     
-    <dubbo:service version="2.0.0" interface="com.ginkgocap.ywxt.file.service.FileIndexService" ref="fileIndexService" />
+    <dubbo:service version="2.0.0" interface="com.ginkgocap.parasol.file.service.FileIndexService" ref="fileIndexService" />
     
 </beans>
