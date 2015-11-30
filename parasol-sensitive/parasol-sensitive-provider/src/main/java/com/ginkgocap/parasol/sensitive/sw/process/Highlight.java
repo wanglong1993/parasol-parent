@@ -7,8 +7,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import com.ginkgocap.parasol.sensitive.model.Word;
-import com.ginkgocap.parasol.sensitive.sw.format.AbstractFormat;
-import com.ginkgocap.parasol.sensitive.sw.format.HTMLFormat;
+import com.ginkgocap.parasol.util.sw.format.AbstractFormat;
+import com.ginkgocap.parasol.util.sw.format.HTMLFormat;
 
 /**
  * 

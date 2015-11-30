@@ -1,8 +1,7 @@
-package com.ginkgocap.parasol.sensitive.sw.format;
+package com.ginkgocap.parasol.util.sw.format;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.ginkgocap.parasol.sensitive.sw.format.AbstractFormat;
 
 /**
  * 

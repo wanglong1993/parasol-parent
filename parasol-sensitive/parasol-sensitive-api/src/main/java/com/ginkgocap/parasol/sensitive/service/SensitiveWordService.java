@@ -83,5 +83,10 @@ public interface SensitiveWordService {
 	 */
 	public String replaceSensitive(String text);
 	
-	public boolean batchInsertSelective(List<SensitiveWord> sensitiveWords);
+	/**
+	 * 批量插入敏感词
+	 * @param sensitiveWords
+	 * @return 敏感词列表
+	 */
+	public boolean batchInsertSensitiveWords(List<SensitiveWord> sensitiveWords);
 }

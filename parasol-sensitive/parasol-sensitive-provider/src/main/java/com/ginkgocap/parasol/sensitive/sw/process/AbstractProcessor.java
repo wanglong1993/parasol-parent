@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ginkgocap.parasol.sensitive.model.Word;
-import com.ginkgocap.parasol.sensitive.sw.format.AbstractFormat;
+import com.ginkgocap.parasol.util.sw.format.AbstractFormat;
 
 
 /**

@@ -16,11 +16,19 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
            
-           <!-- 通过名字找Code --> 
+			<!-- 通过名字找Code --> 
            
-           <list name="SensitiveWord_Id_Name"
+			<list name="SensitiveWord_Id_Name"
                   sqlitem="select id from tb_sensitive_word where word=?"
                   sqlType="hsql" keyProperty="word" valueProperty="id"  update="true"/>
+                  
+			<list name="SensitiveWord_Id_Level"
+                  sqlitem="select id from tb_sensitive_word where level>? desc id"
+                  sqlType="hsql" keyProperty="level" valueProperty="id"  update="true"/>  
+			
+			<list name="SensitiveWord_Id_Level_Type"
+                  sqlitem="select id from tb_sensitive_word where level>? and type=?"
+                  sqlType="hsql" keyProperty="level,type" valueProperty="id"  update="true"/>
                   
        	   <!--  	
            <list name="Code_List_Id_Pid"

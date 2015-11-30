@@ -1,9 +1,7 @@
 package com.ginkgocap.parasol.sensitive.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +12,8 @@ import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.sensitive.model.SensitiveWord;
 import com.ginkgocap.parasol.sensitive.service.SensitiveWordService;
 import com.ginkgocap.parasol.sensitive.sw.SWSeeker;
-import com.ginkgocap.parasol.sensitive.sw.format.AbstractFormat;
-import com.ginkgocap.parasol.sensitive.sw.format.HTMLFormat;
+import com.ginkgocap.parasol.util.sw.format.AbstractFormat;
+import com.ginkgocap.parasol.util.sw.format.HTMLFormat;
 
 /**
  * 
@@ -110,15 +108,13 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	}
 	
 	public int updateWord(){
+		logger.info("进入更新敏感词！");
 		SWSeeker sw2 = new SWSeeker();
 		try {
 			if(!sw2.isReady()){
-				Map<String,Object> param = new HashMap<String, Object>();
 				long start=0;
-				param.put("start", start);
-				param.put("step", 100);
-//				List<SensitiveWord> list = sensitiveWordDao.findByParmas(param);
-				List<SensitiveWord> list = new ArrayList<SensitiveWord>();
+				long step=100;
+				List<SensitiveWord> list = getEntitys("SensitiveWord_Id_Level", start ,step, -1);
 				while(list.size()>0){
 					List<String> words = new ArrayList<String>();
 					for(SensitiveWord s:list){
@@ -126,8 +122,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 					}
 					sw2.initData(words);
 					start+=100;
-					param.put("start", start);
-//					list = sensitiveWordDao.findByParmas(param);
+					list = getEntitys("SensitiveWord_Id_Level", start ,step, -1);
 				}
 			}
 			if(sw2!=null){
@@ -135,6 +130,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 			}
 			return 1;
 		} catch (Exception e) {
+			logger.error("更新敏感词失败！错误信息"+e.getMessage());
 			e.printStackTrace();
 			return 0;
 		}
@@ -160,28 +156,31 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 		init();
 		return sw.highlight(text, matchType, formate);
 	}
+	
 	public List<String> sensitiveWord(String text){
 		init();
 		return sw.sensitiveWord(text);
 	}
 	
 	private void init(){
+		logger.info("进入初始化敏感词！");
 		if(!sw.isReady()){
-			Map<String,Object> param = new HashMap<String, Object>();
-			long start=0;
-			param.put("start", start);
-			param.put("step", 100);
-//			List<SensitiveWord> list = sensitiveWordDao.findByParmas(param);
-			List<SensitiveWord> list = new ArrayList<SensitiveWord>();
-			while(list.size()>0){
-				List<String> words = new ArrayList<String>();
-				for(SensitiveWord s:list){
-					words.add(s.getWord());
+			try {
+				long start=0;
+				long step=100;
+				List<SensitiveWord> list = getEntitys("SensitiveWord_Id_Level", start ,step, -1);
+				while(list.size()>0){
+					List<String> words = new ArrayList<String>();
+					for(SensitiveWord s:list){
+						words.add(s.getWord());
+					}
+					sw.initData(words);
+					start+=100;
+					list = getEntitys("SensitiveWord_Id_Level", start ,step, -1);
 				}
-				sw.initData(words);
-				start+=100;
-				param.put("start", start);
-//				list = sensitiveWordDao.findByParmas(param);
+			}catch(Exception e) {
+				logger.error("初始化敏感词失败！错误信息"+e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}
@@ -191,16 +190,15 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	}
 	
 	@Override
-	public boolean batchInsertSelective(List<SensitiveWord> sensitiveWords) {
+	public boolean batchInsertSensitiveWords(List<SensitiveWord> sensitiveWords) {
+		logger.info("进入批量保存敏感词方法！");
+		try {
+			saveEntitys(sensitiveWords);
+		} catch (BaseServiceException e) {
+			logger.info("批量保存敏感词方法失败！"+e.getMessage());
+			e.printStackTrace();
+		}
 		return false; 
-//				sensitiveWordDao.batchInsertSelective(sensitiveWords);
-	}
-
-	@Override
-	public String highlight(String text, int matchType,
-			com.ginkgocap.parasol.util.sw.format.AbstractFormat formate) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

@@ -6,10 +6,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
-import com.ginkgocap.parasol.sensitive.sw.format.AbstractFormat;
-import com.ginkgocap.parasol.sensitive.sw.format.HTMLFormat;
 import com.ginkgocap.parasol.sensitive.sw.process.DataInit;
 import com.ginkgocap.parasol.sensitive.sw.process.Highlight;
+import com.ginkgocap.parasol.util.sw.format.AbstractFormat;
+import com.ginkgocap.parasol.util.sw.format.HTMLFormat;
 
 /**
  * 
