@@ -99,7 +99,7 @@ public class DirectorySource implements Serializable {
 		this.sourceType = sourceType;
 	}
 
-	@Column(name = "sourceType")
+	@Column(name = "sourceUrl")
 	public String getSourceUrl() {
 		return sourceUrl;
 	}
@@ -108,7 +108,7 @@ public class DirectorySource implements Serializable {
 		this.sourceUrl = sourceUrl;
 	}
 
-	@Column(name = "sourceType")
+	@Column(name = "sourceTitle")
 	public String getSourceTitle() {
 		return sourceTitle;
 	}
@@ -117,7 +117,7 @@ public class DirectorySource implements Serializable {
 		this.sourceTitle = sourceTitle;
 	}
 
-	@Column(name = "sourceType")
+	@Column(name = "sourceData")
 	public String getSourceData() {
 		return sourceData;
 	}
@@ -126,7 +126,7 @@ public class DirectorySource implements Serializable {
 		this.sourceData = sourceData;
 	}
 
-	@Column(name = "sourceType")
+	@Column(name = "invokeMethod")
 	public String getInvokeMethod() {
 		return invokeMethod;
 	}
@@ -135,7 +135,7 @@ public class DirectorySource implements Serializable {
 		this.invokeMethod = invokeMethod;
 	}
 
-	@Column(name = "sourceType")
+	@Column(name = "createAt")
 	public long getCreateAt() {
 		return createAt;
 	}
