@@ -35,5 +35,4 @@
     <dubbo:protocol name="${user.dubbo.protocol.name}" port="${user.dubbo.protocol.port}" />
     <dubbo:registry address="${user.dubbo.registry.address}" protocol="${user.dubbo.protocol.name}"/>
     <dubbo:consumer timeout="10000" check="false" />
-    <import resource="classpath:sms-dubbo-consumer.xml" />
 </beans>
