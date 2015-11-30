@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
@@ -23,12 +24,13 @@ import com.ginkgocap.parasol.directory.service.DirectorySourceService;
  * @time 上午9:11:50
  * @Copyright Copyright©2015 www.gintong.com
  */
+@Service("directorySourceService")
 public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> implements DirectorySourceService {
 
 	private static Logger logger = Logger.getLogger(DirectorySourcesServiceImpl.class);
 	private static String LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID = "List_DirectorySources_Id_userId_appId_sourceType_sourceId";
 	private static String LIST_DIRECTORYSOURCE_ID_DIRECTORYID = "List_DirectorySource_Id_DirectoryId";
-	private static String MAP_DIRECTORYSOURCE_ID_USERID_DIRECTORYID_APPID_SOURCETYPE_SOURICEID = "Map_DirectorySource_Id_UserId_DirectoryId_AppId_SourceType_SouriceId";
+	private static String MAP_DIRECTORYSOURCE_ID_USERID_DIRECTORYID_APPID_SOURCETYPE_SOURICEID = "Map_DirectorySource_Id_UserId_DirectoryId_AppId_SourceType_SourceId";
 
 	@Autowired
 	private DirectoryService directoryService;
@@ -60,7 +62,7 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 				sb.append("appId=").append(appId).append(" and ");
 				sb.append("sourceType:=").append(sourceType).append(" and ");
 				sb.append("sourceId=").append(sourceId).append(";");
-				throw new DirectorySourceServiceException(ServiceError.ERROR_OBJECT_EXIST, "Don't find then sourceId  " + existSource.getId() + " entity by [" + sb.toString()
+				throw new DirectorySourceServiceException(ServiceError.ERROR_OBJECT_EXIST, "the DirectorySource to be created already exist!  " + existSource.getId() + " entity by [" + sb.toString()
 						+ "]");
 			}
 			source.setCreateAt(System.currentTimeMillis());
