@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.file.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.junit.Test;
@@ -29,7 +31,27 @@ public class FileIndexServiceTest extends TestBase{
 		fileIndex.setThumbnailsPath("/xx/xx/xx/flow.png");
 		fileIndex.setTranscoding(0);
 		fileIndex.setAppid("gintong");
-		fileIndexService.insert(fileIndex);
+		fileIndexService.insertFileIndex(fileIndex);
 	}
 	
+	@Test
+	public void TestGetFileIndexById() {
+		long id = 3915190764830725l;
+		FileIndex file = fileIndexService.selectByPrimaryKey(id);
+		System.out.println("file name = "+file.getFileTitle());
+	}
+	
+	@Test
+	public void TestDeleteFileById() {
+		long id = 3915182137147397l;
+		boolean flag = fileIndexService.deleteFileIndexById(id);
+		System.out.println("flag ==="+flag);
+	}
+	
+	@Test
+	public void TestGetFileIndexesByTaskId() {
+		String taskId = "MTIxMDEwMTkyOTU2NTU3Z3VveXVhbnl1YW45OTYwMTE=";
+		List<FileIndex> files = fileIndexService.selectFileIndexesByTaskId(taskId);
+		System.out.println("files.size ===="+files.size());
+	}
 }
