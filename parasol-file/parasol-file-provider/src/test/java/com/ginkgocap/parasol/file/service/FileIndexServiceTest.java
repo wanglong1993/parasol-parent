@@ -28,6 +28,7 @@ public class FileIndexServiceTest extends TestBase{
 		fileIndex.setTaskId("MTIxMDEwMTkyOTU2NTU3Z3VveXVhbnl1YW45OTYwMTE=");
 		fileIndex.setThumbnailsPath("/xx/xx/xx/flow.png");
 		fileIndex.setTranscoding(0);
+		fileIndex.setAppid("gintong");
 		fileIndexService.insert(fileIndex);
 	}
 	

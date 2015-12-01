@@ -3,7 +3,8 @@ package com.ginkgocap.parasol.file.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
@@ -23,109 +24,94 @@ import com.ginkgocap.parasol.file.service.FileIndexService;
 @Service("fileIndexService")
 public class FileIndexServiceImpl extends BaseService<FileIndex> implements FileIndexService {
 
-    private final Logger logger = Logger.getLogger(getClass());
-    /*
-     * 文件保存记录的通过主键Id查询的方法
-     * (non-Javadoc)
-     * @see com.ginkgocap.ywxt.service.FileIndexService#selectByPrimaryKey(long)
-     */
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
+	@Override
     public FileIndex selectByPrimaryKey(long id) {
+    	logger.info("进入根据文件主键id获取上传文件：参数id：{}", id);
     	FileIndex file = null;
     	try {
 			file = getEntity(id);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+	    	logger.error("根据文件主键id获取上传文件失败：参数id：{}", id);
 			e.printStackTrace();
 		}
     	return file;
     }
 
-    /*
-     * 文件保存记录的插入方法
-     * (non-Javadoc)
-     * @see com.ginkgocap.ywxt.service.FileIndexService#insert(com.ginkgocap.ywxt.model.FileIndex)
-     */
+	@Override
     public FileIndex insert(FileIndex fileIndex) {
+    	logger.info("进入保存上传文件索引：参数fileTitle：{}", fileIndex.getFileTitle());
     	try {
 			Long id = (Long)saveEntity(fileIndex);
 			fileIndex.setId(id);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+	    	logger.error("保存上传文件索引失败：参数fileTitle：{}", fileIndex.getFileTitle());
 			e.printStackTrace();
 		}
-    	
         return fileIndex;
     }
 
-    /*
-     * 文件保存记录的删除方法
-     * (non-Javadoc)
-     * @see com.ginkgocap.ywxt.service.FileIndexService#delete(long)
-     */
+	@Override
     public boolean delete(long id) {
+    	logger.info("进入根据id删除上传文件索引：参数id：{}", id);
     	boolean flag = false;
     	try {
 			flag = deleteEntity(id);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+	    	logger.error("根据id删除上传文件索引失败：参数id：{}", id);
 			e.printStackTrace();
 		}
     	return flag;
     }
 
-    /*
-     * 文件保存记录通过任务id获得
-     * (non-Javadoc)
-     * @see com.ginkgocap.ywxt.service.FileIndexService#selectByTaskId(java.lang.String)
-     */
-    
+	@Override
     public List<FileIndex> selectByTaskId(String taskId,String status) {
-    	
+    	logger.info("进入根据taskid获取上传文件索引列表：参数taskid：{}", taskId);
     	List<FileIndex> files = new ArrayList<FileIndex>();
         return files;
     }
 
-
-    
+	@Override
     public boolean update(List<FileIndex> list) {
-    	
+    	logger.info("进入批量保存上传文件索引：参数list.size()：{}", list.size());    	
     	boolean flag = false;
     	try {
 			flag = updateEntitys(list);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+	    	logger.error("批量保存上传文件索引失败：参数list.size()：{}", list.size());  
 			e.printStackTrace();
 		}
     	return flag;
     }
 
-    
+    @Override
     public List<FileIndex> selectByIds(List<Long> ids) {
+    	logger.info("进入根据id列表获取上传文件索引列表：参数ids：{}", ids);       	
         List<FileIndex> list = null;
         try {
 			list = getEntityByIds(ids);
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+	    	logger.error("根据id列表获取上传文件索引列表失败：参数ids：{}", ids);     
 			e.printStackTrace();
 		}
         return list;
     }
 
-    
+    @Override
     public int deleteByTaskId(String taskId) {
-    	
+    	logger.info("进入根据taskid删除上传文件索引列表：参数taskid：{}", taskId);   
     	try {
 			deleteList("");
 		} catch (BaseServiceException e) {
-			// TODO Auto-generated catch block
+	    	logger.info("根据taskid删除上传文件索引列表失败：参数taskid：{}", taskId);   
 			e.printStackTrace();
 		}
         return 0;
     }
 
-    
+    @Override
     public int updateSetStatus(String ids, boolean status) {
-//        return fileIndexDao.updateSetStatus(ids,status);
     	
     	return 0;
     }

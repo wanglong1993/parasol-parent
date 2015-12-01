@@ -23,5 +23,6 @@ create table tb_file_index
    file_type            tinyint,
    transcoding          tinyint,
    thumbnails_path      varchar(100),
+   appid                varchar(50),
    primary key (id)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;

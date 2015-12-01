@@ -47,16 +47,18 @@ public class FileIndex implements Serializable {
 	private String md5;
 	// taskId
 	private String taskId;
-	// 类型
+	// 类型	1:用户头像、1：知识模块、2：人脉模块、4：需求模块、5：组织客户 、6：会议模块 、7：其他（可扩展）
 	private int moduleType;
-	// 类型	
+	// 类型	1-图片，2-视频，3-附件
 	private int fileType;
     // 解压缩
 	private String crc32;
-	// 是否转码
+	// 是否转码 1-是，0-否
 	private int transcoding;
 	// 缩略图地址
 	private String thumbnailsPath;
+	// appid
+	private String appid;
 
 	@Id
 	@GeneratedValue(generator = "id")
@@ -185,6 +187,15 @@ public class FileIndex implements Serializable {
 
 	public void setThumbnailsPath(String thumbnailsPath) {
 		this.thumbnailsPath = thumbnailsPath;
+	}
+
+	@Column(name = "appid")	
+	public String getAppid() {
+		return appid;
+	}
+
+	public void setAppid(String appid) {
+		this.appid = appid;
 	}
 
 }
