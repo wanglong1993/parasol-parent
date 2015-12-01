@@ -171,7 +171,7 @@ public class DirectorySourceController extends BaseControl {
 	}
 
 	/**
-	 * 2. 创建一个DirectorySource
+	 * 2. 删除一个DirectorySource
 	 * 
 	 * @param request
 	 * @return
@@ -185,7 +185,6 @@ public class DirectorySourceController extends BaseControl {
 			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceId, required = true) Long id) throws DirectorySourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-
 			Boolean success = directorySourceService.removeDirectorySources(appId,userId,id);
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
@@ -213,6 +212,54 @@ public class DirectorySourceController extends BaseControl {
 		}
 	}
 
+	
+	/**
+	 * 2. 删除一个DirectorySource
+	 * 
+	 * @param request
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = "/directory/source/moveSource", method = { RequestMethod.GET })
+	public MappingJacksonValue moveDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
+			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
+			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceId, required = true) Long id,
+			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) throws DirectorySourceServiceException {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			// TODO: 没有实现这个方法
+			Boolean success = directorySourceService.removeDirectorySources(appId,userId,id);
+			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
+			resultMap.put("success", success);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;
+		} catch (DirectorySourceServiceException e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
+	}
+	
+	
+	
+	
 	@Override
 	protected void processBusinessException(ResponseError error, Exception ex) {
 		if (ex instanceof DirectoryTypeServiceException) {
