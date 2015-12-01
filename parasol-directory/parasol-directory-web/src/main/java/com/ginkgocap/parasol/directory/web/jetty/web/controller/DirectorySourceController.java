@@ -63,6 +63,7 @@ public class DirectorySourceController extends BaseControl {
 	private static final String paramenterSourceUrl = "sourceUrl";
 	private static final String paramenterSourceTitle = "sourceTitle";
 	private static final String paramenterSourceData = "sourceData";
+	private static final String paramenterDirectorySourceId="id";
 
 	@Autowired
 	private DirectorySourceService directorySourceService;
@@ -113,7 +114,7 @@ public class DirectorySourceController extends BaseControl {
 	}
 
 	/**
-	 * 1. （查询类）查询有哪些大分类
+	 * 2. 创建一个DirectorySource
 	 * 
 	 * @param request
 	 * @return
@@ -145,6 +146,49 @@ public class DirectorySourceController extends BaseControl {
 			Long id = directorySourceService.createDirectorySources(source);
 			Map<String, Long> resultMap = new HashMap<String, Long>();
 			resultMap.put("id", id);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;
+		} catch (DirectorySourceServiceException e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
+	}
+
+	/**
+	 * 2. 创建一个DirectorySource
+	 * 
+	 * @param request
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = "/directory/source/deleteSource", method = { RequestMethod.GET })
+	public MappingJacksonValue deleteDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
+			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
+			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceId, required = true) Long id) throws DirectorySourceServiceException {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+
+			Boolean success = directorySourceService.removeDirectorySources(appId,userId,id);
+			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
+			resultMap.put("success", success);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
