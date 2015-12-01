@@ -39,9 +39,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException;
 import com.ginkgocap.parasol.directory.exception.DirectoryTypeServiceException;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
-import com.ginkgocap.parasol.directory.model.DirectoryType;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
-import com.ginkgocap.parasol.directory.service.DirectoryTypeService;
 import com.ginkgocap.parasol.directory.web.jetty.web.ResponseError;
 
 /**
@@ -60,6 +58,11 @@ public class DirectorySourceController extends BaseControl {
 	private static final String paramenterAppId = "appKey";
 	private static final String paramenterUserId = "userId";
 	private static final String paramenterDirectoryId = "directoryId";
+	private static final String paramenterSourceId = "sourceId";
+	private static final String paramenterSourceType = "sourceType";
+	private static final String paramenterSourceUrl = "sourceUrl";
+	private static final String paramenterSourceTitle = "sourceTitle";
+	private static final String paramenterSourceData = "sourceData";
 
 	@Autowired
 	private DirectorySourceService directorySourceService;
@@ -72,7 +75,7 @@ public class DirectorySourceController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/source/getSourceList", method = { RequestMethod.GET })
-	public MappingJacksonValue getFunctionClassList(@RequestParam(name = DirectorySourceController.paramenterFields, defaultValue = "") String fileds,
+	public MappingJacksonValue getSourceList(@RequestParam(name = DirectorySourceController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
@@ -107,6 +110,63 @@ public class DirectorySourceController extends BaseControl {
 			e.printStackTrace(System.err);
 		}
 		return null;
+	}
+
+	/**
+	 * 1. （查询类）查询有哪些大分类
+	 * 
+	 * @param request
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = "/directory/source/createSource", method = { RequestMethod.GET })
+	public MappingJacksonValue createDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
+			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
+			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId,
+			@RequestParam(name = DirectorySourceController.paramenterSourceId, required = true) Long sourceId,
+			@RequestParam(name = DirectorySourceController.paramenterSourceType, required = true) int sourceType,
+			@RequestParam(name = DirectorySourceController.paramenterSourceUrl, defaultValue = "", required = false) String sourceUrl,
+			@RequestParam(name = DirectorySourceController.paramenterSourceTitle, required = true) String sourceTitle,
+			@RequestParam(name = DirectorySourceController.paramenterSourceData, defaultValue = "", required = false) String sourceData) throws DirectorySourceServiceException {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			DirectorySource source = new DirectorySource();
+			source.setAppId(appId);
+			source.setUserId(userId);
+			source.setDirectoryId(directoryId);
+			source.setSourceId(sourceId);
+			source.setSourceType(sourceType);
+			source.setSourceUrl(sourceUrl);
+			source.setSourceTitle(sourceTitle);
+			source.setSourceData(sourceData);
+
+			Long id = directorySourceService.createDirectorySources(source);
+			Map<String, Long> resultMap = new HashMap<String, Long>();
+			resultMap.put("id", id);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;
+		} catch (DirectorySourceServiceException e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
 	}
 
 	@Override
