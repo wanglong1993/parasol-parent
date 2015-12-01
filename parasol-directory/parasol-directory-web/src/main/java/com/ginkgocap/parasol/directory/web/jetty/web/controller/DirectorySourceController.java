@@ -75,8 +75,8 @@ public class DirectorySourceController extends BaseControl {
 	public MappingJacksonValue getFunctionClassList(@RequestParam(name = DirectorySourceController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = DirectorySourceController.paramenterUserId, required =true) Long userId,
-			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required =true) Long directoryId)  {
+			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
+			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -139,7 +139,11 @@ public class DirectorySourceController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // id',
-			filter.add("name"); // '分类名称',
+			filter.add("sourceId"); // 资源ID
+			filter.add("sourceType"); // 资源类型
+			filter.add("sourceUrl"); // 资源URL
+			filter.add("sourceTitle"); // 资源的title
+			filter.add("sourceData"); // 资源的Data
 		}
 
 		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
