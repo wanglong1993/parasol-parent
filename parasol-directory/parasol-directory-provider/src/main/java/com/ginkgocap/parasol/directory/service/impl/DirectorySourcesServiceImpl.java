@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
@@ -62,8 +63,8 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 				sb.append("appId=").append(appId).append(" and ");
 				sb.append("sourceType:=").append(sourceType).append(" and ");
 				sb.append("sourceId=").append(sourceId).append(";");
-				throw new DirectorySourceServiceException(ServiceError.ERROR_OBJECT_EXIST, "the DirectorySource to be created already exist!  " + existSource.getId() + " entity by [" + sb.toString()
-						+ "]");
+				throw new DirectorySourceServiceException(ServiceError.ERROR_OBJECT_EXIST, "the DirectorySource to be created already exist!  " + existSource.getId()
+						+ " entity by [" + sb.toString() + "]");
 			}
 			source.setCreateAt(System.currentTimeMillis());
 			// TODO : 过滤敏感词?
@@ -80,9 +81,18 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	}
 
 	@Override
-	public boolean removeDirectorySources(Long id) throws DirectorySourceServiceException {
+	public boolean removeDirectorySources(Long appId, Long userId, Long id) throws DirectorySourceServiceException {
 		try {
-			return this.deleteEntity(id);
+			DirectorySource ds = this.getDirectorySourceById(appId, id);
+			if (ds != null && ObjectUtils.equals(appId, ds.getAppId()) && ObjectUtils.equals(userId, ds.getUserId())) {
+				return this.deleteEntity(id);
+			} else {
+				StringBuilder sb = new StringBuilder();
+				sb.append("appId=").append(appId);
+				sb.append(" and ").append("userId=").append(userId);
+				sb.append(" and ").append("id=").append(id);
+				throw new DirectorySourceServiceException(ServiceError.ERROR_NOT_FOUND, "don't find the DirectorySource by [ " + sb.toString()+" ]");
+			}
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new DirectorySourceServiceException(e);
