@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
  * @Copyright Copyright©2015 www.gintong.com
  */
 
-@JsonFilter("com.ginkgocap.parasol.directory.model.DirectorySources")
+@JsonFilter("com.ginkgocap.parasol.directory.model.DirectorySource")
 @Entity
 @Table(name = "tb_directory_source")
 public class DirectorySource implements Serializable {
