@@ -139,7 +139,7 @@
 			<id>dev</id>
 			<properties>
 				<!-- database -->
-				<jdbc.url>jdbc:mysql://192.168.120.135:3306/parasol_directory?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
+				<jdbc.url>jdbc:mysql://192.168.120.135:3306/parasol_metadata?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
 				<jdbc.username>zhangwei</jdbc.username>
 				<jdbc.password>zhangwei</jdbc.password>
 				<!-- memcached -->
@@ -151,9 +151,7 @@
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<dubbo.protocol.port>20884</dubbo.protocol.port>
-				
-				
+				<dubbo.protocol.port>20885</dubbo.protocol.port>
 			</properties>
 		</profile>
 	</profiles>
