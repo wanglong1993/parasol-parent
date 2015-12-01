@@ -94,7 +94,7 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 					sourceId = dbDirectorySource.getSourceId();
 					
 					//测试单个删除
-					directorySourceService.removeDirectorySources(dbDirectorySource.getId());
+					//directorySourceService.removeDirectorySources(dbDirectorySource.getId());
 				}
 				
 
