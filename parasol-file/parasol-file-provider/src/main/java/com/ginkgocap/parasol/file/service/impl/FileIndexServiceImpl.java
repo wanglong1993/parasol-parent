@@ -40,7 +40,7 @@ public class FileIndexServiceImpl extends BaseService<FileIndex> implements File
     }
 
 	@Override
-    public FileIndex insert(FileIndex fileIndex) {
+    public FileIndex insertFileIndex(FileIndex fileIndex) {
     	logger.info("进入保存上传文件索引：参数fileTitle：{}", fileIndex.getFileTitle());
     	try {
 			Long id = (Long)saveEntity(fileIndex);
@@ -53,7 +53,7 @@ public class FileIndexServiceImpl extends BaseService<FileIndex> implements File
     }
 
 	@Override
-    public boolean delete(long id) {
+    public boolean deleteFileIndexById(long id) {
     	logger.info("进入根据id删除上传文件索引：参数id：{}", id);
     	boolean flag = false;
     	try {
@@ -66,14 +66,20 @@ public class FileIndexServiceImpl extends BaseService<FileIndex> implements File
     }
 
 	@Override
-    public List<FileIndex> selectByTaskId(String taskId,String status) {
+    public List<FileIndex> selectFileIndexesByTaskId(String taskId) {
     	logger.info("进入根据taskid获取上传文件索引列表：参数taskid：{}", taskId);
     	List<FileIndex> files = new ArrayList<FileIndex>();
+    	try {
+			files = getEntitys("FileIndex_List_Id_TaskId",taskId);
+		} catch (BaseServiceException e) {
+	    	logger.info("根据taskid获取上传文件索引列表失败：参数taskid：{}", taskId);
+			e.printStackTrace();
+		}
         return files;
     }
 
 	@Override
-    public boolean update(List<FileIndex> list) {
+    public boolean updateFileIndexes(List<FileIndex> list) {
     	logger.info("进入批量保存上传文件索引：参数list.size()：{}", list.size());    	
     	boolean flag = false;
     	try {
@@ -86,7 +92,7 @@ public class FileIndexServiceImpl extends BaseService<FileIndex> implements File
     }
 
     @Override
-    public List<FileIndex> selectByIds(List<Long> ids) {
+    public List<FileIndex> selectFileIndexesByIds(List<Long> ids) {
     	logger.info("进入根据id列表获取上传文件索引列表：参数ids：{}", ids);       	
         List<FileIndex> list = null;
         try {
@@ -99,7 +105,7 @@ public class FileIndexServiceImpl extends BaseService<FileIndex> implements File
     }
 
     @Override
-    public int deleteByTaskId(String taskId) {
+    public boolean deleteFileIndexesByTaskId(String taskId) {
     	logger.info("进入根据taskid删除上传文件索引列表：参数taskid：{}", taskId);   
     	try {
 			deleteList("");
@@ -107,7 +113,7 @@ public class FileIndexServiceImpl extends BaseService<FileIndex> implements File
 	    	logger.info("根据taskid删除上传文件索引列表失败：参数taskid：{}", taskId);   
 			e.printStackTrace();
 		}
-        return 0;
+        return false;
     }
 
     @Override

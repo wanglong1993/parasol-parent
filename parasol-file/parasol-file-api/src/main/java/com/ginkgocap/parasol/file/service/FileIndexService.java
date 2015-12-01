@@ -17,18 +17,18 @@ public interface FileIndexService {
 	
     FileIndex selectByPrimaryKey(long id);
 
-    FileIndex insert(FileIndex fileIndex);
+    FileIndex insertFileIndex(FileIndex fileIndex);
     
-    List<FileIndex> selectByTaskId(String taskId,String status);
+    List<FileIndex> selectFileIndexesByTaskId(String taskId);
 
-    boolean delete(long id);
+    boolean deleteFileIndexById(long id);
     
     /**
      * 根据taskid删除数据
      * @param taskId
      * @return 被删除的行数
      */
-    int deleteByTaskId(String taskId);
+    boolean deleteFileIndexesByTaskId(String taskId);
     
     /**
      * 修改附件的状态为指定的状态
@@ -39,8 +39,8 @@ public interface FileIndexService {
     int updateSetStatus(String ids,boolean status);
 
 
-    boolean update(List<FileIndex> list);
+    boolean updateFileIndexes(List<FileIndex> list);
 
-    List<FileIndex> selectByIds(List<Long> ids);
+    List<FileIndex> selectFileIndexesByIds(List<Long> ids);
     
 }

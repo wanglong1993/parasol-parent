@@ -22,6 +22,12 @@
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
         
+		<!-- List config -->
+        <region name="FileIndex_List_Id_TaskId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" >
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region>
+        
     </regions>
 		
 </root>
