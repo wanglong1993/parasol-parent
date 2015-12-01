@@ -20,6 +20,14 @@
                   sqlitem="select id from tb_file_index where task_id=? order by id desc"
                   sqlType="hsql" keyProperty="taskId" valueProperty="id"  update="true"/>
                   
+			<list name="FileIndex_List_Id_CreaterId"
+                  sqlitem="select id from tb_file_index where creater_id=? order by id desc"
+                  sqlType="hsql" keyProperty="createrId" valueProperty="id"  update="true"/>
+                  
+			<list name="FileIndex_List_Id_CreaterId_Type"
+                  sqlitem="select id from tb_file_index where creater_id=? and file_type=? order by id desc"
+                  sqlType="hsql" keyProperty="createrId,fileType" valueProperty="id"  update="true"/>                  
+                  
 		</object>
 	</route>
 </dal>

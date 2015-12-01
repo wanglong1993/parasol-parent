@@ -15,18 +15,61 @@ import com.ginkgocap.parasol.file.model.FileIndex;
  */
 public interface FileIndexService {
 	
+	/**
+	 * 根据id获取文件索引
+	 * @param id
+	 * @return 索引对象
+	 */
     FileIndex selectByPrimaryKey(long id);
 
+    /**
+     * 保存文件索引
+     * @param fileIndex
+     * @return 索引对象
+     */
     FileIndex insertFileIndex(FileIndex fileIndex);
     
-    List<FileIndex> selectFileIndexesByTaskId(String taskId);
+    /**
+     * 根据taskId获取文件索引列表
+     * @param taskId
+     * @return 索引列表
+     */
+    List<FileIndex> getFileIndexesByTaskId(String taskId);
+    
+    /**
+     * 根据用户id获取文件索引列表
+     * @param userId
+     * @return 索引列表
+     */
+    List<FileIndex> getFileIndexesByCreaterId(long userId);
+    
+    /**
+     * 获取用户特定类型的文件索引列表
+     * @param userId
+     * @param type
+     * @return 索引列表
+     */
+    List<FileIndex> getFileIndexesByCreaterIdAndType(long userId, int type);
 
+    /**
+     * 修改文件索引名称
+     * @param id
+     * @param fileIndex
+     * @return 修改后的文件索引
+     */
+    FileIndex updateFileIndexByFileTitle(long id, String fileIndex);
+    
+    /**
+     * 根据索引对象id删除索引对象
+     * @param id
+     * @return true or false
+     */
     boolean deleteFileIndexById(long id);
     
     /**
      * 根据taskid删除数据
      * @param taskId
-     * @return 被删除的行数
+     * @return 是否删除
      */
     boolean deleteFileIndexesByTaskId(String taskId);
     
@@ -39,8 +82,18 @@ public interface FileIndexService {
     int updateSetStatus(String ids,boolean status);
 
 
+    /**
+     * 批量保存文件索引列表
+     * @param list
+     * @return 是否保存成功
+     */
     boolean updateFileIndexes(List<FileIndex> list);
 
+    /**
+     * 根据索引id列表获取文件索引列表
+     * @param ids
+     * @return 文件索引列表
+     */
     List<FileIndex> selectFileIndexesByIds(List<Long> ids);
     
 }

@@ -51,7 +51,22 @@ public class FileIndexServiceTest extends TestBase{
 	@Test
 	public void TestGetFileIndexesByTaskId() {
 		String taskId = "MTIxMDEwMTkyOTU2NTU3Z3VveXVhbnl1YW45OTYwMTE=";
-		List<FileIndex> files = fileIndexService.selectFileIndexesByTaskId(taskId);
+		List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
 		System.out.println("files.size ===="+files.size());
+	}
+	
+	@Test
+	public void TestGetFileIndexesByUserId() {
+		long createrId = 1l;
+		List<FileIndex> files = fileIndexService.getFileIndexesByCreaterId(createrId);
+		System.out.println("get FileIndexes by UserId "+files.size());
+	}
+	
+	@Test
+	public void TestUpdateFileIndex() {
+		long id = 3915194929774597l;
+		String fileTitle = "测试修改附件名称";
+		FileIndex file = fileIndexService.updateFileIndexByFileTitle(id, fileTitle);
+		System.out.println("update file index title "+ file.getFileTitle());
 	}
 }

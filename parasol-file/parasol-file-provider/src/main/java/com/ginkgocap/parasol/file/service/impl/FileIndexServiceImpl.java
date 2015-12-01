@@ -66,18 +66,60 @@ public class FileIndexServiceImpl extends BaseService<FileIndex> implements File
     }
 
 	@Override
-    public List<FileIndex> selectFileIndexesByTaskId(String taskId) {
+    public List<FileIndex> getFileIndexesByTaskId(String taskId) {
     	logger.info("进入根据taskid获取上传文件索引列表：参数taskid：{}", taskId);
     	List<FileIndex> files = new ArrayList<FileIndex>();
     	try {
 			files = getEntitys("FileIndex_List_Id_TaskId",taskId);
 		} catch (BaseServiceException e) {
-	    	logger.info("根据taskid获取上传文件索引列表失败：参数taskid：{}", taskId);
+	    	logger.error("根据taskid获取上传文件索引列表失败：参数taskid：{}", taskId);
 			e.printStackTrace();
 		}
         return files;
     }
 
+
+	@Override
+	public FileIndex updateFileIndexByFileTitle(long id, String fileTitle) {
+    	logger.info("进入根据文件索引id修改文件名：参数id：{}，fileTitle:{}", id, fileTitle);
+    	FileIndex file = null;
+		try {
+			file = getEntity(id);
+			file.setFileTitle(fileTitle);
+			updateEntity(file);
+		} catch (BaseServiceException e) {
+	    	logger.error("根据文件索引id修改文件名失败：参数id：{}，fileTitle:{}", id, fileTitle);
+			e.printStackTrace();
+		}
+		return file;
+	}	
+	
+	@Override
+	public List<FileIndex> getFileIndexesByCreaterId(long createrId) {
+    	logger.info("进入根据用户id获取上传文件索引：参数userId：{}", createrId);
+    	List<FileIndex> files = new ArrayList<FileIndex>();
+    	try {
+			files = getEntitys("FileIndex_List_Id_CreaterId",createrId);
+		} catch (BaseServiceException e) {
+	    	logger.error("根据用户id获取上传文件索引列表失败：参数userId：{}", createrId);
+			e.printStackTrace();
+		}
+        return files;
+	}
+	
+	@Override
+	public List<FileIndex> getFileIndexesByCreaterIdAndType(long createrId, int type) {
+    	logger.info("进入根据用户id和type获取上传文件索引：参数userId：{},type:{}", createrId, type);
+    	List<FileIndex> files = new ArrayList<FileIndex>();
+    	try {
+			files = getEntitys("FileIndex_List_Id_CreaterId_type",createrId,type);
+		} catch (BaseServiceException e) {
+	    	logger.error("根据用户id和type获取上传文件索引列表失败：参数userId：{}", createrId);
+			e.printStackTrace();
+		}
+        return files;
+	}		
+	
 	@Override
     public boolean updateFileIndexes(List<FileIndex> list) {
     	logger.info("进入批量保存上传文件索引：参数list.size()：{}", list.size());    	
