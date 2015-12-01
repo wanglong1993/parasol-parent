@@ -38,7 +38,7 @@ public interface DirectorySourceService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public boolean removeDirectorySources(Long id) throws DirectorySourceServiceException;
+	public boolean removeDirectorySources(Long appId, Long userId, Long id) throws DirectorySourceServiceException;
 
 	/**
 	 * 从资源中是删除具有资源Id的所有目录资源 小心使用
