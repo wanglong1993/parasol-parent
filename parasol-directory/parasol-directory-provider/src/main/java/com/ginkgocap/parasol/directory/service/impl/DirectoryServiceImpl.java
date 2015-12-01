@@ -71,7 +71,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			}
 			if (directoryType == null) {
 				StringBuffer sb = new StringBuffer();
-				sb.append("don't find the DirectoryType by appid is ").append(directory.getAppId()).append(" type is ").append(directory.getTypeId());
+				sb.append("don't find the DirectoryType by appid is ").append(directory.getAppId()).append(" and type is ").append(directory.getTypeId());
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
 			}
 		}
@@ -236,8 +236,8 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		ServiceError.assertDirectoryIdForDirectory(toDirectoryId);
 
 		try {
-			Directory from = this.getEntity(directoryId);
-			if (from == null) {
+			Directory targetDirectory = this.getEntity(directoryId);
+			if (targetDirectory == null) {
 				StringBuffer sb = new StringBuffer();
 				sb.append("don't find the from Directory by id " + directoryId);
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
@@ -246,16 +246,16 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			Directory to = this.getEntity(toDirectoryId);
 			if (to == null) {
 				StringBuffer sb = new StringBuffer();
-				sb.append("don't find the from Directory by id " + toDirectoryId);
+				sb.append("don't find the to Directory by id " + toDirectoryId);
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
 			}
 
 			// 检查是不是同一个人，同一个应用，同一个分类
-			if (ObjectUtils.equals(from.getUserId(), to.getUserId()) && ObjectUtils.equals(from.getAppId(), to.getAppId()) && ObjectUtils.equals(from.getTypeId(), to.getTypeId())) {
-				from.setPid(toDirectoryId);
+			if (ObjectUtils.equals(targetDirectory.getUserId(), to.getUserId()) && ObjectUtils.equals(targetDirectory.getAppId(), to.getAppId()) && ObjectUtils.equals(targetDirectory.getTypeId(), to.getTypeId())) {
+				targetDirectory.setPid(toDirectoryId);
 				String numbreCode = getParentNumberCode(to);
-				from.setNumberCode(numbreCode);
-				return this.updateEntity(from);
+				targetDirectory.setNumberCode(numbreCode+"-" + targetDirectory); //更新索要
+				return this.updateEntity(targetDirectory);
 			} else {
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own directory");// 移动的不是自己的目录
 			}
