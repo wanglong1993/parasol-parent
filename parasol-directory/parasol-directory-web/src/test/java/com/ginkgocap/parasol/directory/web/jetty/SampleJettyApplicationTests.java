@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ginkgocap.parasol.metadata.web.jetty;
+package com.ginkgocap.parasol.directory.web.jetty;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
  * @author Dave Syer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ParasolMetadataApplication.class)
+@SpringApplicationConfiguration(classes = ParasolDirectoryApplication.class)
 @WebAppConfiguration
 @IntegrationTest("server.port:0")
 @DirtiesContext
