@@ -50,6 +50,22 @@ public interface DirectorySourceService {
 	 * @throws DirectoryServiceException
 	 */
 	public boolean removeDirectorySourcesBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException;
+	
+	
+	
+	
+	/**
+	 * 改变资源所在的目录
+	 * @param userId
+	 * @param appId
+	 * @param directoryId
+	 * @param ids
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 */
+	public boolean moveDirectorySources(long userId, long appId, Long directoryId , Long[] ids) throws DirectorySourceServiceException;
+
+	
 
 	/**
 	 * 更新 directorySource
