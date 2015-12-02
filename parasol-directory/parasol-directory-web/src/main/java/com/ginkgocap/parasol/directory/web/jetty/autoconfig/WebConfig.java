@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
@@ -62,6 +64,7 @@ public class WebConfig {
 				queuedThreadPool.setMaxQueued(1024);
 				queuedThreadPool.setMinThreads(50);
 				server.setThreadPool(queuedThreadPool);
+				
 			}});
 	    //factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/notfound.html"));
 	    return factory;
@@ -71,4 +74,7 @@ public class WebConfig {
 		converters.add(customJackson2HttpMessageConverter());
 		// super.addDefaultHttpMessageConverters(converters);
 	}
+	
+
+
 }

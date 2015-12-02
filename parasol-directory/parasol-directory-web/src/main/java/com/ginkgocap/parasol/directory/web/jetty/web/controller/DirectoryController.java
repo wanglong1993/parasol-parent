@@ -16,14 +16,12 @@
 
 package com.ginkgocap.parasol.directory.web.jetty.web.controller;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +31,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.dubbo.rpc.RpcException;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.directory.exception.DirectoryServiceException;
-import com.ginkgocap.parasol.directory.exception.DirectoryTypeServiceException;
 import com.ginkgocap.parasol.directory.model.Directory;
-import com.ginkgocap.parasol.directory.model.DirectoryType;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
-import com.ginkgocap.parasol.directory.service.DirectoryTypeService;
-import com.ginkgocap.parasol.directory.web.jetty.web.ResponseError;
 
 /**
  * 
@@ -86,7 +79,6 @@ public class DirectoryController extends BaseControl {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-
 			Directory directory = new Directory();
 			directory.setAppId(appId);
 			directory.setUserId(userId);
@@ -99,21 +91,7 @@ public class DirectoryController extends BaseControl {
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(reusltMap);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
-		} catch (DirectoryServiceException e) {
+		}  catch (DirectoryServiceException e) {
 			throw e;
 		}
 	}
@@ -143,21 +121,7 @@ public class DirectoryController extends BaseControl {
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(reusltMap);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
-		} catch (DirectoryServiceException e) {
+		}  catch (DirectoryServiceException e) {
 			throw e;
 		}
 	}
@@ -193,20 +157,6 @@ public class DirectoryController extends BaseControl {
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(reusltMap);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (DirectoryServiceException e) {
 			throw e;
 		}
@@ -237,21 +187,7 @@ public class DirectoryController extends BaseControl {
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(reusltMap);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
-		} catch (DirectoryServiceException e) {
+		}  catch (DirectoryServiceException e) {
 			throw e;
 		}
 	}
@@ -281,20 +217,6 @@ public class DirectoryController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
 			return mappingJacksonValue;
 		} catch (DirectoryServiceException e) {
 			throw e;
@@ -327,34 +249,11 @@ public class DirectoryController extends BaseControl {
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (DirectoryServiceException e) {
 			throw e;
 		}
 	}
 
-	@Override
-	protected void processBusinessException(ResponseError error, Exception ex) {
-		if (ex instanceof DirectoryTypeServiceException) {
-			DirectoryTypeServiceException dtex = (DirectoryTypeServiceException) ex;
-			error.setType("BizException");
-			error.setCode(dtex.getErrorCode());
-			error.setMessage(dtex.getMessage());
-		}
-	}
 
 	/**
 	 * 指定显示那些字段

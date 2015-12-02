@@ -1,9 +1,19 @@
 package com.ginkgocap.parasol.directory.web.jetty.web.error;
 
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -26,30 +36,50 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
+import com.alibaba.dubbo.rpc.RpcException;
 import com.ginkgocap.parasol.directory.web.jetty.web.ResponseError;
 
 @ControllerAdvice
 public class DirectoryErrorControl {
 	public static Logger logger = Logger.getLogger(DirectoryErrorControl.class);
+	private static Pattern service_method_parttern = Pattern.compile("Failed to invoke the method (.+?) in the service (.+?). No provider");
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	@ResponseBody
-	public ResponseEntity<ResponseError> defaultErrorHandler(HttpServletRequest request, Exception ex) {
-		
+	public ResponseEntity<Map<String, Serializable>> defaultErrorHandler(HttpServletRequest request, Exception ex) {
 		ResponseError responseError = new ResponseError();
+		Map<String, Serializable> errMap = new HashMap<String, Serializable>();
+		errMap.put("error", responseError);
 		HttpStatus status = getStatus(request, ex);
+
 		if (ObjectUtils.equals(status, HttpStatus.BAD_REQUEST)) {
 			responseError.setMessage(ex.getLocalizedMessage());
+		} else {
+			if (ObjectUtils.equals(status, HttpStatus.INTERNAL_SERVER_ERROR)) { 
+				ResponseError prcError = processRpcExceptionError(ex);      //Rpc错误
+				if (prcError != null) { // prc error
+					responseError.setMessage(prcError.getMessage());
+					responseError.setError_subcode(prcError.getError_subcode());
+					responseError.setType(prcError.getType());
+				} else {
+					ResponseError bizError = getErrorCode(ex);            //业务错误
+					if (bizError != null) {
+						responseError.setMessage(bizError.getMessage());
+						responseError.setError_subcode(bizError.getError_subcode());
+						responseError.setType(bizError.getType());
+					}
+				}
+
+				if (ObjectUtils.equals(request.getParameter("debug"), "all")) {
+					StringWriter sw = new StringWriter();
+					PrintWriter pw = new PrintWriter(sw);
+					pw.flush();
+					ex.printStackTrace(pw);
+					errMap.put("__debug__", sw.toString());
+				}
+			}
 		}
-		
-		
-		if (ObjectUtils.equals(status,HttpStatus.INTERNAL_SERVER_ERROR)){
-			ex.printStackTrace(System.err);
-			responseError.setMessage(ex.getLocalizedMessage());
-			responseError.setError_subcode(getErrorCode(ex));
-		}
-		
-		ResponseEntity<ResponseError> responseEntity = new ResponseEntity<ResponseError>(responseError, status);
+		ResponseEntity<Map<String, Serializable>> responseEntity = new ResponseEntity<Map<String, Serializable>>(errMap, status);
 		return responseEntity;
 	}
 
@@ -66,6 +96,7 @@ public class DirectoryErrorControl {
 	}
 
 	protected Integer getStatusFromException(Exception ex) {
+		// 业务错误
 		if (ex instanceof NoSuchRequestHandlingMethodException) {
 			return HttpServletResponse.SC_NOT_FOUND;
 		} else if (ex instanceof HttpRequestMethodNotSupportedException) {
@@ -97,16 +128,73 @@ public class DirectoryErrorControl {
 		}
 		return null;
 	}
-	
-	
-	protected int getErrorCode(Exception ex) {
+
+	protected ResponseError getErrorCode(Exception ex) {
+		ResponseError prcError = null;
 		if (ex != null && ex.getClass().getName().endsWith("ServiceException")) {
+			prcError = new ResponseError();
 			try {
-				return (Integer) MethodUtils.invokeMethod(ex, "getErrorCode", null);
+				prcError.setError_subcode((Integer) MethodUtils.invokeMethod(ex, "getErrorCode", null));
 			} catch (Exception e) {
+
+			}
+			prcError.setMessage(ex.getMessage());
+			prcError.setType("BizException");
+		}
+		return prcError;
+	}
+
+	/**
+	 * 处理RpcException
+	 * 
+	 * @param exception
+	 * @return
+	 */
+	protected ResponseError processRpcExceptionError(Exception exception) {
+		if (exception != null && exception instanceof RpcException) {
+			ResponseError error = new ResponseError();
+			RpcException rpcException = (RpcException) exception;
+			if (rpcException.isBiz()) { // 业务错误
+				error.setType("RpcException");
+				error.setMessage("业务错误");
+			} else if (rpcException.isNetwork()) {
+				error.setType("RpcException");
+				error.setMessage("网络故障");
+			} else if (rpcException.isSerialization()) {
+				error.setType("RpcException");
+				error.setMessage("无法序列化");
+			} else if (rpcException.isTimeout()) {
+				error.setType("RpcException");
+				error.setMessage("请求超时");
+			} else {
+				String serviceName_err = getServiceNameByRpcMessage(rpcException);
+				if (serviceName_err != null) {
+					logger.info(serviceName_err + " error");
+					error.setType("RpcException");
+					error.setMessage(serviceName_err + "停止服务，请稍后重试！");
+				}
+			}
+			return error;
+		} else {
+			return null;
+		}
+
+	}
+	
+	/**
+	 * 从错误日志中找到服务名称
+	 * 
+	 * @param errMessage
+	 * @return
+	 */
+	private String getServiceNameByRpcMessage(RpcException rpc) {
+		if (rpc != null && StringUtils.isNotBlank(rpc.getMessage())) {
+			Matcher matcher = service_method_parttern.matcher(rpc.getMessage());
+			if (matcher.find()) {
+				return ClassUtils.getShortCanonicalName(matcher.group(2)) + "#" + matcher.group(1);
 			}
 		}
-		return 0;
+		return null;
 	}
 
 }
