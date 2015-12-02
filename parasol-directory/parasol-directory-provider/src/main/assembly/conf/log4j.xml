@@ -12,7 +12,7 @@
 		</layout>
 	</appender>
 	<logger name="com.ginkgocap.parasol">
-		<level value="info"></level>
+		<level value="debug"></level>
 	</logger>
 	<root>
 		<level value="info" />
