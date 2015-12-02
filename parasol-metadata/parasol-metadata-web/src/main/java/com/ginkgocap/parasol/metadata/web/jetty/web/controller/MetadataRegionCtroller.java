@@ -67,11 +67,12 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws CodeRegionServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getProvinces", method = { RequestMethod.GET })
 	public MappingJacksonValue getProvinces(@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -84,24 +85,9 @@ public class MetadataRegionCtroller extends BaseControl {
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (CodeRegionServiceException e) {
-			e.printStackTrace(System.err);
+			throw e;
 		}
-		return null;
 	}
 
 	/**
@@ -109,12 +95,13 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws CodeRegionServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getCitys", method = { RequestMethod.GET })
 	public MappingJacksonValue getCitys(@RequestParam(name = "pid", required = true) Long pid,
 			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			List<CodeRegion> codeRegions = null;
@@ -128,24 +115,9 @@ public class MetadataRegionCtroller extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (CodeRegionServiceException e) {
-			e.printStackTrace(System.err);
+			throw e;
 		}
-		return null;
 	}
 
 	/**
@@ -153,12 +125,13 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws CodeRegionServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getDistrictCounty", method = { RequestMethod.GET })
 	public MappingJacksonValue getDistrictCounty(@RequestParam(name = "pid", required = true) Long pid,
 			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			List<CodeRegion> codeRegions = null;
@@ -172,24 +145,9 @@ public class MetadataRegionCtroller extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (CodeRegionServiceException e) {
-			e.printStackTrace(System.err);
+			throw e;
 		}
-		return null;
 	}
 
 	/**
@@ -197,12 +155,13 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws CodeRegionServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getHongKongMacao", method = { RequestMethod.GET })
 	public MappingJacksonValue getHongKongMacao(@RequestParam(name = "pid", required = false) Long pid,
 			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 1.查询港澳台
@@ -210,179 +169,110 @@ public class MetadataRegionCtroller extends BaseControl {
 			if (pid == null) {
 				codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_GANGAOTAI);
 			} else {
-				codeRegions = matchCodeRegionType(pid,CodeRegionType.TYPE_GANGAOTAI) ? codeRegionService.getCodeRegionsByParentId(pid): null;
+				codeRegions = matchCodeRegionType(pid, CodeRegionType.TYPE_GANGAOTAI) ? codeRegionService.getCodeRegionsByParentId(pid) : null;
 			}
 			codeRegions = CollectionUtils.isEmpty(codeRegions) ? new ArrayList<CodeRegion>() : codeRegions;
 			mappingJacksonValue = new MappingJacksonValue(codeRegions);
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (CodeRegionServiceException e) {
-			e.printStackTrace(System.err);
+			throw e;
 		}
-		return null;
 	}
 
-	
 	/**
 	 * 查询台湾 如果查询台湾的子节点直接输入ID，不输入就是查询父节点
 	 * 
 	 * @param request
 	 * @return
+	 * @throws CodeRegionServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getTaiWan", method = { RequestMethod.GET })
 	public MappingJacksonValue getTaiWan(@RequestParam(name = "pid", required = false) Long pid,
 			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			//1. 查询台湾
+			// 1. 查询台湾
 			List<CodeRegion> codeRegions = null;
 			if (pid == null) {
 				codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_TAIWAN);
 			} else {
-				codeRegions = matchCodeRegionType(pid,CodeRegionType.TYPE_TAIWAN) ? codeRegionService.getCodeRegionsByParentId(pid): null;
+				codeRegions = matchCodeRegionType(pid, CodeRegionType.TYPE_TAIWAN) ? codeRegionService.getCodeRegionsByParentId(pid) : null;
 			}
 			codeRegions = CollectionUtils.isEmpty(codeRegions) ? new ArrayList<CodeRegion>() : codeRegions;
 			mappingJacksonValue = new MappingJacksonValue(codeRegions);
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (CodeRegionServiceException e) {
-			e.printStackTrace(System.err);
+			throw e;
 		}
-		return null;
 	}
-	
+
 	/**
 	 * 查询马来西亚，如果查询马来西亚的子节点直接输入ID，不输入就是查询马来西亚
 	 * 
 	 * @param request
 	 * @return
+	 * @throws CodeRegionServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getMalaysia", method = { RequestMethod.GET })
 	public MappingJacksonValue getMalaysia(@RequestParam(name = "pid", required = false) Long pid,
 			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			//1. 查询马来西亚
+			// 1. 查询马来西亚
 			List<CodeRegion> codeRegions = null;
 			if (pid == null) {
 				codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_MALAYSIA);
 			} else {
-				//1. 查询马来西亚下边的内容
-				codeRegions = matchCodeRegionType(pid,CodeRegionType.TYPE_MALAYSIA) ? codeRegionService.getCodeRegionsByParentId(pid): null;
+				// 1. 查询马来西亚下边的内容
+				codeRegions = matchCodeRegionType(pid, CodeRegionType.TYPE_MALAYSIA) ? codeRegionService.getCodeRegionsByParentId(pid) : null;
 			}
 			codeRegions = CollectionUtils.isEmpty(codeRegions) ? new ArrayList<CodeRegion>() : codeRegions;
 			mappingJacksonValue = new MappingJacksonValue(codeRegions);
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (CodeRegionServiceException e) {
-			e.printStackTrace(System.err);
+			throw e;
 		}
-		return null;
 	}
-	
-	
+
 	/**
 	 * 查询海外
 	 * 
 	 * @param request
 	 * @return
+	 * @throws CodeRegionServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getForignCountry", method = { RequestMethod.GET })
 	public MappingJacksonValue getForignCountry(@RequestParam(name = "pid", required = false) Long pid,
 			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			//1. 查询海外
+			// 1. 查询海外
 			List<CodeRegion> codeRegions = null;
 			if (pid == null) {
 				codeRegions = codeRegionService.getCodeRegionsForRootByType(CodeRegionService.ROOT_PARENT_ID, CodeRegionType.TYPE_FOREIGNCOUNTRY);
 			} else {
-				//1. 查询查询海外下边的内容
-				codeRegions = matchCodeRegionType(pid,CodeRegionType.TYPE_FOREIGNCOUNTRY) ? codeRegionService.getCodeRegionsByParentId(pid): null;
+				// 1. 查询查询海外下边的内容
+				codeRegions = matchCodeRegionType(pid, CodeRegionType.TYPE_FOREIGNCOUNTRY) ? codeRegionService.getCodeRegionsByParentId(pid) : null;
 			}
 			codeRegions = CollectionUtils.isEmpty(codeRegions) ? new ArrayList<CodeRegion>() : codeRegions;
 			mappingJacksonValue = new MappingJacksonValue(codeRegions);
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (CodeRegionServiceException e) {
-			e.printStackTrace(System.err);
-		}
-		return null;
-	}
-	
-	@Override
-	protected void processBusinessException(ResponseError error, Exception ex) {
-		if (ex instanceof CodeRegionServiceException) {
-			CodeRegionServiceException codeServiceException = (CodeRegionServiceException) ex;
-			error.setType("BizException");
-			error.setCode(codeServiceException.getErrorCode());
-			error.setMessage(codeServiceException.getMessage());
+			throw e;
 		}
 	}
 
@@ -417,6 +307,7 @@ public class MetadataRegionCtroller extends BaseControl {
 
 	/**
 	 * 检查一个CodeRegion的type
+	 * 
 	 * @param parentId
 	 * @param codeRegionType
 	 * @return

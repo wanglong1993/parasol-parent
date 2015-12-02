@@ -16,15 +16,11 @@
 
 package com.ginkgocap.parasol.metadata.web.jetty.web.controller;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +31,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.dubbo.rpc.RpcException;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.metadata.exception.CodeServiceException;
 import com.ginkgocap.parasol.metadata.model.Code;
 import com.ginkgocap.parasol.metadata.service.CodeService;
-import com.ginkgocap.parasol.metadata.web.jetty.service.HelloWorldService;
-import com.ginkgocap.parasol.metadata.web.jetty.web.ResponseError;
 
 /**
  * 
@@ -70,37 +63,22 @@ public class MetadataCodeController extends BaseControl {
 	 */
 	@RequestMapping(path = "/metadata/code/getFunctionClassList", method = { RequestMethod.GET })
 	public MappingJacksonValue getFunctionClassList(@RequestParam(name = MetadataCodeController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) throws CodeServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			//0.校验输入参数（框架搞定，如果业务业务搞定）
-			//1.查询后台服务
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			// 1.查询后台服务
 			List<Code> codes = codeService.getCodesForRoot(true);
-			//2.转成框架数据
+			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(codes);
-			//3.创建页面显示数据项的过滤器
+			// 3.创建页面显示数据项的过滤器
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
-			//4.返回结果
-			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
+			// 4.返回结果
 			return mappingJacksonValue;
 		} catch (CodeServiceException e) {
-			e.printStackTrace(System.err);
+			throw e;
 		}
-		return null;
 	}
 
 	/**
@@ -113,7 +91,7 @@ public class MetadataCodeController extends BaseControl {
 	@RequestMapping(path = "/metadata/code/getSubFuctionClassList", method = { RequestMethod.GET })
 	public MappingJacksonValue getSubFuctionClassList(@RequestParam(name = "pid", required = true) Long pid,
 			@RequestParam(name = MetadataCodeController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) throws CodeServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			List<Code> codes = codeService.getCodesByParentId(pid, false);
@@ -122,24 +100,9 @@ public class MetadataCodeController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		} catch (CodeServiceException e) {
-			e.printStackTrace(System.err);
+			throw e;
 		}
-		return null;
 	}
 
 	/**
@@ -151,7 +114,8 @@ public class MetadataCodeController extends BaseControl {
 	 */
 	@RequestMapping(path = "/metadata/code/createCodeForRoot", method = { RequestMethod.GET })
 	public MappingJacksonValue createCodeForRoot(@RequestParam(name = "name", required = true) String name, @RequestParam(name = "remark", defaultValue = "") String remark,
-			@RequestParam(name = "orderNo", defaultValue = "0") int orderNo, @RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) {
+			@RequestParam(name = "orderNo", defaultValue = "0") int orderNo, @RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug)
+			throws CodeServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 
@@ -179,32 +143,8 @@ public class MetadataCodeController extends BaseControl {
 				mappingJacksonValue.setFilters(filterProvider);
 				return mappingJacksonValue;
 			}
-		} catch (Exception e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			return mappingJacksonValue;
-		}
-	}
-
-	@Override
-	protected void processBusinessException(ResponseError error, Exception ex) {
-		if (ex instanceof CodeServiceException) {
-			CodeServiceException codeServiceException = (CodeServiceException) ex;
-			error.setType("BizException");
-			error.setCode(codeServiceException.getErrorCode());
-			error.setMessage(codeServiceException.getMessage());
+		} catch (CodeServiceException e) {
+			throw e;
 		}
 	}
 
@@ -229,7 +169,7 @@ public class MetadataCodeController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // 主键',
-			//filter.add("pid"); // 父主键',
+			// filter.add("pid"); // 父主键',
 			filter.add("name"); // '类型名称',
 		}
 
