@@ -79,11 +79,11 @@ public interface DirectorySourceService {
 	/**
 	 * 查询一个Directory
 	 * 
-	 * @param directoryId
+	 * @param id
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public DirectorySource getDirectorySourceById(Long appId, Long directorySourceId) throws DirectorySourceServiceException;
+	public DirectorySource getDirectorySourceById(Long appId, Long id) throws DirectorySourceServiceException;
 
 	/**
 	 * 查询一个目录下的资源列表
