@@ -28,6 +28,7 @@ public abstract class ServiceError {
 
 	public final static int ERROR_NOT_MYSELF = 108; // 不是自己的目录
 	public final static int ERROR_OBJECT_EXIST = 109; // 重复对象存在
+	public final static int ERROR_SQL=200; //数据库错误
 
 	// Define Directory's related assertions.
 	public static void assertAppIdForDirectory(Long appId) throws DirectoryServiceException {
