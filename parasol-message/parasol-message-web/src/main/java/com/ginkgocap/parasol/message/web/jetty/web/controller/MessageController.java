@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ginkgocap.parasol.directory.web.jetty.web.controller;
+package com.ginkgocap.parasol.message.web.jetty.web.controller;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -34,12 +34,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.dubbo.rpc.RpcException;
+import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.ginkgocap.parasol.directory.exception.DirectoryTypeServiceException;
-import com.ginkgocap.parasol.directory.model.DirectoryType;
-import com.ginkgocap.parasol.directory.service.DirectoryTypeService;
-import com.ginkgocap.parasol.directory.web.jetty.web.ResponseError;
+import com.ginkgocap.parasol.message.model.MessageEntity;
+import com.ginkgocap.parasol.message.service.MessageEntityService;
+import com.ginkgocap.parasol.message.web.jetty.web.ResponseError;
 
 /**
  * 
@@ -49,38 +49,48 @@ import com.ginkgocap.parasol.directory.web.jetty.web.ResponseError;
  * @Copyright Copyright©2015 www.gintong.com
  */
 @RestController
-public class DirectoryTypeController extends BaseControl {
-	private static Logger logger = Logger.getLogger(DirectoryTypeController.class);
+public class MessageController extends BaseControl {
+	private static Logger logger = Logger.getLogger(MessageController.class);
 
 	private static final String paramenterFields = "fields";
 	private static final String paramenterDebug = "debug";
-	private static final String paramenterAppId = "appKey";
+	private static final String paramenterAppId = "appKey"; // 应用的Key
+	private static final String paramenterUserId = "userId"; // 访问的用户参数
+	private static final String paramenterRootType = "rootType"; // 查询的应用分类
+	private static final String paramenterPid = "pid"; // 查询的子目录
+	private static final String paramenterName = "name"; // 目录名称
+	private static final String paramenterDirectoryId = "directoryId"; // 目录ID
+	private static final String paramenterToDirectoryId = "toDirectoryId"; // 移动目录的生活，移动那个目录下
 
 	@Autowired
-	private DirectoryTypeService directoryTypeService;
+	private MessageEntityService messageEntityService;
 
 	/**
-	 * 1. （查询类）查询有哪些大分类
+	 * 2.创建分类下的根目录
 	 * 
 	 * @param request
 	 * @return
+	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/directory/type/getTypeList", method = { RequestMethod.GET })
-	public MappingJacksonValue getFunctionClassList(@RequestParam(name = DirectoryTypeController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryTypeController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryTypeController.paramenterAppId, required = true) Long appId) {
+	@RequestMapping(path = { "/directory/directory/createDirectoryRoot" }, method = { RequestMethod.GET })
+	public MappingJacksonValue createDirectoryRoot(@RequestParam(name = MessageController.paramenterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MessageController.paramenterDebug, defaultValue = "") String debug,
+			@RequestParam(name = MessageController.paramenterAppId, required = true) Long appId,
+			@RequestParam(name = MessageController.paramenterUserId, required = true) Long userId,
+			@RequestParam(name = MessageController.paramenterName, required = true) String name,
+			@RequestParam(name = MessageController.paramenterRootType, required = true) long rootType) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			List<DirectoryType> directoryTypes = directoryTypeService.getDirectoryTypessByAppId(appId);
+
+			MessageEntity entity = new MessageEntity();
+			entity.setAppid(appId.toString());
+			
+
+			Map<String, Long> reusltMap = new HashMap<String, Long>();
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(directoryTypes);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
+			mappingJacksonValue = new MappingJacksonValue(reusltMap);
 			return mappingJacksonValue;
 		} catch (RpcException e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
@@ -96,20 +106,10 @@ public class DirectoryTypeController extends BaseControl {
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			e.printStackTrace(System.err);
 			return mappingJacksonValue;
-		} catch (DirectoryTypeServiceException e) {
-			e.printStackTrace(System.err);
+		} catch (Exception e) {
+			
 		}
-		return null;
-	}
-
-	@Override
-	protected void processBusinessException(ResponseError error, Exception ex) {
-		if (ex instanceof DirectoryTypeServiceException) {
-			DirectoryTypeServiceException dtex = (DirectoryTypeServiceException) ex;
-			error.setType("BizException");
-			error.setCode(dtex.getErrorCode());
-			error.setMessage(dtex.getMessage());
-		}
+		return mappingJacksonValue;
 	}
 
 	/**
@@ -133,9 +133,19 @@ public class DirectoryTypeController extends BaseControl {
 		} else {
 			filter.add("id"); // id',
 			filter.add("name"); // '分类名称',
+			filter.add("typeId"); // '应用的分类分类ID',
+			filter.add("appId"); // '应用的分类分类ID',
+			filter.add("userId"); // '应用的分类分类ID',
 		}
 
-		filterProvider.addFilter(DirectoryType.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		filterProvider.addFilter(Directory.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
+	}
+
+	@Override
+	protected <T> void processBusinessException(ResponseError error,
+			Exception ex) {
+		// TODO Auto-generated method stub
+		
 	}
 }

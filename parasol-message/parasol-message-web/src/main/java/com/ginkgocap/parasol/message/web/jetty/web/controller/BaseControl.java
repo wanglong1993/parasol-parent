@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.directory.web.jetty.web.controller;
+package com.ginkgocap.parasol.message.web.jetty.web.controller;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.alibaba.dubbo.rpc.RpcException;
-import com.ginkgocap.parasol.directory.web.jetty.web.ResponseError;
+import com.ginkgocap.parasol.message.web.jetty.web.ResponseError;
 /**
  * 
  * @author allenshen

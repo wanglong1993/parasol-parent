@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.directory.web.jetty.web.error;
+package com.ginkgocap.parasol.message.web.jetty.web.error;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,11 +26,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
-import com.ginkgocap.parasol.directory.web.jetty.web.ResponseError;
+import com.ginkgocap.parasol.message.web.jetty.web.ResponseError;
 
 @ControllerAdvice
-public class DirectoryErrorControl {
-	public static Logger logger = Logger.getLogger(DirectoryErrorControl.class);
+public class MessageErrorControl {
+	public static Logger logger = Logger.getLogger(MessageErrorControl.class);
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	@ResponseBody
