@@ -63,7 +63,9 @@ public class DirectorySourceController extends BaseControl {
 	private static final String paramenterSourceUrl = "sourceUrl";
 	private static final String paramenterSourceTitle = "sourceTitle";
 	private static final String paramenterSourceData = "sourceData";
+	private static final String paramenterDirectorySourceIds="ids";
 	private static final String paramenterDirectorySourceId="id";
+
 
 	@Autowired
 	private DirectorySourceService directorySourceService;
@@ -214,7 +216,7 @@ public class DirectorySourceController extends BaseControl {
 
 	
 	/**
-	 * 2. 删除一个DirectorySource
+	 * 2. 移动多个或者一个DirectorySource到其它目录下
 	 * 
 	 * @param request
 	 * @return
@@ -225,12 +227,12 @@ public class DirectorySourceController extends BaseControl {
 	public MappingJacksonValue moveDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
-			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceId, required = true) Long id,
+			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceIds, required = true) Long[] ids,
 			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) throws DirectorySourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// TODO: 没有实现这个方法
-			Boolean success = directorySourceService.removeDirectorySources(appId,userId,id);
+			Boolean success = directorySourceService.moveDirectorySources(userId, appId, directoryId, ids);
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
