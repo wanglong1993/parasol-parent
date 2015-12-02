@@ -2,6 +2,7 @@ package com.ginkgocap.parasol.directory.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +92,7 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 				sb.append("appId=").append(appId);
 				sb.append(" and ").append("userId=").append(userId);
 				sb.append(" and ").append("id=").append(id);
-				throw new DirectorySourceServiceException(ServiceError.ERROR_NOT_FOUND, "don't find the DirectorySource by [ " + sb.toString()+" ]");
+				throw new DirectorySourceServiceException(ServiceError.ERROR_NOT_FOUND, "don't find the DirectorySource by [ " + sb.toString() + " ]");
 			}
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
@@ -108,6 +109,57 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public boolean moveDirectorySources(long userId, long appId, Long directoryId, Long[] ids) throws DirectorySourceServiceException {
+
+		ServiceError.assertAppIdForDirectorySource(appId);
+		ServiceError.assertUserIdForDirectorySource(userId);
+		ServiceError.assertDirectoryIdForDirectorySource(directoryId);
+
+		try {
+			Directory directory = directoryService.getDirectory(appId, userId, directoryId);
+			if (directory == null) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("appId=").append(appId);
+				sb.append(" and ").append("userId=").append(userId);
+				sb.append(" and ").append("id=").append(directoryId);
+				throw new DirectorySourceServiceException(ServiceError.ERROR_NOT_FOUND, "don't find the directory by [" + sb.toString() + "]");
+			}
+
+			if (!ArrayUtils.isEmpty(ids)) {
+				for (Long id : ids) {
+					if (id != null && id > 0) {
+						DirectorySource ds = this.getDirectorySourceById(appId, id);
+						if (ds != null && ObjectUtils.equals(ds.getAppId(), appId) && ObjectUtils.equals(ds.getUserId(), userId)) {
+							ds.setDirectoryId(directoryId);
+							this.updateEntity(ds);
+						} else {
+							if (ds != null) {
+								logger.error("Operation of the non own directory source");
+							} else {
+
+								logger.error("dont find the DirectorySource by [ userId=" + userId + " and id=" + id + "]");
+							}
+						}
+
+					}
+				}
+			}
+		} catch (DirectoryServiceException e) {
+			throw new DirectorySourceServiceException(e);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			String msg = getSqlErrorMessage(e);
+			if (msg != null) {
+				throw new DirectorySourceServiceException(ServiceError.ERROR_SQL, msg);
+			} else {
+				throw new DirectorySourceServiceException(e);
+
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -130,15 +182,15 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	}
 
 	@Override
-	public DirectorySource getDirectorySourceById(Long appId, Long directorySourceId) throws DirectorySourceServiceException {
+	public DirectorySource getDirectorySourceById(Long appId, Long id) throws DirectorySourceServiceException {
 		try {
 			ServiceError.assertAppIdForDirectorySource(appId);
-			DirectorySource ds = this.getEntity(directorySourceId);
+			DirectorySource ds = this.getEntity(id);
 			if (ds != null && ObjectUtils.equals(ds.getAppId(), appId)) {
 				return ds;
 			}
 		} catch (BaseServiceException e) {
-			e.printStackTrace();
+			e.printStackTrace(System.err);
 		}
 		return null;
 	}
@@ -191,4 +243,27 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param ex
+	 * @return
+	 */
+	private String getSqlErrorMessage(Throwable ex) {
+		if (ex == null) {
+			return null;
+		} else {
+			Throwable t = ex.getCause();
+			do {
+				if (logger.isDebugEnabled()) {
+					logger.debug("package name : " + t.getClass().getPackage().getName());
+					logger.debug("message: " + t.getMessage());
+				}
+				if (t != null && t.getClass().getPackage().getName().startsWith("java.sql")) {
+					return t.getMessage();
+				}
+				t = t.getCause();
+			} while (t != null);
+		}
+		return null;
+	}
 }
