@@ -47,8 +47,6 @@ public class DirectoryErrorControl {
 			ex.printStackTrace(System.err);
 			responseError.setMessage(ex.getLocalizedMessage());
 			responseError.setError_subcode(getErrorCode(ex));
-
-			
 		}
 		
 		ResponseEntity<ResponseError> responseEntity = new ResponseEntity<ResponseError>(responseError, status);
