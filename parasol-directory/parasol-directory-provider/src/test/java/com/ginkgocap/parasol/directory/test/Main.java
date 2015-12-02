@@ -10,5 +10,8 @@ public class Main {
 		parentIds = Arrays.copyOfRange(parentIds, parentIds.length - 3, parentIds.length);
 		parentIds=new String[]{};
 		System.out.println(StringUtils.join(parentIds, "-"));
+		String cc = new String();
+		
+		System.out.println(cc.getClass().getPackage().getName());
 	}
 }
