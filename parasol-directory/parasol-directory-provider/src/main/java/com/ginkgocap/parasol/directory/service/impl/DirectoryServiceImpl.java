@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.directory.service.impl;
 
-import java.rmi.ServerError;
 import java.util.Arrays;
 import java.util.List;
 
