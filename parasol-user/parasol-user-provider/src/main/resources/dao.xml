@@ -87,7 +87,25 @@
           <map name="UserFriendly_Map_FriendId"
                  sqlitem="select id from tb_user_friendly where friend_id=? and user_id=?"
                  sqlType="hsql" keyProperty="friendId,userId" valueProperty="id"  update="true"/>                                 	                 			
-		</object>						
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserLoginThird" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+ 		<!-- 通过openId,lotinType查找id --> 
+          <map name="UserLoginThird_Map_OpenId_LoginType"
+                 sqlitem="select id from tb_login_third where open_id=? and login_type=?"
+                 sqlType="hsql" keyProperty="openId,loginType" valueProperty="id"  update="true"/>  
+ 		<!-- 通过openid查找id --> 
+          <map name="UserLoginThird_Map_OpenId"
+                 sqlitem="select id from tb_login_third where open_id=?"
+                 sqlType="hsql" keyProperty="openId" valueProperty="id"  update="true"/>    
+ 		<!-- 通过userId,loginType查找id --> 
+          <map name="UserLoginThird_Map_UserId_LoginType"
+                 sqlitem="select id from tb_login_third where user_id=? and login_type"
+                 sqlType="hsql" keyProperty="userId,loginType" valueProperty="id"  update="true"/>                                                  	                 			
+		</object>								
 	</route>
 </dal>
 

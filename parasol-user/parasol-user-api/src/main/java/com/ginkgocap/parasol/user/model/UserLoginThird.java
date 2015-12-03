@@ -3,8 +3,11 @@ package com.ginkgocap.parasol.user.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 第三方登录
@@ -26,17 +29,17 @@ public class UserLoginThird implements java.io.Serializable {
 	 */
 	private Long userId;
 	/**
-	 * openid即为tb_user表中的通行证。.
+	 * openId即为tb_user表中的通行证。.
 	 */
-	private String openid;
+	private String openId;
 	/**
 	 * 登录类型 100:QQ登录，200:新浪微博登录.
 	 */
-	private byte loginType;
+	private int loginType;
 	/**
 	 * 过期时间.
 	 */
-	private Byte expiresday;
+	private int expiresday;
 	/**
 	 * 访问会话.
 	 */
@@ -53,15 +56,23 @@ public class UserLoginThird implements java.io.Serializable {
 	 * 用户IP.
 	 */
 	private String ip;
+//	/**
+//	 * 第三方头像地址
+//	 */
+//	private String figureurl; 
+//	/**
+//	 * 第三方昵称
+//	 */
+//	private String nikeName;  
 
 	public UserLoginThird() {
 	}
 
-	public UserLoginThird(Long id, Long userId, String openid, byte loginType,
+	public UserLoginThird(Long id, Long userId, String openId, int loginType,
 			String accesstoken, Long ctime, Long utime, String ip) {
 		this.id = id;
 		this.userId = userId;
-		this.openid = openid;
+		this.openId = openId;
 		this.loginType = loginType;
 		this.accesstoken = accesstoken;
 		this.ctime = ctime;
@@ -69,12 +80,12 @@ public class UserLoginThird implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	public UserLoginThird(Long id, Long userId, String openid, byte loginType,
-			Byte expiresday, String accesstoken, Long ctime, Long utime,
+	public UserLoginThird(Long id, Long userId, String openId, int loginType,
+			int expiresday, String accesstoken, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
 		this.userId = userId;
-		this.openid = openid;
+		this.openId = openId;
 		this.loginType = loginType;
 		this.expiresday = expiresday;
 		this.accesstoken = accesstoken;
@@ -82,9 +93,10 @@ public class UserLoginThird implements java.io.Serializable {
 		this.utime = utime;
 		this.ip = ip;
 	}
-
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
+	@Column(name = "id")
 	public Long getId() {
 		return this.id;
 	}
@@ -102,30 +114,30 @@ public class UserLoginThird implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "openid", nullable = false, length = 100)
-	public String getOpenid() {
-		return this.openid;
+	@Column(name = "open_id", nullable = false, length = 100)
+	public String getOpenId() {
+		return this.openId;
 	}
 
-	public void setOpenid(String openid) {
-		this.openid = openid;
+	public void setOpenId(String openId) {
+		this.openId = openId;
 	}
 
-	@Column(name = "loginType", nullable = false)
-	public byte getLoginType() {
+	@Column(name = "login_type", nullable = false)
+	public int getLoginType() {
 		return this.loginType;
 	}
 
-	public void setLoginType(byte loginType) {
+	public void setLoginType(int loginType) {
 		this.loginType = loginType;
 	}
 
 	@Column(name = "expiresday")
-	public Byte getExpiresday() {
+	public int getExpiresday() {
 		return this.expiresday;
 	}
 
-	public void setExpiresday(Byte expiresday) {
+	public void setExpiresday(int expiresday) {
 		this.expiresday = expiresday;
 	}
 
@@ -166,5 +178,21 @@ public class UserLoginThird implements java.io.Serializable {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
+
+//	public String getFigureurl() {
+//		return figureurl;
+//	}
+//
+//	public void setFigureurl(String figureurl) {
+//		this.figureurl = figureurl;
+//	}
+//
+//	public String getNikeName() {
+//		return nikeName;
+//	}
+//
+//	public void setNikeName(String nikeName) {
+//		this.nikeName = nikeName;
+//	}
 
 }

@@ -67,6 +67,51 @@
 			<artifactId>shiro-core</artifactId>
 			<version>${shiro.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>weibo4j</groupId>
+			<artifactId>weibo4j-oauth2</artifactId>
+			<version>2.1.2-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-huanxin</artifactId>
+			<version>1.1.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.apple</groupId>
+			<artifactId>AppleJavaExtensions</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>		
 	</dependencies>
 
 	<build>
@@ -181,7 +226,7 @@
 				<redis.port>6379</redis.port>
 				<!-- dubbo -->
 				<user.dubbo.application.name>${project.artifactId}</user.dubbo.application.name>
-				<user.dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</user.dubbo.registry.address>
+				<user.dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</user.dubbo.registry.address>
 				<user.dubbo.protocol.name>dubbo</user.dubbo.protocol.name>
 				<user.dubbo.protocol.port>20884</user.dubbo.protocol.port>
 			</properties>
@@ -197,6 +242,6 @@
 				</filters>
 			</build>
 		</profile>
-		
+
 	</profiles>
 </project>

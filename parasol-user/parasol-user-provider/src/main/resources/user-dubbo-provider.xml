@@ -34,4 +34,8 @@
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserLoginRegisterService" ref="userLoginRegisterService" version="2.0.0"/>
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserBasicService" ref="userBasicService" version="2.0.0"/>
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserInterestIndustryService" ref="userInterestIndustryService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserFriendlyServiceImpl" ref="userFriendlyService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserOrganBasicServiceImpl" ref="userOrganBasicService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserOrgPerCusRelServiceImpl" ref="userOrgPerCusRelService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserLoginThirdServiceImpl" ref="userLoginThirdService" version="2.0.0"/>
 </beans>

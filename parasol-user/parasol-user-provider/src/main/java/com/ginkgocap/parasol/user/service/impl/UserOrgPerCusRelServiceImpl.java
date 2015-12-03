@@ -16,7 +16,7 @@ import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
-@Service("UserOrgPerCusRelService")
+@Service("userOrgPerCusRelService")
 public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> implements UserOrgPerCusRelService {
 	private static int error_friendId_is_null=1001;
 	private static int error_userId_is_null=1000;
