@@ -34,7 +34,7 @@ public class UserLoginRegisterController extends BaseControl {
 			@RequestParam(name = UserLoginRegisterController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = UserLoginRegisterController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = UserLoginRegisterController.paramenterName, required = true) String name,
-			@RequestParam(name = UserLoginRegisterController.paramenterRootType, required = true) long rootType) throws DirectoryServiceException {
+			@RequestParam(name = UserLoginRegisterController.paramenterRootType, required = true) long rootType) throws UserLoginRegisterServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 		}  catch (UserLoginRegisterServiceException e) {
