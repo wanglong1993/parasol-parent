@@ -30,7 +30,12 @@
 	http://www.springframework.org/schema/integration/stream/spring-integration-stream-2.1.xsd 
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
+    
+    <dubbo:reference id="messageEntityService" interface="com.ginkgocap.parasol.message.service.MessageEntityService" version="2.0.0" />
+	<dubbo:reference id="messageRelationService" interface="com.ginkgocap.parasol.message.service.MessageRelationService" version="2.0.0" />
+    <!-- 
     <dubbo:reference id="directoryService" interface="com.ginkgocap.parasol.directory.service.DirectoryService" version="2.0.0"/>
     <dubbo:reference id="directoryTypeService" interface="com.ginkgocap.parasol.directory.service.DirectoryTypeService" version="2.0.0"/>
     <dubbo:reference id="directorySourceService" interface="com.ginkgocap.parasol.directory.service.DirectorySourceService" version="2.0.0"/>
+	 -->
 </beans>

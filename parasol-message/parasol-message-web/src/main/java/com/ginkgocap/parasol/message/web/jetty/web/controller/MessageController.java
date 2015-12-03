@@ -19,14 +19,14 @@ package com.ginkgocap.parasol.message.web.jetty.web.controller;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Resource;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -62,7 +62,7 @@ public class MessageController extends BaseControl {
 	private static final String paramenterDirectoryId = "directoryId"; // 目录ID
 	private static final String paramenterToDirectoryId = "toDirectoryId"; // 移动目录的生活，移动那个目录下
 
-	@Autowired
+	@Resource
 	private MessageEntityService messageEntityService;
 
 	/**
@@ -73,7 +73,7 @@ public class MessageController extends BaseControl {
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = { "/directory/directory/createDirectoryRoot" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/message/message/createMessageEntity" }, method = { RequestMethod.GET })
 	public MappingJacksonValue createDirectoryRoot(@RequestParam(name = MessageController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = MessageController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = MessageController.paramenterAppId, required = true) Long appId,
@@ -112,6 +112,35 @@ public class MessageController extends BaseControl {
 		return mappingJacksonValue;
 	}
 
+	/**
+	 * 1. （查询类）查询分类下的根目录
+	 * 
+	 * @param request
+	 * @return
+	 * @throws DirectoryServiceException
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = { "/message/message/getEntityById" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getFunctionClassList(@RequestParam(name = MessageController.paramenterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MessageController.paramenterDebug, defaultValue = "") String debug) throws Exception {
+		MappingJacksonValue mappingJacksonValue = null;
+		System.out.println("-------------------------------------");
+		try {
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			// 1.查询后台服务
+			MessageEntity entities = messageEntityService.getMessageEntityById(3912367343927301l);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(entities);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (Exception e) {
+			throw e;
+		}
+	}	
+	
 	/**
 	 * 指定显示那些字段
 	 * 
