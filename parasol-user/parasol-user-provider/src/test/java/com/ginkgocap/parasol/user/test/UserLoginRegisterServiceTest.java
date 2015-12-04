@@ -35,7 +35,7 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testCreateUserLoginRegister(){
 		try {
-			Long id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister("13716683970",new Byte("1")));
+			Long id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister("13677687632",new Byte("1")));
 			Assert.assertTrue(id !=null && id > 0L);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -158,7 +158,7 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testSendIdentifyingCode(){
 		try {
-			String  identifyingCode =userLoginRegisterService.sendIdentifyingCode("13716683972");
+			String  identifyingCode =userLoginRegisterService.sendIdentifyingCode("13677687632");
 			Assert.assertTrue(StringUtils.isEmpty(identifyingCode));
 		} catch (Exception e) {
 			e.printStackTrace();
