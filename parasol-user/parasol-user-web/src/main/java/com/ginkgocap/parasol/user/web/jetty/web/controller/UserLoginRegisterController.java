@@ -50,9 +50,10 @@ public class UserLoginRegisterController extends BaseControl {
 			}else{
 				JSONObject json = JSONObject.fromObject(requestJson);
 //				id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister(json.getString("passport"),new Byte(json.getString("virtual"))));
-				userLoginRegisterService.sendIdentifyingCode("13677687632");
+				String identifyingCode= userLoginRegisterService.sendIdentifyingCode("13677687632");
 				UserLoginRegister ulr=userLoginRegisterService.getUserLoginRegister(3913092224516104l);
 				ulr.getUserName();
+				logger.info("你的短信验证码为:"+identifyingCode+",有效时间1分钟");
 				
 			// 2.转成框架数据
 			}
