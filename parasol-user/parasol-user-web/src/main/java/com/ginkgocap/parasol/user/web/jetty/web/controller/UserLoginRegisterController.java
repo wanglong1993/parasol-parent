@@ -50,7 +50,7 @@ public class UserLoginRegisterController extends BaseControl {
 			}else{
 				JSONObject json = JSONObject.fromObject(requestJson);
 //				id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister(json.getString("passport"),new Byte(json.getString("virtual"))));
-				userLoginRegisterService.sendIdentifyingCode("13716683972");
+				userLoginRegisterService.sendIdentifyingCode("13677687632");
 				UserLoginRegister ulr=userLoginRegisterService.getUserLoginRegister(3913092224516104l);
 				ulr.getUserName();
 				
