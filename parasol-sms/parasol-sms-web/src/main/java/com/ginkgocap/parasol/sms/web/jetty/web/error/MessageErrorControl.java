@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.message.web.jetty.web.error;
+package com.ginkgocap.parasol.sms.web.jetty.web.error;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
-import com.ginkgocap.parasol.message.web.jetty.web.ResponseError;
+import com.ginkgocap.parasol.sms.web.jetty.web.ResponseError;
 
 @ControllerAdvice
 public class MessageErrorControl {

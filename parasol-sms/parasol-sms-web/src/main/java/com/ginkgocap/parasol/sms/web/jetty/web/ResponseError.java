@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.message.web.jetty.web;
+package com.ginkgocap.parasol.sms.web.jetty.web;
 
 import java.io.Serializable;
 

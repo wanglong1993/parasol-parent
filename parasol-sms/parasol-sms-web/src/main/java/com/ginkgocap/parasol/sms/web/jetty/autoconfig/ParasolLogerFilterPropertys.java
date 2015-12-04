@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.message.web.jetty.autoconfig;
+package com.ginkgocap.parasol.sms.web.jetty.autoconfig;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

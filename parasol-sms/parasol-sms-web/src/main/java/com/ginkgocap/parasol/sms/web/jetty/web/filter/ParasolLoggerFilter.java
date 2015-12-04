@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.message.web.jetty.web.filter;
+package com.ginkgocap.parasol.sms.web.jetty.web.filter;
 
 import java.io.IOException;
 

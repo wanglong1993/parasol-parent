@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package com.ginkgocap.parasol.message.web.jetty.web.controller;
+package com.ginkgocap.parasol.sms.web.jetty.web.controller;
 
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -34,13 +29,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.ginkgocap.parasol.message.model.MessageEntity;
-import com.ginkgocap.parasol.message.service.MessageEntityService;
-import com.ginkgocap.parasol.message.web.jetty.web.ResponseError;
+import com.ginkgocap.parasol.sms.service.ShortMessageService;
+import com.ginkgocap.parasol.sms.web.jetty.web.ResponseError;
 
 /**
  * 
@@ -50,8 +43,8 @@ import com.ginkgocap.parasol.message.web.jetty.web.ResponseError;
  * @Copyright Copyright©2015 www.gintong.com
  */
 @RestController
-public class MessageController extends BaseControl {
-	private static Logger logger = Logger.getLogger(MessageController.class);
+public class SmsController extends BaseControl {
+	private static Logger logger = Logger.getLogger(SmsController.class);
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
@@ -67,64 +60,8 @@ public class MessageController extends BaseControl {
 	private static final String parameterReceiverIds = "receiverIds"; // 消息接收人　
 
 	@Resource
-	private MessageEntityService messageEntityService;
+	private ShortMessageService shortMessageService;
 
-	/**
-	 * 2.创建分类下的根目录
-	 * 
-	 * @param request
-	 * @return
-	 * @throws DirectoryServiceException
-	 * @throws CodeServiceException
-	 */
-	@RequestMapping(path = { "/message/message/createMessageEntity" }, method = { RequestMethod.GET })
-	public MappingJacksonValue createMessageEntity(@RequestParam(name = MessageController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MessageController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = MessageController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = MessageController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = MessageController.parameterName, required = true) String name,
-			@RequestParam(name = MessageController.parameterContent, required = true) String content,
-			@RequestParam(name = MessageController.parameterSourceId, required = true) Long sourceId,
-			@RequestParam(name = MessageController.parameterSourceType, required = true) Integer sourceType,
-			@RequestParam(name = MessageController.parameterSourceTitle, required = true) String sourceTitle,
-			@RequestParam(name = MessageController.parameterReceiverIds, required = true) String receiverIds,
-			@RequestParam(name = MessageController.parameterType, required = true) Long type) {
-		MappingJacksonValue mappingJacksonValue = null;
-		Map<String, String> param = new HashMap<String, String>();
-		param.put("type", type.toString());
-		param.put("createrId", userId.toString());
-		param.put("content", content);
-		param.put("sourceId", sourceId.toString());
-		param.put("sourceType", sourceType.toString());
-		param.put("sourceTitle", sourceTitle);
-		param.put("receiverIds", receiverIds);
-		param.put("appid", appId.toString());
-		
-		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			Map<String, Object> result = messageEntityService.insertMessageByParams(param);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(result);
-			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
-		} catch (Exception e) {
-			
-		}
-		return mappingJacksonValue;
-	}
 
 	/**
 	 * 1. 根据entityid获取消息实体
@@ -134,62 +71,29 @@ public class MessageController extends BaseControl {
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = { "/message/message/getEntityById" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getEntityById(@RequestParam(name = MessageController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MessageController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = MessageController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = MessageController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = MessageController.parameterEntityId, required = true) long id
+	@RequestMapping(path = { "/sms/sendMessage" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getEntityById(@RequestParam(name = SmsController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = SmsController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = SmsController.parameterAppId, required = true) Long appId,
+			@RequestParam(name = SmsController.parameterUserId, required = true) Long userId,
+			@RequestParam(name = SmsController.parameterEntityId, required = true) long id
 			) throws Exception {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			MessageEntity entities = messageEntityService.getMessageEntityById(id);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(entities);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
-	/**
-	 * 1. 获取用户消息实体列表
-	 * 
-	 * @param request
-	 * @return
-	 * @throws DirectoryServiceException
-	 * @throws CodeServiceException
-	 */
-	@RequestMapping(path = { "/message/message/getEntityByUserId" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getEntityByUserId(@RequestParam(name = MessageController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MessageController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = MessageController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = MessageController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = MessageController.parameterType, required = true) Integer type
-			) throws Exception {
+
 		MappingJacksonValue mappingJacksonValue = null;
 		
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(userId, type);
+			int result = shortMessageService.sendMessage("15011307812", "你的验证码是6969", 1374, 1);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(entities);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
+			mappingJacksonValue = new MappingJacksonValue(result);
 			return mappingJacksonValue;
 		} catch (Exception e) {
-			throw e;
+			
 		}
+		return mappingJacksonValue;
+	
 	}
+	
 	
 	/**
 	 * 指定显示那些字段

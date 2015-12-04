@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.message.web.jetty.modle;
+package com.ginkgocap.parasol.sms.web.jetty.modle;
 
 public class User {
 	private String name;
