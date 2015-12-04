@@ -31,8 +31,8 @@
 		/>
 	</datasources>
 	<groups>
-		<group name="g2" master="master" salve="slave"/>	
-		<group name="g3" master="master" salve="slave"/>	
+		<group name="g2" master="master" slave="slave"/>	
+		<group name="g3" master="master" slave="slave"/>	
 	</groups>
 
 </root>

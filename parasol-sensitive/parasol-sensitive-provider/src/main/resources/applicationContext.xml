@@ -22,8 +22,6 @@
 	</bean>
 	<import resource="classpath:sensitive-dubbo-config.xml" />
 	<import resource="classpath:sensitive-dubbo-provider.xml" />
-	<import resource="classpath:sensitive-jms-config.xml" />
-	<import resource="classpath:sensitive-mongo-config.xml"/>
 	<import resource="classpath:sensitive-spring-context.xml" />
 	<bean name="dao" class="com.ginkgocap.ywxt.framework.dal.dao.impl.CompositeDaoImpl"/>
 </beans>

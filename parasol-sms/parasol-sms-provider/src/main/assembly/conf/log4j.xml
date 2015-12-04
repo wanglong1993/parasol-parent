@@ -27,7 +27,7 @@
 		<level value="debug"></level>
 	</logger>
 	<root>
-		<level value="error" />
+		<level value="info" />
 		<appender-ref ref="normal_log_file" />
 		<appender-ref ref="consolelog" />
 	</root>
