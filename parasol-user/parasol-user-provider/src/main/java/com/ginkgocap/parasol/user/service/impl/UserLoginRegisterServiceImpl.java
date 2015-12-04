@@ -56,12 +56,6 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		if (random==null)random=new Random();
 			return random;
 	}
-	private static synchronized StringBuffer geStringBuffer(){
-		if (sfb==null)sfb=new StringBuffer();
-		if(sfb.length()!=0)
-		sfb.delete(0, sfb.length()-1);//删除之前的值
-		return sfb;
-	}
 	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException {
 		try {
 			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) throw new UserLoginRegisterServiceException(error_passport_blank,"Field passport must be a value");
@@ -307,7 +301,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	 */
 	private  String generationIdentifyingCode(){
 		Random random = getRandom();
-		StringBuffer sfb=geStringBuffer();
+		StringBuffer sfb=new StringBuffer();
 		for (int i = 0; i < 6; i++) {
 			String rand = String.valueOf(random.nextInt(10));
 			sfb.append(rand);
@@ -325,7 +319,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 				if(StringUtils.isEmpty(identifyingCode)){
 					identifyingCode=generationIdentifyingCode();
 					if(setCache(mobile,identifyingCode)){
-						if(shortMessageService.sendMessage(mobile, geStringBuffer().append("您的短信验证码为").append("，有效期30分钟，请及时验证").toString(), getId(mobile), 1)==1)
+						if(shortMessageService.sendMessage(mobile, new StringBuffer().append("您的短信验证码为").append("，有效期30分钟，请及时验证").toString(), getId(mobile), 1)==1)
 							return identifyingCode;
 						else return "";
 					}
