@@ -2,7 +2,6 @@ package com.ginkgocap.parasol.user.service;
 
 import java.util.Map;
 
-import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginThirdServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginThird;
 
@@ -10,6 +9,23 @@ import com.ginkgocap.parasol.user.model.UserLoginThird;
  * 第三方登录
  */
 public interface UserLoginThirdService {
+	
+	/**
+	 * 获取qq或者微博的第三方登录访问地址
+	 * @param type 1为qq,2为sina微博
+	 * @return String 
+	 */
+	public String  getLoginThirdUrl(int type) throws UserLoginThirdServiceException;
+	
+	/**
+	 * 获取qq或者微博的第三方登录访问地址
+	 * @param logi_type
+	 * @param access_token
+	 * @param nickName
+	 * @param headpic
+	 * @return String 
+	 */
+	public String  saveUserLoginThird(int login_type,String access_token, String nikeName,String headpic) throws UserLoginThirdServiceException;
 
 	/**
 	 * 创建第三方登录
@@ -95,7 +111,7 @@ public interface UserLoginThirdService {
 	 * @param nikeName
 	 * @return map
 	 */
-	Map<String, Object> registerBinding(Byte login_type,String access_token, String nikeName)throws UserLoginThirdServiceException;
+	Map<String, Object> registerBinding(int login_type,String access_token, String nikeName)throws UserLoginThirdServiceException;
 
 	/**
 	 * 

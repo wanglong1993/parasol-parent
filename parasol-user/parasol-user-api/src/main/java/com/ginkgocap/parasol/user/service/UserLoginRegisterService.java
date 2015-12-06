@@ -133,7 +133,20 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public String sendIdentifyingCode(String mobile)throws UserLoginRegisterServiceException;
-	
+	/**
+	 * 获取验证码
+	 * @param  mobile
+	 * @return Boolean
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public String getIdentifyingCode(String mobile)throws UserLoginRegisterServiceException;
+	/**
+	 * 是否手机号
+	 * @param  mobile
+	 * @return Boolean
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public  boolean isMobileNo(String mobile);
 
 	
 
