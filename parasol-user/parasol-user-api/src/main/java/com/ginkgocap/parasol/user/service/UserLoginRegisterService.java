@@ -127,7 +127,7 @@ public interface UserLoginRegisterService {
 	 */
 	public Boolean setEmail(String email,Long id) throws UserLoginRegisterServiceException;
 	/**
-	 * 发送验证码
+	 * 发送验证码,找回密码
 	 * @param  mobile
 	 * @return Boolean
 	 * @throws UserLoginRegisterServiceException

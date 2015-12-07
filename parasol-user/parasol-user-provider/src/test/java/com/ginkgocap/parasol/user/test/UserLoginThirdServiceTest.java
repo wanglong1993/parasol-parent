@@ -47,8 +47,10 @@ public class UserLoginThirdServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testUpdateUserLoginThird() {
 		try {
-			Long id=userLoginRegisterService.getId("13677687623");
-			Boolean bl =userLoginThirdService.updateUserLoginThird(setUserLoginThird(id));
+			Long userId=userLoginRegisterService.getId("13677687623");
+			UserLoginThird userLoginThird=setUserLoginThird(userId);
+			userLoginThird.setId(3916004866654212l);
+			Boolean bl =userLoginThirdService.updateUserLoginThird(userLoginThird);
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
 			e.printStackTrace();

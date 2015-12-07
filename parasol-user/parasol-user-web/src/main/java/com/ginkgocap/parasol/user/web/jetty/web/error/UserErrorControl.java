@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONException;
+
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -143,6 +145,16 @@ public class UserErrorControl {
 			}
 			prcError.setMessage(ex.getMessage());
 			prcError.setType("BizException");
+		}
+		if(ex instanceof  JSONException ){
+			prcError = new ResponseError();
+			try {
+				prcError.setError_subcode((Integer) MethodUtils.invokeMethod(ex, "getErrorCode", null));
+			} catch (Exception e) {
+
+			}
+			prcError.setMessage(ex.getMessage());
+			prcError.setType("JSONException");
 		}
 		return prcError;
 	}
