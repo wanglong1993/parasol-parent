@@ -53,7 +53,7 @@
 	</bean>
 	<bean id="cache" class="com.ginkgocap.parasol.cache.Cache">
 		<property name="jedisPool" ref="jedisPool"></property>
-        <property name="local" value="true"></property>
+        <property name="local" value="false"></property>
         <property name="localTTL" value="${user.cache.expiredTime}"></property>
 	</bean>
 </beans>
