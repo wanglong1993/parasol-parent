@@ -2,6 +2,7 @@ package com.ginkgocap.parasol.user.service;
 
 import java.util.Map;
 
+import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginThirdServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginThird;
 
@@ -141,4 +142,11 @@ public interface UserLoginThirdService {
 	 * @return UserLoginThird
 	 */	
 	public UserLoginThird getUserLoginThirdById(Long id) throws UserLoginThirdServiceException;
+	/**
+	 * 根据id真删除第三方登录
+	 * @param id
+	 * @return Boolean
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Boolean realDeleteUserLoginThird(Long id) throws UserLoginRegisterServiceException;
 }

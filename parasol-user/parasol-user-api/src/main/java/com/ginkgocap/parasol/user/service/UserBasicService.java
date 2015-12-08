@@ -63,5 +63,12 @@ public interface UserBasicService {
 	 * @throws UserBasicServiceException
 	 */
 	public List<UserBasic> getUserBasecListByProvinceId(int start,int count,Long ProvinceId) throws UserBasicServiceException;
+	/**
+	 * 根据id真删除用户基本信息
+	 * @param id
+	 * @return Boolean
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Boolean realDeleteUserBasic(Long id) throws UserBasicServiceException;	
 
 }

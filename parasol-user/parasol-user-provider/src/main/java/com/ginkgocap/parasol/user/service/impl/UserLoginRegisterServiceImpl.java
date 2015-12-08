@@ -113,7 +113,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 
 	public boolean passportIsExist(String passport) throws UserLoginRegisterServiceException {
 		try {
-			if(StringUtils.isEmpty(passport)) throw new UserLoginRegisterServiceException("password is null or empty.");
+			if(StringUtils.isEmpty(passport)) throw new UserLoginRegisterServiceException("passport is null or empty.");
 			Long userId =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
 			return userId==null?false:true;
 					
@@ -186,7 +186,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	public Long getId(String passport) throws UserLoginRegisterServiceException {
 		try {
 			if(StringUtils.isEmpty(passport))throw new UserLoginRegisterServiceException("passport is null or empty.");
-			return (Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
+			Object id=getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
+			return id!=null?(Long)id:0l;
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -300,7 +301,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 				if(StringUtils.isEmpty(identifyingCode)){
 					identifyingCode=generationIdentifyingCode();
 					if(setCache(mobile,identifyingCode)){
-						int back=shortMessageService.sendMessage(mobile, new StringBuffer().append("您的短信验证码为").append("，有效期30分钟，请及时验证").toString(), getId(mobile), 1);
+						int back=shortMessageService.sendMessage(mobile, new StringBuffer().append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(mobile), 1);
 						if(back==1)return identifyingCode;
 						else return "";
 					}
@@ -319,6 +320,6 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	@Override
 	public String getIdentifyingCode(String mobile)throws UserLoginRegisterServiceException {
 		Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mobile));
-		return value.toString();
+		return value!=null?value.toString():null;
 	}
 }

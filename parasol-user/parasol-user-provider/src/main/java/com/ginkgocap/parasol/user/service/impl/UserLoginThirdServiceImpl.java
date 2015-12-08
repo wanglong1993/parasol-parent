@@ -16,6 +16,7 @@ import weibo4j.model.WeiboException;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.user.exception.UserBasicServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginThirdServiceException;
 import com.ginkgocap.parasol.user.model.UserBasic;
@@ -354,6 +355,19 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 				e.printStackTrace(System.err);
 			}
 			throw new UserLoginThirdServiceException(e);
+		}
+	}
+
+	@Override
+	public Boolean realDeleteUserLoginThird(Long id)throws UserLoginRegisterServiceException {
+		try {
+			if(id==null || id<=0l) throw new UserBasicServiceException("id is must grater than zero.");
+			return deleteEntity(id);
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
 		}
 	}
 

@@ -137,4 +137,17 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 			throw new UserBasicServiceException(e);
 		}
 	}
+
+	@Override
+	public Boolean realDeleteUserBasic(Long id)throws UserBasicServiceException {
+		try {
+			if(id==null || id<=0l) throw new UserBasicServiceException("id is must grater than zero.");
+			return deleteEntity(id);
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserBasicServiceException(e);
+		}
+	}
 }

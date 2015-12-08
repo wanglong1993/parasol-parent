@@ -36,7 +36,7 @@ public class UserBasicServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testCreateUserBasic(){
 		try {
-			Long id=userLoginRegisterService.getId("13716683970");
+			Long id=userLoginRegisterService.getId("13677687629");
 			Long id2 =userBasicService.createUserBasic(setUserBasic(id));
 			Assert.assertTrue(id2!=null && id2>0l);
 		} catch (Exception e) {
