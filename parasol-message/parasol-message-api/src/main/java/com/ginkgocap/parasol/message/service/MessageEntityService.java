@@ -3,6 +3,7 @@ package com.ginkgocap.parasol.message.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ginkgocap.parasol.message.exception.MessageEntityServiceException;
 import com.ginkgocap.parasol.message.model.MessageEntity;
 
 
@@ -22,21 +23,21 @@ public interface MessageEntityService {
 	 * @param id
 	 * @return
 	 */
-	public MessageEntity getMessageEntityById(long id);
+	public MessageEntity getMessageEntityById(long id) throws MessageEntityServiceException;
 	
 	/**
 	 * 
 	 * @param entity
 	 * @return
 	 */
-	public long insertMessageEntity(MessageEntity entity);
+	public long insertMessageEntity(MessageEntity entity) throws MessageEntityServiceException;
 	
 	/**
 	 * 插入消息实体及消息关系
 	 * @param params
 	 * @return
 	 */
-	public Map<String, Object> insertMessageByParams(Map<String,String> params);
+	public Map<String, Object> insertMessageByParams(Map<String,String> params) throws MessageEntityServiceException;
 	
 	/**
 	 * 获取用户消息列表
@@ -44,22 +45,29 @@ public interface MessageEntityService {
 	 * @param type
 	 * @return entity列表
 	 */
-	public List<MessageEntity> getMessagesByUserIdAndType(long userId, int type);
+	public List<MessageEntity> getMessagesByUserIdAndType(long userId, int type) throws MessageEntityServiceException;
 	
 	/**
 	 * 通过消息实体列表获取消息
 	 * @param ids
 	 * @return
 	 */
-	public List<MessageEntity> getMessagesByIds(List<Long> ids);
+	public List<MessageEntity> getMessagesByIds(List<Long> ids) throws MessageEntityServiceException;
 	
 	/**
 	 * 
 	 * @param entity
 	 * @return
+	 * @throws MessageEntityServiceException
 	 */
-	public boolean updateMessageEntity(MessageEntity entity);
+	public boolean updateMessageEntity(MessageEntity entity) throws MessageEntityServiceException;
 	
-	public boolean deleteMessageEntity(long entityId);
+	/**
+	 * 
+	 * @param entityId
+	 * @return
+	 * @throws MessageEntityServiceException
+	 */
+	public boolean deleteMessageEntity(long entityId) throws MessageEntityServiceException;
 	
 }

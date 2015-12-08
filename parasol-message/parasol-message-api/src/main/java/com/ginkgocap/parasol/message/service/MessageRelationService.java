@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.message.service;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.ginkgocap.parasol.message.model.MessageRelation;
@@ -50,6 +49,14 @@ public interface MessageRelationService {
 	 * @return
 	 */
 	public List<MessageRelation> getMessageRelationsByUserId(long userId);
+	
+	/**
+	 * 获取用户某种类型的消息
+	 * @param userId
+	 * @param type
+	 * @return
+	 */
+	public List<MessageRelation> getMessageRelationsByUserIdAndType(long userId, int type);
 	
 	/**
 	 * 根据entity id列表批量删除消息关系

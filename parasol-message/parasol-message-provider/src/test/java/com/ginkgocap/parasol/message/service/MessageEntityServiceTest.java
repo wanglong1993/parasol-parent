@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 
+import com.ginkgocap.parasol.message.exception.MessageEntityServiceException;
 import com.ginkgocap.parasol.message.model.MessageEntity;
 
 public class MessageEntityServiceTest extends TestBase{
@@ -16,7 +17,7 @@ public class MessageEntityServiceTest extends TestBase{
 	private MessageEntityService messageEntityService;
 	
 	@Test
-	public void TestInsertMessageEntity() {
+	public void TestInsertMessageEntity() throws MessageEntityServiceException {
 		MessageEntity entity = new MessageEntity();
 		entity.setId(111111111111l);
 		entity.setAppid("test");
@@ -26,14 +27,14 @@ public class MessageEntityServiceTest extends TestBase{
 	}
 	
 	@Test
-	public void TestGetMessageEntity() {
+	public void TestGetMessageEntity() throws MessageEntityServiceException {
 		long id = 3911302733103109l;
 		MessageEntity entity = messageEntityService.getMessageEntityById(id);
 		System.out.println("entity = "+entity.getContent());
 	}
 	
 	@Test
-	public void TestInsertMessageByParams() {
+	public void TestInsertMessageByParams() throws MessageEntityServiceException {
 		Map<String, String> params = new HashMap<String, String>();
 		Map<String, Object> result = null;
 		
@@ -51,7 +52,7 @@ public class MessageEntityServiceTest extends TestBase{
 	}
 	
 	@Test
-	public void TestGetMessagesByUserId() {
+	public void TestGetMessagesByUserId() throws MessageEntityServiceException {
 		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1, 0);
 		System.out.println("entities="+entities);
 	}

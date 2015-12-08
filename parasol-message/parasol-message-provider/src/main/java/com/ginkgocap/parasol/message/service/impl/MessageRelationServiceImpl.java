@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.message.service.impl;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -83,6 +82,20 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 		}
 		return relations;
 	}
+	
+
+	@Override
+	public List<MessageRelation> getMessageRelationsByUserIdAndType(long userId, int type) {
+		logger.info("进入获取我的特定消息列表：参数userId:{}, type:{}", userId, type);
+		List<MessageRelation> relations = null;
+		try {
+			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId_Type", 0,20, userId);
+		} catch (BaseServiceException e) {
+			logger.info("获取我的特定消息列表失败：参数userId:{}, type:{}", userId, type);
+			e.printStackTrace();
+		}
+		return relations;
+	}	
 
 	@Override
 	public boolean delBatchMessageRelation(List<Long> relIds, long userId) {
@@ -96,5 +109,6 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 		}
 		return flag;
 	}
+
 
 }
