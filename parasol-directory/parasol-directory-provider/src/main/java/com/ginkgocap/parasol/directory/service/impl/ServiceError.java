@@ -11,7 +11,6 @@ import com.ginkgocap.parasol.directory.exception.DirectoryTypeServiceException;
 import com.ginkgocap.parasol.directory.model.Directory;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.model.DirectoryType;
-import com.sun.jdi.event.ClassUnloadEvent;
 
 public abstract class ServiceError {
 	public final static int ERROR_PERTIES = 104; // 对象的属性参数错误
