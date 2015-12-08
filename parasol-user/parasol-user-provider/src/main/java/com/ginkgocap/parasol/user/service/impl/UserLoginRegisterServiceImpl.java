@@ -274,7 +274,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		String value=null;
 		if(object!=null)value=object.toString();
 		if(StringUtils.isEmpty(value))
-		bl = cache.set(key, 1 * 60 * 1, identifyingCode);
+		bl = cache.set(key, 1 * 60 * 30, identifyingCode);
 		return bl;
 	}	
 	/**
