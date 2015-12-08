@@ -134,26 +134,29 @@ public class UserLoginThirdController extends BaseControl {
 		UserBasic userBasic= new UserBasic();
 		UserLoginThird userLoginThird= new UserLoginThird();
 		MappingJacksonValue mappingJacksonValue=null;
-		String login_type=null;
-		String access_token=null;
-		String openid=null;
+		String loginType=null;
+		String accessToken=null;
+		String openId=null;
 		String nikeName=null;
 		String password=null;
 		String passport=null;
 		String verificationCode=null;
 		String thumbnailPic=null;
 		String userType=null;
+		String gender=null;
+		Long userId=0l;
 		try {
 			String requestJson= checkRequestJson(notificationMap,request);
 			if(!StringUtils.isEmpty(requestJson)){
+				//验证参数开始
 				JSONObject json = JSONObject.fromObject(requestJson);
 				mappingJacksonValue=checkParameter("verificationCode",verificationCode,json,reusltMap, notificationMap,responseDataMap);
 				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
 				mappingJacksonValue=checkParameter("passport",passport,json,reusltMap, notificationMap,responseDataMap);
 				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
-				mappingJacksonValue=checkParameter("login_type",login_type,json,reusltMap, notificationMap,responseDataMap);
+				mappingJacksonValue=checkParameter("loginType",loginType,json,reusltMap, notificationMap,responseDataMap);
 				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
-				mappingJacksonValue=checkParameter("access_token",access_token,json,reusltMap, notificationMap,responseDataMap);
+				mappingJacksonValue=checkParameter("accessToken",accessToken,json,reusltMap, notificationMap,responseDataMap);
 				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
 				mappingJacksonValue=checkParameter("nikeName",nikeName,json,reusltMap, notificationMap,responseDataMap);
 				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
@@ -161,26 +164,39 @@ public class UserLoginThirdController extends BaseControl {
 				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
 				mappingJacksonValue=checkParameter("thumbnailPic",thumbnailPic,json,reusltMap, notificationMap,responseDataMap);
 				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
-				mappingJacksonValue=checkParameter("openid",openid,json,reusltMap, notificationMap,responseDataMap);
+				mappingJacksonValue=checkParameter("openId",openId,json,reusltMap, notificationMap,responseDataMap);
 				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
 				mappingJacksonValue=checkParameter("userType",userType,json,reusltMap, notificationMap,responseDataMap);
 				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
+				mappingJacksonValue=checkParameter("gender",gender,json,reusltMap, notificationMap,responseDataMap);
+				if(ObjectUtils.isEmpty(mappingJacksonValue))return mappingJacksonValue;
+				//验证参数结束
 				
+				//获取短信验证码开始
 				if(verificationCode!=(userLoginRegisterService.getIdentifyingCode(passport))){
 					setMap(notificationMap, "error", "verificationCode is not right");
 					setMap(notificationMap, "status", 0);
 					return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
 				}
+				//获取短信验证码结束
+				
+				//通行证是否存在开始
 				if(userLoginRegisterService.passportIsExist(passport)){
 					setMap(notificationMap, "error", "mobile already exists.");
 					setMap(notificationMap, "status", 0);
 					return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
 				}
-				if(Integer.parseInt(login_type)!=100 && Integer.parseInt(login_type)!=200){
+				//通行证是否存在结束
+				
+				//验证login_type取值开始
+				if(Integer.parseInt(loginType)!=100 && Integer.parseInt(loginType)!=200){
 					setMap(notificationMap, "error", "login_type is must be 100 or 200.");
 					setMap(notificationMap, "status", 0);
 					return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
 				}
+				//验证login_type取值结束
+				
+				//保存userLoginRegister开始
 				userLoginRegister.setPassport(passport);
 				byte[] bt = Base64.decode(password);
 				String salt=userLoginRegisterService.setSalt();
@@ -188,28 +204,67 @@ public class UserLoginThirdController extends BaseControl {
 				userLoginRegister.setSalt(salt);
 				userLoginRegister.setPassword(password);
 				userLoginRegister.setVirtual(new Byte(userType));
+				userLoginRegister.setIp(getIpAddr(request));
+				userId=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
+				if(userId==null || userId<0L){
+					setMap(notificationMap, "error", "createUserLoginRegister failed.");
+					setMap(notificationMap, "status", 0);
+					return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
+				}
+				//保存userLoginRegister结束
 				
+				//保存userBasic开始
 				userBasic.setPicPath(thumbnailPic);
 				userBasic.setName(nikeName);
+				userBasic.setUserId(userId);
+				userBasic.setSex(new Byte(gender));
 				
-				userLoginThird.setAccesstoken(access_token);
-				userLoginThird.setOpenId(openid);
-				userLoginThird.setLoginType(Integer.parseInt(login_type));
-				
-				String url= userLoginThirdService.getLoginThirdUrl(json.getInt("type"));
-				
-				if(!StringUtils.isEmpty(url)){
-					responseDataMap.put("url", url);
-					notificationMap.put("status", 1);
-				}else {
-//					setNotificationMap(notificationMap,0,"return is null or empty.");
+				userId=userBasicService.createUserBasic(userBasic);
+				if(userId==null || userId<0L){
+					setMap(notificationMap, "error", "createUserBasic failed.");
+					setMap(notificationMap, "status", 0);
+					userLoginRegisterService.realDeleteUserLoginRegister(userId);
+					return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
 				}
-//				if(ObjectUtils.isEmpty(userLoginThirdService.getUserLoginThirdByOpenId(openid))){
-//				setMap(notificationMap, "error", "passport already exists.");
-//				setMap(notificationMap, "status", 0);
-//				return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
-//			}				
-				logger.info("getLoginThirdUrl:"+url);
+				//保存userBasic结束
+				
+				//更新userLoginThird开始
+				if(userId!=null && userId>0L)userLoginThird=userLoginThirdService.getUserLoginThirdByOpenId(openId);
+				if(!ObjectUtils.isEmpty(userLoginThird)){
+					userLoginThird.setAccesstoken(accessToken);
+					userLoginThird.setOpenId(openId);
+					userLoginThird.setLoginType(Integer.parseInt(loginType));
+					if(!userLoginThirdService.updateUserLoginThird(userLoginThird)){
+						setMap(notificationMap, "error", "updateUserLoginThird failed.");
+						setMap(notificationMap, "status", 0);
+						userLoginRegisterService.realDeleteUserLoginRegister(userId);
+						userBasicService.realDeleteUserBasic(userId);
+						return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
+					}
+				}
+				//更新userLoginThird结束
+				
+				//保存userLoginThird开始
+				userLoginThird.setAccesstoken(accessToken);
+				userLoginThird.setOpenId(openId);
+				userLoginThird.setLoginType(Integer.parseInt(loginType));
+				userId=userLoginThirdService.saveUserLoginThird(userLoginThird);
+				if(userId==null || userId<=0l ){
+					setMap(notificationMap, "error", "updateUserLoginThird failed.");
+					setMap(notificationMap, "status", 0);
+					userLoginRegisterService.realDeleteUserLoginRegister(userId);
+					userBasicService.realDeleteUserBasic(userId);
+					return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
+				}else{
+					setMap(responseDataMap,"userLoginRegister",userLoginRegister);
+					setMap(responseDataMap,"userBasic",userBasic);
+					setMap(responseDataMap,"userLoginThird",userLoginThird);
+					setMap(responseDataMap,"status",1);
+					logger.info("注册成功,用户id:"+userId);
+					return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
+				}
+				//保存userLoginThird结束
+				
 			}
 			return new MappingJacksonValue(setResultMap(reusltMap,responseDataMap,notificationMap,null));
 		}catch (Exception e ){
@@ -266,4 +321,22 @@ public class UserLoginThirdController extends BaseControl {
 		Matcher m = p.matcher(mobile);  
 		return m.matches();  
 	}
+	/**
+	 * 获取真实IP的方法
+	 * @param request
+	 * @return
+	 */
+	public String getIpAddr(HttpServletRequest request) {
+		String ip = request.getHeader("x-forwarded-for");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		return ip;
+	}	
 }
