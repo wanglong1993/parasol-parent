@@ -24,10 +24,12 @@ import com.ginkgocap.parasol.message.service.MessageRelationService;
 @Service("messageEntityService")
 public class MessageEntityServiceImpl extends BaseService<MessageEntity> implements MessageEntityService{
 
-	private static int error_duplicate = 100; // 重名
-	private static int error_name_blank = 101; // 名字是空的,名字必须有值
+	private static int error_entityid_blank = 100; // 重名
+	private static int error_entityids_blank = 101; // 名字是空的,名字必须有值
 	private static int error_parententity_null = 102; // 对象不存在。	
-	private static int error_params_null = 103;	//参数为空
+	private static int error_params_null = 103;	//	参数为空
+	private static int error_userid_null = 104; //	用户id为空
+	private static int error_entity_null = 105; // entity为空
 	@Resource
 	private MessageRelationService messageRelationService;
 	
@@ -144,6 +146,9 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 	
 	@Override
 	public List<MessageEntity> getMessagesByUserIdAndType(long userId, int type) throws MessageEntityServiceException {
+		if(userId == 0) {
+			throw new MessageEntityServiceException(error_userid_null,"userid can not null!");
+		}
 		logger.info("进入通过用户名称，消息类型获取消息列表：参数userId：{}, type:{}", userId,type);
 		
 		List<MessageEntity> entities = new ArrayList<MessageEntity>();
@@ -168,9 +173,9 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 		try {
 			// 通过id列表获取实体列表
 			entities = getEntityByIds(ids);
-		} catch (BaseServiceException e1) {
-			logger.error("进入通过用户名称，消息类型获取消息列表出错：参数userId：{}, type:{}, exception:{}", userId,type,e1.getMessage());
-			return entities;
+		} catch (BaseServiceException e) {
+			logger.error("进入通过用户名称，消息类型获取消息列表出错：参数userId：{}, type:{}, exception:{}", userId,type,e.getMessage());
+			throw new MessageEntityServiceException(e);
 		}
 		for(MessageEntity entity : entities) {
 			mapRel.get(entity.getId());
@@ -182,13 +187,18 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 	
 	@Override
 	public List<MessageEntity> getMessagesByIds(List<Long> ids) throws MessageEntityServiceException {
+		
+		if(ids == null || ids.size() ==0 ) {
+			throw new MessageEntityServiceException(error_entityids_blank,"ids is null ");
+		}
+		
 		logger.info("进入根据id列表获取消息提醒实体方法，ids：{}", ids);
 		List<MessageEntity> entities = null;
 		try {
 			entities = getEntityByIds(ids);
 		} catch (BaseServiceException e) {
 			logger.error("根据id列表获取消息提醒实体失败，ids：{}", ids);
-			e.printStackTrace();
+			throw new MessageEntityServiceException(e);
 		}
 			
 		return entities;
@@ -196,38 +206,47 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 	
 	@Override
 	public MessageEntity getMessageEntityById(long id) throws MessageEntityServiceException {
+		if(id == 0) {
+			throw new MessageEntityServiceException(error_entityid_blank,"id is null ");
+		}
 		logger.info("进入根据id获取消息提醒实体方法，id：{}", id);
 		try {
 			return getEntity(id);
 		} catch (BaseServiceException e) {
 			logger.error("根据id获取消息提醒实体失败，id：{}", id);
-			e.printStackTrace();
+			throw new MessageEntityServiceException(e);
 		}
-		return null;
 	}	
 	
 	@Override
 	public boolean updateMessageEntity(MessageEntity entity) throws MessageEntityServiceException {
+		
+		if (entity == null) {
+			throw new MessageEntityServiceException(error_entity_null,"entity is null ");
+		}
 		logger.info("进入更新消息实体，entityId：{}", entity.getId());
 		boolean flag = false;
 		try {
 			flag = updateEntity(entity);
 		} catch (BaseServiceException e) {
 			logger.error("更新消息实体失败，entityId：{}", entity.getId());
-			e.printStackTrace();
+			throw new MessageEntityServiceException(e);
 		}
 		return flag;
 	}
 
 	@Override
 	public boolean deleteMessageEntity(long entityId) throws MessageEntityServiceException {
+		if (entityId == 0) {
+			throw new MessageEntityServiceException(error_entityid_blank,"entityId is blank");
+		}
 		logger.info("进入通过id，删除消息：参数entityId：{}", entityId);
 		boolean flag = false;
 		try {
 			flag = deleteEntity(entityId);
 		} catch (BaseServiceException e) {
 			logger.error("通过id，删除消息失败：参数entityId：{}", entityId);
-			e.printStackTrace();
+			throw new MessageEntityServiceException(e);
 		}
 		return flag;
 	}

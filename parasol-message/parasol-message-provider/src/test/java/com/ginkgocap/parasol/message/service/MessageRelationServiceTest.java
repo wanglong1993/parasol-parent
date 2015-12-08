@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.message.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

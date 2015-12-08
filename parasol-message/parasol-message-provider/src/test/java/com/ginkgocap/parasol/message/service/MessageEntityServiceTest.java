@@ -56,4 +56,10 @@ public class MessageEntityServiceTest extends TestBase{
 		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1, 0);
 		System.out.println("entities="+entities);
 	}
+	
+	@Test
+	public void TestGetMessagesByUserIdAndType() throws MessageEntityServiceException {
+		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1l, 0);
+		System.out.println("entities"+entities);
+	}
 }

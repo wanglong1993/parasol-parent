@@ -57,16 +57,19 @@ public class InitDealShortMessageMQ {
     			// 判断队列中数据是否有效
     			if(sm != null && StringUtils.isNotEmpty(sm.getPhoneNum()) && StringUtils.isNotEmpty(sm.getContent())) {
     				if(smsTemplate.getIsOpen().equals("1")) {
-    					i = sendMsg(sm.getPhoneNum(),sm.getContent());
+    					try {
+							i = sendMsg(sm.getPhoneNum(),sm.getContent());
+						} catch (IOException e) {
+							// 发送失败时，将短信队列从新放入队列中
+    						rc.getCache("sms-queue").save("shortMessage1", sm);
+						}
     					if(i==1) {
     						logger.info("短信发送成功");
     						sm.setId(commonService.getShortMessageIncreaseId());
     						sm.setCompleteTime(format.format(new Date()));
     						mongoTemplate.save(sm);
     					}else {
-    						// 发送失败时，将短信队列从新放入队列中
-    						rc.getCache("sms-queue").save("shortMessage1", sm);
-    						logger.warn("短信发送失败，请检查短信运营商配置！");
+    						logger.warn("短信发送失败，手机号是否是空号！");
     					}
     				}
     			} else {
@@ -75,9 +78,6 @@ public class InitDealShortMessageMQ {
     			}
 			} catch (CacheException e) {
 				logger.warn("从memcacheq获取数据失败：{}", e.toString());
-				e.printStackTrace();
-			} catch (IOException e) {
-				logger.warn("调用短信运营商发送接口失败：{}", e.toString());
 				e.printStackTrace();
 			} catch (InterruptedException e) {
 				logger.warn("执行发送短信线程被中断：{}", e.toString());
