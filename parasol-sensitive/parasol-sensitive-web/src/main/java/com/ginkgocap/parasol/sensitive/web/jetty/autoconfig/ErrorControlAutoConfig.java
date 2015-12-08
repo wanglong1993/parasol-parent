@@ -1,12 +1,12 @@
 package com.ginkgocap.parasol.sensitive.web.jetty.autoconfig;
 
-import com.ginkgocap.parasol.sensitive.web.jetty.web.error.MessageErrorControl;
+import com.ginkgocap.parasol.sensitive.web.jetty.web.error.SensitiveErrorControl;
 
 //@Configuration
 public class ErrorControlAutoConfig {
 	
 	//@Bean
-	public MessageErrorControl createMetadataErrorControl() {
-		return new MessageErrorControl();
+	public SensitiveErrorControl createMetadataErrorControl() {
+		return new SensitiveErrorControl();
 	}
 }
