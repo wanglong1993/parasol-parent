@@ -56,13 +56,9 @@ public class InitDealShortMessageMQ {
     			sm = (ShortMessage) rc.getCache("sms-queue").get("shortMessage1");
     			// 判断队列中数据是否有效
     			if(sm != null && StringUtils.isNotEmpty(sm.getPhoneNum()) && StringUtils.isNotEmpty(sm.getContent())) {
+    				logger.info("短信发送手机号：{},content：{}", sm.getPhoneNum(), sm.getContent());
     				if(smsTemplate.getIsOpen().equals("1")) {
-    					try {
-							i = sendMsg(sm.getPhoneNum(),sm.getContent());
-						} catch (IOException e) {
-							// 发送失败时，将短信队列从新放入队列中
-    						rc.getCache("sms-queue").save("shortMessage1", sm);
-						}
+						i = sendMsg(sm.getPhoneNum(),sm.getContent());
     					if(i==1) {
     						logger.info("短信发送成功");
     						sm.setId(commonService.getShortMessageIncreaseId());
@@ -77,11 +73,13 @@ public class InitDealShortMessageMQ {
     				Thread.sleep(3000);
     			}
 			} catch (CacheException e) {
-				logger.warn("从memcacheq获取数据失败：{}", e.toString());
+				logger.error("从memcacheq获取数据失败：{}", e.toString());
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				logger.warn("执行发送短信线程被中断：{}", e.toString());
+				logger.error("执行发送短信线程被中断：{}", e.toString());
 				e.printStackTrace();
+			} catch (Exception e) {
+				logger.error("处理短信队列失败，异常："+e.toString());
 			} finally {
 				sm = null;
 			}
@@ -121,16 +119,12 @@ public class InitDealShortMessageMQ {
 
 		// 创建url对象
 		URL url = new URL(sb.toString());
-
 		// 打开url连接
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
 		// 设置url请求方式 ‘get’ 或者 ‘post’
 		connection.setRequestMethod("POST");
-
 		// 发送
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-
 		// 返回发送结果
 		String inputline = in.readLine();
 
