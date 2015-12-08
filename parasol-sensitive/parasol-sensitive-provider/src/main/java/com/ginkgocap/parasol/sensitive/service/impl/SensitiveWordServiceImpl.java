@@ -33,8 +33,6 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	private static int error_sensitiveword_blank = 101; // 敏感词对象为空
 	private static int error_checkword_blank = 102; // 检测字符串为空。	
 	private static int error_sensitivewordids_null = 103;	//	id列表为空
-	private static int error_userid_null = 104; //	用户id为空
-	private static int error_entity_null = 105; // entity为空	
 	
 	SWSeeker sw = new SWSeeker();
 
