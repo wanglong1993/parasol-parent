@@ -7,11 +7,13 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.user.exception.UserBasicServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
+import com.ginkgocap.parasol.user.exception.UserLoginThirdServiceException;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
@@ -20,17 +22,6 @@ import com.ginkgocap.parasol.util.PinyinUtils;
 public class UserBasicServiceImpl extends BaseService<UserBasic> implements UserBasicService  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
-	private static int error_userBasic_null = 1000;	
-	private static int error_userId_null = 1001;	
-	private static int error_name_null = 1004;
-	private static int error_sex_incorrect = 1005;
-	private static int error_provinceId_incorrect = 1005;
-	private static int error_countyId_incorrect = 1007;
-	private static int error_ip_incorrect = 1008;
-	private static int error_status_incorrect = 1009;
-	private static int error_userId_not_exists_in_userlogin = 1010;	
-	private static int error_userIds_null = 1011;	
-	private static int error_userId_not_exists_in_userBasic = 1015;	
 	private static Logger logger = Logger.getLogger(UserBasicServiceImpl.class);
 	private static String UserBasic_List_Id_ProvinceId="UserBasic_List_Id_ProvinceId";
 	private static String UserBasic_List_Id_CountyId="UserBasic_List_Id_CountyId";
@@ -41,21 +32,22 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	 * @throws UserBasicServiceException
 	 */
 	private UserBasic checkValidity(UserBasic userBasic,int type)throws UserBasicServiceException,UserLoginRegisterServiceException {
-		if(userBasic==null) throw new UserBasicServiceException(error_userBasic_null,"userBasic can not be null.");
-		if(userBasic.getUserId()<=0l) throw new UserBasicServiceException(error_userId_null,"The value of userId is null or empty.");
+		if(userBasic==null) throw new UserBasicServiceException("userBasic can not be null.");
+		if(userBasic.getUserId()<=0l) throw new UserBasicServiceException("The value of userId is null or empty.");
 		try {
-			if(userLoginRegisterService.getUserLoginRegister(userBasic.getUserId())==null) throw new UserLoginRegisterServiceException(error_userId_not_exists_in_userlogin,"userId not exists in userLoginRegister");
-		} catch (Exception e) {
+			if(userLoginRegisterService.getUserLoginRegister(userBasic.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister");
+		} catch (UserLoginRegisterServiceException e) {
 			e.printStackTrace();
 		}
 		if(type!=0)
-		if(getUserBasic(userBasic.getUserId())==null)throw new UserBasicServiceException(error_userId_not_exists_in_userBasic,"userId not exists in userBasic");
-		if(StringUtils.isEmpty(userBasic.getName()))throw new UserBasicServiceException(error_name_null,"The value of  name is null or empty.");
-		if(userBasic.getSex().intValue()!=0 && userBasic.getSex().intValue()!=1 && userBasic.getSex().intValue()!=2)throw new UserBasicServiceException(error_sex_incorrect,"The value of sex must be 0 or 1 or 2.");
-		if(StringUtils.isEmpty(userBasic.getIp()))throw new UserBasicServiceException(error_ip_incorrect,"The value of ip is null or empty.");
-		if(userBasic.getStatus().intValue() != 0 && userBasic.getStatus().intValue() != 1 && userBasic.getStatus().intValue() != -1 && userBasic.getStatus() !=2)throw new UserBasicServiceException(error_status_incorrect,"The value of status is null or empty.");
+		if(getUserBasic(userBasic.getUserId())==null)throw new UserBasicServiceException("userId not exists in userBasic");
+		if(StringUtils.isEmpty(userBasic.getName()))throw new UserBasicServiceException("The value of  name is null or empty.");
+		if(userBasic.getSex().intValue()!=0 && userBasic.getSex().intValue()!=1 && userBasic.getSex().intValue()!=2)throw new UserBasicServiceException("The value of sex must be 0 or 1 or 2.");
+		if(StringUtils.isEmpty(userBasic.getIp()))throw new UserBasicServiceException("The value of ip is null or empty.");
+		if(userBasic.getStatus().intValue() != 0 && userBasic.getStatus().intValue() != 1 && userBasic.getStatus().intValue() != -1 && userBasic.getStatus() !=2)throw new UserBasicServiceException("The value of status is null or empty.");
 		if(userBasic.getCtime()==null) userBasic.setCtime(System.currentTimeMillis());
 		if(userBasic.getUtime()==null) userBasic.setUtime(System.currentTimeMillis());
+		if(type==1)userBasic.setUtime(System.currentTimeMillis());
 		userBasic.setNameFirst(StringUtils.substring(PinyinUtils.stringToHeads(userBasic.getName()), 0, 1));
 		userBasic.setNameIndex(PinyinUtils.stringToHeads(userBasic.getName()));
 		userBasic.setNameIndexAll(PinyinUtils.stringToQuanPin(userBasic.getName()));
@@ -65,7 +57,9 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	@Override
 	public Long createUserBasic(UserBasic userBasic)throws UserBasicServiceException,UserLoginRegisterServiceException{
 		try {
-			return (Long) saveEntity(checkValidity(userBasic,0));
+			Long id=(Long)saveEntity(checkValidity(userBasic,0));
+			if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
+			else throw new UserBasicServiceException("createUserLoginRegister failed.");
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -77,7 +71,8 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	@Override
 	public boolean updateUserBasic(UserBasic userBasic)throws UserBasicServiceException,UserLoginRegisterServiceException {
 		try {
-			return updateEntity(checkValidity(userBasic,1));
+			if(updateEntity(checkValidity(userBasic,1)))return true;
+			else throw new UserBasicServiceException("updateUserBasic failed.");
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -89,8 +84,10 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	@Override
 	public UserBasic getUserBasic(Long userId) throws UserBasicServiceException {
 		try {
-			if(userId==null || userId<=0l)throw new UserBasicServiceException(error_userId_null,"userId is null or empty");
-			return getEntity(userId);
+			if(userId==null || userId<=0l)throw new UserBasicServiceException("userId is null or empty");
+			UserBasic userBasic =getEntity(userId);
+			if(!ObjectUtils.isEmpty(userBasic))return userBasic;
+			else throw new UserBasicServiceException("userId is not exists in useBasic");
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -102,7 +99,7 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	@Override
 	public List<UserBasic> getUserBasecList(List<Long> userIds)throws UserBasicServiceException {
 		try {
-			if(userIds==null || userIds.size()==0)throw new UserBasicServiceException(error_userIds_null,"userIds is null or empty");
+			if(userIds==null || userIds.size()==0)throw new UserBasicServiceException("userIds is null or empty");
 			return getEntityByIds(userIds);
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
@@ -115,7 +112,7 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	@Override
 	public List<UserBasic> getUserBasecListByCountryId(int start,int count,Long countyId)throws UserBasicServiceException {
 		try {
-			if(countyId==null || countyId<=0l)throw new UserBasicServiceException(error_countyId_incorrect,"countyId is null or empty");
+			if(countyId==null || countyId<=0l)throw new UserBasicServiceException("countyId is null or empty");
 			return getEntityByIds(getIds(UserBasic_List_Id_CountyId, start, count, new Object[]{countyId}));
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
@@ -128,7 +125,7 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	@Override
 	public List<UserBasic> getUserBasecListByProvinceId(int start,int count,Long provinceId)throws UserBasicServiceException {
 		try {
-			if(provinceId==null || provinceId<=0l)throw new UserBasicServiceException(error_provinceId_incorrect,"provinceId is null or empty");
+			if(provinceId==null || provinceId<=0l)throw new UserBasicServiceException("provinceId is null or empty");
 			return getEntityByIds(getIds(UserBasic_List_Id_ProvinceId, start, count, new Object[]{provinceId}));
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {

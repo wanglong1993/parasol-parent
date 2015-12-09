@@ -60,7 +60,7 @@ public class UserBasic implements java.io.Serializable {
 	/**
 	 * 用户头像.
 	 */
-	private String picPath;
+	private Long picId;
 
 	private String description;
 	/**
@@ -112,7 +112,7 @@ public class UserBasic implements java.io.Serializable {
 
 	public UserBasic(Long userId, String name, Byte sex, Long provinceId,
 			Long cityId, Long countyId, String companyName,
-			String companyJob, String shortName, String picPath,
+			String companyJob, String shortName, Long picId,
 			String description,  Byte status, String nameFirst,
 			String nameIndex, String nameIndexAll, Long ctime, Long utime,
 			String ip) {
@@ -125,7 +125,7 @@ public class UserBasic implements java.io.Serializable {
 		this.companyName = companyName;
 		this.companyJob = companyJob;
 		this.shortName = shortName;
-		this.picPath = picPath;
+		this.picId = picId;
 		this.description = description;
 		this.status = status;
 		this.nameFirst = nameFirst;
@@ -226,13 +226,13 @@ public class UserBasic implements java.io.Serializable {
 		this.shortName = shortName;
 	}
 
-	@Column(name = "pic_path", length = 200)
-	public String getPicPath() {
-		return this.picPath;
+	@Column(name = "pic_id")
+	public Long getPicId() {
+		return this.picId;
 	}
 
-	public void setPicPath(String picPath) {
-		this.picPath = picPath;
+	public void setPicId(Long picId) {
+		this.picId = picId;
 	}
 
 	@Column(name = "description", length = 300)

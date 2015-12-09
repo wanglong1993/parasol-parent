@@ -45,6 +45,10 @@ public class UserLoginThird implements java.io.Serializable {
 	 */
 	private String accesstoken;
 	/**
+	 * 头像地址.
+	 */
+	private String headPic;
+	/**
 	 * 创建时间.
 	 */
 	private Long ctime;
@@ -56,14 +60,6 @@ public class UserLoginThird implements java.io.Serializable {
 	 * 用户IP.
 	 */
 	private String ip;
-//	/**
-//	 * 第三方头像地址
-//	 */
-//	private String figureurl; 
-//	/**
-//	 * 第三方昵称
-//	 */
-//	private String nikeName;  
 
 	public UserLoginThird() {
 	}
@@ -150,7 +146,15 @@ public class UserLoginThird implements java.io.Serializable {
 		this.accesstoken = accesstoken;
 	}
 
-	
+	@Column(name = "head_pic", nullable = false, length = 200)
+	public String getHeadPic() {
+		return headPic;
+	}
+
+	public void setHeadPic(String headPic) {
+		this.headPic = headPic;
+	}
+
 	@Column(name = "ctime", nullable = false, length = 19)
 	public Long getCtime() {
 		return this.ctime;
@@ -178,21 +182,5 @@ public class UserLoginThird implements java.io.Serializable {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
-
-//	public String getFigureurl() {
-//		return figureurl;
-//	}
-//
-//	public void setFigureurl(String figureurl) {
-//		this.figureurl = figureurl;
-//	}
-//
-//	public String getNikeName() {
-//		return nikeName;
-//	}
-//
-//	public void setNikeName(String nikeName) {
-//		this.nikeName = nikeName;
-//	}
 
 }

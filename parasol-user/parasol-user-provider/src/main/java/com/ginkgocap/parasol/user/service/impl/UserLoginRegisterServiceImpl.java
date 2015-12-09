@@ -14,6 +14,7 @@ import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.cache.Cache;
 import com.ginkgocap.parasol.cache.CacheModule;
@@ -54,8 +55,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(StringUtils.isBlank(userLoginRegister.getPassword()))throw new UserLoginRegisterServiceException("password is null or empty");
 			if(userLoginRegister.getCtime()==null || userLoginRegister.getCtime()<=0l) userLoginRegister.setCtime(System.currentTimeMillis());
 			if(userLoginRegister.getUtime()==null || userLoginRegister.getUtime()<=0l) userLoginRegister.setUtime(System.currentTimeMillis());
-			//用户不存在
-			return (Long) saveEntity(userLoginRegister);
+			Long id=(Long) saveEntity(userLoginRegister);
+			if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
+			else throw new UserLoginRegisterServiceException("createUserLoginRegister failed.");
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -71,8 +73,11 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			//根据passport查找id
 			Long id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
 			//根据id查找实体
-			if(id!=null && id>0l)	userLoginRegister=getEntity(id);
-			return userLoginRegister;
+			if(id!=null && id>0l){	
+				userLoginRegister=getEntity(id);
+				return userLoginRegister;
+			}
+			throw new UserLoginRegisterServiceException("passport is not exist in userLoginRegister");
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -84,8 +89,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	public UserLoginRegister getUserLoginRegister(Long id) throws UserLoginRegisterServiceException {
 		try {
 			if(id==null || id<=0l)throw new UserLoginRegisterServiceException("id is must grater than zero.");
-			// 根据id查找实体
-			return getEntity(id);
+			UserLoginRegister userLoginRegister=getEntity(id);
+			if(!ObjectUtils.isEmpty(userLoginRegister)) return userLoginRegister;
+			else throw new UserLoginRegisterServiceException("id is not exists in userLoginRegister.");
 		}catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -102,7 +108,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(userLoginRegister==null) throw new UserLoginRegisterServiceException("id is not exists in UserLoginRegister.");
 			userLoginRegister.setSalt(setSalt());
 			userLoginRegister.setPassword(setSha256Hash(userLoginRegister.getSalt(),password));
-			return updateEntity(userLoginRegister);
+			if(updateEntity(userLoginRegister))return true;
+			throw new UserLoginRegisterServiceException("updatePassword failed.");
 		}catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -134,8 +141,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			UserLoginRegister userLoginRegister = getEntity(id);
 			if(userLoginRegister==null) throw new UserLoginRegisterServiceException("id is not exists in UserLoginRegister.");
 			userLoginRegister.setIp(ip);
-			userLoginRegister.setUtime(new Date().getTime());
-			return updateEntity(userLoginRegister);
+			userLoginRegister.setUtime(System.currentTimeMillis());
+			if(updateEntity(userLoginRegister))return true;
+			throw new UserLoginRegisterServiceException("updateIpAndLoginTime failed.");
 		}catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

@@ -11,6 +11,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import weibo4j.model.WeiboException;
 
@@ -79,8 +80,10 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 		if(userLoginThird.getLoginType()!=100 && userLoginThird.getLoginType()!=200) throw new UserLoginThirdServiceException("loginType is Must be equal to 100 or 200.");
 		if(StringUtils.isEmpty(userLoginThird.getAccesstoken()))throw new UserLoginThirdServiceException("accesstoken is null or empty.");
 		if(StringUtils.isEmpty(userLoginThird.getIp()))throw new UserLoginThirdServiceException("ip is null or empty.");
+		if(StringUtils.isEmpty(userLoginThird.getHeadPic()))throw new UserLoginThirdServiceException("headPic is null or empty.");
 		if(userLoginThird.getCtime()==null || userLoginThird.getCtime()<=0l)userLoginThird.setCtime(System.currentTimeMillis());
 		if(userLoginThird.getUtime()==null || userLoginThird.getUtime()<=0l)userLoginThird.setUtime(System.currentTimeMillis());	
+		if(type==1)userLoginThird.setUtime(System.currentTimeMillis());	
 		return userLoginThird;
 	}
 	
@@ -143,9 +146,9 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 		   UserBasic userBasic =userBasicService.getUserBasic(userId);
 		   if(null != userBasic){
 			  String default_user_image = USER_DEFAULT_PIC_PATH_FAMALE;
-			  if(null==userBasic.getPicPath() || userBasic.getPicPath().equals("") || default_user_image.equals(userBasic.getPicPath())){
+//			  if(null==userBasic.getPicPath() || userBasic.getPicPath().equals("") || default_user_image.equals(userBasic.getPicPath())){
 //				 userBasic.setPicPath(userLoginThird.getFigureurl());
-			  }
+//			  }
 			  if(null == userBasic.getName() || userBasic.getName().equals("")){
 //				 userBasic.setName(userLoginThird.getNikeName());
 			  }
@@ -284,7 +287,9 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 	@Override
 	public Long saveUserLoginThird(UserLoginThird userLoginThird) throws UserLoginThirdServiceException{
 		try {
-			return (Long) saveEntity(checkValidity(userLoginThird,0));
+			Long id=(Long) saveEntity(checkValidity(userLoginThird,0));
+			if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
+			else throw new UserLoginThirdServiceException("saveUserLoginThird failed.");
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -298,7 +303,7 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 		try{
 			if(StringUtils.isEmpty(openId)) throw new UserLoginThirdServiceException("openId is null or empty.");
 			UserLoginThird userLoginThird=getEntity((Long)getMapId(UserLoginThird_Map_OpenId, openId));
-			if(userLoginThird==null) return userLoginThird;
+			if(userLoginThird==null) return null;
 			if(userLoginRegisterService.getUserLoginRegister(userLoginThird.getUserId())==null) throw new UserLoginThirdServiceException("userId is not exists in UserLoginRegister.");
 			return userLoginThird;
 		} catch (Exception e) {
@@ -349,7 +354,8 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 	@Override
 	public Boolean updateUserLoginThird(UserLoginThird userLoginThird) throws UserLoginThirdServiceException{
 		try {
-			return  updateEntity((checkValidity(userLoginThird,1)));
+			if(updateEntity((checkValidity(userLoginThird,1))))return  true;
+			else throw new UserLoginThirdServiceException("updateUserLoginThird failed.");
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
