@@ -51,7 +51,7 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 		if(type!=0)
 		if(getUserBasic(userBasic.getUserId())==null)throw new UserBasicServiceException(error_userId_not_exists_in_userBasic,"userId not exists in userBasic");
 		if(StringUtils.isEmpty(userBasic.getName()))throw new UserBasicServiceException(error_name_null,"The value of  name is null or empty.");
-		if(userBasic.getSex().intValue()!=0 && userBasic.getSex().intValue()!=1 && userBasic.getSex().intValue()!=2)throw new UserBasicServiceException(error_sex_incorrect,"The value of sex is null or empty.");
+		if(userBasic.getSex().intValue()!=0 && userBasic.getSex().intValue()!=1 && userBasic.getSex().intValue()!=2)throw new UserBasicServiceException(error_sex_incorrect,"The value of sex must be 0 or 1 or 2.");
 		if(StringUtils.isEmpty(userBasic.getIp()))throw new UserBasicServiceException(error_ip_incorrect,"The value of ip is null or empty.");
 		if(userBasic.getStatus().intValue() != 0 && userBasic.getStatus().intValue() != 1 && userBasic.getStatus().intValue() != -1 && userBasic.getStatus() !=2)throw new UserBasicServiceException(error_status_incorrect,"The value of status is null or empty.");
 		if(userBasic.getCtime()==null) userBasic.setCtime(System.currentTimeMillis());

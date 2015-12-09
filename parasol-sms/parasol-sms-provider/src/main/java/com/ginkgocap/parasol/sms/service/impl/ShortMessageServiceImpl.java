@@ -41,7 +41,7 @@ public class ShortMessageServiceImpl implements ShortMessageService {
     @Resource
     private CommonService commonService;
     
-    @Override
+    @Override 
     public int sendMessage(String phoneNum, String content, long uid, int type) {
         logger.debug("{} send a sms to {}:{}", uid, phoneNum, content);
         //调用校验手机号和短信内容
