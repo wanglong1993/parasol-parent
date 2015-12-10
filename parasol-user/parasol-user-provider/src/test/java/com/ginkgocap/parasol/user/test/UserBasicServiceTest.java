@@ -150,7 +150,7 @@ public class UserBasicServiceTest  extends TestBase implements Test  {
 			userBasic.setCompanyName("金桐网");
 			userBasic.setCompanyJob("科学家");
 			userBasic.setShortName("张家口");
-			userBasic.setPicPath("/webserver/data/pic/140/11.jgp");
+			userBasic.setPicId(1l);
 			userBasic.setDescription("");
 			Byte status=1;
 			userBasic.setStatus(status);

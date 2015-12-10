@@ -18,8 +18,11 @@
 		<shiro.version>1.2.0</shiro.version>
 	</properties>
 	<dependencies>
-
-		<!-- slf4j##log4j### -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-email-api</artifactId>
@@ -73,6 +76,10 @@
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
@@ -80,8 +87,8 @@
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.18</version>
-		</dependency>		
-				<!-- dubbo 服务注册方式 start -->
+		</dependency>
+		<!-- dubbo 服务注册方式 start -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>dubbo</artifactId>
@@ -207,10 +214,10 @@
 				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
 				<log4j.path>d:/log</log4j.path>
 				<!-- dubbo注册中心的地址 -->
-				<dubbo.application.name>emaildubboprovider</dubbo.application.name>
-				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</dubbo.registry.address>
-				<dubbo.protocol.port>20886</dubbo.protocol.port>
+				<email.dubbo.application.name>emaildubboprovider</email.dubbo.application.name>
+				<email.dubbo.protocol.name>dubbo</email.dubbo.protocol.name>
+				<email.dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</email.dubbo.registry.address>
+				<email.dubbo.protocol.port>20886</email.dubbo.protocol.port>
 				<email.gintongweb.host>192.168.120.136:2222</email.gintongweb.host>
 			</properties>
 		</profile>
