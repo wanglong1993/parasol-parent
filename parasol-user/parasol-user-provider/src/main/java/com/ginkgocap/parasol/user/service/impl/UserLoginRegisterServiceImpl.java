@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.user.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -27,7 +26,6 @@ import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
 	private static SecureRandomNumberGenerator ecureRandomNumberGenerator;
 	private static Random random;
-	private static StringBuffer sfb;
 	@Resource
 	private ShortMessageService shortMessageService;
 	@Resource

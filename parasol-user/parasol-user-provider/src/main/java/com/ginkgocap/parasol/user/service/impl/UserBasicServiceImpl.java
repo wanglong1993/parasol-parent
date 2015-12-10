@@ -13,7 +13,6 @@ import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.user.exception.UserBasicServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
-import com.ginkgocap.parasol.user.exception.UserLoginThirdServiceException;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;

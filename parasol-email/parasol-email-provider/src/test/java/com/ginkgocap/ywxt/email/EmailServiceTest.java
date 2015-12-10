@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.ginkgocap.parasol.email.exception.EmailServiceException;
 import com.ginkgocap.parasol.email.service.EmailService;
 import com.ginkgocap.parasol.email.service.impl.EmailServiceImpl;
 import com.ginkgocap.parasol.email.util.TemplateUtils;
@@ -27,10 +28,11 @@ public class EmailServiceTest extends BaseTest {
     public void testSendHtml() {
         String path = System.getProperty("user.dir");
         path = path.replaceAll("\\\\", "/");
-        String to = "liurenyuan@gintong.com";
+        String to = "fuliwen@gintong.com";
         String from = "noreply@gintong.com";
         String subject = "【金桐】邮箱注册";
         String content = "<TABLE border=3 cellSpacing=0 borderColor=#e6e6e6 cellPadding=0 width=800 align=center>";
+        String template ="reg-activate-emai-old.ftl";
         content += "<TBODY><TR>";
         content += "<TD style=\"BORDER-BOTTOM: #a3c2e0 2px solid\" height=60>&nbsp;</TD></TR><TR><TD>";
         content += "<P align=center><SPAN style=\"FONT-SIZE: 14px\"><BR>邀请函</SPAN></P>";
@@ -58,10 +60,14 @@ public class EmailServiceTest extends BaseTest {
         map.put("email", "http://www.gintong.com#/verify?from=1&type=1&e=Y2Nra2t0dEAxMjYuY29t&email=MTUxMjEwMTUxMzE5MTAxPV89Y2Nra2t0dCU0MDEyNi5jb20=");
         map.put("acceptor",to);
         map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
-        content = TemplateUtils.mergeTemplateContent(
-				"reg-activate-emai-old.ftl", map);
-        boolean isSuccess = service.sendEmailSync(to, from, subject, content, attachment);
+        boolean isSuccess;
+		try {
+			isSuccess = service.sendEmailSync(to, from, subject,attachment,map, template);
+			assertEquals(isSuccess,true);
+		} catch (EmailServiceException e) {
+			e.printStackTrace();
+		}
         
-        assertEquals(isSuccess,true);
+        
     }
 }
