@@ -28,11 +28,18 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.csource.common.NameValuePair;
+import org.csource.fastdfs.ClientGlobal;
+import org.csource.fastdfs.StorageClient;
+import org.csource.fastdfs.StorageServer;
+import org.csource.fastdfs.TrackerClient;
+import org.csource.fastdfs.TrackerServer;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.cluster.Directory;
@@ -44,10 +51,12 @@ import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
 
 /**
  * 
- * @author allenshen
- * @date 2015年11月20日
- * @time 下午1:19:18
- * @Copyright Copyright©2015 www.gintong.com
+* @Title: FileController.java
+* @Package com.ginkgocap.parasol.file.web.jetty.web.controller
+* @Description: TODO(文件上传控制器)
+* @author fuliwen@gintong.com  
+* @date 2015年12月9日 上午8:55:41
+* @version V1.0
  */
 @RestController
 public class FileController extends BaseControl {
@@ -57,40 +66,65 @@ public class FileController extends BaseControl {
 	private static final String parameterDebug = "debug";
 	private static final String parameterAppId = "appKey"; // 应用的Key
 	private static final String parameterUserId = "userId"; // 访问的用户参数
-	private static final String parameterType = "type"; // 查询的应用分类
-	private static final String parameterWord = "word"; // 敏感词
-	private static final String parameterLevel = "level"; // 敏感词等级
-	private static final String parameterWordId = "wordId"; // 消息内容
-	private static final String parameterText = "text"; // 校验文本
+	private static final String parameterFile = "file"; // 上传文件
+	private static final String parameterName = "name"; // 文件名
+	private static final String parameterFileType = "fileType"; // 文件类型
+	private static final String parameterTaskId = "taskId"; // taskId
+	private static final String parameterModuleType = "moduleType"; // 业务模块
+	private static final String conf_filename = "/fdfs_client.conf";	//	配置文件
 
 	@Resource
 	private FileIndexService fileIndexService;
 
 	/**
-	 * 2.创建分类下的根目录
 	 * 
-	 * @param request
+	 * @param fileds
+	 * @param debug
+	 * @param appId
+	 * @param file
+	 * @param userId
+	 * @param name
 	 * @return
-	 * @throws DirectoryServiceException
-	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = { "/sensitive/word/saveSensitive" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/file/upload" }, method = { RequestMethod.POST })
 	public MappingJacksonValue createMessageEntity(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
+			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
 			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = FileController.parameterLevel, defaultValue = "2") Integer level,
-			@RequestParam(name = FileController.parameterWord, required = true) String word,
-			@RequestParam(name = FileController.parameterType, defaultValue = "0") Integer type) {
+			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
+			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId,
+			@RequestParam(name = FileController.parameterName, required = true) String name ) {
 		MappingJacksonValue mappingJacksonValue = null;
-		Map<String, String> param = new HashMap<String, String>();
-		param.put("type", type.toString());
-		param.put("createrId", userId.toString());
-		param.put("appid", appId.toString());
-		FileIndex index = new FileIndex();
-		
 		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			ClientGlobal.init(getClass().getResource(conf_filename).getFile());
+			byte[] file_buff = file.getBytes();
+			String file_ext_name = name;
+			TrackerClient tracker = new TrackerClient(); 
+			TrackerServer trackerServer;
+			trackerServer = tracker.getConnection();
+			StorageServer storageServer = null;
+			StorageClient storageClient = new StorageClient(trackerServer, storageServer); 
+			//        NameValuePair nvp = new NameValuePair("age", "18"); 
+			NameValuePair nvp [] = new NameValuePair[]{ 
+				new NameValuePair("age", "18"), 
+				new NameValuePair("sex", "male") 
+			}; 
+			String fileIds[] = storageClient.upload_file(file_buff, file_ext_name, nvp);
+				for (String id : fileIds) {
+				System.out.println("id="+id);
+			}
+			FileIndex index = new FileIndex();
+			index.setAppid(appId.toString());
+			index.setCreaterId(userId);
+			index.setServerHost(fileIds[0]);
+			index.setFilePath(fileIds[1]);
+			index.setFileSize(file.getSize());
+			index.setFileTitle(file.getOriginalFilename());
+			index.setFileType(fileType);
+			index.setModuleType(moduleType);
+			index.setTaskId(taskId);
 			index = fileIndexService.insertFileIndex(index);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(index);
@@ -123,18 +157,18 @@ public class FileController extends BaseControl {
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = { "/sensitive/word/getSensitiveWordById" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/file/download" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getEntityById(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = FileController.parameterWordId, required = true) long id
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId
 			) throws Exception {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId("");
+			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(files);
 			// 3.创建页面显示数据项的过滤器
