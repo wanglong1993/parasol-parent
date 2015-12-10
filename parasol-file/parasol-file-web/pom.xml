@@ -114,6 +114,14 @@
 		  <artifactId>commons-lang3</artifactId>
 		  <version>3.1</version>
 		</dependency>
+		
+		<!-- fastdfs-client-java -->
+		<dependency>
+	      <groupId>org.csource</groupId>
+	      <artifactId>fastdfs-client-java</artifactId>
+	      <version>5.0.4</version>
+	    </dependency>
+	    
 	</dependencies>
 	<build>
 		<resources>
@@ -124,6 +132,7 @@
 					<include>**/application.yml</include>
 					<include>**/application.properties</include>
 					<include>**/*.xml</include>
+					<include>*/*.html</include>
 				</includes>
 			</resource>
 		</resources>
