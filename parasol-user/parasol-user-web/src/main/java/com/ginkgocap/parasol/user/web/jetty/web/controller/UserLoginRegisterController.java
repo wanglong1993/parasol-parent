@@ -37,32 +37,24 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	@RequestMapping(path = { "/userLoginRegister/register" }, method = { RequestMethod.GET })
-	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response)throws UserLoginRegisterServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
+	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "type",required = true) int type
+			,@RequestParam(name = "passport",required = true) String passport
+			)throws UserLoginRegisterServiceException {
 		try {
-			Long id=0l;
 			Map<String, Object> reusltMap = new HashMap<String, Object>();
-			Map<String, Object> responseDataMap = new HashMap<String, Object>();
-			Map<String, Object> notificationMap = new HashMap<String, Object>();
-			String requestJson=request.getParameter("requestJson").toString();
-			if(StringUtils.isEmpty(requestJson)){
-				notificationMap.put("json_error", "requestJson is null or empty.");
-			}else{
-				JSONObject json = JSONObject.fromObject(requestJson);
 //				id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister(json.getString("passport"),new Byte(json.getString("virtual"))));
-				String identifyingCode= userLoginRegisterService.sendIdentifyingCode("13677687632");
-				UserLoginRegister ulr=userLoginRegisterService.getUserLoginRegister(3913092224516104l);
-				ulr.getUserName();
-				logger.info("你的短信验证码为:"+identifyingCode+",有效时间1分钟");
-				
-			// 2.转成框架数据
-			}
-			
-			reusltMap.put("responseData", responseDataMap);
-			reusltMap.put("notification", notificationMap);
-			reusltMap.put("id", id);
-			mappingJacksonValue = new MappingJacksonValue(reusltMap);
-			return mappingJacksonValue;
+//				String identifyingCode= userLoginRegisterService.sendIdentifyingCode("13677687632");
+//				UserLoginRegister ulr=userLoginRegisterService.getUserLoginRegister(3913092224516104l);
+//				ulr.getUserName();
+//				logger.info("你的短信验证码为:"+identifyingCode+",有效时间1分钟");
+		        Map<String, Object> map = new HashMap<String, Object>();
+		        map.put("email", "http://www.gintong.com#/verify?from=1&type=1&e=Y2Nra2t0dEAxMjYuY29t&email=MTUxMjEwMTUxMzE5MTAxPV89Y2Nra2t0dCU0MDEyNi5jb20=");
+		        map.put("acceptor",passport);
+		        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
+				userLoginRegisterService.sendEmail(passport, type, map);
+				reusltMap.put("status", 1);
+			return new MappingJacksonValue(reusltMap);
 		}catch (UserLoginRegisterServiceException e ){
 			throw e;
 		}

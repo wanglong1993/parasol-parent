@@ -14,7 +14,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 @ContextConfiguration(locations = { "/applicationContext.xml" })
 //@TransactionConfiguration(transactionManager = "emailTransactionManager")
 //@Transactional
-public class BaseTest {
+public class BaseTest  {
 	
 	@BeforeClass
 	public static void beforeClass(){

@@ -54,7 +54,9 @@ public class EmailServiceImpl implements EmailService {
         SendHtmlMail sender;
         try {
             sender = new SendHtmlMail(email);
-            sender.setAttach(email.getAttachment());
+            if(!StringUtils.isEmpty(email.getAttachment())){
+            	sender.setAttach(email.getAttachment());
+            }
             boolean result = sender.sendMail();
             return result;
         } catch (Exception e) {
@@ -88,7 +90,7 @@ public class EmailServiceImpl implements EmailService {
 		String value=null;
 		if(object!=null)value=object.toString();
 		if(StringUtils.isEmpty(value))
-		bl = cache.set(key, 1 * 60 * 1, flag);
+		bl = cache.set(key, 1 * 60 * 30, flag);
 		return bl;
 	}
 

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.ginkgocap.parasol.email.exception.EmailServiceException;
 import com.ginkgocap.parasol.email.service.EmailService;
 import com.ginkgocap.parasol.email.service.impl.EmailServiceImpl;
-import com.ginkgocap.parasol.email.util.TemplateUtils;
 
 
 /**
@@ -62,7 +61,7 @@ public class EmailServiceTest extends BaseTest {
         map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
         boolean isSuccess;
 		try {
-			isSuccess = service.sendEmailSync(to, from, subject,attachment,map, template);
+			isSuccess = service.sendEmailSync(to, null, subject,attachment,map, template);
 			assertEquals(isSuccess,true);
 		} catch (EmailServiceException e) {
 			e.printStackTrace();

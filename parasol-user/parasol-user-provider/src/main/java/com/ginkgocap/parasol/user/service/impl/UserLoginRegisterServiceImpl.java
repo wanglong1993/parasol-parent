@@ -1,6 +1,7 @@
 package com.ginkgocap.parasol.user.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,16 +19,24 @@ import org.springframework.util.ObjectUtils;
 import com.ginkgocap.parasol.cache.Cache;
 import com.ginkgocap.parasol.cache.CacheModule;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.email.service.EmailService;
 import com.ginkgocap.parasol.sms.service.ShortMessageService;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 @Service("userLoginRegisterService")
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
+	private final  static String findPasswordTitle = "【金桐】找回密码";
+	private final  static String registerTitle = "【金桐】邮箱注册";
+	private final  static String bindTitle = "【金桐】绑定邮箱";
+	private final  static String editPasswordTitle = "【金桐】修改密码";
+	
 	private static SecureRandomNumberGenerator ecureRandomNumberGenerator;
 	private static Random random;
 	@Resource
 	private ShortMessageService shortMessageService;
+	@Resource
+	private EmailService emailService;
 	@Resource
 	private Cache cache;
 	
@@ -327,5 +336,23 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	public String getIdentifyingCode(String mobile)throws UserLoginRegisterServiceException {
 		Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mobile));
 		return value!=null?value.toString():null;
+	}
+	@Override
+	public boolean sendEmail(String mailTo,int type,Map<String, Object> map)throws UserLoginRegisterServiceException {
+		try {
+			boolean bl=false;
+			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
+			if(type!=1 && type!=2 && type !=3 && type !=4) throw new UserLoginRegisterServiceException("type must be 1 or 2 or 3 or 4.");
+			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-activate-emai-old.ftl");
+			if(type==2) bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
+			if(type==3) bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
+//			if(type==4) bl= emailService.sendEmailSync(mailTo, null, editPasswordTitle, null, map, "findpwd-email_back.ftl");
+			return bl;
+		}catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
 	}
 }
