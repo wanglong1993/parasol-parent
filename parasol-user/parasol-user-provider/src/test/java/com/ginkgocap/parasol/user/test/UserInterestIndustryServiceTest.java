@@ -92,8 +92,8 @@ public class UserInterestIndustryServiceTest  extends TestBase implements Test  
 			Long ctime=System.currentTimeMillis();
 			UserLoginRegister userLoginRegister = new UserLoginRegister();
 			userLoginRegister.setPassport("13677687627");
-			byte virtual=1;
-			userLoginRegister.setVirtual(virtual);;
+			byte usetType=1;
+			userLoginRegister.setUsetType(usetType);
 			String salt=userLoginRegisterService.setSalt();
 			String password=userLoginRegisterService.setSha256Hash(salt, "123456");
 			userLoginRegister.setSalt(salt);

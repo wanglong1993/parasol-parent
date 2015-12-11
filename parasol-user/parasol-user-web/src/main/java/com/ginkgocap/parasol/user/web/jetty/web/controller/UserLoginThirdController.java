@@ -160,7 +160,7 @@ public class UserLoginThirdController extends BaseControl {
 					password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 					userLoginRegister.setSalt(salt);
 					userLoginRegister.setPassword(password);
-					userLoginRegister.setVirtual(new Byte(userType));
+					userLoginRegister.setUsetType(new Byte(userType));
 					userLoginRegister.setIp(ip);
 					userLoginRegister.setSource(source);
 					//设置userBasic开始

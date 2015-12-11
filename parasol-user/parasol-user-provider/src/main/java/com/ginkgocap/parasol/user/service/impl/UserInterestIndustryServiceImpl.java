@@ -14,9 +14,6 @@ import com.ginkgocap.parasol.user.model.UserInterestIndustry;
 import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
 @Service("userInterestIndustryService")
 public class UserInterestIndustryServiceImpl extends BaseService<UserInterestIndustry> implements UserInterestIndustryService {
-	private static int error_userInterestIndustry_null = 1000;	
-	private static int error_userId_null = 1001;	
-	private static int error_Ip_null = 1004;	
 	private static final String USER_INTEREST_INDUSTRY_LIST_USERID = "UserInterestIndustry_List_UserId";
 	private static final String UserInterestIndustry_List_Id_FirstIndustryId = "UserInterestIndustry_List_Id_FirstIndustryId";
 	private static Logger logger = Logger.getLogger(UserInterestIndustryServiceImpl.class);
@@ -28,10 +25,10 @@ public class UserInterestIndustryServiceImpl extends BaseService<UserInterestInd
 	 * @throws UserInterestIndustryServiceException
 	 */
 	private List<UserInterestIndustry> checkValidity(List<UserInterestIndustry> list)throws UserInterestIndustryServiceException{
-		if(list==null || list.size()==0) throw new UserInterestIndustryServiceException(error_userInterestIndustry_null,"UserInterestIndustry is null");
+		if(list==null || list.size()==0) throw new UserInterestIndustryServiceException("UserInterestIndustry is null");
 		for (UserInterestIndustry userInterestIndustry : list) {
-			if(userInterestIndustry.getUserId()==null ||userInterestIndustry.getUserId()<=0l) throw new UserInterestIndustryServiceException(error_userId_null,"userId must be a value");
-			if(StringUtils.isEmpty(userInterestIndustry.getIp())) throw new UserInterestIndustryServiceException(error_Ip_null,"ip is null or empty");
+			if(userInterestIndustry.getUserId()==null ||userInterestIndustry.getUserId()<=0l) throw new UserInterestIndustryServiceException("userId must be a value");
+			if(StringUtils.isEmpty(userInterestIndustry.getIp())) throw new UserInterestIndustryServiceException("ip is null or empty");
 			if(userInterestIndustry.getCtime()==null ||userInterestIndustry.getCtime()<=0l)userInterestIndustry.setCtime(System.currentTimeMillis());
 			if(userInterestIndustry.getUtime()==null ||userInterestIndustry.getUtime()<=0l)userInterestIndustry.setUtime(System.currentTimeMillis());
 		}
@@ -44,7 +41,9 @@ public class UserInterestIndustryServiceImpl extends BaseService<UserInterestInd
 			checkValidity(list);
 			//删除以前的
 			deleteEntityByIds(getIdList(userId));
-			return (List<UserInterestIndustry>) saveEntitys(list);
+			List<UserInterestIndustry> serInterestIndustrys=saveEntitys(list);
+			if(serInterestIndustrys==null || serInterestIndustrys.size()==0) throw new UserInterestIndustryServiceException("createUserInterestIndustryByList failed.");
+			return serInterestIndustrys;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

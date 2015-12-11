@@ -1,6 +1,9 @@
 package com.ginkgocap.parasol.user.service.impl;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -11,8 +14,10 @@ import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.user.exception.UserOrganBasicServiceException;
+import com.ginkgocap.parasol.file.model.FileIndex;
+import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
+import com.ginkgocap.parasol.user.exception.UserOrganBasicServiceException;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserOrganBasicService;
@@ -21,6 +26,8 @@ import com.ginkgocap.parasol.util.PinyinUtils;
 public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> implements UserOrganBasicService  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
+	@Resource
+	private FileIndexService fileIndexService;
 	private static Logger logger = Logger.getLogger(UserOrganBasicServiceImpl.class);
 	
 	/**
@@ -79,8 +86,18 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 	@Override
 	public UserOrganBasic getUserOrganBasic(Long userId) throws UserOrganBasicServiceException {
 		try {
-			if(userId==null || userId<=0l)throw new UserOrganBasicServiceException("userId is null or empty");
-			return getEntity(userId);
+			if(userId==null || userId<=0l)throw new UserOrganBasicServiceException("userId is null or empty.");
+			UserOrganBasic userOrganBasic=getEntity(userId);
+			if(userOrganBasic==null)throw new UserOrganBasicServiceException("userId is not exist in UserOrganBasic.");
+			Long fileIndexId=userOrganBasic.getBusinessLicencePicId();
+			Map<Long, Object> fileIndexMap = new HashMap<Long, Object>();
+			if(!ObjectUtils.isEmpty(fileIndexId))fileIndexMap.put(fileIndexId,  getFileIndex(fileIndexId));
+			fileIndexId=userOrganBasic.getIdcardFrontPicId();
+			if(!ObjectUtils.isEmpty(fileIndexId))fileIndexMap.put(fileIndexId,  getFileIndex(fileIndexId));
+			fileIndexId=userOrganBasic.getIdcardBackPicId();
+			if(!ObjectUtils.isEmpty(fileIndexId))fileIndexMap.put(fileIndexId,  getFileIndex(fileIndexId));
+			userOrganBasic.setFileIndexMap(fileIndexMap);
+			return userOrganBasic;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -88,7 +105,27 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 			throw new UserOrganBasicServiceException(e);
 		}
 	}
-
+	
+	/**
+	 * 根据FileIndexid获取组织用户的图片文件信息
+	 * @param userId
+	 * @return UserOrganBasic
+	 * @throws UserOrganBasicServiceException 
+	 */
+	private FileIndex getFileIndex(Long fileIndexId) throws UserOrganBasicServiceException{
+		try {
+			if(fileIndexId==null || fileIndexId<=0L)throw new UserOrganBasicServiceException("fileIndexId is null or empty");
+			FileIndex fileIndex=fileIndexService.selectByPrimaryKey(fileIndexId);
+			if(fileIndex==null) throw new UserOrganBasicServiceException("fileIndexId is not exist in FileIndex");
+			return fileIndex;
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserOrganBasicServiceException(e);
+		}
+	}
+	
 	@Override
 	public List<UserOrganBasic> getUserOrganBasecList(List<Long> userIds)throws UserOrganBasicServiceException {
 		try {
