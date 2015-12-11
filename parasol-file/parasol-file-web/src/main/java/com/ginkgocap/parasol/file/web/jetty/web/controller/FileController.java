@@ -71,11 +71,21 @@ public class FileController extends BaseControl {
 	private static final String parameterFileType = "fileType"; // 文件类型
 	private static final String parameterTaskId = "taskId"; // taskId
 	private static final String parameterModuleType = "moduleType"; // 业务模块
+	private static final String parameterExtName = "fileExtName"; // 文件扩展名
 	private static final String conf_filename = "/fdfs_client.conf";	//	配置文件
 
+//	static{
+//	    try {
+//	        ClientGlobal.init(getClass().getResource(conf_filename).getFile());
+//	    } catch (Exception e) {
+//	        throw new RuntimeException(e);
+//	    }
+//	}
+	
 	@Resource
 	private FileIndexService fileIndexService;
 
+	
 	/**
 	 * 
 	 * @param fileds
@@ -95,23 +105,24 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
 			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
 			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId,
+			@RequestParam(name = FileController.parameterExtName, required = true) String fileExtName,
 			@RequestParam(name = FileController.parameterName, required = true) String name ) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			ClientGlobal.init(getClass().getResource(conf_filename).getFile());
 			byte[] file_buff = file.getBytes();
-			String file_ext_name = name;
 			TrackerClient tracker = new TrackerClient(); 
 			TrackerServer trackerServer;
 			trackerServer = tracker.getConnection();
 			StorageServer storageServer = null;
 			StorageClient storageClient = new StorageClient(trackerServer, storageServer); 
 			//        NameValuePair nvp = new NameValuePair("age", "18"); 
-			NameValuePair nvp [] = new NameValuePair[]{ 
-				new NameValuePair("age", "18"), 
-				new NameValuePair("sex", "male") 
-			}; 
-			String fileIds[] = storageClient.upload_file(file_buff, file_ext_name, nvp);
+			NameValuePair nvp [] = new NameValuePair[3];
+			nvp[0] = new NameValuePair("filename", name);  
+			nvp[1] = new NameValuePair("fileExtName", fileExtName);  
+			nvp[2] = new NameValuePair("fileLength", String.valueOf(file_buff.length));
+			System.out.println("...............url");
+			String fileIds[] = storageClient.upload_file(file_buff, fileExtName, nvp);
 				for (String id : fileIds) {
 				System.out.println("id="+id);
 			}
