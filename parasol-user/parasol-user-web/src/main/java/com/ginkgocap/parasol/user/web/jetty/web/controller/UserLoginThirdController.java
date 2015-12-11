@@ -48,7 +48,7 @@ public class UserLoginThirdController extends BaseControl {
 	public MappingJacksonValue getLoginThirdUrl(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "type",required = true) int type
 			)throws Exception {
-		Map<String, Object> reusltMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 //				Cookie[] cookies = request.getCookies();
 //				for (Cookie cookie : cookies) {
@@ -56,14 +56,14 @@ public class UserLoginThirdController extends BaseControl {
 //				}
 				String url= userLoginThirdService.getLoginThirdUrl(type);
 				if(!StringUtils.isEmpty(url)){
-					reusltMap.put("url", url);
-					reusltMap.put("status",1);
+					resultMap.put("url", url);
+					resultMap.put("status",1);
 				}
 				logger.info("getLoginThirdUrl:"+url);
 //				Cookie ck=new Cookie("lastTime",Long.toString(System.currentTimeMillis()/1000));
 //				ck.setMaxAge(60*60*24*365);
 //				response.addCookie(ck);
-			return new MappingJacksonValue(reusltMap);
+			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			throw e;
 		}
@@ -80,34 +80,34 @@ public class UserLoginThirdController extends BaseControl {
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
-		Map<String, Object> reusltMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 				if(StringUtils.isEmpty(passport)){
-					reusltMap.put( "error", "passport is null or empty.");
-					reusltMap.put( "status", 0);
-					return new MappingJacksonValue(reusltMap);
+					resultMap.put( "error", "passport is null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
 				}
 				if(!isMobileNo(passport)){
-					reusltMap.put( "error", "passport is not right phone number.");
-					reusltMap.put( "status", 0);
-					return new MappingJacksonValue(reusltMap);
+					resultMap.put( "error", "passport is not right phone number.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
 				}
 				if(userLoginRegisterService.passportIsExist(passport)){
-					reusltMap.put( "error", "mobile already exists.");
-					reusltMap.put( "status", 0);
-					return new MappingJacksonValue(reusltMap);
+					resultMap.put( "error", "mobile already exists.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
 				}
-				String verificationCode=userLoginRegisterService.sendIdentifyingCode(passport);
-				if(StringUtils.isEmpty(verificationCode)){
-					reusltMap.put( "error", "failed to get the verfication code.");
-					reusltMap.put( "status", 0);
-					return new MappingJacksonValue(reusltMap);	
+				String code=userLoginRegisterService.sendIdentifyingCode(passport);
+				if(StringUtils.isEmpty(code)){
+					resultMap.put( "error", "failed to get the verfication code.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);	
 				}else{
-					reusltMap.put( "verification_code", verificationCode);
-					reusltMap.put( "status", 1);
+					resultMap.put( "code", code);
+					resultMap.put( "status", 1);
 				}
-				logger.info(new StringBuffer().append("手机号:").append(passport).append(",的短信验证码为:").append(verificationCode).append(",有效期为30分钟!").toString());
-			return new MappingJacksonValue(reusltMap);
+				logger.info(new StringBuffer().append("手机号:").append(passport).append(",的短信验证码为:").append(code).append(",有效期为30分钟!").toString());
+			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			throw e;
 		}
@@ -133,7 +133,7 @@ public class UserLoginThirdController extends BaseControl {
 		,@RequestParam(name = "source",required = true) String source
 		,@RequestParam(name = "sex",required = true) String sex
 			)throws Exception {
-		Map<String, Object> reusltMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= new UserLoginRegister();
 		UserBasic userBasic= new UserBasic();
 		UserLoginThird userLoginThird= new UserLoginThird();
@@ -149,9 +149,9 @@ public class UserLoginThirdController extends BaseControl {
 				if(userLoginThird==null && exists){
 					//检查短信验证码
 					if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
-						reusltMap.put( "error", "code is not right");
-						reusltMap.put( "status", 0);
-						return new MappingJacksonValue(reusltMap);
+						resultMap.put( "error", "code is not right");
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
 					}
 					//设置userLoginRegister开始
 					userLoginRegister.setPassport(passport);
@@ -184,12 +184,12 @@ public class UserLoginThirdController extends BaseControl {
 					userLoginThird.setUserId(id);
 					id2=userLoginThirdService.saveUserLoginThird(userLoginThird);
 					
-					reusltMap.put("userLoginRegister",userLoginRegister);
-					reusltMap.put("userBasic",userBasic);
-					reusltMap.put("userLoginThird",userLoginThird);
-					reusltMap.put("status",1);
+					resultMap.put("userLoginRegister",userLoginRegister);
+					resultMap.put("userBasic",userBasic);
+					resultMap.put("userLoginThird",userLoginThird);
+					resultMap.put("status",1);
 					logger.info("第三注册绑定新用户成功,用户id:"+id);
-					return new MappingJacksonValue(reusltMap);
+					return new MappingJacksonValue(resultMap);
 				}
 				//没有绑定过绑定一个已经存在的帐号
 				if(userLoginThird==null && !exists){
@@ -225,7 +225,7 @@ public class UserLoginThirdController extends BaseControl {
 		,@RequestParam(name = "passport",required = true) String passport
 		,@RequestParam(name = "headPic",required = true) String headPic
 			)throws Exception {
-		Map<String, Object> reusltMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister=null;
 		UserBasic userBasic= null;
 		UserLoginThird userLoginThird= null;
@@ -239,33 +239,33 @@ public class UserLoginThirdController extends BaseControl {
 				String salt=userLoginRegister.getSalt();
 				String tablePssword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 				if(!userLoginRegister.getPassword().equals(tablePssword)){
-					reusltMap.put( "error", "password is error");
-					reusltMap.put( "status", 0);
-					return new MappingJacksonValue(reusltMap);
+					resultMap.put( "error", "password is error");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
 				}
 				//判断用户的状态是否正常
 				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
 				int status=userBasic.getStatus().intValue();
 				if(status==0 || status==-1 || status==2  ){
-					reusltMap.put( "error", "user have been logic deleted or locked or canceled");
-					reusltMap.put( "status", 0);
-					return new MappingJacksonValue(reusltMap);
+					resultMap.put( "error", "user have been logic deleted or locked or canceled");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
 				}
 				//查找此passport之前是否绑定过
 				userLoginThird=userLoginThirdService.getUserLoginThirdByOpenId(openId);
 				//已经绑定
 				if(userLoginThird!=null && userLoginThird.getUserId().equals(userLoginRegister.getId())){
-					reusltMap.put("status",1);
+					resultMap.put("status",1);
 					logger.info("第三方注册绑定已经存在的用户成功,用户passport:"+passport);
-					return new MappingJacksonValue(reusltMap);
+					return new MappingJacksonValue(resultMap);
 				}
 				//存在openid但是没有绑定过
 				if(userLoginThird!=null && !userLoginThird.getUserId().equals(userLoginRegister.getId())){
 					userLoginThird.setUserId(userLoginRegister.getId());
-					reusltMap.put("status",1);
+					resultMap.put("status",1);
 					userLoginThirdService.updateUserLoginThird(userLoginThird);
 					logger.info("第三方注册绑定已经存在的用户成功,用户passport:"+passport);
-					return new MappingJacksonValue(reusltMap);
+					return new MappingJacksonValue(resultMap);
 				}
 				//用户从来没有绑定过,设置userLoginThird开始
 				userLoginThird=new UserLoginThird();
@@ -282,12 +282,12 @@ public class UserLoginThirdController extends BaseControl {
 				userBasicService.updateUserBasic(userBasic);
 				//创建userLoginThird开始
 				id=userLoginThirdService.saveUserLoginThird(userLoginThird);
-				reusltMap.put("userLoginRegister",userLoginRegister);
-				reusltMap.put("userBasic",userBasic);
-				reusltMap.put("userLoginThird",userLoginThird);
-				reusltMap.put("status",1);
+				resultMap.put("userLoginRegister",userLoginRegister);
+				resultMap.put("userBasic",userBasic);
+				resultMap.put("userLoginThird",userLoginThird);
+				resultMap.put("status",1);
 				logger.info("第三方注册绑定已经存在的用户成功,用户passport:"+passport);
-				return new MappingJacksonValue(reusltMap);
+				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			//异常失败回滚
 			if(id!=null && id>0l)userLoginThirdService.realDeleteUserLoginThird(id);
@@ -307,7 +307,7 @@ public class UserLoginThirdController extends BaseControl {
 		,@RequestParam(name = "passport",required = true) String passport
 		,@RequestParam(name = "openId",required = true) String openId
 			)throws Exception {
-		Map<String, Object> reusltMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister=null;
 		UserLoginThird userLoginThird= null;
 		try {
@@ -316,20 +316,20 @@ public class UserLoginThirdController extends BaseControl {
 				//查找此passport之前是否绑定过
 				userLoginThird=userLoginThirdService.getUserLoginThirdByOpenId(openId);
 				if(userLoginThird==null){
-					reusltMap.put( "error", "openId never bind in userLoginThird.");
-					reusltMap.put( "status", 0);
-					return new MappingJacksonValue(reusltMap);
+					resultMap.put( "error", "openId never bind in userLoginThird.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
 				}
 				if(!userLoginThird.getUserId().equals(userLoginRegister.getId())){
-					reusltMap.put( "error", "the userId in the userLoginRegister is different from the userId in the userLoginThird.");
-					reusltMap.put( "status", 0);
-					return new MappingJacksonValue(reusltMap);
+					resultMap.put( "error", "the userId in the userLoginRegister is different from the userId in the userLoginThird.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
 				}
 				//删除解绑
 				userLoginThirdService.realDeleteUserLoginThird(userLoginThird.getId());
-				reusltMap.put("status",1);
+				resultMap.put("status",1);
 				logger.info("解绑成功,用户passport:"+passport);
-				return new MappingJacksonValue(reusltMap);
+				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			//异常失败回滚
 			logger.info("解绑失败,用户passport:"+passport);
@@ -351,7 +351,7 @@ public class UserLoginThirdController extends BaseControl {
 			,@RequestParam(name = "headPic",required = true) String headPic
 			,@RequestParam(name = "name",required = true) String name
 			)throws Exception {
-		Map<String, Object> reusltMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			UserLoginThird userLoginThird= userLoginThirdService.getUserLoginThirdByOpenId(openId);
 			UserLoginRegister userLoginRegister=userLoginRegisterService.getUserLoginRegister(userLoginThird.getUserId());
@@ -370,12 +370,12 @@ public class UserLoginThirdController extends BaseControl {
 				userBasicService.updateUserBasic(userBasic);
 			}
 			userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);
-			reusltMap.put("userLoginRegister",userLoginRegister);
-			reusltMap.put("userBasic",userBasic);
-			reusltMap.put("userLoginThird",userLoginThird);
-			reusltMap.put("status",1);
+			resultMap.put("userLoginRegister",userLoginRegister);
+			resultMap.put("userBasic",userBasic);
+			resultMap.put("userLoginThird",userLoginThird);
+			resultMap.put("status",1);
 			logger.info("/userLoginThird/login:success");
-			return new MappingJacksonValue(reusltMap);
+			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("/userLoginThird/login:error");
 			throw e;

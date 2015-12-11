@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,16 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserInterestIndustry;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
-import com.ginkgocap.parasol.user.model.UserLoginThird;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
@@ -45,6 +46,7 @@ public class UserLoginRegisterController extends BaseControl {
 	private UserOrganBasicService userOrganBasicService;
 	@Autowired
 	private UserInterestIndustryService userInterestIndustryService;
+
 	/**
 	 * 用户注册
 	 * 
@@ -64,10 +66,12 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param idcardBackPicId  联系人身份证背面照片id
 	 * @param source  来源的appkey
 	 * @throws Exception
+	 * @return MappingJacksonValue
 	 */
 	@RequestMapping(path = { "/userLoginRegister/register" }, method = { RequestMethod.GET })
 	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "type",required = true) int type
+			,@RequestParam(name = "code",required = true) String code
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
 			,@RequestParam(name = "userType",required = true) String userType
@@ -83,7 +87,7 @@ public class UserLoginRegisterController extends BaseControl {
 			,@RequestParam(name = "idcardFrontPicId",required = true) Long idcardFrontPicId
 			,@RequestParam(name = "idcardBackPicId",required = true) Long idcardBackPicId
 			)throws Exception {
-		Map<String, Object> reusltMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
 		UserOrganBasic userOrganBasic= null;
 		UserBasic userBasic= null;
@@ -96,13 +100,18 @@ public class UserLoginRegisterController extends BaseControl {
 		try {
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
 				if(exists){
-					if(type==1)reusltMap.put( "error", "email already exists.");
-					if(type==2)reusltMap.put( "error", "mobile already exists.");
-					reusltMap.put( "status", 0);
-					return new MappingJacksonValue(reusltMap);
+					if(type==1)resultMap.put( "error", "email already exists.");
+					if(type==2)resultMap.put( "error", "mobile already exists.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
 				}
 				//个人用户邮箱注册
 				if(type==1 && userType=="1"){
+					if(!isEmail(passport)){
+						resultMap.put( "error", "email format is not correct.");
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
+					}
 					userLoginRegister= new UserLoginRegister();
 					userLoginRegister.setPassport(passport);
 					byte[] bt = Base64.decode(password);
@@ -132,16 +141,65 @@ public class UserLoginRegisterController extends BaseControl {
 			        map.put("acceptor",passport);
 			        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 					if(userLoginRegisterService.sendEmail(passport, type, map)){
-						reusltMap.put( "message", "send mail success");
-						reusltMap.put( "status", 1);
+						resultMap.put( "message", "send mail success");
+						resultMap.put( "status", 1);
 					}else{
-						reusltMap.put( "error", "send email failed.");
-						reusltMap.put( "status", 1);
+						resultMap.put( "error", "send email failed.");
+						resultMap.put( "status", 1);
 					}
-					return new MappingJacksonValue(reusltMap);
+					return new MappingJacksonValue(resultMap);
+				}
+				//个人用手机注册
+				if(type==2 && userType=="1"){
+					if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
+						resultMap.put( "error", "code is not right");
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
+					}
+					userLoginRegister= new UserLoginRegister();
+					userLoginRegister.setPassport(passport);
+					byte[] bt = Base64.decode(password);
+					String salt=userLoginRegisterService.setSalt();
+					password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
+					userLoginRegister.setSalt(salt);
+					userLoginRegister.setPassword(password);
+					userLoginRegister.setUsetType(new Byte(userType));
+					userLoginRegister.setIp(ip);
+					userLoginRegister.setSource(source);
+					id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
+					userBasic= new UserBasic();
+					userBasic.setName(name);
+					userBasic.setIp(ip);
+					userBasicId=userBasicService.createUserBasic(userBasic);
+					list =new ArrayList<UserInterestIndustry>();
+					for (Long firstIndustryId : firstIndustryIds) {
+						userInterestIndustry= new UserInterestIndustry();
+						userInterestIndustry.setUserId(id);
+						userInterestIndustry.setFirstIndustryId(firstIndustryId);
+						userInterestIndustry.setIp(ip);
+						list.add(userInterestIndustry);
+						list=userInterestIndustryService.createUserInterestIndustryByList(list, id);
+					}
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("email", "http://www.gintong.com/userLoginRegister/verification?eamil="+Base64.decode(passport.getBytes()));
+					map.put("acceptor",passport);
+					map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
+					if(userLoginRegisterService.sendEmail(passport, type, map)){
+						resultMap.put( "message", "send mail success");
+						resultMap.put( "status", 1);
+					}else{
+						resultMap.put( "error", "send email failed.");
+						resultMap.put( "status", 1);
+					}
+					return new MappingJacksonValue(resultMap);
 				}
 				//组织用户邮箱注册
 				if(type==1 && userType=="2"){
+					if(!isEmail(passport)){
+						resultMap.put( "error", "email format is not correct.");
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
+					}
 					userLoginRegister= new UserLoginRegister();
 					userLoginRegister.setPassport(passport);
 					byte[] bt = Base64.decode(password);
@@ -169,15 +227,17 @@ public class UserLoginRegisterController extends BaseControl {
 					map.put("acceptor",passport);
 					map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 					if(userLoginRegisterService.sendEmail(passport, type, map)){
-						reusltMap.put( "message", "send mail success");
-						reusltMap.put( "status", 1);
+						resultMap.put( "message", "send mail success");
+						resultMap.put( "status", 1);
 					}else{
-						reusltMap.put( "error", "send email failed.");
-						reusltMap.put( "status", 1);
+						resultMap.put( "error", "send email failed.");
+						resultMap.put( "status", 1);
 					}
-					return new MappingJacksonValue(reusltMap);
+					return new MappingJacksonValue(resultMap);
 				}
-				return new MappingJacksonValue(reusltMap);
+				resultMap.put("error", "paramter type or userType error.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			//异常失败回滚
 			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
@@ -194,6 +254,106 @@ public class UserLoginRegisterController extends BaseControl {
 			throw e;
 		}
 	}
+	/**
+	 * 用户登录
+	 * 
+	 * @param passport 为邮箱和手机号
+	 * @param password 用户密码
+	 * @param source  来源的appkey
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userLoginRegister/login" }, method = { RequestMethod.GET })
+	public MappingJacksonValue login(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "password",required = true) String password
+			,@RequestParam(name = "source",required = true) String source
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		try {
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			byte[] bt = Base64.decode(password);
+			String salt=userLoginRegisterService.setSalt();
+			password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
+			if(!userLoginRegister.getPassword().equals(password)){
+				resultMap.put("error", "incorrect password .");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			resultMap.put("userLoginRegister", userLoginRegister);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("登录失败:"+passport);
+			throw e;
+		}
+	}
+	/**
+	 * 注册获取手机验证码
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userLoginThird/getIdentifyingCode" }, method = { RequestMethod.GET})
+	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
+		,@RequestParam(name = "passport",required = true) String passport
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+				if(StringUtils.isEmpty(passport)){
+					resultMap.put( "error", "passport is null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(!isMobileNo(passport)){
+					resultMap.put( "error", "passport is not right phone number.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userLoginRegisterService.passportIsExist(passport)){
+					resultMap.put( "error", "mobile already exists.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				String code=userLoginRegisterService.sendIdentifyingCode(passport);
+				if(StringUtils.isEmpty(code)){
+					resultMap.put( "error", "failed to get the verfication code.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);	
+				}else{
+					resultMap.put( "code", code);
+					resultMap.put( "status", 1);
+				}
+				logger.info(new StringBuffer().append("手机号:").append(passport).append(",的短信验证码为:").append(code).append(",有效期为30分钟!").toString());
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			throw e;
+		}
+	}
+	/**
+	 * 验证是否是手机号码
+	 * 验证号段截止2015.11.26,如今后有新的号段进来,会在正则表达式中添加
+	 * @param mobile
+	 * @return
+	 */
+	private  boolean isMobileNo(String mobile){  
+		Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0-9]|(17[6,7,8])|14[5,7]))\\d{8}$");   
+		Matcher m = p.matcher(mobile);  
+		return m.matches();  
+	}
+    /**
+     * 验证是否是正常的邮箱
+     * @param email
+     * @return
+     */
+    private boolean isEmail(String email){     
+        String str="^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
+           Pattern p = Pattern.compile(str);     
+           Matcher m = p.matcher(email);     
+           logger.info(m.matches()+"---");     
+           return m.matches();     
+    }	
 	/**
 	 * 获取真实IP的方法
 	 * @param request

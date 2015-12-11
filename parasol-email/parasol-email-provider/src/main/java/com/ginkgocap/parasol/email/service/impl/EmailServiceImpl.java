@@ -66,7 +66,7 @@ public class EmailServiceImpl implements EmailService {
         }
     }
     /**
-     * 验证是否手机号
+     * 验证是否是正常的邮箱
      * @param email
      * @return
      */
