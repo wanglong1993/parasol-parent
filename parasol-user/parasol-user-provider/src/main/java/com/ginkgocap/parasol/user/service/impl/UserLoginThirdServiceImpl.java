@@ -302,14 +302,18 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 	public UserLoginThird getUserLoginThirdByOpenId(String openId) throws UserLoginThirdServiceException{
 		try{
 			if(StringUtils.isEmpty(openId)) throw new UserLoginThirdServiceException("openId is null or empty.");
-			UserLoginThird userLoginThird=getEntity((Long)getMapId(UserLoginThird_Map_OpenId, openId));
+			Long id=(Long)getMapId(UserLoginThird_Map_OpenId, openId);
+			if(id==null || id<=0l) return null;
+			UserLoginThird userLoginThird=getEntity(id);
 			if(userLoginThird==null) return null;
-			if(userLoginRegisterService.getUserLoginRegister(userLoginThird.getUserId())==null) throw new UserLoginThirdServiceException("userId is not exists in UserLoginRegister.");
-			return userLoginThird;
-		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
+			try {
+				if(userLoginRegisterService.getUserLoginRegister(userLoginThird.getUserId())==null) throw new UserLoginThirdServiceException("userId is not exists in UserLoginRegister.");
+			} catch (UserLoginRegisterServiceException e) {
+				e.printStackTrace();
 			}
+			return userLoginThird;
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
 			throw new UserLoginThirdServiceException(e);
 		}
 	}
