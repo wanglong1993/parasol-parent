@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ginkgocap.parasol.user.exception.UserOrganBasicServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
+import com.ginkgocap.parasol.user.exception.UserOrganExtServiceException;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
 
 /**
@@ -54,13 +55,20 @@ public interface UserOrganBasicService {
 	 */
 	public UserOrganBasic getUserOrganBasic(Long userId) throws UserOrganBasicServiceException; 
 	
-	
 	/**
 	 * 根据userId列表获取用户基本信息列表
 	 * @param userIds 
 	 * @return List
 	 * @throws UserOrganBasicServiceException
 	 */
-	public List<UserOrganBasic> getUserOrganBasecList(List<Long> userIds) throws UserOrganBasicServiceException;	
+	public List<UserOrganBasic> getUserOrganBasecList(List<Long> userIds) throws UserOrganBasicServiceException;
+	
+	/**
+	 * 根据id真删除组织用户扩展信息
+	 * @param id
+	 * @return Boolean
+	 * @throws UserOrganBasicServiceException
+	 */
+	public Boolean realDeleteUserOrganBasic(Long id) throws UserOrganBasicServiceException;		
 
 }

@@ -1,9 +1,6 @@
 package com.ginkgocap.parasol.user.service.impl;
 
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,13 +11,14 @@ import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.exception.UserOrganBasicServiceException;
+import com.ginkgocap.parasol.user.exception.UserOrganExtServiceException;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserOrganBasicService;
+import com.ginkgocap.parasol.user.service.UserOrganExtService;
 import com.ginkgocap.parasol.util.PinyinUtils;
 @Service("userOrganBasicService")
 public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> implements UserOrganBasicService  {
@@ -28,6 +26,8 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 	private UserLoginRegisterService userLoginRegisterService;
 	@Resource
 	private FileIndexService fileIndexService;
+	@Resource
+	private UserOrganExtService userOrganExtService;
 	private static Logger logger = Logger.getLogger(UserOrganBasicServiceImpl.class);
 	
 	/**
@@ -39,21 +39,14 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 	private UserOrganBasic checkValidity(UserOrganBasic userOrganBasic,int type)throws UserOrganBasicServiceException,UserLoginRegisterServiceException {
 		if(userOrganBasic==null) throw new UserOrganBasicServiceException("userOrganBasic can not be null.");
 		if(userOrganBasic.getUserId()<=0l) throw new UserOrganBasicServiceException("The value of userId is null or empty.");
-		try {
-			if(userLoginRegisterService.getUserLoginRegister(userOrganBasic.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister.");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		if(userLoginRegisterService.getUserLoginRegister(userOrganBasic.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister.");
 		if(type!=0)
 		if(getUserOrganBasic(userOrganBasic.getUserId())==null)throw new UserOrganBasicServiceException("userId not exists in userOrganBasic");
 		if(StringUtils.isEmpty(userOrganBasic.getName()))throw new UserOrganBasicServiceException("The value of  name is null or empty.");
-		if(StringUtils.isEmpty(userOrganBasic.getIp()))throw new UserOrganBasicServiceException("The value of ip is null or empty.");
 		if(userOrganBasic.getStatus().intValue() != 0 && userOrganBasic.getStatus().intValue() != 1 && userOrganBasic.getStatus().intValue() != -1 && userOrganBasic.getStatus() !=2)throw new UserOrganBasicServiceException("The value of status is null or empty.");
 		if(userOrganBasic.getCtime()==null) userOrganBasic.setCtime(System.currentTimeMillis());
 		if(userOrganBasic.getUtime()==null) userOrganBasic.setUtime(System.currentTimeMillis());
-		userOrganBasic.setNameFirst(StringUtils.substring(PinyinUtils.stringToHeads(userOrganBasic.getName()), 0, 1));
 		userOrganBasic.setNameIndex(PinyinUtils.stringToHeads(userOrganBasic.getName()));
-		userOrganBasic.setNameIndexAll(PinyinUtils.stringToQuanPin(userOrganBasic.getName()));
 		return userOrganBasic;
 	}
 	
@@ -89,14 +82,6 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 			if(userId==null || userId<=0l)throw new UserOrganBasicServiceException("userId is null or empty.");
 			UserOrganBasic userOrganBasic=getEntity(userId);
 			if(userOrganBasic==null)throw new UserOrganBasicServiceException("userId is not exist in UserOrganBasic.");
-			Long fileIndexId=userOrganBasic.getBusinessLicencePicId();
-			Map<Long, Object> fileIndexMap = new HashMap<Long, Object>();
-			if(!ObjectUtils.isEmpty(fileIndexId))fileIndexMap.put(fileIndexId,  getFileIndex(fileIndexId));
-			fileIndexId=userOrganBasic.getIdcardFrontPicId();
-			if(!ObjectUtils.isEmpty(fileIndexId))fileIndexMap.put(fileIndexId,  getFileIndex(fileIndexId));
-			fileIndexId=userOrganBasic.getIdcardBackPicId();
-			if(!ObjectUtils.isEmpty(fileIndexId))fileIndexMap.put(fileIndexId,  getFileIndex(fileIndexId));
-			userOrganBasic.setFileIndexMap(fileIndexMap);
 			return userOrganBasic;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
@@ -105,27 +90,7 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 			throw new UserOrganBasicServiceException(e);
 		}
 	}
-	
-	/**
-	 * 根据FileIndexid获取组织用户的图片文件信息
-	 * @param userId
-	 * @return UserOrganBasic
-	 * @throws UserOrganBasicServiceException 
-	 */
-	private FileIndex getFileIndex(Long fileIndexId) throws UserOrganBasicServiceException{
-		try {
-			if(fileIndexId==null || fileIndexId<=0L)throw new UserOrganBasicServiceException("fileIndexId is null or empty");
-			FileIndex fileIndex=fileIndexService.selectByPrimaryKey(fileIndexId);
-			if(fileIndex==null) throw new UserOrganBasicServiceException("fileIndexId is not exist in FileIndex");
-			return fileIndex;
-		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserOrganBasicServiceException(e);
-		}
-	}
-	
+
 	@Override
 	public List<UserOrganBasic> getUserOrganBasecList(List<Long> userIds)throws UserOrganBasicServiceException {
 		try {
@@ -164,6 +129,19 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 			userOrganBasic.setStatus(status);
 			return updateEntity(userOrganBasic);
 		}catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserOrganBasicServiceException(e);
+		}
+	}
+
+	@Override
+	public Boolean realDeleteUserOrganBasic(Long id)throws UserOrganBasicServiceException {
+		try {
+			if(id==null || id<=0l) throw new UserOrganBasicServiceException("id is must grater than zero.");
+			return deleteEntity(id);
+		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}

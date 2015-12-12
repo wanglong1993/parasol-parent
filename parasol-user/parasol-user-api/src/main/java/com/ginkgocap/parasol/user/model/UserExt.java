@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * 个人用户基本资料
@@ -66,6 +67,10 @@ public class UserExt implements java.io.Serializable {
 	 * 用户IP.
 	 */
 	private String ip;
+	/**
+	 * 若为组织则为全称，不可更改；若为个人则为昵称，不可修改。.
+	 */
+	private String name;
 
 	public UserExt() {
 	}
@@ -185,6 +190,14 @@ public class UserExt implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	
+	@Transient
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

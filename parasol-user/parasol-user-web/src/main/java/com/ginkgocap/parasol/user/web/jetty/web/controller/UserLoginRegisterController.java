@@ -20,14 +20,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ginkgocap.parasol.user.model.UserBasic;
+import com.ginkgocap.parasol.user.model.UserExt;
 import com.ginkgocap.parasol.user.model.UserInterestIndustry;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
+import com.ginkgocap.parasol.user.model.UserOrganExt;
 import com.ginkgocap.parasol.user.service.UserBasicService;
+import com.ginkgocap.parasol.user.service.UserExtService;
 import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserLoginThirdService;
 import com.ginkgocap.parasol.user.service.UserOrganBasicService;
+import com.ginkgocap.parasol.user.service.UserOrganExtService;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
 
 /**
@@ -42,6 +46,10 @@ public class UserLoginRegisterController extends BaseControl {
 	private UserLoginRegisterService userLoginRegisterService;
 	@Autowired
 	private UserBasicService userBasicService;
+	@Autowired
+	private UserExtService userExtService;
+	@Autowired
+	private UserOrganExtService userOrganExtService;
 	@Autowired
 	private UserOrganBasicService userOrganBasicService;
 	@Autowired
@@ -90,12 +98,16 @@ public class UserLoginRegisterController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
 		UserOrganBasic userOrganBasic= null;
+		UserOrganExt userOrganExt= null;
 		UserBasic userBasic= null;
+		UserExt userExt= null;
 		UserInterestIndustry userInterestIndustry= null;
 		List<UserInterestIndustry> list = null;
 		String ip=getIpAddr(request);
 		Long userBasicId=0l;
+		Long userExtId=0l;
 		Long userOrganBasicId=0l;
+		Long userOrganExtId=0l;
 		Long id=0l;
 		try {
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
@@ -125,8 +137,11 @@ public class UserLoginRegisterController extends BaseControl {
 					id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 					userBasic= new UserBasic();
 					userBasic.setName(name);
-					userBasic.setIp(ip);
 					userBasicId=userBasicService.createUserBasic(userBasic);
+					userExt=new UserExt();
+					userExt.setName(name);
+					userExt.setIp(ip);
+					userExtId=userExtService.createUserExt(userExt);
 					list =new ArrayList<UserInterestIndustry>();
 					for (Long firstIndustryId : firstIndustryIds) {
 						userInterestIndustry= new UserInterestIndustry();
@@ -169,8 +184,11 @@ public class UserLoginRegisterController extends BaseControl {
 					id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 					userBasic= new UserBasic();
 					userBasic.setName(name);
-					userBasic.setIp(ip);
 					userBasicId=userBasicService.createUserBasic(userBasic);
+					userExt=new UserExt();
+					userExt.setName(name);
+					userExt.setIp(ip);
+					userExtId=userExtService.createUserExt(userExt);
 					list =new ArrayList<UserInterestIndustry>();
 					for (Long firstIndustryId : firstIndustryIds) {
 						userInterestIndustry= new UserInterestIndustry();
@@ -179,17 +197,6 @@ public class UserLoginRegisterController extends BaseControl {
 						userInterestIndustry.setIp(ip);
 						list.add(userInterestIndustry);
 						list=userInterestIndustryService.createUserInterestIndustryByList(list, id);
-					}
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("email", "http://www.gintong.com/userLoginRegister/verification?eamil="+Base64.decode(passport.getBytes()));
-					map.put("acceptor",passport);
-					map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
-					if(userLoginRegisterService.sendEmail(passport, type, map)){
-						resultMap.put( "message", "send mail success");
-						resultMap.put( "status", 1);
-					}else{
-						resultMap.put( "error", "send email failed.");
-						resultMap.put( "status", 1);
 					}
 					return new MappingJacksonValue(resultMap);
 				}
@@ -214,14 +221,16 @@ public class UserLoginRegisterController extends BaseControl {
 					userOrganBasic= new UserOrganBasic();
 					userOrganBasic.setUserId(id);
 					userOrganBasic.setName(name);
-					userOrganBasic.setShortName(shortName);
-					userOrganBasic.setBusinessLicencePicId(businessLicencePicId);
-					userOrganBasic.setIdcardFrontPicId(idcardFrontPicId);
-					userOrganBasic.setIdcardBackPicId(idcardBackPicId);
-					userOrganBasic.setCompanyContacts(companyContacts);
-					userOrganBasic.setCompanyContactsMobile(companyContactsMobile);
-					userOrganBasic.setIp(ip);
 					userOrganBasicId=userOrganBasicService.createUserOrganBasic(userOrganBasic);
+					userOrganExt= new UserOrganExt();
+					userOrganExt.setShortName(shortName);
+					userOrganExt.setBusinessLicencePicId(businessLicencePicId);
+					userOrganExt.setIdcardFrontPicId(idcardFrontPicId);
+					userOrganExt.setIdcardBackPicId(idcardBackPicId);
+					userOrganExt.setCompanyContacts(companyContacts);
+					userOrganExt.setCompanyContactsMobile(companyContactsMobile);
+					userOrganExt.setIp(ip);
+					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("email", "http://www.gintong.com/userLoginRegister/verification?eamil="+Base64.decode(passport.getBytes()));
 					map.put("acceptor",passport);
@@ -241,8 +250,10 @@ public class UserLoginRegisterController extends BaseControl {
 		}catch (Exception e ){
 			//异常失败回滚
 			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
+			if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
 			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
-			if(userOrganBasicId!=null && userOrganBasicId>0l)userBasicService.realDeleteUserBasic(userOrganBasicId);
+			if(userOrganExtId!=null && userOrganExtId>0l)userOrganExtService.realDeleteUserOrganExt(userOrganExtId);
+			if(userOrganBasicId!=null && userOrganBasicId>0l)userOrganBasicService.realDeleteUserOrganBasic(userOrganBasicId);
 			if(list!=null && list.size()>=0){
 				List<Long> listIds=new ArrayList<Long>();
 				for (UserInterestIndustry userInterestIndustry2 : list) {

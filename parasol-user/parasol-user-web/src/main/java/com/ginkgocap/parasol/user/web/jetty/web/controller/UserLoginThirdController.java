@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ginkgocap.parasol.user.model.UserBasic;
+import com.ginkgocap.parasol.user.model.UserExt;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserLoginThird;
 import com.ginkgocap.parasol.user.service.UserBasicService;
+import com.ginkgocap.parasol.user.service.UserExtService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserLoginThirdService;
+import com.ginkgocap.parasol.user.service.UserOrganExtService;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
 
 /**
@@ -37,6 +40,10 @@ public class UserLoginThirdController extends BaseControl {
 	private UserLoginRegisterService userLoginRegisterService;
 	@Autowired
 	private UserBasicService userBasicService;
+	@Autowired
+	private UserExtService userExtService;
+	@Autowired
+	private UserOrganExtService userOrganExtService;
 	/**
 	 * 获取第三方登录url地址
 	 * 
@@ -138,10 +145,13 @@ public class UserLoginThirdController extends BaseControl {
 		UserBasic userBasic= new UserBasic();
 		UserLoginThird userLoginThird= new UserLoginThird();
 		MappingJacksonValue mappingJacksonValue=null;
+		UserExt userExt= null;
 		String ip=getIpAddr(request);
 		Long userId=0l;
 		Long id=0l;
 		Long id2=0l;
+		Long userBasicId=0l;
+		Long userExtId=0l;
 		try {   
 				userLoginThird=userLoginThirdService.getUserLoginThirdByOpenId(openId);
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
@@ -166,8 +176,12 @@ public class UserLoginThirdController extends BaseControl {
 					//设置userBasic开始
 					userBasic.setName(name);
 					userBasic.setSex(new Byte(sex));
-					userBasic.setIp(ip);
 					userBasic.setStatus(new Byte("1"));
+					userBasicId=userBasicService.createUserBasic(userBasic);
+					userExt=new UserExt();
+					userExt.setName(name);
+					userExt.setIp(ip);
+					userExtId=userExtService.createUserExt(userExt);
 					//设置userLoginThird开始
 					userLoginThird= new UserLoginThird();
 					userLoginThird.setAccesstoken(accessToken);
@@ -205,6 +219,8 @@ public class UserLoginThirdController extends BaseControl {
 			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
 			if(userId!=null && userId>0l)userBasicService.realDeleteUserBasic(userId);
 			if(id2!=null && id2>0l)userLoginThirdService.realDeleteUserLoginThird(id2);
+			if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
+			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
 			logger.info("第三方注册失败:"+passport);
 			throw e;
 		}
@@ -277,9 +293,6 @@ public class UserLoginThirdController extends BaseControl {
 				userLoginThird.setUserId(userLoginRegister.getId());
 				//更新userLoginRegister开始
 				userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);
-				//更新userBasic开始
-				userBasic.setIp(ip);
-				userBasicService.updateUserBasic(userBasic);
 				//创建userLoginThird开始
 				id=userLoginThirdService.saveUserLoginThird(userLoginThird);
 				resultMap.put("userLoginRegister",userLoginRegister);
@@ -366,7 +379,6 @@ public class UserLoginThirdController extends BaseControl {
 			}
 			if(!StringUtils.isEmpty(headPic) && userLoginThird.getHeadPic()!=headPic){
 				userBasic.setName(name);
-				userBasic.setIp(ip);
 				userBasicService.updateUserBasic(userBasic);
 			}
 			userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);

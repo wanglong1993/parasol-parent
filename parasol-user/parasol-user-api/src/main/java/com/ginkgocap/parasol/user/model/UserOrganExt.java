@@ -37,6 +37,10 @@ public class UserOrganExt implements java.io.Serializable {
 	 */
 	private String shortName;
 	/**
+	 * 若为组织则为全称，不可更改；若为个人则为昵称，可修改。.
+	 */
+	private String name;	
+	/**
 	 * 证券代码
 	 */
 	private String stockCode;
@@ -131,7 +135,7 @@ public class UserOrganExt implements java.io.Serializable {
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
 	}
-	
+
 	@Column(name = "stock_code", length = 20)
 	public String getStockCode() {
 		return stockCode;
@@ -257,6 +261,15 @@ public class UserOrganExt implements java.io.Serializable {
 
 	public void setFileIndexMap(Map<Long, Object> fileIndexMap) {
 		this.fileIndexMap = fileIndexMap;
+	}
+	
+	@Transient
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

@@ -1,5 +1,10 @@
 package com.ginkgocap.parasol.user.service.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -380,5 +385,49 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 			throw new UserLoginRegisterServiceException(e);
 		}
 	}
-
+	/**
+     * @param 下载图片
+     * @throws Exception
+     */
+    private static boolean getImages(String urlPath,String fileName) {
+        URL url;
+        boolean flag=true;
+		try {
+			url = new URL(urlPath);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setReadTimeout(6 * 10000);
+			if (conn.getResponseCode() < 10000) {
+				InputStream inputStream = conn.getInputStream();
+				byte[] data = readStream(inputStream);
+				if (data.length > 0) {
+					FileOutputStream outputStream = new FileOutputStream(fileName);
+					outputStream.write(data);
+//					log.debug("图片下载成功");
+					outputStream.close();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			flag=false;
+		}
+		return flag;
+    }
+    /**
+	 * 读取url中数据，并以字节的形式返回
+	 * @param inputStream
+	 * @return
+	 * @throws Exception
+	 */
+    private static byte[] readStream(InputStream inputStream) throws Exception{
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        while((len = inputStream.read(buffer)) !=-1){
+            outputStream.write(buffer, 0, len);
+        }
+        outputStream.close();
+        inputStream.close();
+        return outputStream.toByteArray();
+    }    
 }

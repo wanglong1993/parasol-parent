@@ -33,23 +33,16 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	private UserBasic checkValidity(UserBasic userBasic,int type)throws UserBasicServiceException,UserLoginRegisterServiceException {
 		if(userBasic==null) throw new UserBasicServiceException("userBasic can not be null.");
 		if(userBasic.getUserId()<=0l) throw new UserBasicServiceException("The value of userId is null or empty.");
-		try {
-			if(userLoginRegisterService.getUserLoginRegister(userBasic.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister");
-		} catch (UserLoginRegisterServiceException e) {
-			e.printStackTrace();
-		}
+		if(userLoginRegisterService.getUserLoginRegister(userBasic.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister");
 		if(type!=0)
 		if(getUserBasic(userBasic.getUserId())==null)throw new UserBasicServiceException("userId not exists in userBasic");
 		if(StringUtils.isEmpty(userBasic.getName()))throw new UserBasicServiceException("The value of  name is null or empty.");
 		if(userBasic.getSex().intValue()!=0 && userBasic.getSex().intValue()!=1 && userBasic.getSex().intValue()!=2)throw new UserBasicServiceException("The value of sex must be 0 or 1 or 2.");
-		if(StringUtils.isEmpty(userBasic.getIp()))throw new UserBasicServiceException("The value of ip is null or empty.");
 		if(userBasic.getStatus().intValue() != 0 && userBasic.getStatus().intValue() != 1 && userBasic.getStatus().intValue() != -1 && userBasic.getStatus() !=2)throw new UserBasicServiceException("The value of status is null or empty.");
 		if(userBasic.getCtime()==null) userBasic.setCtime(System.currentTimeMillis());
 		if(userBasic.getUtime()==null) userBasic.setUtime(System.currentTimeMillis());
 		if(type==1)userBasic.setUtime(System.currentTimeMillis());
-		userBasic.setNameFirst(StringUtils.substring(PinyinUtils.stringToHeads(userBasic.getName()), 0, 1));
 		userBasic.setNameIndex(PinyinUtils.stringToHeads(userBasic.getName()));
-		userBasic.setNameIndexAll(PinyinUtils.stringToQuanPin(userBasic.getName()));
 		return userBasic;
 	}
 	
