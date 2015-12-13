@@ -81,7 +81,7 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 		try {
 			if(userId==null || userId<=0l)throw new UserOrganBasicServiceException("userId is null or empty.");
 			UserOrganBasic userOrganBasic=getEntity(userId);
-			if(userOrganBasic==null)throw new UserOrganBasicServiceException("userId is not exist in UserOrganBasic.");
+			if(userOrganBasic==null)return null;;
 			return userOrganBasic;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {

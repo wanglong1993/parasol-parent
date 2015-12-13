@@ -78,8 +78,7 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 		try {
 			if(userId==null || userId<=0l)throw new UserBasicServiceException("userId is null or empty");
 			UserBasic userBasic =getEntity(userId);
-			if(!ObjectUtils.isEmpty(userBasic))return userBasic;
-			else throw new UserBasicServiceException("userId is not exists in useBasic");
+			return userBasic;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

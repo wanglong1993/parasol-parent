@@ -31,7 +31,7 @@ public class UserOrganBasic implements java.io.Serializable {
 	/**
 	 * 用户头像.
 	 */
-	private String picId;
+	private Long picId;
 	/**
 	 * 1：正常；0：锁定；-1：注销 ；2： 删除.
 	 */
@@ -81,12 +81,12 @@ public class UserOrganBasic implements java.io.Serializable {
 	}
 
 	@Column(name = "pic_id", nullable = false, length = 200)
-	public String getPicPath() {
+	public Long getPicId() {
 		return this.picId;
 	}
 
-	public void setPicPath(String picPath) {
-		this.picId = picPath;
+	public void setPicId(Long picId) {
+		this.picId = picId;
 	}
 
 	@Column(name = "status", nullable = false)

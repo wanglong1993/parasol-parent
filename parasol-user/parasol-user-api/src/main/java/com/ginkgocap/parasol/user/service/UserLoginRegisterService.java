@@ -19,6 +19,13 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException; 
+	/**
+	 * 修改
+	 * @param userLoginRegister 
+	 * @return Long
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Boolean updataUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException; 
 	
 
 	/**

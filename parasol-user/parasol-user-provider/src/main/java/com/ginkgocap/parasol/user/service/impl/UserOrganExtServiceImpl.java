@@ -15,7 +15,6 @@ import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
-import com.ginkgocap.parasol.user.exception.UserExtServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.exception.UserOrganExtServiceException;
 import com.ginkgocap.parasol.user.model.UserOrganExt;

@@ -143,20 +143,20 @@ public class UserBasicServiceTest  extends TestBase implements Test  {
 			userBasic.setName("张家口");
 			Byte sex=1;
 			userBasic.setSex(sex);
-			userBasic.setProvinceId(null);
-			userBasic.setCityId(null);
-			userBasic.setCountyId(null);
+//			userBasic.setProvinceId(null);
+//			userBasic.setCityId(null);
+//			userBasic.setCountyId(null);
 			userBasic.setUtime(ctime);
 			userBasic.setCompanyName("金桐网");
-			userBasic.setCompanyJob("科学家");
-			userBasic.setShortName("张家口");
+//			userBasic.setCompanyJob("科学家");
+//			userBasic.setShortName("张家口");
 			userBasic.setPicId(1l);
-			userBasic.setDescription("");
+//			userBasic.setDescription("");
 			Byte status=1;
 			userBasic.setStatus(status);
 			userBasic.setCtime(System.currentTimeMillis());
 			userBasic.setUtime(System.currentTimeMillis());
-			userBasic.setIp("192.168.110.119");
+//			userBasic.setIp("192.168.110.119");
 			return userBasic;
 		} catch (Exception e) {
 			e.printStackTrace();

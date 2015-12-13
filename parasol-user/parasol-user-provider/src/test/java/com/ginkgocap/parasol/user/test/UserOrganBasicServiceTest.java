@@ -64,8 +64,8 @@ public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 			Long id=userLoginRegisterService.getId("15966467469");
 			UserOrganBasic userOrganBasic =userOrganBasicService.getUserOrganBasic(id);
 			Assert.assertTrue(userOrganBasic!=null);
-			FileIndex fileIndex=(FileIndex)userOrganBasic.getFileIndexMap().get(userOrganBasic.getBusinessLicencePicId());
-			fileIndex.getFilePath();
+//			FileIndex fileIndex=(FileIndex)userOrganBasic.getFileIndexMap().get(userOrganBasic.getBusinessLicencePicId());
+//			fileIndex.getFilePath();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -121,22 +121,22 @@ public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 			UserOrganBasic userOrganBasic = new UserOrganBasic();
 			userOrganBasic.setUserId(userId);
 			userOrganBasic.setName("2222百品网络科技有限公司");
-			userOrganBasic.setShortName("百品");
-			userOrganBasic.setRegFrom("gintongapp");
-			userOrganBasic.setBrief("2222百品网络科技有限公司");
-			userOrganBasic.setPhone("010-89765623");
-			userOrganBasic.setOrgType("2222一般企业");
+//			userOrganBasic.setShortName("百品");
+//			userOrganBasic.setRegFrom("gintongapp");
+//			userOrganBasic.setBrief("2222百品网络科技有限公司");
+//			userOrganBasic.setPhone("010-89765623");
+//			userOrganBasic.setOrgType("2222一般企业");
 			userOrganBasic.setAuth(new Byte("-1"));
-			userOrganBasic.setPicPath("/webserver/data/pic/140/11.jgp");
+//			userOrganBasic.setPicPath("/webserver/data/pic/140/11.jgp");
 			userOrganBasic.setStatus(new Byte("1"));
 			userOrganBasic.setCtime(ctime);
 			userOrganBasic.setUtime(ctime);
-			userOrganBasic.setIp("192.168.110.119");
-			userOrganBasic.setBusinessLicencePicId(3918187813142533l);
-			userOrganBasic.setCompanyContacts("张三");
-			userOrganBasic.setCompanyContactsMobile("13716683980");
-			userOrganBasic.setIdcardFrontPicId(3918504642478090l);
-			userOrganBasic.setIdcardBackPicId(3918553426427924l);
+//			userOrganBasic.setIp("192.168.110.119");
+//			userOrganBasic.setBusinessLicencePicId(3918187813142533l);
+//			userOrganBasic.setCompanyContacts("张三");
+//			userOrganBasic.setCompanyContactsMobile("13716683980");
+//			userOrganBasic.setIdcardFrontPicId(3918504642478090l);
+//			userOrganBasic.setIdcardBackPicId(3918553426427924l);
 			return userOrganBasic;
 		} catch (Exception e) {
 			e.printStackTrace();
