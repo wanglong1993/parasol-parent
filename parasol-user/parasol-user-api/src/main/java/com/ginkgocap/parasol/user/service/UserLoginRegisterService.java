@@ -163,6 +163,12 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public boolean sendEmail(String mailTo, int type,Map<String, Object> map) throws UserLoginRegisterServiceException;
+	/**
+	 * 获取邮箱地址是否缓存
+	 * @param email
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public boolean getEmail(String email) throws UserLoginRegisterServiceException;
 
 	
 

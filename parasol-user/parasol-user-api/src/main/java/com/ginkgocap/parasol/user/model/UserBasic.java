@@ -38,6 +38,10 @@ public class UserBasic implements java.io.Serializable {
 	 */
 	private Long picId;
 	/**
+	 * 是否验证邮箱,1,验证,0,未验证
+	 */
+	private Byte auth;	
+	/**
 	 * 手机号.
 	 */
 	private String mobile;
@@ -116,6 +120,17 @@ public class UserBasic implements java.io.Serializable {
 		this.mobile = mobile;
 	}
 	
+	@Column(name = "auth", nullable = false)
+	public Byte getAuth() {
+		return auth;
+	}
+
+
+	public void setAuth(Byte auth) {
+		this.auth = auth;
+	}
+
+
 	@Column(name = "status", nullable = false)
 	public Byte getStatus() {
 		return this.status;

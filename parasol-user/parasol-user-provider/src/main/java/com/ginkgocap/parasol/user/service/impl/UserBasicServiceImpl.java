@@ -62,7 +62,7 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 	public boolean updateUserBasic(UserBasic userBasic)throws UserBasicServiceException,UserLoginRegisterServiceException {
 		try {
 			if(updateEntity(checkValidity(userBasic,1)))return true;
-			else throw new UserBasicServiceException("updateUserBasic failed.");
+			else return false;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

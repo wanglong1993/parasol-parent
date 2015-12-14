@@ -379,4 +379,10 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			throw new UserLoginRegisterServiceException(e);
 		}
 	}
+	@Override
+	public boolean getEmail(String email)throws UserLoginRegisterServiceException {
+		 Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, email));
+		 if(value!=null)return true;
+		 return false;
+	}
 }

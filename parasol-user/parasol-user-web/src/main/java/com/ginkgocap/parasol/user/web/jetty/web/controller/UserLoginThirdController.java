@@ -459,7 +459,7 @@ public class UserLoginThirdController extends BaseControl {
 					userBasic.setName(name);
 					userBasic.setSex(new Byte(sex));
 					userBasic.setStatus(new Byte("1"));
-					picId=upload("","123",id.toString(), "http://ww1.sinaimg.cn/thumbnail/9573641ejw1eumrd6vviyj20go0b474s.jpg");
+//					picId=upload("","123",id.toString(), "http://ww1.sinaimg.cn/thumbnail/9573641ejw1eumrd6vviyj20go0b474s.jpg");
 					userBasic.setUserId(id);
 					userBasic.setPicId(picId);
 					userBasicId=userBasicService.createUserBasic(userBasic);

@@ -67,7 +67,7 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param code 手机验证码
 	 * @param passport 为邮箱和手机号
 	 * @param password 用户密码
-	 * @param userType 1.个人用户,2.组织用户
+	 * @param userType 0.个人用户,1.组织用户
 	 * @param firstIndustryIds 一级行业ID数组
 	 * @param name 昵称,企业全称
 	 * @param shortName 企业简称
@@ -126,7 +126,7 @@ public class UserLoginRegisterController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				//个人用户组织用户邮箱注册
-				if((type==1 && userType=="1") ||(type==1 && userType=="2")){
+				if((type==1 && userType.equals("0")) ||(type==1 && userType.equals("1"))){
 					if(!isEmail(passport)){
 						resultMap.put( "error", "email format is not correct.");
 						resultMap.put( "status", 0);
@@ -134,7 +134,7 @@ public class UserLoginRegisterController extends BaseControl {
 					}
 				}
 				//个人用户手机注册
-				if(type==2 && userType=="1"){
+				if(type==2 && userType.equals("0")){
 					if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
 						resultMap.put( "error", "code is not right");
 						resultMap.put( "status", 0);
@@ -155,7 +155,7 @@ public class UserLoginRegisterController extends BaseControl {
 				if(type==2)userLoginRegister.setMobile((passport));
 				id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 				//个人用户邮箱注册
-				if((type==1 && userType=="1")){
+				if((type==1 && userType.equals("0"))){
 			        Map<String, Object> map = new HashMap<String, Object>();
 			        map.put("email", "http://www.gintong.com/userLoginRegister/verification?eamil="+Base64.decode(passport.getBytes()));
 			        map.put("acceptor",passport);
@@ -170,7 +170,7 @@ public class UserLoginRegisterController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				//个人用手机注册
-				if(type==2 && userType=="1"){
+				if(type==2 && userType.equals("0")){
 					userBasic= new UserBasic();
 					userBasic.setName(name);
 					userBasic.setPicId(picId);
@@ -178,11 +178,13 @@ public class UserLoginRegisterController extends BaseControl {
 					userBasic.setPicId(picId);
 					userBasic.setStatus(new Byte("1"));
 					userBasic.setSex(new Byte("1"));
+					userBasic.setUserId(id);
 					userBasicId=userBasicService.createUserBasic(userBasic);
 					userExt=new UserExt();
 					userExt.setName(name);
 					userExt.setShortName(name);
 					userExt.setIp(ip);
+					userExt.setUserId(id);
 					userExtId=userExtService.createUserExt(userExt);
 					list =new ArrayList<UserInterestIndustry>();
 					for (Long firstIndustryId : firstIndustryIds) {
@@ -198,7 +200,7 @@ public class UserLoginRegisterController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				//组织用户邮箱注册
-				if(type==1 && userType=="2"){
+				if(type==1 && userType.equals("1")){
 					userOrganBasic= new UserOrganBasic();
 					userOrganBasic.setPicId(picId);
 					userOrganBasic.setUserId(id);
@@ -208,6 +210,7 @@ public class UserLoginRegisterController extends BaseControl {
 					userOrganBasicId=userOrganBasicService.createUserOrganBasic(userOrganBasic);
 					userOrganExt= new UserOrganExt();
 					userOrganExt.setShortName(shortName);
+					userOrganExt.setName(name);
 					userOrganExt.setStockCode(stockCode);
 					userOrganExt.setOrgType(orgType);
 					userOrganExt.setBusinessLicencePicId(businessLicencePicId);
@@ -216,6 +219,7 @@ public class UserLoginRegisterController extends BaseControl {
 					userOrganExt.setCompanyContacts(companyContacts);
 					userOrganExt.setCompanyContactsMobile(companyContactsMobile);
 					userOrganExt.setIp(ip);
+					userOrganExt.setUserId(id);
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
 					//邮箱验证地址
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -542,6 +546,49 @@ public class UserLoginRegisterController extends BaseControl {
 			throw e;
 		}
 	}
+	/**
+	 * 邮箱注册验证地址,找回密码验证地址
+	 * 
+	 * @param passport 为邮箱和手机号
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userLoginRegister/validateEmail" }, method = { RequestMethod.GET })
+	public MappingJacksonValue validateEmail(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "eamil",required = true) String email
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserBasic userBasic=null;
+		UserLoginRegister userLoginRegister=null;
+		try {
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
+			if(userLoginRegister==null){
+				resultMap.put("error", "email is not exists in UserLogniRegister.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(userLoginRegisterService.getEmail(email)){
+				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+				if(userBasic==null){
+					resultMap.put("error", "email is not exists in UserBasic.");
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userBasic.setAuth(new Byte("1"));
+				if(userBasicService.updateUserBasic(userBasic)){
+					resultMap.put("error", "email validate success.");
+					resultMap.put("status",1);
+					return new MappingJacksonValue(resultMap);
+				}else{
+					resultMap.put("error", "email validate failed.");
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			throw e;
+		}
+	}	
 	/**
 	 * 修改密码
 	 * 

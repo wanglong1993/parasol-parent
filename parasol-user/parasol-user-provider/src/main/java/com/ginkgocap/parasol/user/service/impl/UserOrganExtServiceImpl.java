@@ -38,11 +38,7 @@ public class UserOrganExtServiceImpl extends BaseService<UserOrganExt> implement
 	private UserOrganExt checkValidity(UserOrganExt userOrganExt,int type)throws UserOrganExtServiceException,UserLoginRegisterServiceException {
 		if(userOrganExt==null) throw new UserOrganExtServiceException("userOrganExt can not be null.");
 		if(userOrganExt.getUserId()<=0l) throw new UserOrganExtServiceException("The value of userId is null or empty.");
-		try {
-			if(userLoginRegisterService.getUserLoginRegister(userOrganExt.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister.");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		if(userLoginRegisterService.getUserLoginRegister(userOrganExt.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister.");
 		if(type!=0)
 		if(getUserOrganExt(userOrganExt.getUserId())==null)throw new UserOrganExtServiceException("userId not exists in UserOrganExt");
 		if(StringUtils.isEmpty(userOrganExt.getName()))throw new UserOrganExtServiceException("The value of  name is null or empty.");
