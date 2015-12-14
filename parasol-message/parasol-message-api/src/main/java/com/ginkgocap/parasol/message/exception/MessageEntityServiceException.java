@@ -2,10 +2,12 @@ package com.ginkgocap.parasol.message.exception;
 
 /**
  * 
- * @author allenshen
- * @date 2015年11月11日
- * @time 下午5:50:24
- * @Copyright Copyright©2015 www.gintong.com
+* @Title: MessageEntityServiceException.java
+* @Package com.ginkgocap.parasol.message.exception
+* @Description: TODO(消息提醒异常类)
+* @author fuliwen fuliwen@gintong.com  
+* @date 2015年12月8日 下午4:01:48
+* @version V1.0
  */
 public class MessageEntityServiceException extends Exception {
 	private int errorCode = -1;

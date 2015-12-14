@@ -50,7 +50,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	/**
 	 * 1 组织用户，0.个人用户.
 	 */
-	private Byte virtual;
+	private Byte userType;
 	/**
 	 * 密码加密码.
 	 */
@@ -76,12 +76,12 @@ public class UserLoginRegister implements java.io.Serializable {
 	}
 
 	public UserLoginRegister(long id, String passport, String password,
-			Byte virtual, String salt, String source, Long ctime, Long utime,
+			Byte userType, String salt, String source, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
 		this.passport = passport;
 		this.password = password;
-		this.virtual = virtual;
+		this.userType = userType;
 		this.salt = salt;
 		this.source = source;
 		this.ctime = ctime;
@@ -90,7 +90,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	}
 
 	public UserLoginRegister(long id, String passport, String mobile,
-			String email, String userName, String password, Byte virtual,
+			String email, String userName, String password, Byte userType,
 			String salt, String source, Long ctime, Long utime,
 			String ip) {
 		this.id = id;
@@ -99,7 +99,7 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.email = email;
 		this.userName = userName;
 		this.password = password;
-		this.virtual = virtual;
+		this.userType = userType;
 		this.salt = salt;
 		this.source = source;
 		this.ctime = ctime;
@@ -164,13 +164,13 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.password = password;
 	}
 
-	@Column(name = "virtual", nullable = false)
-	public Byte getVirtual() {
-		return this.virtual;
+	@Column(name = "user_type", nullable = false)
+	public Byte getUsetType() {
+		return this.userType;
 	}
 
-	public void setVirtual(Byte virtual) {
-		this.virtual = virtual;
+	public void setUsetType(Byte usetType) {
+		this.userType = usetType;
 	}
 
 	@Column(name = "salt", nullable = false, length = 40)

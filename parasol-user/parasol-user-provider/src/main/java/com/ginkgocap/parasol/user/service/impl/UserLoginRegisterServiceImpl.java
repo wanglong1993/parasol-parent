@@ -1,7 +1,7 @@
 package com.ginkgocap.parasol.user.service.impl;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,21 +14,30 @@ import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.cache.Cache;
 import com.ginkgocap.parasol.cache.CacheModule;
+import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.email.service.EmailService;
 import com.ginkgocap.parasol.sms.service.ShortMessageService;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 @Service("userLoginRegisterService")
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
+	private final  static String findPasswordTitle = "【金桐】找回密码";
+	private final  static String registerTitle = "【金桐】邮箱注册";
+	private final  static String bindTitle = "【金桐】绑定邮箱";
+	private final  static String editPasswordTitle = "【金桐】修改密码";
+	
 	private static SecureRandomNumberGenerator ecureRandomNumberGenerator;
 	private static Random random;
-	private static StringBuffer sfb;
 	@Resource
 	private ShortMessageService shortMessageService;
+	@Resource
+	private EmailService emailService;
 	@Resource
 	private Cache cache;
 	
@@ -47,16 +56,19 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) throw new UserLoginRegisterServiceException("Field passport must be a value");
 			if(passportIsExist(userLoginRegister.getPassport()))throw new UserLoginRegisterServiceException("passport already exists");
-			if(userLoginRegister.getVirtual().intValue()!=0 && userLoginRegister.getVirtual().intValue()!=1)throw new UserLoginRegisterServiceException("virtual must be 0");
+			if(userLoginRegister.getUsetType().intValue()!=0 && userLoginRegister.getUsetType().intValue()!=1)throw new UserLoginRegisterServiceException("userType must be 0 or 1");
 			if(StringUtils.isBlank(userLoginRegister.getSource()))throw new UserLoginRegisterServiceException("source is null or empty");
 			if(StringUtils.isBlank(userLoginRegister.getIp()))throw new UserLoginRegisterServiceException("ip is null or empty");
 			if(StringUtils.isBlank(userLoginRegister.getSalt()))throw new UserLoginRegisterServiceException("salt is null or empty");
 			if(StringUtils.isBlank(userLoginRegister.getPassword()))throw new UserLoginRegisterServiceException("password is null or empty");
 			if(userLoginRegister.getCtime()==null || userLoginRegister.getCtime()<=0l) userLoginRegister.setCtime(System.currentTimeMillis());
 			if(userLoginRegister.getUtime()==null || userLoginRegister.getUtime()<=0l) userLoginRegister.setUtime(System.currentTimeMillis());
-			//用户不存在
-			return (Long) saveEntity(userLoginRegister);
-		} catch (Exception e) {
+			Object obj=saveEntity(userLoginRegister);
+			if(!ObjectUtils.isEmpty(obj)){
+				Long id =(Long)obj;
+				if(id>0l)return id;
+			}throw new UserLoginRegisterServiceException("createUserLoginRegister failed.");
+		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -71,9 +83,12 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			//根据passport查找id
 			Long id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
 			//根据id查找实体
-			if(id!=null && id>0l)	userLoginRegister=getEntity(id);
-			return userLoginRegister;
-		} catch (Exception e) {
+			if(id!=null && id>0l){	
+				userLoginRegister=getEntity(id);
+				return userLoginRegister;
+			}
+			throw new UserLoginRegisterServiceException("passport is not exist in userLoginRegister");
+		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -84,9 +99,10 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	public UserLoginRegister getUserLoginRegister(Long id) throws UserLoginRegisterServiceException {
 		try {
 			if(id==null || id<=0l)throw new UserLoginRegisterServiceException("id is must grater than zero.");
-			// 根据id查找实体
-			return getEntity(id);
-		}catch (Exception e) {
+			UserLoginRegister userLoginRegister=getEntity(id);
+			if(!ObjectUtils.isEmpty(userLoginRegister)) return userLoginRegister;
+			else throw new UserLoginRegisterServiceException("id is not exists in userLoginRegister.");
+		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -102,8 +118,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(userLoginRegister==null) throw new UserLoginRegisterServiceException("id is not exists in UserLoginRegister.");
 			userLoginRegister.setSalt(setSalt());
 			userLoginRegister.setPassword(setSha256Hash(userLoginRegister.getSalt(),password));
-			return updateEntity(userLoginRegister);
-		}catch (Exception e) {
+			if(updateEntity(userLoginRegister))return true;
+			throw new UserLoginRegisterServiceException("updatePassword failed.");
+		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -113,11 +130,11 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 
 	public boolean passportIsExist(String passport) throws UserLoginRegisterServiceException {
 		try {
-			if(StringUtils.isEmpty(passport)) throw new UserLoginRegisterServiceException("password is null or empty.");
+			if(StringUtils.isEmpty(passport)) throw new UserLoginRegisterServiceException("passport is null or empty.");
 			Long userId =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
 			return userId==null?false:true;
 					
-		} catch (Exception e) {
+		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -134,9 +151,10 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			UserLoginRegister userLoginRegister = getEntity(id);
 			if(userLoginRegister==null) throw new UserLoginRegisterServiceException("id is not exists in UserLoginRegister.");
 			userLoginRegister.setIp(ip);
-			userLoginRegister.setUtime(new Date().getTime());
-			return updateEntity(userLoginRegister);
-		}catch (Exception e) {
+			userLoginRegister.setUtime(System.currentTimeMillis());
+			if(updateEntity(userLoginRegister))return true;
+			throw new UserLoginRegisterServiceException("updateIpAndLoginTime failed.");
+		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -161,7 +179,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			if(id==null || id<=0l) throw new UserLoginRegisterServiceException("id is must grater than zero.");
 			return deleteEntity(id);
-		} catch (Exception e) {
+		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -174,7 +192,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			if(id==null || id<=0l) throw new UserLoginRegisterServiceException("id is must grater than zero.");
 			return fakeDeleteEntity(id);
-		} catch (Exception e) {
+		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -186,8 +204,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	public Long getId(String passport) throws UserLoginRegisterServiceException {
 		try {
 			if(StringUtils.isEmpty(passport))throw new UserLoginRegisterServiceException("passport is null or empty.");
-			return (Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
-		} catch (Exception e) {
+			Object id=getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
+			return id!=null?(Long)id:0l;
+		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -200,7 +219,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			if(list==null || list.size()==0) return false;
 			return deleteEntityByIds(list);
-		} catch (Exception e) {
+		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -223,7 +242,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(userLoginRegister==null)throw new UserLoginRegisterServiceException("id is not exists in UserLoginRegister.");
 			userLoginRegister.setMobile(mobile);
 			return updateEntity(userLoginRegister);
-		}catch (Exception e) {
+		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -243,7 +262,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 				userLoginRegister.setMobile(email);
 				return updateEntity(userLoginRegister);
 			}
-		}catch (Exception e) {
+		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -273,9 +292,10 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		String value=null;
 		if(object!=null)value=object.toString();
 		if(StringUtils.isEmpty(value))
-		bl = cache.set(key, 1 * 60 * 1, identifyingCode);
+		bl = cache.set(key, 1 * 60 * 30, identifyingCode);
 		return bl;
-	}	
+	}
+	
 	/**
 	 * 生成验证码
 	 * @return String
@@ -300,7 +320,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 				if(StringUtils.isEmpty(identifyingCode)){
 					identifyingCode=generationIdentifyingCode();
 					if(setCache(mobile,identifyingCode)){
-						int back=shortMessageService.sendMessage(mobile, new StringBuffer().append("您的短信验证码为").append("，有效期30分钟，请及时验证").toString(), getId(mobile), 1);
+						int back=shortMessageService.sendMessage(mobile, new StringBuffer().append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(mobile), 1);
 						if(back==1)return identifyingCode;
 						else return "";
 					}
@@ -319,6 +339,44 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	@Override
 	public String getIdentifyingCode(String mobile)throws UserLoginRegisterServiceException {
 		Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mobile));
-		return value.toString();
+		return value!=null?value.toString():null;
+	}
+	@Override
+	public boolean sendEmail(String mailTo,int type,Map<String, Object> map)throws UserLoginRegisterServiceException {
+		try {
+			boolean bl=false;
+			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
+			if(type!=1 && type!=2 && type !=3 && type !=4) throw new UserLoginRegisterServiceException("type must be 1 or 2 or 3 or 4.");
+			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-activate-emai-old.ftl");
+			if(type==2) bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
+			if(type==3) bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
+//			if(type==4) bl= emailService.sendEmailSync(mailTo, null, editPasswordTitle, null, map, "findpwd-email_back.ftl");
+			return bl;
+		}catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
+	}
+	@Override
+	public Boolean updataUserLoginRegister(UserLoginRegister userLoginRegister)throws UserLoginRegisterServiceException {
+		try {
+			if (userLoginRegister != null && StringUtils.isBlank(userLoginRegister.getPassport())) throw new UserLoginRegisterServiceException("Field passport must be a value");
+			if(passportIsExist(userLoginRegister.getPassport()))throw new UserLoginRegisterServiceException("passport already exists");
+			if(userLoginRegister.getUsetType().intValue()!=0 && userLoginRegister.getUsetType().intValue()!=1)throw new UserLoginRegisterServiceException("userType must be 0 or 1");
+			if(StringUtils.isBlank(userLoginRegister.getSource()))throw new UserLoginRegisterServiceException("source is null or empty");
+			if(StringUtils.isBlank(userLoginRegister.getIp()))throw new UserLoginRegisterServiceException("ip is null or empty");
+			if(StringUtils.isBlank(userLoginRegister.getSalt()))throw new UserLoginRegisterServiceException("salt is null or empty");
+			if(StringUtils.isBlank(userLoginRegister.getPassword()))throw new UserLoginRegisterServiceException("password is null or empty");
+			if(userLoginRegister.getCtime()==null || userLoginRegister.getCtime()<=0l) userLoginRegister.setCtime(System.currentTimeMillis());
+			if(userLoginRegister.getUtime()==null || userLoginRegister.getUtime()<=0l) userLoginRegister.setUtime(System.currentTimeMillis());
+			return updateEntity(userLoginRegister);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
 	}
 }

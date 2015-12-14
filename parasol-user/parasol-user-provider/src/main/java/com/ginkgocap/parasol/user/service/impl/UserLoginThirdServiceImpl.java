@@ -1,5 +1,10 @@
 package com.ginkgocap.parasol.user.service.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,11 +16,13 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import weibo4j.model.WeiboException;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.user.exception.UserBasicServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginThirdServiceException;
 import com.ginkgocap.parasol.user.model.UserBasic;
@@ -78,8 +85,10 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 		if(userLoginThird.getLoginType()!=100 && userLoginThird.getLoginType()!=200) throw new UserLoginThirdServiceException("loginType is Must be equal to 100 or 200.");
 		if(StringUtils.isEmpty(userLoginThird.getAccesstoken()))throw new UserLoginThirdServiceException("accesstoken is null or empty.");
 		if(StringUtils.isEmpty(userLoginThird.getIp()))throw new UserLoginThirdServiceException("ip is null or empty.");
+		if(StringUtils.isEmpty(userLoginThird.getHeadPic()))throw new UserLoginThirdServiceException("headPic is null or empty.");
 		if(userLoginThird.getCtime()==null || userLoginThird.getCtime()<=0l)userLoginThird.setCtime(System.currentTimeMillis());
 		if(userLoginThird.getUtime()==null || userLoginThird.getUtime()<=0l)userLoginThird.setUtime(System.currentTimeMillis());	
+		if(type==1)userLoginThird.setUtime(System.currentTimeMillis());	
 		return userLoginThird;
 	}
 	
@@ -142,9 +151,9 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 		   UserBasic userBasic =userBasicService.getUserBasic(userId);
 		   if(null != userBasic){
 			  String default_user_image = USER_DEFAULT_PIC_PATH_FAMALE;
-			  if(null==userBasic.getPicPath() || userBasic.getPicPath().equals("") || default_user_image.equals(userBasic.getPicPath())){
+//			  if(null==userBasic.getPicPath() || userBasic.getPicPath().equals("") || default_user_image.equals(userBasic.getPicPath())){
 //				 userBasic.setPicPath(userLoginThird.getFigureurl());
-			  }
+//			  }
 			  if(null == userBasic.getName() || userBasic.getName().equals("")){
 //				 userBasic.setName(userLoginThird.getNikeName());
 			  }
@@ -283,7 +292,9 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 	@Override
 	public Long saveUserLoginThird(UserLoginThird userLoginThird) throws UserLoginThirdServiceException{
 		try {
-			return (Long) saveEntity(checkValidity(userLoginThird,0));
+			Long id=(Long) saveEntity(checkValidity(userLoginThird,0));
+			if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
+			else throw new UserLoginThirdServiceException("saveUserLoginThird failed.");
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -296,14 +307,18 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 	public UserLoginThird getUserLoginThirdByOpenId(String openId) throws UserLoginThirdServiceException{
 		try{
 			if(StringUtils.isEmpty(openId)) throw new UserLoginThirdServiceException("openId is null or empty.");
-			UserLoginThird userLoginThird=getEntity((Long)getMapId(UserLoginThird_Map_OpenId, openId));
-			if(userLoginThird==null) return userLoginThird;
-			if(userLoginRegisterService.getUserLoginRegister(userLoginThird.getUserId())==null) throw new UserLoginThirdServiceException("userId is not exists in UserLoginRegister.");
-			return userLoginThird;
-		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
+			Long id=(Long)getMapId(UserLoginThird_Map_OpenId, openId);
+			if(id==null || id<=0l) return null;
+			UserLoginThird userLoginThird=getEntity(id);
+			if(userLoginThird==null) return null;
+			try {
+				if(userLoginRegisterService.getUserLoginRegister(userLoginThird.getUserId())==null) throw new UserLoginThirdServiceException("userId is not exists in UserLoginRegister.");
+			} catch (UserLoginRegisterServiceException e) {
+				e.printStackTrace();
 			}
+			return userLoginThird;
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
 			throw new UserLoginThirdServiceException(e);
 		}
 	}
@@ -348,7 +363,8 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 	@Override
 	public Boolean updateUserLoginThird(UserLoginThird userLoginThird) throws UserLoginThirdServiceException{
 		try {
-			return  updateEntity((checkValidity(userLoginThird,1)));
+			if(updateEntity((checkValidity(userLoginThird,1))))return  true;
+			else throw new UserLoginThirdServiceException("updateUserLoginThird failed.");
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -357,4 +373,61 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 		}
 	}
 
+	@Override
+	public Boolean realDeleteUserLoginThird(Long id)throws UserLoginRegisterServiceException {
+		try {
+			if(id==null || id<=0l) throw new UserBasicServiceException("id is must grater than zero.");
+			return deleteEntity(id);
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
+	}
+	/**
+     * @param 下载图片
+     * @throws Exception
+     */
+    private static boolean getImages(String urlPath,String fileName) {
+        URL url;
+        boolean flag=true;
+		try {
+			url = new URL(urlPath);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setReadTimeout(6 * 10000);
+			if (conn.getResponseCode() < 10000) {
+				InputStream inputStream = conn.getInputStream();
+				byte[] data = readStream(inputStream);
+				if (data.length > 0) {
+					FileOutputStream outputStream = new FileOutputStream(fileName);
+					outputStream.write(data);
+//					log.debug("图片下载成功");
+					outputStream.close();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			flag=false;
+		}
+		return flag;
+    }
+    /**
+	 * 读取url中数据，并以字节的形式返回
+	 * @param inputStream
+	 * @return
+	 * @throws Exception
+	 */
+    private static byte[] readStream(InputStream inputStream) throws Exception{
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        while((len = inputStream.read(buffer)) !=-1){
+            outputStream.write(buffer, 0, len);
+        }
+        outputStream.close();
+        inputStream.close();
+        return outputStream.toByteArray();
+    }    
 }

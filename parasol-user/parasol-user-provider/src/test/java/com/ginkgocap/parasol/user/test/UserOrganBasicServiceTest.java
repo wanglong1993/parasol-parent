@@ -10,6 +10,7 @@ import junit.framework.TestResult;
 
 import org.junit.Assert;
 
+import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserOrganBasicService;
@@ -34,7 +35,7 @@ public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testCreateUserOrganBasic(){
 		try {
-			Long id=userLoginRegisterService.getId("51022036@qq.com");
+			Long id=userLoginRegisterService.getId("134462@qq.com");
 			Long id2 =userOrganBasicService.createUserOrganBasic(setUserOrganBasic(id));
 			Assert.assertTrue(id2!=null && id2>0l);
 		} catch (Exception e) {
@@ -50,6 +51,21 @@ public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 			Long id=userLoginRegisterService.getId("51022036@qq.com");
 			boolean bl =userOrganBasicService.updateUserOrganBasic(setUserOrganBasic(id));
 			Assert.assertTrue(bl);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 获取单个组织用户基本信息
+	 */
+	@org.junit.Test
+	public void testGetOrganBasic(){
+		try {
+			Long id=userLoginRegisterService.getId("15966467469");
+			UserOrganBasic userOrganBasic =userOrganBasicService.getUserOrganBasic(id);
+			Assert.assertTrue(userOrganBasic!=null);
+//			FileIndex fileIndex=(FileIndex)userOrganBasic.getFileIndexMap().get(userOrganBasic.getBusinessLicencePicId());
+//			fileIndex.getFilePath();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -104,18 +120,23 @@ public class UserOrganBasicServiceTest  extends TestBase implements Test  {
 			Long ctime=System.currentTimeMillis();
 			UserOrganBasic userOrganBasic = new UserOrganBasic();
 			userOrganBasic.setUserId(userId);
-			userOrganBasic.setName("百品网络科技有限公司");
-			userOrganBasic.setShortName("百品");
-			userOrganBasic.setRegFrom("gintongapp");
-			userOrganBasic.setBrief("百品网络科技有限公司");
-			userOrganBasic.setPhone("010-89765623");
-			userOrganBasic.setOrgType("一般企业");
+			userOrganBasic.setName("2222百品网络科技有限公司");
+//			userOrganBasic.setShortName("百品");
+//			userOrganBasic.setRegFrom("gintongapp");
+//			userOrganBasic.setBrief("2222百品网络科技有限公司");
+//			userOrganBasic.setPhone("010-89765623");
+//			userOrganBasic.setOrgType("2222一般企业");
 			userOrganBasic.setAuth(new Byte("-1"));
-			userOrganBasic.setPicPath("/webserver/data/pic/140/11.jgp");
+//			userOrganBasic.setPicPath("/webserver/data/pic/140/11.jgp");
 			userOrganBasic.setStatus(new Byte("1"));
 			userOrganBasic.setCtime(ctime);
 			userOrganBasic.setUtime(ctime);
-			userOrganBasic.setIp("192.168.110.119");
+//			userOrganBasic.setIp("192.168.110.119");
+//			userOrganBasic.setBusinessLicencePicId(3918187813142533l);
+//			userOrganBasic.setCompanyContacts("张三");
+//			userOrganBasic.setCompanyContactsMobile("13716683980");
+//			userOrganBasic.setIdcardFrontPicId(3918504642478090l);
+//			userOrganBasic.setIdcardBackPicId(3918553426427924l);
 			return userOrganBasic;
 		} catch (Exception e) {
 			e.printStackTrace();

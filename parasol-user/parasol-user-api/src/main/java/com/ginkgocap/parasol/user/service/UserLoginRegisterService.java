@@ -1,6 +1,7 @@
 package com.ginkgocap.parasol.user.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
@@ -18,6 +19,13 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public Long createUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException; 
+	/**
+	 * 修改
+	 * @param userLoginRegister 
+	 * @return Long
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Boolean updataUserLoginRegister(UserLoginRegister userLoginRegister) throws UserLoginRegisterServiceException; 
 	
 
 	/**
@@ -147,6 +155,14 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public  boolean isMobileNo(String mobile);
+	/**
+	 * 发送邮件
+	 * @param mailTo
+	 * @param type 发送邮件类型,1.邮箱注册,2.找回密码,3.修改密码,4.绑定邮箱
+	 * @param map
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public boolean sendEmail(String mailTo, int type,Map<String, Object> map) throws UserLoginRegisterServiceException;
 
 	
 

@@ -1,8 +1,11 @@
 package com.ginkgocap.parasol.user.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 用户自定义
@@ -18,11 +21,11 @@ public class UserDefined implements java.io.Serializable {
 	/**
 	 * 主键.
 	 */
-	private long id;
+	private Long id;
 	/**
 	 * 用户id.
 	 */
-	private long userId;
+	private Long userId;
 	/**
 	 * 自定义模块名.
 	 */
@@ -34,7 +37,7 @@ public class UserDefined implements java.io.Serializable {
 	/**
 	 * 自定义字段内容.
 	 */
-	private char userDefinedValue;
+	private String userDefinedValue;
 	/**
 	 * 创建时间.
 	 */
@@ -51,7 +54,7 @@ public class UserDefined implements java.io.Serializable {
 	public UserDefined() {
 	}
 
-	public UserDefined(long id, long userId, char userDefinedValue, Long ctime,
+	public UserDefined(Long id, Long userId, String userDefinedValue, Long ctime,
 			Long utime, String ip) {
 		this.id = id;
 		this.userId = userId;
@@ -61,8 +64,8 @@ public class UserDefined implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	public UserDefined(long id, long userId, String userDefinedModel,
-			String userDefinedFiled, char userDefinedValue, Long ctime,
+	public UserDefined(Long id, Long userId, String userDefinedModel,
+			String userDefinedFiled, String userDefinedValue, Long ctime,
 			Long utime, String ip) {
 		this.id = id;
 		this.userId = userId;
@@ -75,21 +78,23 @@ public class UserDefined implements java.io.Serializable {
 	}
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
-	public long getId() {
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
+	@Column(name = "id")
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "user_id", nullable = false)
-	public long getUserId() {
+	public Long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -112,11 +117,11 @@ public class UserDefined implements java.io.Serializable {
 	}
 
 	@Column(name = "user_defined_value", nullable = false, length = 1)
-	public char getUserDefinedValue() {
+	public String getUserDefinedValue() {
 		return this.userDefinedValue;
 	}
 
-	public void setUserDefinedValue(char userDefinedValue) {
+	public void setUserDefinedValue(String userDefinedValue) {
 		this.userDefinedValue = userDefinedValue;
 	}
 
