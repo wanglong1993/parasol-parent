@@ -21,7 +21,7 @@ import com.ginkgocap.parasol.user.model.UserLoginThird;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserLoginThirdService;
 
-public class UserLoginThirdServiceTest  extends TestBase implements Test  {
+public class UserLoginThirdServiceTest  extends TestBase  implements Test  {
 
 	@Resource
 	private UserLoginThirdService userLoginThirdService;

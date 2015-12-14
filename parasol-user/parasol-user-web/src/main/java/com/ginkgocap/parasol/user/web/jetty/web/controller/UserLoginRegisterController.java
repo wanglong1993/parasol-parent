@@ -94,7 +94,7 @@ public class UserLoginRegisterController extends BaseControl {
 			,@RequestParam(name = "name",required = true) String name
 			,@RequestParam(name = "source",required = true) String source
 			,@RequestParam(name = "shortName",required = true) String shortName
-			,@RequestParam(name = "picId",required = true) Long picId
+			,@RequestParam(name = "picId",required = false) Long picId
 			,@RequestParam(name = "businessLicencePicId",required = true) Long businessLicencePicId
 			,@RequestParam(name = "stockCode",required = false) String stockCode
 			,@RequestParam(name = "orgType",required = true) String orgType
@@ -249,6 +249,51 @@ public class UserLoginRegisterController extends BaseControl {
 				userInterestIndustryService.realDeleteUserInterestIndustryList(listIds);
 			}
 			logger.info("注册失败:"+passport);
+			throw e;
+		}
+	}
+	/**
+	 * 获取用户资料
+	 * 
+	 * @param passport 为邮箱和手机号
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userLoginRegister/getUserAll" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserAll(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		UserOrganBasic userOrganBasic= null;
+		UserOrganExt userOrganExt= null;
+		UserBasic userBasic= null;
+		UserExt userExt= null;
+		try {
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			if(userLoginRegister==null){
+				resultMap.put("error", "passport is not exists.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(userLoginRegister.getUsetType().intValue()==1){
+				userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+				userOrganExt=userOrganExtService.getUserOrganExt(userLoginRegister.getId());
+				resultMap.put("userLoginRegister", userLoginRegister);
+				resultMap.put("userOrganBasic", userOrganBasic);
+				resultMap.put("userOrganExt", userOrganExt);
+				resultMap.put("status",1);
+			}
+			if(userLoginRegister.getUsetType().intValue()==0){
+				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+				userExt=userExtService.getUserExt(userLoginRegister.getId());
+				resultMap.put("userLoginRegister", userLoginRegister);
+				resultMap.put("userBasic", userBasic);
+				resultMap.put("userExt", userExt);
+				resultMap.put("status",1);
+			}
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("登录失败:"+passport);
 			throw e;
 		}
 	}

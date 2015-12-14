@@ -36,7 +36,7 @@ public class UserOrganExtServiceImpl extends BaseService<UserOrganExt> implement
 	 * @throws UserOrganExtServiceException
 	 */
 	private UserOrganExt checkValidity(UserOrganExt userOrganExt,int type)throws UserOrganExtServiceException,UserLoginRegisterServiceException {
-		if(userOrganExt==null) throw new UserOrganExtServiceException("UserOrganExt can not be null.");
+		if(userOrganExt==null) throw new UserOrganExtServiceException("userOrganExt can not be null.");
 		if(userOrganExt.getUserId()<=0l) throw new UserOrganExtServiceException("The value of userId is null or empty.");
 		try {
 			if(userLoginRegisterService.getUserLoginRegister(userOrganExt.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister.");

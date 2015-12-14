@@ -2,7 +2,7 @@ package com.ginkgocap.parasol.user.test;
 
 import java.lang.reflect.Method;
 
-public class BrowserUtils {
+public class BrowserUtils{  
 
 	private static String  W = "Windows";
 	private static String  M = "MAC OS";

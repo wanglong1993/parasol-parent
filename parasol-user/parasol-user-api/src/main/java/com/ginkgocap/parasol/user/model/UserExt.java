@@ -11,7 +11,7 @@ import javax.persistence.Transient;
  * 个人用户基本资料
  */
 @Entity
-@Table(name = "tb_user_basic", catalog = "parasol_user")
+@Table(name = "tb_user_ext", catalog = "parasol_user")
 public class UserExt implements java.io.Serializable {
 
 	/**

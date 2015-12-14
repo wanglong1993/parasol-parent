@@ -41,16 +41,28 @@
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserExt" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
         <!-- 通过地区县id查找用户id列表 --> 
-		  <list name="UserBasic_List_Id_CountyId"
-                 sqlitem="select user_id from tb_user_basic where county_id =? order by utime desc"
+		  <list name="UserExt_List_Id_CountyId"
+                 sqlitem="select user_id from tb_user_ext where county_id =? order by utime desc"
                  sqlType="hsql" keyProperty="countyId" valueProperty="userId"  update="false"/>
         <!-- 通过地区省id查找用户id列表 --> 
-		  <list name="UserBasic_List_Id_ProvinceId"
-                 sqlitem="select user_id from tb_user_basic where province_id =? order by utime desc"
+		  <list name="UserExt_List_Id_ProvinceId"
+                 sqlitem="select user_id from tb_user_ext where province_id =? order by utime desc"
                  sqlType="hsql" keyProperty="provinceId" valueProperty="userId"  update="false"/>                 			
 		</object>
 		<object name="com.ginkgocap.parasol.user.model.UserOrganBasic" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>		
+		<object name="com.ginkgocap.parasol.user.model.UserOrganExt" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />

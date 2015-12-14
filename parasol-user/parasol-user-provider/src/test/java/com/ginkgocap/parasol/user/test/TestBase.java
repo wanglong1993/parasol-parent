@@ -13,7 +13,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)  
 @ContextConfiguration(locations = { "/applicationContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager")
-public class TestBase  {
+public class TestBase{ 
 	
 	@BeforeClass
 	public static void beforeClass(){

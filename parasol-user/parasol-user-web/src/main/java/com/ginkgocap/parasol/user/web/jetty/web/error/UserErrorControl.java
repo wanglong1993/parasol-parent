@@ -3,6 +3,8 @@ package com.ginkgocap.parasol.user.web.jetty.web.error;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -17,6 +19,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
@@ -155,6 +158,36 @@ public class UserErrorControl {
 			}
 			prcError.setMessage(ex.getMessage());
 			prcError.setType("JSONException");
+		}
+		if(ex instanceof  SocketTimeoutException ){
+			prcError = new ResponseError();
+			try {
+				prcError.setError_subcode((Integer) MethodUtils.invokeMethod(ex, "getErrorCode", null));
+			} catch (Exception e) {
+				
+			}
+			prcError.setMessage(ex.getMessage());
+			prcError.setType("SocketTimeoutException");
+		}
+		if(ex instanceof  ConnectException ){
+			prcError = new ResponseError();
+			try {
+				prcError.setError_subcode((Integer) MethodUtils.invokeMethod(ex, "getErrorCode", null));
+			} catch (Exception e) {
+				
+			}
+			prcError.setMessage(ex.getMessage());
+			prcError.setType("ConnectException");
+		}
+		if(ex instanceof  HttpHostConnectException ){
+			prcError = new ResponseError();
+			try {
+				prcError.setError_subcode((Integer) MethodUtils.invokeMethod(ex, "getErrorCode", null));
+			} catch (Exception e) {
+				
+			}
+			prcError.setMessage(ex.getMessage());
+			prcError.setType("HttpHostConnectException");
 		}
 		return prcError;
 	}

@@ -87,7 +87,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 				userLoginRegister=getEntity(id);
 				return userLoginRegister;
 			}
-			throw new UserLoginRegisterServiceException("passport is not exist in userLoginRegister");
+			return null;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

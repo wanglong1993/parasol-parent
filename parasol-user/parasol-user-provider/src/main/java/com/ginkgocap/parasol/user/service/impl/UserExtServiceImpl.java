@@ -51,7 +51,7 @@ public class UserExtServiceImpl extends BaseService<UserExt> implements UserExtS
 		try {
 			Long id=(Long)saveEntity(checkValidity(userExt,0));
 			if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
-			else throw new UserExtServiceException("createUserLoginRegister failed.");
+			else throw new UserExtServiceException("createUserExt failed.");
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

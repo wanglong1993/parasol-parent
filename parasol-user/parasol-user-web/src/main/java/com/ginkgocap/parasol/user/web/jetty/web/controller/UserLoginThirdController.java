@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.user.web.jetty.web.controller;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -8,6 +10,22 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.InputStreamBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -57,19 +75,12 @@ public class UserLoginThirdController extends BaseControl {
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//				Cookie[] cookies = request.getCookies();
-//				for (Cookie cookie : cookies) {
-//					if(cookie.getName().equals("lastTime"))logger.info("lastTime:"+cookie.getValue());
-//				}
 				String url= userLoginThirdService.getLoginThirdUrl(type);
 				if(!StringUtils.isEmpty(url)){
 					resultMap.put("url", url);
 					resultMap.put("status",1);
 				}
 				logger.info("getLoginThirdUrl:"+url);
-//				Cookie ck=new Cookie("lastTime",Long.toString(System.currentTimeMillis()/1000));
-//				ck.setMaxAge(60*60*24*365);
-//				response.addCookie(ck);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			throw e;
@@ -152,6 +163,7 @@ public class UserLoginThirdController extends BaseControl {
 		Long id2=0l;
 		Long userBasicId=0l;
 		Long userExtId=0l;
+		String suffix=null;
 		try {   
 				userLoginThird=userLoginThirdService.getUserLoginThirdByOpenId(openId);
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
@@ -164,6 +176,8 @@ public class UserLoginThirdController extends BaseControl {
 						return new MappingJacksonValue(resultMap);
 					}
 					//设置userLoginRegister开始
+					if(loginType.equals("100"))suffix="@qq";
+					if(loginType.equals("200"))suffix="@sina";
 					userLoginRegister.setPassport(passport);
 					byte[] bt = Base64.decode(password);
 					String salt=userLoginRegisterService.setSalt();
@@ -173,6 +187,8 @@ public class UserLoginThirdController extends BaseControl {
 					userLoginRegister.setUsetType(new Byte(userType));
 					userLoginRegister.setIp(ip);
 					userLoginRegister.setSource(source);
+					userLoginRegister.setPassport(openId+suffix);
+					
 					//设置userBasic开始
 					userBasic.setName(name);
 					userBasic.setSex(new Byte(sex));
@@ -392,6 +408,166 @@ public class UserLoginThirdController extends BaseControl {
 			logger.info("/userLoginThird/login:error");
 			throw e;
 		}
+	}
+	/**
+	 * 第三方注册登录
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userLoginThird/registerLogin" }, method = { RequestMethod.GET})
+	public MappingJacksonValue registerLogin(HttpServletRequest request,HttpServletResponse response
+		,@RequestParam(name = "loginType",required = true) String loginType
+		,@RequestParam(name = "accessToken",required = true) String accessToken
+		,@RequestParam(name = "openId",required = true) String openId
+		,@RequestParam(name = "name",required = true) String name
+//		,@RequestParam(name = "password",required = true) String password
+//		,@RequestParam(name = "passport",required = true) String passport
+//		,@RequestParam(name = "code",required = true) String code
+		,@RequestParam(name = "headPic",required = true) String headPic
+//		,@RequestParam(name = "userType",required = true) String userType
+		,@RequestParam(name = "source",required = true) String source
+		,@RequestParam(name = "sex",required = true) String sex
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		UserBasic userBasic= null;
+		UserExt userExt= null;
+		String ip=getIpAddr(request);
+		Long id=0l;
+		Long userBasicId=0l;
+		Long userExtId=0l;
+		Long picId=0L;
+		String suffix=null;
+		String password=null;
+		if(loginType.equals("100"))suffix="@qq";
+		if(loginType.equals("200"))suffix="@sina";
+		try {   
+				userLoginRegister=userLoginRegisterService.getUserLoginRegister(openId+suffix);
+				if(userLoginRegister==null){
+					//设置userLoginRegister开始
+					userLoginRegister=new UserLoginRegister();
+					userLoginRegister.setUsetType(new Byte("0"));
+					userLoginRegister.setIp(ip);
+					userLoginRegister.setSource(source);
+					userLoginRegister.setPassport(openId+suffix);
+					String salt=userLoginRegisterService.setSalt();
+					password=userLoginRegisterService.setSha256Hash(salt, new String("111111"));
+					userLoginRegister.setSalt(salt);
+					userLoginRegister.setPassword(password);
+					//保存userLoginRegister开始
+					id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
+					//设置userBasic开始
+					userBasic=new UserBasic();
+					userBasic.setName(name);
+					userBasic.setSex(new Byte(sex));
+					userBasic.setStatus(new Byte("1"));
+					picId=upload("","123",id.toString(), "http://ww1.sinaimg.cn/thumbnail/9573641ejw1eumrd6vviyj20go0b474s.jpg");
+					userBasic.setUserId(id);
+					userBasic.setPicId(picId);
+					userBasicId=userBasicService.createUserBasic(userBasic);
+					//设置userExt开始
+					userExt=new UserExt();
+					userExt.setUserId(id);
+					userExt.setName(name);
+					userExt.setIp(ip);
+					userExtId=userExtService.createUserExt(userExt);
+					resultMap.put("userLoginRegister",userLoginRegister);
+					resultMap.put("userBasic",userBasic);
+					resultMap.put("userExt",userExt);
+					resultMap.put("userBasic",userBasic);
+					resultMap.put("status",1);
+					return new MappingJacksonValue(resultMap);
+				}else{
+					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+					userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);
+					resultMap.put("userLoginRegister",userLoginRegister);
+					resultMap.put("status",1);
+					logger.info("/userLoginThird/registerLogin:success");
+					return new MappingJacksonValue(resultMap);
+				}
+		}catch (Exception e ){
+			//异常失败回滚
+			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
+			if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
+			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
+			logger.info("第三方注册失败:"+openId);
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	/**
+	 * 上传头像
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userLoginThird/upload" }, method = { RequestMethod.GET})
+	public Long upload(
+			@RequestParam(name = "posturl",required = true) String posturl
+			,@RequestParam(name = "source",required = true) String source
+			,@RequestParam(name = "userId",required = true) String userId
+			,@RequestParam(name = "headPic",required = true) String headPic
+			)throws Exception {
+		CloseableHttpClient httpClient = null;  
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+    	HttpEntity entity =null;
+    	JSONObject json = null;
+    	try{
+	        try{
+	        	RequestConfig defaultRequestConfig = RequestConfig.custom()
+	        			  .setSocketTimeout(5000)
+	        			  .setConnectTimeout(5000)
+	        			  .setConnectionRequestTimeout(5000)
+	        			  .setStaleConnectionCheckEnabled(true)
+	        			  .build();
+	        	httpClient = HttpClients.custom()
+	        			.setDefaultRequestConfig(defaultRequestConfig)
+	        			.build();
+	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+	        		.setProxy(new HttpHost("192.168.130.100", 8091))
+	        	    .build();
+	        	URL url = new URL(headPic);
+	        	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	    		conn.setRequestMethod("GET");
+	    		conn.setReadTimeout(6 * 10000);
+	        	InputStreamBody file = new InputStreamBody(conn.getInputStream(),"");
+	            HttpPost httpPost = new HttpPost("http://192.168.130.100:8091/file/upload");
+	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
+	            .addPart("file", file)
+	            .addPart("appKey",  new StringBody(source, ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("userId", new StringBody(userId, ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("fileType", new StringBody("1", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("moduleType", new StringBody("1", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("taskId", new StringBody("", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("fileExtName", new StringBody("jpg", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("name", new StringBody("", ContentType.create("text/plain", Consts.UTF_8)))
+	            .build();  
+	            httpPost.setEntity(reqEntity);  
+	            httpPost.setConfig(requestConfig);
+	            CloseableHttpResponse response = httpClient.execute(httpPost);  
+	            try {  
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						resultMap.put("status", response.getStatusLine().getStatusCode());
+						entity = response.getEntity();
+						String respJson = EntityUtils.toString(entity);
+						json = JSONObject.fromObject(respJson);
+						logger.info("json:"+respJson);
+					}
+	                EntityUtils.consume(entity);
+	                return json.has("id")?json.getLong("id"):null;
+	            } finally {  
+	                response.close();  
+	            }  
+	        }finally{  
+	            httpClient.close();  
+	        }
+    	}catch(Exception  e){
+    		throw e;
+    	}
+	        
 	}
 	/**
 	 * 验证是否是手机号码

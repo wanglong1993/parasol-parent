@@ -13,7 +13,7 @@ import javax.persistence.Transient;
  * 组织用户基本信息
  */
 @Entity
-@Table(name = "tb_organ_basic", catalog = "parasol_user")
+@Table(name = "tb_organ_ext", catalog = "parasol_user")
 public class UserOrganExt implements java.io.Serializable {
 
 	/**

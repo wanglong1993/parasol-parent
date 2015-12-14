@@ -2,8 +2,11 @@ package com.ginkgocap.parasol.user.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +17,7 @@ import jersey.repackaged.com.google.common.collect.Maps;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -429,5 +433,16 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
         outputStream.close();
         inputStream.close();
         return outputStream.toByteArray();
-    }    
+    }
+    public static void main(String[] args) throws IOException {
+    	String surl ="http://ww1.sinaimg.cn/thumbnail/9573641ejw1eumrd6vviyj20go0b474s.jpg";
+    	URL url = new URL(surl);
+    	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setReadTimeout(6 * 10000);
+    	InputStreamBody isb = new InputStreamBody(conn.getInputStream(),"d://c.jpg");
+    	
+    	getImages("http://ww1.sinaimg.cn/thumbnail/9573641ejw1eumrd6vviyj20go0b474s.jpg","d://b.jpg");
+    	
+	}
 }
