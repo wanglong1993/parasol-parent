@@ -422,11 +422,7 @@ public class UserLoginThirdController extends BaseControl {
 		,@RequestParam(name = "accessToken",required = true) String accessToken
 		,@RequestParam(name = "openId",required = true) String openId
 		,@RequestParam(name = "name",required = true) String name
-//		,@RequestParam(name = "password",required = true) String password
-//		,@RequestParam(name = "passport",required = true) String passport
-//		,@RequestParam(name = "code",required = true) String code
 		,@RequestParam(name = "headPic",required = true) String headPic
-//		,@RequestParam(name = "userType",required = true) String userType
 		,@RequestParam(name = "source",required = true) String source
 		,@RequestParam(name = "sex",required = true) String sex
 			)throws Exception {
