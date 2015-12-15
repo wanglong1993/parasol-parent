@@ -109,7 +109,7 @@ public class UserOrganExt implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "regFrom", nullable = false, length = 20)
+	@Column(name = "regFrom", length = 20)
 	public String getRegFrom() {
 		return this.regFrom;
 	}
