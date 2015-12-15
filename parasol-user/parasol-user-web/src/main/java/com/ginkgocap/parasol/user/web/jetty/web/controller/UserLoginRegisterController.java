@@ -220,6 +220,7 @@ public class UserLoginRegisterController extends BaseControl {
 					userOrganExt.setCompanyContactsMobile(companyContactsMobile);
 					userOrganExt.setIp(ip);
 					userOrganExt.setUserId(id);
+					userOrganExt.setRegFrom("webapp");
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
 					//邮箱验证地址
 					Map<String, Object> map = new HashMap<String, Object>();
