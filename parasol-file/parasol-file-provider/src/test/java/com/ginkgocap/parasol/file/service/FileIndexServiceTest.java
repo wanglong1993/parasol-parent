@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 
+import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
 
 
@@ -15,7 +16,7 @@ public class FileIndexServiceTest extends TestBase{
 	private FileIndexService fileIndexService;
 	
 	@Test
-	public void TestInsertFileIndex() {
+	public void TestInsertFileIndex() throws FileIndexServiceException {
 		FileIndex fileIndex = new FileIndex();
 		fileIndex.setCrc32("d26bc49a");
 		fileIndex.setCreaterId(1l);
@@ -35,35 +36,35 @@ public class FileIndexServiceTest extends TestBase{
 	}
 	
 	@Test
-	public void TestGetFileIndexById() {
+	public void TestGetFileIndexById() throws FileIndexServiceException {
 		long id = 3915190764830725l;
-		FileIndex file = fileIndexService.selectByPrimaryKey(id);
+		FileIndex file = fileIndexService.getFileIndexById(id);
 		System.out.println("file name = "+file.getFileTitle());
 	}
 	
 	@Test
-	public void TestDeleteFileById() {
+	public void TestDeleteFileById() throws FileIndexServiceException {
 		long id = 3915182137147397l;
 		boolean flag = fileIndexService.deleteFileIndexById(id);
 		System.out.println("flag ==="+flag);
 	}
 	
 	@Test
-	public void TestGetFileIndexesByTaskId() {
+	public void TestGetFileIndexesByTaskId() throws FileIndexServiceException {
 		String taskId = "MTIxMDEwMTkyOTU2NTU3Z3VveXVhbnl1YW45OTYwMTE=";
 		List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
 		System.out.println("files.size ===="+files.size());
 	}
 	
 	@Test
-	public void TestGetFileIndexesByUserId() {
+	public void TestGetFileIndexesByUserId() throws FileIndexServiceException {
 		long createrId = 1l;
 		List<FileIndex> files = fileIndexService.getFileIndexesByCreaterId(createrId);
 		System.out.println("get FileIndexes by UserId "+files.size());
 	}
 	
 	@Test
-	public void TestUpdateFileIndex() {
+	public void TestUpdateFileIndex() throws FileIndexServiceException {
 		long id = 3915194929774597l;
 		String fileTitle = "测试修改附件名称";
 		FileIndex file = fileIndexService.updateFileIndexByFileTitle(id, fileTitle);

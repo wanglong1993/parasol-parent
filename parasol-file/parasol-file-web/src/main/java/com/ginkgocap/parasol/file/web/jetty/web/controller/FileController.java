@@ -16,7 +16,12 @@
 
 package com.ginkgocap.parasol.file.web.jetty.web.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,13 +32,14 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.csource.common.NameValuePair;
+import org.csource.common.MyException;
 import org.csource.fastdfs.ClientGlobal;
 import org.csource.fastdfs.StorageClient;
 import org.csource.fastdfs.StorageServer;
 import org.csource.fastdfs.TrackerClient;
 import org.csource.fastdfs.TrackerServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,6 +53,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
+import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
 
 /**
@@ -60,28 +67,23 @@ import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
  */
 @RestController
 public class FileController extends BaseControl {
-	private static Logger logger = Logger.getLogger(FileController.class);
+	
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
 	private static final String parameterAppId = "appKey"; // 应用的Key
 	private static final String parameterUserId = "userId"; // 访问的用户参数
 	private static final String parameterFile = "file"; // 上传文件
-	private static final String parameterName = "name"; // 文件名
 	private static final String parameterFileType = "fileType"; // 文件类型
 	private static final String parameterTaskId = "taskId"; // taskId
 	private static final String parameterModuleType = "moduleType"; // 业务模块
-	private static final String parameterExtName = "fileExtName"; // 文件扩展名
 	private static final String conf_filename = "/fdfs_client.conf";	//	配置文件
+	private static final String parameterWidth = "width"; // 文件扩展名
+	private static final String parameterHigth = "higth"; // 文件扩展名
+	private static final String parameterXcoord = "xCoordinate"; // x坐标
+	private static final String parameterYcoord = "yCoordinate"; // y坐标
 
-//	static{
-//	    try {
-//	        ClientGlobal.init(getClass().getResource(conf_filename).getFile());
-//	    } catch (Exception e) {
-//	        throw new RuntimeException(e);
-//	    }
-//	}
-	
 	@Resource
 	private FileIndexService fileIndexService;
 
@@ -97,16 +99,14 @@ public class FileController extends BaseControl {
 	 * @return
 	 */
 	@RequestMapping(path = { "/file/upload" }, method = { RequestMethod.POST })
-	public MappingJacksonValue createMessageEntity(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+	public MappingJacksonValue fileUpload(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
 			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
 			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
-			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId,
-			@RequestParam(name = FileController.parameterExtName, required = true) String fileExtName,
-			@RequestParam(name = FileController.parameterName, required = true) String name ) {
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId ) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			ClientGlobal.init(getClass().getResource(conf_filename).getFile());
@@ -115,16 +115,20 @@ public class FileController extends BaseControl {
 			TrackerServer trackerServer;
 			trackerServer = tracker.getConnection();
 			StorageServer storageServer = null;
-			StorageClient storageClient = new StorageClient(trackerServer, storageServer); 
-			//        NameValuePair nvp = new NameValuePair("age", "18"); 
-			NameValuePair nvp [] = new NameValuePair[3];
-			nvp[0] = new NameValuePair("filename", name);  
-			nvp[1] = new NameValuePair("fileExtName", fileExtName);  
-			nvp[2] = new NameValuePair("fileLength", String.valueOf(file_buff.length));
-			System.out.println("...............url");
-			String fileIds[] = storageClient.upload_file(file_buff, fileExtName, nvp);
-				for (String id : fileIds) {
+			StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+			String fileName = file.getOriginalFilename();
+			int f = fileName.lastIndexOf(".");
+			String fileExtName = "";
+			if (f>-1) fileExtName = fileName.substring(f+1);
+			String fileIds[] = storageClient.upload_file(file_buff, fileExtName, null);
+			for (String id : fileIds) {
 				System.out.println("id="+id);
+			}
+			String thumbnailsPath = "";
+			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
+			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
+				// 生成140*140缩略图
+				thumbnailsPath = getPicThumbnail(fileIds[0],fileIds[1],140,140);
 			}
 			FileIndex index = new FileIndex();
 			index.setAppid(appId.toString());
@@ -136,6 +140,7 @@ public class FileController extends BaseControl {
 			index.setFileType(fileType);
 			index.setModuleType(moduleType);
 			index.setTaskId(taskId);
+			index.setThumbnailsPath(thumbnailsPath);
 			index = fileIndexService.insertFileIndex(index);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(index);
@@ -160,13 +165,112 @@ public class FileController extends BaseControl {
 		return mappingJacksonValue;
 	}
 
+	@RequestMapping(path = { "/cut/file" }, method = { RequestMethod.GET })
+	public MappingJacksonValue cutFile(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
+			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
+			@RequestParam(name = FileController.parameterTaskId, required = true) Long fileId,
+			@RequestParam(name = FileController.parameterWidth, defaultValue = "140") Integer width,
+			@RequestParam(name = FileController.parameterHigth, defaultValue = "140") Integer height,
+			@RequestParam(name = FileController.parameterXcoord, required = true) Integer x,
+			@RequestParam(name = FileController.parameterYcoord, required = true) Integer y
+			) {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			ClientGlobal.init(getClass().getResource(conf_filename).getFile());
+			FileIndex index = fileIndexService.getFileIndexById(fileId);
+			
+			String sFileId = getScissorImage(index.getServerHost(),index.getFilePath(),width,height,x,y);
+			
+			index.setThumbnailsPath(sFileId);
+			fileIndexService.updateFileIndex(index);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(fileId);
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mappingJacksonValue;
+	}	
+	
 	/**
-	 * 1. 根据entityid获取消息实体
-	 * 
-	 * @param request
-	 * @return
-	 * @throws DirectoryServiceException
-	 * @throws CodeServiceException
+	 * 根据图片group、fileId、宽度及高度生成缩略图
+	 * @param group
+	 * @param fileId
+	 * @param width
+	 * @param height
+	 * @return	缩略图fileId
+	 * @throws IOException
+	 * @throws MyException
+	 */
+	private String getPicThumbnail(String group, String fileId, int width, int height) throws IOException, MyException {
+		TrackerClient tracker = new TrackerClient(); 
+		TrackerServer trackerServer;
+		trackerServer = tracker.getConnection();
+		StorageServer storageServer = null;
+		StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+		// 获取源图字节流
+		byte[] mImage = storageClient.download_file(group, fileId);
+		// 获取缩略图字节流
+		byte[] sImage = ImageProcessUtil.scaleImage(mImage, width, height);
+		String suffix = new StringBuilder("_").append(width).append("_").append(height).toString();
+		String[] fields = storageClient.upload_file(group, fileId, suffix, sImage, "jpg", null);
+		for (String field : fields) {
+			System.out.println("field="+field);
+		}
+		return fields[1];
+	}
+	
+	/**
+	 * 根据x、y坐标及width和height切图
+	 * @param group
+	 * @param fileId
+	 * @param width
+	 * @param height
+	 * @param x
+	 * @param y
+	 * @return	切图后的fileId
+	 * @throws IOException
+	 * @throws MyException
+	 */
+	private String getScissorImage(String group, String fileId, int width, int height, int x, int y) throws IOException, MyException {
+		TrackerClient tracker = new TrackerClient(); 
+		TrackerServer trackerServer;
+		trackerServer = tracker.getConnection();
+		StorageServer storageServer = null;
+		StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+		// 获取源图字节流
+		byte[] mImage = storageClient.download_file(group, fileId);
+		byte[] sImage = ImageProcessUtil.scissorImage(x, width, y, height, mImage);
+		String suffix = new StringBuilder("_").append(width).append("_").append(height).toString();
+		String[] fields = storageClient.upload_file(group, fileId, suffix, sImage, "jpg", null);
+		return fields[1];
+	}
+	
+	/**
+	 * 文件下载
+	 * @param fileds
+	 * @param debug
+	 * @param appId
+	 * @param userId
+	 * @param taskId
+	 * @return	文件索引列表
+	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/file/download" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getEntityById(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
@@ -223,9 +327,9 @@ public class FileController extends BaseControl {
 	}
 
 	@Override
-	protected <T> void processBusinessException(ResponseError error,
-			Exception ex) {
+	protected <T> void processBusinessException(ResponseError error, Exception ex) {
 		// TODO Auto-generated method stub
 		
 	}
+
 }
