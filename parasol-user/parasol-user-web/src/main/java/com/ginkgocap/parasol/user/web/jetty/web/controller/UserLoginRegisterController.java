@@ -70,7 +70,9 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param userType 0.个人用户,1.组织用户
 	 * @param firstIndustryIds 一级行业ID数组
 	 * @param name 昵称,企业全称
+	 * @param source  来源的appkey
 	 * @param shortName 企业简称
+	 * @picId 个人或组织LOGOID
 	 * @param businessLicencePicId 企业执照图片ID
 	 * @param stockCode 股票代码
 	 * @param orgType 组织类型
@@ -78,7 +80,6 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param companyContacts   组织联系人
 	 * @param idcardFrontPicId   组织联系人身份证正面照片id
 	 * @param idcardBackPicId  联系人身份证背面照片id
-	 * @param source  来源的appkey
 	 * @throws Exception
 	 * @return MappingJacksonValue
 	 * http://www.jsjtt.com/java/Javakuangjia/67.html
@@ -220,7 +221,6 @@ public class UserLoginRegisterController extends BaseControl {
 					userOrganExt.setCompanyContactsMobile(companyContactsMobile);
 					userOrganExt.setIp(ip);
 					userOrganExt.setUserId(id);
-//					userOrganExt.setRegFrom("webapp");
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
 					//邮箱验证地址
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -336,7 +336,6 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param name 昵称,企业全称
 	 * @param sex 性别
 	 * @param picId 个人或组织LOGOID
-	 * @param password 用户密码
 	 * @param shortName 组织简称
 	 * @param firstIndustryIds 一级行业ID数组
 	 * @param userDefineds 用户自定义数组 userDefineds=1,自定义字段12,3&userDefineds=4,自定义字段子,好的&userDefineds=7,8,9
@@ -346,8 +345,6 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param companyName 公司名称
 	 * @param companyJob 职业
 	 * @param mobile 个人手机号
-	 * @param stockCode 股票代码
-	 * @param orgType 组织类型
 	 * @param provinceId 省ID
 	 * @param cityId   市ID
 	 * @param countyId   县ID
@@ -358,7 +355,7 @@ public class UserLoginRegisterController extends BaseControl {
 	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "name",required = true) String name
-			,@RequestParam(name = "sex",required = true) String sex
+			,@RequestParam(name = "sex",required = false) String sex
 			,@RequestParam(name = "picId",required = true) Long picId
 			,@RequestParam(name = "shortName",required = false) String shortName
 			,@RequestParam(name = "firstIndustryIds", required = false) Long[] firstIndustryIds
@@ -421,6 +418,7 @@ public class UserLoginRegisterController extends BaseControl {
 						String object[]=strUserDefined.split(",");
 						userDefined= new UserDefined();
 						userDefined.setUserId(userId);
+						userDefined.setIp(ip);
 						for (int i = 0; i < object.length; i++) {
 							if(i==0)userDefined.setUserDefinedModel(object[i]);
 							if(i==1)userDefined.setUserDefinedFiled(object[i]);
@@ -434,6 +432,7 @@ public class UserLoginRegisterController extends BaseControl {
 				userOrganExt.setPhone(phone);
 				userOrganExt.setShortName(shortName);
 				userOrganExt.setIp(ip);
+				userOrganExt.setName(name);
 				userOrganExtService.updateUserOrganExt(userOrganExt);
 				resultMap.put("status",1);
 				return new MappingJacksonValue(resultMap);
@@ -559,6 +558,7 @@ public class UserLoginRegisterController extends BaseControl {
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserBasic userBasic=null;
+		UserOrganBasic userOrganBasic=null;
 		UserLoginRegister userLoginRegister=null;
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
@@ -568,22 +568,43 @@ public class UserLoginRegisterController extends BaseControl {
 				return new MappingJacksonValue(resultMap);
 			}
 			if(userLoginRegisterService.getEmail(email)){
-				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
-				if(userBasic==null){
-					resultMap.put("error", "email is not exists in UserBasic.");
-					resultMap.put("status",0);
-					return new MappingJacksonValue(resultMap);
+				if(userLoginRegister.getUsetType().intValue()==0){
+					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+					if(userBasic==null){
+						resultMap.put("error", "email is not exists in UserBasic.");
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+					userBasic.setAuth(new Byte("1"));
+					if(userBasicService.updateUserBasic(userBasic)){
+						resultMap.put("error", "email validate success.");
+						resultMap.put("status",1);
+						return new MappingJacksonValue(resultMap);
+					}else{
+						resultMap.put("error", "email validate failed.");
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
 				}
-				userBasic.setAuth(new Byte("1"));
-				if(userBasicService.updateUserBasic(userBasic)){
-					resultMap.put("error", "email validate success.");
-					resultMap.put("status",1);
-					return new MappingJacksonValue(resultMap);
-				}else{
-					resultMap.put("error", "email validate failed.");
-					resultMap.put("status",0);
-					return new MappingJacksonValue(resultMap);
+				if(userLoginRegister.getUsetType().intValue()==1){
+					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+					if(userOrganBasic==null){
+						resultMap.put("error", "email is not exists in UserOrganBasic.");
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+					userOrganBasic.setAuth(new Byte("1"));
+					if(userOrganBasicService.updateUserOrganBasic(userOrganBasic)){
+						resultMap.put("error", "email validate success.");
+						resultMap.put("status",1);
+						return new MappingJacksonValue(resultMap);
+					}else{
+						resultMap.put("error", "email validate failed.");
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
 				}
+				
 			}
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){

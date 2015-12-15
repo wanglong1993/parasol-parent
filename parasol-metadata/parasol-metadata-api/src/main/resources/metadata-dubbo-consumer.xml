@@ -30,5 +30,6 @@
 	http://www.springframework.org/schema/integration/stream/spring-integration-stream-2.1.xsd 
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
-    <dubbo:reference id="codeService" interface="com.ginkgocap.ywxt.metadata.service.code.CodeService" version="2.0.0"/>
+    <dubbo:reference id="codeService" interface="com.ginkgocap.parasol.metadata.service.CodeService" version="2.0.0"/>
+    <dubbo:reference id="codeRegionService" interface="com.ginkgocap.parasol.metadata.service.CodeRegionService" version="2.0.0"/>
 </beans>

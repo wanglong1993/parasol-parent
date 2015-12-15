@@ -35,6 +35,18 @@ public class UserExt implements java.io.Serializable {
 	 */
 	private Long countyId;
 	/**
+	 * 省份.
+	 */
+	private String provinceName;
+	/**
+	 * 城市.
+	 */
+	private String cityName;
+	/**
+	 * 县.
+	 */
+	private String countyName;
+	/**
 	 * 用户所在行业第三级id
 	 */
 	private Long thirdIndustryId;
@@ -196,8 +208,35 @@ public class UserExt implements java.io.Serializable {
 	public String getName() {
 		return name;
 	}
+	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Transient
+	public String getProvinceName() {
+		return provinceName;
+	}
+	
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+	
+	@Transient
+	public String getCityName() {
+		return cityName;
+	}
+	
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+	
+	@Transient
+	public String getCountyName() {
+		return countyName;
+	}
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
 	}
 
 }

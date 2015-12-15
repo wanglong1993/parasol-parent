@@ -82,6 +82,19 @@ public class UserExtServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
+	 * 根据用户Id获取感兴趣的id
+	 */
+	@org.junit.Test
+	public void testGetUserExt(){
+		try {
+//			Long id=userLoginRegisterService.getId("13677687623");
+			UserExt userExt = userExtService.getUserExt(3920063652692018l);
+			Assert.assertTrue(userExt!=null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
 	 * 根据id列表批量删除用户感兴趣行业
 	 */
 	@org.junit.Test

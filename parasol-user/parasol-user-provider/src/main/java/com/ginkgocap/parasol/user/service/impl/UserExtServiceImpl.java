@@ -11,6 +11,8 @@ import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.metadata.model.CodeRegion;
+import com.ginkgocap.parasol.metadata.service.CodeRegionService;
 import com.ginkgocap.parasol.user.exception.UserExtServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserExt;
@@ -21,6 +23,8 @@ import com.ginkgocap.parasol.util.PinyinUtils;
 public class UserExtServiceImpl extends BaseService<UserExt> implements UserExtService  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
+	@Resource
+	private CodeRegionService codeRegionService;
 	private static Logger logger = Logger.getLogger(UserExtServiceImpl.class);
 	private static String UserExt_List_Id_ProvinceId="UserExt_List_Id_ProvinceId";
 	private static String UserExt_List_Id_CountyId="UserExt_List_Id_CountyId";
@@ -77,9 +81,17 @@ public class UserExtServiceImpl extends BaseService<UserExt> implements UserExtS
 	public UserExt getUserExt(Long userId) throws UserExtServiceException {
 		try {
 			if(userId==null || userId<=0l)throw new UserExtServiceException("userId is null or empty");
-			UserExt UserExt =getEntity(userId);
-			if(!ObjectUtils.isEmpty(UserExt))return UserExt;
-			else throw new UserExtServiceException("userId is not exists in useBasic");
+			UserExt userExt =getEntity(userId);
+			if(!ObjectUtils.isEmpty(userExt)){
+				CodeRegion codeRegion =getCodeRegion(userExt.getProvinceId());
+				if(codeRegion!=null)userExt.setProvinceName(codeRegion.getCname());
+				codeRegion =getCodeRegion(userExt.getCityId());
+				if(codeRegion!=null)userExt.setCityName(codeRegion.getCname());
+				codeRegion =getCodeRegion(userExt.getCountyId());
+				if(codeRegion!=null)userExt.setCountyName(codeRegion.getCname());
+				return userExt;
+			}
+			else return null;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -87,7 +99,24 @@ public class UserExtServiceImpl extends BaseService<UserExt> implements UserExtS
 			throw new UserExtServiceException(e);
 		}
 	}
-
+	/**
+	 * 根据codeRegionId获取地区
+	 * @param codeRegionId
+	 * @return CodeRegion
+	 * @throws UserExtServiceException 
+	 */
+	private CodeRegion getCodeRegion(Long codeRegionId) throws UserExtServiceException{
+		try {
+			if(codeRegionId==null || codeRegionId<=0L)throw new UserExtServiceException("codeRegionId is null or empty");
+			CodeRegion codeRegion=codeRegionService.getCodeRegionById(codeRegionId);
+			return codeRegion;
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserExtServiceException(e);
+		}
+	}
 	@Override
 	public List<UserExt> getUserExtList(List<Long> userIds)throws UserExtServiceException {
 		try {
