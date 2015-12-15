@@ -16,12 +16,8 @@
 
 package com.ginkgocap.parasol.file.web.jetty.web.controller;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +29,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
-import org.csource.fastdfs.ClientGlobal;
 import org.csource.fastdfs.StorageClient;
 import org.csource.fastdfs.StorageServer;
 import org.csource.fastdfs.TrackerClient;
@@ -78,7 +73,6 @@ public class FileController extends BaseControl {
 	private static final String parameterFileType = "fileType"; // 文件类型
 	private static final String parameterTaskId = "taskId"; // taskId
 	private static final String parameterModuleType = "moduleType"; // 业务模块
-	private static final String conf_filename = "/fdfs_client.conf";	//	配置文件
 	private static final String parameterWidth = "width"; // 文件扩展名
 	private static final String parameterHigth = "higth"; // 文件扩展名
 	private static final String parameterXcoord = "xCoordinate"; // x坐标
@@ -109,7 +103,6 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId ) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			ClientGlobal.init(getClass().getResource(conf_filename).getFile());
 			byte[] file_buff = file.getBytes();
 			TrackerClient tracker = new TrackerClient(); 
 			TrackerServer trackerServer;
@@ -120,21 +113,19 @@ public class FileController extends BaseControl {
 			int f = fileName.lastIndexOf(".");
 			String fileExtName = "";
 			if (f>-1) fileExtName = fileName.substring(f+1);
-			String fileIds[] = storageClient.upload_file(file_buff, fileExtName, null);
-			for (String id : fileIds) {
-				System.out.println("id="+id);
-			}
+			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
+			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
 			String thumbnailsPath = "";
 			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
 			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
 				// 生成140*140缩略图
-				thumbnailsPath = getPicThumbnail(fileIds[0],fileIds[1],140,140);
+				thumbnailsPath = getPicThumbnail(fields[0],fields[1],140,140);
 			}
 			FileIndex index = new FileIndex();
 			index.setAppid(appId.toString());
 			index.setCreaterId(userId);
-			index.setServerHost(fileIds[0]);
-			index.setFilePath(fileIds[1]);
+			index.setServerHost(fields[0]);
+			index.setFilePath(fields[1]);
 			index.setFileSize(file.getSize());
 			index.setFileTitle(file.getOriginalFilename());
 			index.setFileType(fileType);
@@ -178,7 +169,6 @@ public class FileController extends BaseControl {
 			) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			ClientGlobal.init(getClass().getResource(conf_filename).getFile());
 			FileIndex index = fileIndexService.getFileIndexById(fileId);
 			
 			String sFileId = getScissorImage(index.getServerHost(),index.getFilePath(),width,height,x,y);
@@ -186,7 +176,7 @@ public class FileController extends BaseControl {
 			index.setThumbnailsPath(sFileId);
 			fileIndexService.updateFileIndex(index);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(fileId);
+			mappingJacksonValue = new MappingJacksonValue(index);
 			return mappingJacksonValue;
 		} catch (RpcException e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();

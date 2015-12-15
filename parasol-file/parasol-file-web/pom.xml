@@ -133,6 +133,7 @@
 					<include>**/application.properties</include>
 					<include>**/*.xml</include>
 					<include>*/*.html</include>
+					<include>**/fdfs_client.conf</include>
 				</includes>
 			</resource>
 		</resources>
