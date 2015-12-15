@@ -81,15 +81,23 @@ public class UserOrganExtServiceImpl extends BaseService<UserOrganExt> implement
 		try {
 			if(userId==null || userId<=0l)throw new UserOrganExtServiceException("userId is null or empty.");
 			UserOrganExt userOrganExt=getEntity(userId);
-			if(userOrganExt==null)throw new UserOrganExtServiceException("userId is not exist in UserOrganExt.");
+			if(userOrganExt==null)return null;
 			Long fileIndexId=userOrganExt.getBusinessLicencePicId();
-			Map<Long, Object> fileIndexMap = new HashMap<Long, Object>();
-			if(!ObjectUtils.isEmpty(fileIndexId))fileIndexMap.put(fileIndexId,  getFileIndex(fileIndexId));
+			FileIndex fileIndex=null;
+			if(!ObjectUtils.isEmpty(fileIndexId)){
+				fileIndex=getFileIndex(fileIndexId);
+				if(fileIndex!=null)userOrganExt.setBusinessLicencePicPath(fileIndex.getServerHost()+fileIndex.getFilePath());
+			}
 			fileIndexId=userOrganExt.getIdcardFrontPicId();
-			if(!ObjectUtils.isEmpty(fileIndexId))fileIndexMap.put(fileIndexId,  getFileIndex(fileIndexId));
+			if(!ObjectUtils.isEmpty(fileIndexId)){
+				fileIndex=getFileIndex(fileIndexId);
+				if(fileIndex!=null)userOrganExt.setIdcardFrontPicPath(fileIndex.getServerHost()+fileIndex.getFilePath());
+			}
 			fileIndexId=userOrganExt.getIdcardBackPicId();
-			if(!ObjectUtils.isEmpty(fileIndexId))fileIndexMap.put(fileIndexId,  getFileIndex(fileIndexId));
-			userOrganExt.setFileIndexMap(fileIndexMap);
+			if(!ObjectUtils.isEmpty(fileIndexId)){
+				fileIndex=getFileIndex(fileIndexId);
+				if(fileIndex!=null)userOrganExt.setIdcardBackPicPath(fileIndex.getServerHost()+fileIndex.getFilePath());
+			}
 			return userOrganExt;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {

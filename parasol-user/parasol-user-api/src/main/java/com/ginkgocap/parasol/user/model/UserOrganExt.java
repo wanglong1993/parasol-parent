@@ -91,9 +91,17 @@ public class UserOrganExt implements java.io.Serializable {
 	 */
 	private String ip;
 	/**
-	 * 组织对象的FileIndex对象的组合
+	 * 营业职照path
 	 */
-	private Map<Long ,Object> fileIndexMap;
+	private String  businessLicencePicPath;
+	/**
+	 * 联系人身份证正面照片path
+	 */
+	private String  idcardFrontPicPath;
+	/**
+	 * 联系人身份证背面照片path
+	 */
+	private String  idcardBackPicPath;
 	
 
 	public UserOrganExt() {
@@ -255,21 +263,39 @@ public class UserOrganExt implements java.io.Serializable {
 	}
 	
 	@Transient
-	public Map<Long, Object> getFileIndexMap() {
-		return fileIndexMap;
-	}
-
-	public void setFileIndexMap(Map<Long, Object> fileIndexMap) {
-		this.fileIndexMap = fileIndexMap;
-	}
-	
-	@Transient
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Transient
+	public String  getBusinessLicencePicPath() {
+		return businessLicencePicPath;
+	}
+
+	public void setBusinessLicencePicPath(String  businessLicencePicPath) {
+		this.businessLicencePicPath = businessLicencePicPath;
+	}
+	
+	@Transient
+	public String  getIdcardFrontPicPath() {
+		return idcardFrontPicPath;
+	}
+
+	public void setIdcardFrontPicPath(String  idcardFrontPicPath) {
+		this.idcardFrontPicPath = idcardFrontPicPath;
+	}
+	
+	@Transient
+	public String  getIdcardBackPicPath() {
+		return idcardBackPicPath;
+	}
+
+	public void setIdcardBackPicPath(String  idcardBackPicPath) {
+		this.idcardBackPicPath = idcardBackPicPath;
 	}
 
 }

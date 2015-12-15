@@ -30,8 +30,8 @@ public class UserFriendlyServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testCreateUserFriendly(){
 		try {
-			Long id=userLoginRegisterService.getId("13677687625");
-			Long id2 =userFriendlyService.createUserFriendly(setUserFriendly(id,new Byte("1")));
+			Long id=userLoginRegisterService.getId("13777768734");
+			Long id2 =userFriendlyService.createUserFriendly(setUserFriendly(id,new Byte("0")));
 			Assert.assertTrue(id2!=null && id2>0l);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,7 +75,7 @@ public class UserFriendlyServiceTest  extends TestBase  implements Test{
 			Long ctime=System.currentTimeMillis();
 			UserFriendly userFriendly = new UserFriendly();
 			userFriendly.setUserId(userId);
-			userFriendly.setFriendId(userLoginRegisterService.getId("13677687623"));
+			userFriendly.setFriendId(userLoginRegisterService.getId("13777768733"));
 			userFriendly.setStatus(status);
 			userFriendly.setCtime(ctime);
 			userFriendly.setUtime(ctime);

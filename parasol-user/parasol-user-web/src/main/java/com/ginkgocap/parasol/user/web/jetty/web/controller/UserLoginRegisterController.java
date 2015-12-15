@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserDefined;
 import com.ginkgocap.parasol.user.model.UserExt;
+import com.ginkgocap.parasol.user.model.UserFriendly;
 import com.ginkgocap.parasol.user.model.UserInterestIndustry;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
@@ -30,6 +31,7 @@ import com.ginkgocap.parasol.user.model.UserOrganExt;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserDefinedService;
 import com.ginkgocap.parasol.user.service.UserExtService;
+import com.ginkgocap.parasol.user.service.UserFriendlyService;
 import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserLoginThirdService;
@@ -59,6 +61,8 @@ public class UserLoginRegisterController extends BaseControl {
 	private UserInterestIndustryService userInterestIndustryService;
 	@Autowired
 	private UserDefinedService userDefinedService;
+	@Autowired
+	private UserFriendlyService userFriendlyService;
 
 	/**
 	 * 用户注册
@@ -263,8 +267,8 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginRegister/getUserAll" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getUserAll(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/userLoginRegister/getUserDetail" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -298,7 +302,7 @@ public class UserLoginRegisterController extends BaseControl {
 			}
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("登录失败:"+passport);
+			logger.info("获取用户资料失败:"+passport);
 			throw e;
 		}
 	}
@@ -326,6 +330,45 @@ public class UserLoginRegisterController extends BaseControl {
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("登录失败:"+passport);
+			throw e;
+		}
+	}	
+	/**
+	 * 添加好友
+	 * @param userId  当前用户ID
+	 * @param friendId 要添加的好友的用户ID
+	 * @param content 添加用户时发送的消息.
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userLoginRegister/addFriendly" }, method = { RequestMethod.GET })
+	public MappingJacksonValue addFriendly(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "userId",required = true) Long userId
+			,@RequestParam(name = "friendId",required = true) Long friendId
+			,@RequestParam(name = "content",required = true) String content
+			,@RequestParam(name = "appId",required = true) String appId
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserFriendly userFriendly=null;
+		try {
+			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+				resultMap.put("error", "userId is not exists in UserLoginRegister.");
+				resultMap.put("status",0);
+			}
+			if(userLoginRegisterService.getUserLoginRegister(friendId)==null){
+				resultMap.put("error", "friendId is not exists in UserLoginRegister.");
+				resultMap.put("status",0);
+			}
+			userFriendly=new UserFriendly();
+			userFriendly.setUserId(userId);
+			userFriendly.setFriendId(friendId);
+			userFriendly.setStatus(new Byte("0"));
+			userFriendly.setContent(content);
+			userFriendly.setAppId(appId);
+			userFriendlyService.createUserFriendly(userFriendly);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("添加好友"+friendId+"失败");
 			throw e;
 		}
 	}	

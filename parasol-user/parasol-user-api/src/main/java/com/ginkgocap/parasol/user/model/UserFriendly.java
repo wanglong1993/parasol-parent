@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -44,6 +45,14 @@ public class UserFriendly implements java.io.Serializable {
 	 * 成为好友时间.
 	 */
 	private Long utime;
+	/**
+	 * 添加用户时发送的消息.
+	 */
+	private String content;
+	/**
+	 * appId.
+	 */
+	private String appId;
 
 	public UserFriendly() {
 	}
@@ -114,6 +123,24 @@ public class UserFriendly implements java.io.Serializable {
 
 	public void setUtime(Long utime) {
 		this.utime = utime;
+	}
+
+	@Transient
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	@Transient
+	public String getAppId() {
+		return appId;
+	}
+
+	public void setAppId(String appId) {
+		this.appId = appId;
 	}
 
 }

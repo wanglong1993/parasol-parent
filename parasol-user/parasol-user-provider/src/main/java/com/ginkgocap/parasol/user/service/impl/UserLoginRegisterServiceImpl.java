@@ -101,7 +101,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(id==null || id<=0l)throw new UserLoginRegisterServiceException("id is must grater than zero.");
 			UserLoginRegister userLoginRegister=getEntity(id);
 			if(!ObjectUtils.isEmpty(userLoginRegister)) return userLoginRegister;
-			else throw new UserLoginRegisterServiceException("id is not exists in userLoginRegister.");
+			else return null;
 		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

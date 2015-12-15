@@ -1,7 +1,9 @@
 package com.ginkgocap.parasol.user.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -9,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.message.service.MessageEntityService;
 import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
 import com.ginkgocap.parasol.user.model.UserFriendly;
 import com.ginkgocap.parasol.user.service.UserFriendlyService;
@@ -17,6 +20,8 @@ import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implements UserFriendlyService  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
+	@Resource
+	private MessageEntityService messageEntityService;
 	private static int error_friendId_is_null = 1000;	
 	private static int error_uesrId_is_null = 1001;	
 	private static int error_status_is_error = 1002;
@@ -33,9 +38,18 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 			if(userLoginRegisterService.getUserLoginRegister(userFriendly.getUserId())==null)throw new UserFriendlyServiceException(error_uesrId_is_not_exists,"userId is not exists in UserLogniRegister");
 			if(userLoginRegisterService.getUserLoginRegister(userFriendly.getFriendId())==null)throw new UserFriendlyServiceException(error_FriendId_is_not_exists,"friendId is not exists in UserLogniRegister");
 			int status=userFriendly.getStatus().intValue();
-			if(status!=0 && status!=1)throw new UserFriendlyServiceException(error_status_is_error, "status is null or empty.");
+			if(status!=0 && status!=1)throw new UserFriendlyServiceException(error_status_is_error, "status must be 0 or 1.");
 			if(userFriendly.getCtime()==null || userFriendly.getCtime()<=0l) userFriendly.setCtime(System.currentTimeMillis());
 			if(userFriendly.getUtime()==null || userFriendly.getUtime()<=0l) userFriendly.setUtime(System.currentTimeMillis());
+			Map<String,String> map =new HashMap<String,String>();
+			map.put("type", "1");
+			map.put("createrId", userFriendly.getUserId().toString());
+			map.put("content", userFriendly.getContent());
+			map.put("sourceId", userFriendly.getFriendId().toString());
+			map.put("appid", userFriendly.getAppId());
+			map.put("sourceType", "");
+			map.put("sourceTitle", "");
+			messageEntityService.insertMessageByParams(map);
 			return (Long) saveEntity(userFriendly);
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
@@ -48,7 +62,7 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 	public boolean updateStatus(Long userId,Long friendId, Byte status)throws UserFriendlyServiceException {
 		try {
 			if(friendId==null || friendId<=0l)throw new UserFriendlyServiceException(error_friendId_is_null,"friendId is null or empty.");
-			if(status.intValue()!=1) throw new UserFriendlyServiceException(error_status_is_error,"status is error,must be equal to one.");
+			if(status.intValue()!=1) throw new UserFriendlyServiceException(error_status_is_error,"status must be equal to 1.");
 			if(userLoginRegisterService.getUserLoginRegister(userId)==null)throw new UserFriendlyServiceException(error_uesrId_is_not_exists,"userId is not exists in UserLogniRegister");
 			if(userLoginRegisterService.getUserLoginRegister(friendId)==null)throw new UserFriendlyServiceException(error_FriendId_is_not_exists,"friendId is not exists in UserLogniRegister");
 			Long id =(Long) getMapId(UserFriendly_Map_FriendId, new Object[]{friendId,userId});
