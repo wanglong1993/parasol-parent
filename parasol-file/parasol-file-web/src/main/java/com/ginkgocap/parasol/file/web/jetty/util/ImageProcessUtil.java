@@ -28,7 +28,7 @@ public class ImageProcessUtil {
 	 * @return	截图后的字节数组
 	 * @throws IOException
 	 */
-    public static byte[] scissorImage(int x, int width, int y, int height, byte[] image)
+    public static byte[] scissorImage(int x, int width, int y, int height, byte[] image, String fileExtName)
             throws IOException {
     	if(image==null || image.length<=0 || width<= 0 || height<=0) {
 			logger.error("根据坐标及长度宽度截图失败，参数错误,width:{}, height:{}", width, height);
@@ -44,7 +44,7 @@ public class ImageProcessUtil {
 	    	// 内存中切图
 	    	BufferedImage temImage = mImage.getSubimage(x, y, width, height);
 	    	// 写入输出流
-	    	ImageIO.write(temImage, null, out);
+	    	ImageIO.write(temImage, fileExtName, out);
 	    	// 转换成字节数组
 	    	byte[] sImage = out.toByteArray();
 	    	return sImage;
@@ -65,7 +65,7 @@ public class ImageProcessUtil {
      * @return	缩略图字节数据
      * @throws IOException
      */
-	public static byte[] scaleImage(byte[] mImage, int width,int height ) throws IOException {
+	public static byte[] scaleImage(byte[] mImage, int width,int height, String fileExtName) throws IOException {
 		if(mImage==null || mImage.length<=0 || width<= 0 || height<=0) {
 			logger.error("缩略图参数错误,width:{}, height:{}", width, height);
 			return null;
@@ -94,7 +94,7 @@ public class ImageProcessUtil {
 	        	AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(ratio, ratio), null);  
 	        	itemp = op.filter(image, null);
 	        	// 写入输出字节流
-	            ImageIO.write((BufferedImage) itemp,null, out);  
+	            ImageIO.write((BufferedImage) itemp,fileExtName, out);  
 	        }  
 			byte[] sImage = out.toByteArray();
 			return sImage;

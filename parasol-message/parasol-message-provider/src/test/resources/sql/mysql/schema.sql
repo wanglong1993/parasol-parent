@@ -14,7 +14,7 @@ create table tb_message_entity
    createrId            bigint(20)                     null,
    content              varchar(255)                   null,
    sourceId             bigint(20)                     null,
-   sourceType           tinyint                        null,
+   sourceType           varchar(10)                        null,
    sourceTitle          varchar(255)                   null,
    appid                varchar(50)                    null,
    PRIMARY KEY (`id`)

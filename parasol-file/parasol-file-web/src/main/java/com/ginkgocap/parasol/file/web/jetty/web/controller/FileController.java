@@ -73,10 +73,10 @@ public class FileController extends BaseControl {
 	private static final String parameterFileType = "fileType"; // 文件类型
 	private static final String parameterTaskId = "taskId"; // taskId
 	private static final String parameterModuleType = "moduleType"; // 业务模块
-	private static final String parameterWidth = "width"; // 文件扩展名
-	private static final String parameterHigth = "higth"; // 文件扩展名
-	private static final String parameterXcoord = "xCoordinate"; // x坐标
-	private static final String parameterYcoord = "yCoordinate"; // y坐标
+	private static final String parameterXEnd = "xEnd"; // x结束坐标
+	private static final String parameterYEnd = "yEnd"; // y结束坐标
+	private static final String parameterXStart = "xStart"; // x开始坐标
+	private static final String parameterYStart = "yStart"; // y开始坐标
 
 	@Resource
 	private FileIndexService fileIndexService;
@@ -104,11 +104,7 @@ public class FileController extends BaseControl {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			byte[] file_buff = file.getBytes();
-			TrackerClient tracker = new TrackerClient(); 
-			TrackerServer trackerServer;
-			trackerServer = tracker.getConnection();
-			StorageServer storageServer = null;
-			StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+			StorageClient storageClient = getStorageClient();
 			String fileName = file.getOriginalFilename();
 			int f = fileName.lastIndexOf(".");
 			String fileExtName = "";
@@ -118,9 +114,9 @@ public class FileController extends BaseControl {
 			String thumbnailsPath = "";
 			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
 			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-				// 生成140*140缩略图
-				thumbnailsPath = getPicThumbnail(fields[0],fields[1],140,140);
+				generateAvatar(fields[0], fields[1], fileExtName, null);
 			}
+			thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
 			FileIndex index = new FileIndex();
 			index.setAppid(appId.toString());
 			index.setCreaterId(userId);
@@ -161,20 +157,17 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = FileController.parameterTaskId, required = true) Long fileId,
-			@RequestParam(name = FileController.parameterWidth, defaultValue = "140") Integer width,
-			@RequestParam(name = FileController.parameterHigth, defaultValue = "140") Integer height,
-			@RequestParam(name = FileController.parameterXcoord, required = true) Integer x,
-			@RequestParam(name = FileController.parameterYcoord, required = true) Integer y
+			@RequestParam(name = FileController.parameterTaskId, required = true) Long indexId,
+			@RequestParam(name = FileController.parameterXEnd, required = true) Integer xEnd,
+			@RequestParam(name = FileController.parameterYEnd, required = true) Integer yEnd,
+			@RequestParam(name = FileController.parameterXStart, required = true) Integer xStart,
+			@RequestParam(name = FileController.parameterYStart, required = true) Integer yStart
 			) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			FileIndex index = fileIndexService.getFileIndexById(fileId);
+			FileIndex index = fileIndexService.getFileIndexById(indexId);
 			
-			String sFileId = getScissorImage(index.getServerHost(),index.getFilePath(),width,height,x,y);
-			
-			index.setThumbnailsPath(sFileId);
-			fileIndexService.updateFileIndex(index);
+			getScissorImage(index.getServerHost(),index.getFilePath(),xEnd-xStart,yEnd-yStart,xStart,yStart);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(index);
 			return mappingJacksonValue;
@@ -208,22 +201,70 @@ public class FileController extends BaseControl {
 	 * @throws IOException
 	 * @throws MyException
 	 */
-	private String getPicThumbnail(String group, String fileId, int width, int height) throws IOException, MyException {
+	private String getPicThumbnailByFileId(String group, String fileId, int width, int height, String fileExtName, byte[] mImage) throws IOException, MyException {
+		
+		StorageClient storageClient = getStorageClient();
+		// 如果mImage为空，则通过fileId下载文件，生成字节数组
+		if (mImage==null || mImage.length==0) {
+			// 获取源图字节流
+			mImage = storageClient.download_file(group, fileId);
+		}
+		// 获取缩略图字节流
+		byte[] sImage = ImageProcessUtil.scaleImage(mImage, width, height, fileExtName);
+		
+		String suffix = new StringBuilder("_").append(width).append("_").append(height).toString();
+		String mfileId = fileId.replace("."+fileExtName, suffix+"."+fileExtName);
+		// 根据文件id删除文件
+		storageClient.delete_file(group, mfileId);
+		String[] fields = storageClient.upload_file(group, fileId, suffix, sImage, fileExtName, null);
+		for (String field : fields) {
+			System.out.println("field="+field);
+		}
+		return fields[1];
+	}
+	
+	/**
+	 * 生成小头像，fastdfs从文件,三种格式140*140、90*90、60*60
+	 * @param group
+	 * @param fileId
+	 * @param fileExtName
+	 * @return	140*140图片地址作为缩略图
+	 * @throws IOException
+	 * @throws MyException
+	 */
+	private void generateAvatar(final String group, final String fileId, final String fileExtName, final byte[] mImage) throws IOException, MyException {
+		Thread thread = new Thread(
+					new Runnable(){
+						@Override
+						public void run() {
+							try {
+								// 生成140*140头像图片
+								getPicThumbnailByFileId(group, fileId, 140, 140, fileExtName, mImage);
+								// 生成90*90头像图片
+								getPicThumbnailByFileId(group, fileId, 90, 90, fileExtName, mImage);
+								// 生成90*90头像图片
+								getPicThumbnailByFileId(group, fileId, 60, 60, fileExtName, mImage);
+							} catch (IOException e) {
+								logger.error("group:{}, fileId:{},fileExtName:{}", group,fileId, fileExtName);
+								e.printStackTrace();
+							} catch (MyException e) {
+								logger.error("group:{}, fileId:{},fileExtName:{}", group,fileId, fileExtName);
+								e.printStackTrace();
+							}
+						}
+						
+					}
+				);
+		thread.start();
+	}
+	
+	private StorageClient getStorageClient() throws IOException {
 		TrackerClient tracker = new TrackerClient(); 
 		TrackerServer trackerServer;
 		trackerServer = tracker.getConnection();
 		StorageServer storageServer = null;
 		StorageClient storageClient = new StorageClient(trackerServer, storageServer);
-		// 获取源图字节流
-		byte[] mImage = storageClient.download_file(group, fileId);
-		// 获取缩略图字节流
-		byte[] sImage = ImageProcessUtil.scaleImage(mImage, width, height);
-		String suffix = new StringBuilder("_").append(width).append("_").append(height).toString();
-		String[] fields = storageClient.upload_file(group, fileId, suffix, sImage, "jpg", null);
-		for (String field : fields) {
-			System.out.println("field="+field);
-		}
-		return fields[1];
+		return storageClient;
 	}
 	
 	/**
@@ -238,18 +279,22 @@ public class FileController extends BaseControl {
 	 * @throws IOException
 	 * @throws MyException
 	 */
-	private String getScissorImage(String group, String fileId, int width, int height, int x, int y) throws IOException, MyException {
-		TrackerClient tracker = new TrackerClient(); 
-		TrackerServer trackerServer;
-		trackerServer = tracker.getConnection();
-		StorageServer storageServer = null;
-		StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+	private void getScissorImage(String group, String fileId, int width, int height, int x, int y) throws IOException, MyException {
+		StorageClient storageClient = getStorageClient();
 		// 获取源图字节流
 		byte[] mImage = storageClient.download_file(group, fileId);
-		byte[] sImage = ImageProcessUtil.scissorImage(x, width, y, height, mImage);
-		String suffix = new StringBuilder("_").append(width).append("_").append(height).toString();
-		String[] fields = storageClient.upload_file(group, fileId, suffix, sImage, "jpg", null);
-		return fields[1];
+		int f = fileId.lastIndexOf(".");
+		String fileExtName = "";
+		if (f>-1) {
+			fileExtName = fileId.substring(f+1);
+		} else {
+			return ;
+		}
+		// 根据源图截图
+		byte[] sImage = ImageProcessUtil.scissorImage(x, width, y, height, mImage, fileExtName);
+		
+		generateAvatar(group, fileId, fileExtName, sImage);
+
 	}
 	
 	/**
