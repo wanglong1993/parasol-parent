@@ -26,6 +26,7 @@ import com.ginkgocap.parasol.user.model.UserExt;
 import com.ginkgocap.parasol.user.model.UserFriendly;
 import com.ginkgocap.parasol.user.model.UserInterestIndustry;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
+import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.model.UserOrganExt;
 import com.ginkgocap.parasol.user.service.UserBasicService;
@@ -35,6 +36,7 @@ import com.ginkgocap.parasol.user.service.UserFriendlyService;
 import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserLoginThirdService;
+import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
 import com.ginkgocap.parasol.user.service.UserOrganBasicService;
 import com.ginkgocap.parasol.user.service.UserOrganExtService;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
@@ -43,8 +45,8 @@ import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
  * 用户登录注册
  */
 @RestController
-public class UserLoginRegisterController extends BaseControl {
-	private static Logger logger = Logger.getLogger(UserLoginRegisterController.class);
+public class UserController extends BaseControl {
+	private static Logger logger = Logger.getLogger(UserController.class);
 	@Autowired
 	private UserLoginThirdService userLoginThirdService;
 	@Autowired
@@ -63,6 +65,8 @@ public class UserLoginRegisterController extends BaseControl {
 	private UserDefinedService userDefinedService;
 	@Autowired
 	private UserFriendlyService userFriendlyService;
+	@Autowired
+	private UserOrgPerCusRelService userOrgPerCusRelService;
 
 	/**
 	 * 用户注册
@@ -88,7 +92,7 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @return MappingJacksonValue
 	 * http://www.jsjtt.com/java/Javakuangjia/67.html
 	 */
-	@RequestMapping(path = { "/userLoginRegister/register" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/register" }, method = { RequestMethod.GET })
 	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "type",required = true) int type
 			,@RequestParam(name = "code",required = true) String code
@@ -162,7 +166,7 @@ public class UserLoginRegisterController extends BaseControl {
 				//个人用户邮箱注册
 				if((type==1 && userType.equals("0"))){
 			        Map<String, Object> map = new HashMap<String, Object>();
-			        map.put("email", "http://www.gintong.com/userLoginRegister/verification?eamil="+Base64.decode(passport.getBytes()));
+			        map.put("email", "http://www.gintong.com/user/verification?eamil="+Base64.decode(passport.getBytes()));
 			        map.put("acceptor",passport);
 			        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 					if(userLoginRegisterService.sendEmail(passport, type, map)){
@@ -228,7 +232,7 @@ public class UserLoginRegisterController extends BaseControl {
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
 					//邮箱验证地址
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("email", "http://www.gintong.com/userLoginRegister/verification?eamil="+Base64.decode(passport.getBytes()));
+					map.put("email", "http://www.gintong.com/user/verification?eamil="+Base64.decode(passport.getBytes()));
 					map.put("acceptor",passport);
 					map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 					if(userLoginRegisterService.sendEmail(passport, type, map)){
@@ -267,7 +271,7 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginRegister/getUserDetail" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/getUserDetail" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
@@ -307,49 +311,126 @@ public class UserLoginRegisterController extends BaseControl {
 		}
 	}
 	/**
-	 * 获取好友
+	 *根据userId获取用户我的里面的组织好友列表
 	 * 
 	 * @param passport 为邮箱和手机号
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginRegister/getFriendly" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getFriendly(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/user/getOrgFriendlylList" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getOrgFriendlylList(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true) int count
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserOrgPerCusRel> list=null;
+		UserLoginRegister userLoginRegister=null;
 		try {
-			if(userLoginRegisterService.passportIsExist(passport)){
-				if(isEmail(passport))resultMap.put("error", "email already exists.");
-				else resultMap.put("error", "email format is not correct.");
-				if(isMobileNo(passport))resultMap.put("error", "mobile already exists.");
-				else resultMap.put("error", "mobile phone number is not correct.");
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			if(userLoginRegister==null){
+				resultMap.put("error", "passport is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
+			list= userOrgPerCusRelService.getOrgFriendlylList(start, count, userLoginRegister.getId());
+			resultMap.put("list", list);
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("登录失败:"+passport);
+			logger.info("根据userId获取用户我的里面的组织好友列表失败:"+passport);
 			throw e;
 		}
 	}	
 	/**
-	 * 添加好友
+	 *根据userId获取用户我的里面的个人好友列表
+	 * 
+	 * @param passport 为邮箱和手机号
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/getUserFriendlyList" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserFriendlyList(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserOrgPerCusRel> list=null;
+		UserLoginRegister userLoginRegister=null;
+		try {
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			if(userLoginRegister==null){
+				resultMap.put("error", "passport is not exists in UserLoginRegister.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			list= userOrgPerCusRelService.getUserFriendlyList(start, count, userLoginRegister.getId());
+			resultMap.put("list", list);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("根据userId获取用户我的里面的组织好友列表失败:"+passport);
+			throw e;
+		}
+	}	
+	/**
+	 *根据userId获取用户通讯录个人和组织好友列表
+	 * 
+	 * @param passport 为邮箱和手机号
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/getUserAndOrgFriendlyList" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserAndOrgFriendlyList(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserOrgPerCusRel> list=null;
+		UserLoginRegister userLoginRegister=null;
+		try {
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			if(userLoginRegister==null){
+				resultMap.put("error", "passport is not exists in UserLoginRegister.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			list= userOrgPerCusRelService.getUserFriendlyList(start, count, userLoginRegister.getId());
+			resultMap.put("list", list);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("根据userId获取用户我的里面的组织好友列表失败:"+passport);
+			throw e;
+		}
+	}	
+	/**
+	 * 申请添加好友
 	 * @param userId  当前用户ID
 	 * @param friendId 要添加的好友的用户ID
 	 * @param content 添加用户时发送的消息.
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginRegister/addFriendly" }, method = { RequestMethod.GET })
-	public MappingJacksonValue addFriendly(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/user/applyToAddFriendly" }, method = { RequestMethod.GET })
+	public MappingJacksonValue applyToAddFriendly(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
 			,@RequestParam(name = "content",required = true) String content
 			,@RequestParam(name = "appId",required = true) String appId
+			,@RequestParam(name = "status",required = true) String status
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserFriendly userFriendly=null;
 		try {
+			if(!status.equals("0")){
+				resultMap.put("error", "status must be 0.");
+				resultMap.put("status",0);
+			}
 			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
 				resultMap.put("error", "userId is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
@@ -361,14 +442,225 @@ public class UserLoginRegisterController extends BaseControl {
 			userFriendly=new UserFriendly();
 			userFriendly.setUserId(userId);
 			userFriendly.setFriendId(friendId);
-			userFriendly.setStatus(new Byte("0"));
+			userFriendly.setStatus(new Byte(status));
 			userFriendly.setContent(content);
 			userFriendly.setAppId(appId);
-			userFriendlyService.createUserFriendly(userFriendly);
+			userFriendlyService.createUserFriendly(userFriendly,true);
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("添加好友"+friendId+"失败");
+			throw e;
+		}
+	}	
+	/**
+	 * 同意添加好友
+	 * @param userId  当前用户ID
+	 * @param friendId 要添加的好友的用户ID
+	 * @param appId 添加用户时发送的消息.
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/auditByAddFriendly" }, method = { RequestMethod.GET })
+	public MappingJacksonValue auditByAddFriendly(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "userId",required = true) Long userId
+			,@RequestParam(name = "friendId",required = true) Long friendId
+			,@RequestParam(name = "appId",required = true) String appId
+			,@RequestParam(name = "status",required = true) String  status
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserFriendly userFriendly=null;
+		UserOrgPerCusRel userOrgPerCusRel=null;
+		UserLoginRegister userLoginRegister=null;
+		UserLoginRegister userLoginRegisterFriend=null;
+		UserBasic userBasic=null;
+		UserOrganBasic userOrganBasic=null;
+		Long id=0l;
+		Long userOrgPerCusRelId=0l;
+		Long userOrgPerCusRelFriendlyId=0l;
+		boolean bl=false;
+		try {
+				if(!status.equals("1")){
+					resultMap.put("error", "status must be 1.");
+					resultMap.put("status",0);
+				}
+				userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+				if(userLoginRegister==null){
+					resultMap.put("error", "userId is not exists in UserLoginRegister.");
+					resultMap.put("status",0);
+				}
+				userLoginRegisterFriend=userLoginRegisterService.getUserLoginRegister(friendId);
+				if(userLoginRegisterFriend==null){
+					resultMap.put("error", "friendId is not exists in UserLoginRegister.");
+					resultMap.put("status",0);
+				}
+				//检查个人好友是否存在
+				if(userLoginRegisterFriend.getUsetType().intValue()==0){
+					userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
+					if(userBasic==null){
+						resultMap.put("error", "friendId is not exists in UserBasic.");
+						resultMap.put("status",0);
+					}
+				}
+				//检查组织好友是否存在
+				if(userLoginRegisterFriend.getUsetType().intValue()==1){
+					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegisterFriend.getId());
+					if(userOrganBasic==null){
+						resultMap.put("error", "friendId is not exists in UserOrganBasic.");
+						resultMap.put("status",0);
+					}
+				}
+				//更新好友关系和创建对方的好友关系
+				userFriendly=new UserFriendly();
+				userFriendly.setUserId(friendId);
+				userFriendly.setFriendId(userId);
+				userFriendly.setStatus(new Byte(status));
+				userFriendly.setAppId(appId);
+				bl=userFriendlyService.updateStatus(userId, friendId, new Byte(status));
+				id=userFriendlyService.createUserFriendly(userFriendly,false);
+				//添加个人好友
+				if(userLoginRegisterFriend.getUsetType().intValue()==0){
+					userOrgPerCusRel=new UserOrgPerCusRel();
+					userOrgPerCusRel.setUserId(userId);
+					userOrgPerCusRel.setFriendId(friendId);
+					userOrgPerCusRel.setName(userBasic.getName());
+					userOrgPerCusRel.setReleationType(new Byte("1"));
+					userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+					//添加对方的个人好友
+					if(userLoginRegister.getUsetType().intValue()==0){
+						userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+						userOrgPerCusRel=new UserOrgPerCusRel();
+						userOrgPerCusRel.setUserId(friendId);
+						userOrgPerCusRel.setFriendId(userId);
+						userOrgPerCusRel.setName(userBasic.getName());
+						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+					}
+					//添加对方的组织好友
+					if(userLoginRegister.getUsetType().intValue()==1){
+						userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+						userOrgPerCusRel=new UserOrgPerCusRel();
+						userOrgPerCusRel.setUserId(friendId);
+						userOrgPerCusRel.setFriendId(userId);
+						userOrgPerCusRel.setName(userOrganBasic.getName());
+						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+					}
+					resultMap.put("status",1);
+				}
+				//同意添加组织好友
+				if(userLoginRegisterFriend.getUsetType().intValue()==1){
+					userOrgPerCusRel=new UserOrgPerCusRel();
+					userOrgPerCusRel.setUserId(userId);
+					userOrgPerCusRel.setFriendId(friendId);
+					userOrgPerCusRel.setName(userOrganBasic.getName());
+					userOrgPerCusRel.setReleationType(new Byte("2"));
+					userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+					//添加对方的个人好友
+					if(userLoginRegister.getUsetType().intValue()==0){
+						userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+						userOrgPerCusRel=new UserOrgPerCusRel();
+						userOrgPerCusRel.setUserId(friendId);
+						userOrgPerCusRel.setFriendId(userId);
+						userOrgPerCusRel.setName(userBasic.getName());
+						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+					}
+					//添加对方的组织好友
+					if(userLoginRegister.getUsetType().intValue()==1){
+						userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+						userOrgPerCusRel=new UserOrgPerCusRel();
+						userOrgPerCusRel.setUserId(friendId);
+						userOrgPerCusRel.setFriendId(userId);
+						userOrgPerCusRel.setName(userOrganBasic.getName());
+						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+					}
+					resultMap.put("status",1);
+				}
+			
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			//失败回滚
+			if(bl)userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+			if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+			if(userOrgPerCusRelId>0l)userOrgPerCusRelService.deleteFriendly(friendId);
+			if(userOrgPerCusRelFriendlyId>0l)userOrgPerCusRelService.deleteFriendly(userId);
+			logger.info("添加好友"+friendId+"失败");
+			throw e;
+		}
+	}	
+	/**
+	 * 删除好友
+	 * @param userId  当前用户ID
+	 * @param friendId 要添加的好友的用户ID
+	 * @param appId 应用的appId
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/deleteFriendly" }, method = { RequestMethod.GET })
+	public MappingJacksonValue deleteFriendly(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "userId",required = true) Long userId
+			,@RequestParam(name = "friendId",required = true) Long friendId
+			,@RequestParam(name = "appId",required = true) String appId
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister=null;
+		UserLoginRegister userLoginRegisterFriend=null;
+		UserBasic userBasic=null;
+		UserFriendly userFriendly=null;
+		UserFriendly userFriendlyTarget=null;
+		UserOrgPerCusRel userOrgPerCusRel=null;
+		UserOrgPerCusRel userOrgPerCusRelTarget=null;
+		UserOrganBasic userOrganBasic=null;
+		boolean bl1=false;
+		boolean bl2=false;
+		boolean bl3=false;
+		try {
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("error", "userId is not exists in UserLoginRegister.");
+				resultMap.put("status",0);
+			}
+			userLoginRegisterFriend=userLoginRegisterService.getUserLoginRegister(friendId);
+			if(userLoginRegisterFriend==null){
+				resultMap.put("error", "friendId is not exists in UserLoginRegister.");
+				resultMap.put("status",0);
+			}
+			//检查个人好友是否存在
+			if(userLoginRegisterFriend.getUsetType().intValue()==0){
+				userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
+				if(userBasic==null){
+					resultMap.put("error", "friendId is not exists in UserBasic.");
+					resultMap.put("status",0);
+				}
+			}
+			//检查组织好友是否存在
+			if(userLoginRegisterFriend.getUsetType().intValue()==1){
+				userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegisterFriend.getId());
+				if(userOrganBasic==null){
+					resultMap.put("error", "friendId is not exists in UserOrganBasic.");
+					resultMap.put("status",0);
+				}
+			}
+			userFriendly=userFriendlyService.getFriendly(userId, friendId);
+			userFriendlyTarget=userFriendlyService.getFriendly(friendId, userId);
+			userOrgPerCusRel=userOrgPerCusRelService.getUserOrgPerCusRel(userId, friendId);
+			userOrgPerCusRelTarget=userOrgPerCusRelService.getUserOrgPerCusRel(friendId, userId);
+			bl1=userOrgPerCusRelService.deleteFriendly(userId);
+			bl2=userOrgPerCusRelService.deleteFriendly(friendId);
+			bl3=userFriendlyService.deleteFriendly(userId, friendId);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			//失败回滚
+			if(bl1)userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+			if(bl2)userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRelTarget);
+			if(bl3)userFriendlyService.createUserFriendly(userFriendly, false);
+			if(bl3)userFriendlyService.createUserFriendly(userFriendlyTarget, false);
+			if(!bl3){
+				if(userFriendlyService.getFriendly(userId, friendId)==null){
+					userFriendlyService.createUserFriendly(userFriendly, false);
+				}
+				if(userFriendlyService.getFriendly(friendId, userId)==null){
+					userFriendlyService.createUserFriendly(userFriendlyTarget, false);
+				}
+			}
+			logger.info("删除好友"+friendId+"失败");
 			throw e;
 		}
 	}	
@@ -394,7 +686,7 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @throws Exception
 	 * @return MappingJacksonValue
 	 */
-	@RequestMapping(path = { "/userLoginRegister/updateUser" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/updateUser" }, method = { RequestMethod.GET })
 	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "name",required = true) String name
@@ -536,7 +828,7 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param source  来源的appkey
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginRegister/login" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/login" }, method = { RequestMethod.GET })
 	public MappingJacksonValue login(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
@@ -568,7 +860,7 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginRegister/validatPassport" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/validatPassport" }, method = { RequestMethod.GET })
 	public MappingJacksonValue validatPassport(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
@@ -595,7 +887,7 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginRegister/validateEmail" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/validateEmail" }, method = { RequestMethod.GET })
 	public MappingJacksonValue validateEmail(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "eamil",required = true) String email
 			)throws Exception {
@@ -663,7 +955,7 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @param source  来源的appkey
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginRegister/updatepassword" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/updatepassword" }, method = { RequestMethod.GET })
 	public MappingJacksonValue updatepassword(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "oldpassword",required = true) String oldpassword
@@ -706,7 +998,7 @@ public class UserLoginRegisterController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginRegister/getIdentifyingCode" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/user/getIdentifyingCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {

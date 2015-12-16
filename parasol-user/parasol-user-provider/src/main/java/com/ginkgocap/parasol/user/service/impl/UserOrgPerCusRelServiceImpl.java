@@ -126,5 +126,22 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 		}
 		return null;
 	}
+
+	@Override
+	public UserOrgPerCusRel getUserOrgPerCusRel(Long userId, Long friendId)throws UserOrgPerCusRelServiceException {
+		try {
+			if(friendId==null || friendId<=0l)throw new UserOrgPerCusRelServiceException(error_friendId_is_null,"friendId is null or empty.");
+			if(userId==null || userId<=0l)throw new UserOrgPerCusRelServiceException(error_userId_is_null,"userId is null or empty.");
+			if(userLoginRegisterService.getUserLoginRegister(userId)==null)throw new UserFriendlyServiceException(error_uesrId_is_not_exists,"userId is not exists in UserLogniRegister");
+			if(userLoginRegisterService.getUserLoginRegister(friendId)==null)throw new UserFriendlyServiceException(error_FriendId_is_not_exists,"friendId is not exists in UserLogniRegister");
+			Long id =(Long) getMapId(UserOrgPerCusRel_Map_FriendId, new Object[]{friendId,userId});
+			return getEntity(id);
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserOrgPerCusRelServiceException(e);
+		}
+	}
 	
 }

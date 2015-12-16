@@ -31,7 +31,7 @@ public class UserFriendlyServiceTest  extends TestBase  implements Test{
 	public void testCreateUserFriendly(){
 		try {
 			Long id=userLoginRegisterService.getId("13777768734");
-			Long id2 =userFriendlyService.createUserFriendly(setUserFriendly(id,new Byte("0")));
+			Long id2 =userFriendlyService.createUserFriendly(setUserFriendly(id,new Byte("0")),false);
 			Assert.assertTrue(id2!=null && id2>0l);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -77,8 +77,10 @@ public class UserFriendlyServiceTest  extends TestBase  implements Test{
 			userFriendly.setUserId(userId);
 			userFriendly.setFriendId(userLoginRegisterService.getId("13777768733"));
 			userFriendly.setStatus(status);
+			userFriendly.setContent("我是芈月，请加我");
 			userFriendly.setCtime(ctime);
 			userFriendly.setUtime(ctime);
+			userFriendly.setAppId("3432432");
 			return userFriendly;
 		} catch (Exception e) {
 			e.printStackTrace();

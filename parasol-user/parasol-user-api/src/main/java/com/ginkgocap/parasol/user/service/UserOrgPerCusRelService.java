@@ -29,6 +29,14 @@ public interface UserOrgPerCusRelService {
 	 * @throws UserOrgPerCusRelServiceException 
 	 */
 	public boolean updateName(Long userId,Long friendId,String name) throws UserOrgPerCusRelServiceException; 
+	/**
+	 * 获取用户好友
+	 * @param userId
+	 * @param friendId
+	 * @return UserOrgPerCusRel
+	 * @throws UserOrgPerCusRelServiceException 
+	 */
+	public UserOrgPerCusRel getUserOrgPerCusRel(Long userId,Long friendId) throws UserOrgPerCusRelServiceException; 
 
 	/**
 	 * 根据userId获取用户我的里面的个人好友列表

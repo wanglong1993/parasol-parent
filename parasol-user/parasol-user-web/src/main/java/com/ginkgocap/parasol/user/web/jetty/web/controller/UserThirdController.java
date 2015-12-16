@@ -50,8 +50,8 @@ import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
  * 第三方注册和登录
  */
 @RestController
-public class UserLoginThirdController extends BaseControl {
-	private static Logger logger = Logger.getLogger(UserLoginThirdController.class);
+public class UserThirdController extends BaseControl {
+	private static Logger logger = Logger.getLogger(UserThirdController.class);
 	@Autowired
 	private UserLoginThirdService userLoginThirdService;
 	@Autowired
@@ -69,7 +69,7 @@ public class UserLoginThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginThird/getLoginThirdUrl" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/userThird/getLoginThirdUrl" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getLoginThirdUrl(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "type",required = true) int type
 			)throws Exception {
@@ -94,7 +94,7 @@ public class UserLoginThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginThird/getIdentifyingCode" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/getIdentifyingCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
@@ -137,7 +137,7 @@ public class UserLoginThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginThird/bind" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/bind" }, method = { RequestMethod.GET})
 	public MappingJacksonValue bind(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "loginType",required = true) String loginType
 		,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -248,7 +248,7 @@ public class UserLoginThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginThird/bindExistsPassport" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/bindExistsPassport" }, method = { RequestMethod.GET})
 	public MappingJacksonValue bindExistsPassport(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "loginType",required = true) String loginType
 		,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -331,7 +331,7 @@ public class UserLoginThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginThird/unbindExistPassport" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/unbindExistPassport" }, method = { RequestMethod.GET})
 	public MappingJacksonValue unbindExistPassport(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 		,@RequestParam(name = "openId",required = true) String openId
@@ -372,7 +372,7 @@ public class UserLoginThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginThird/login" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/userThird/login" }, method = { RequestMethod.GET })
 	public MappingJacksonValue login(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "loginType",required = true) String loginType
 			,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -402,10 +402,10 @@ public class UserLoginThirdController extends BaseControl {
 			resultMap.put("userBasic",userBasic);
 			resultMap.put("userLoginThird",userLoginThird);
 			resultMap.put("status",1);
-			logger.info("/userLoginThird/login:success");
+			logger.info("/userThird/login:success");
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("/userLoginThird/login:error");
+			logger.info("/userThird/login:error");
 			throw e;
 		}
 	}
@@ -416,7 +416,7 @@ public class UserLoginThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginThird/registerLogin" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/registerLogin" }, method = { RequestMethod.GET})
 	public MappingJacksonValue registerLogin(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "loginType",required = true) String loginType
 		,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -480,7 +480,7 @@ public class UserLoginThirdController extends BaseControl {
 					userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);
 					resultMap.put("userLoginRegister",userLoginRegister);
 					resultMap.put("status",1);
-					logger.info("/userLoginThird/registerLogin:success");
+					logger.info("/userThird/registerLogin:success");
 					return new MappingJacksonValue(resultMap);
 				}
 		}catch (Exception e ){
@@ -500,7 +500,7 @@ public class UserLoginThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userLoginThird/upload" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/upload" }, method = { RequestMethod.GET})
 	public Long upload(
 			@RequestParam(name = "posturl",required = true) String posturl
 			,@RequestParam(name = "source",required = true) String source

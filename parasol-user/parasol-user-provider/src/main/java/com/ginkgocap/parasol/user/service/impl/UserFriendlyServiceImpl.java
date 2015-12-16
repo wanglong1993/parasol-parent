@@ -10,16 +10,20 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.message.service.MessageEntityService;
 import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
 import com.ginkgocap.parasol.user.model.UserFriendly;
 import com.ginkgocap.parasol.user.service.UserFriendlyService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
+import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
 @Service("userFriendlyService")
 public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implements UserFriendlyService  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
+	@Resource
+	private UserOrgPerCusRelService userOrgPerCusRelService;
 	@Resource
 	private MessageEntityService messageEntityService;
 	private static int error_friendId_is_null = 1000;	
@@ -31,7 +35,8 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 	private static final String UserFriendly_Map_FriendId = "UserFriendly_Map_FriendId"; 
 	private static Logger logger = Logger.getLogger(UserFriendlyServiceImpl.class);
 	@Override
-	public Long createUserFriendly(UserFriendly userFriendly)throws UserFriendlyServiceException {
+	public Long createUserFriendly(UserFriendly userFriendly,boolean isSendMessage)throws UserFriendlyServiceException {
+		Long id=0l;  
 		try {
 			if (userFriendly.getUserId()==null ||userFriendly.getUserId()<=0l) throw new UserFriendlyServiceException(error_uesrId_is_null,"userId is null or empty.");
 			if(userFriendly.getFriendId()==null ||userFriendly.getFriendId()<=0l)throw new UserFriendlyServiceException(error_friendId_is_null, "friendId is null or empty.");
@@ -41,17 +46,27 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 			if(status!=0 && status!=1)throw new UserFriendlyServiceException(error_status_is_error, "status must be 0 or 1.");
 			if(userFriendly.getCtime()==null || userFriendly.getCtime()<=0l) userFriendly.setCtime(System.currentTimeMillis());
 			if(userFriendly.getUtime()==null || userFriendly.getUtime()<=0l) userFriendly.setUtime(System.currentTimeMillis());
-			Map<String,String> map =new HashMap<String,String>();
-			map.put("type", "1");
-			map.put("createrId", userFriendly.getUserId().toString());
-			map.put("content", userFriendly.getContent());
-			map.put("sourceId", userFriendly.getFriendId().toString());
-			map.put("appid", userFriendly.getAppId());
-			map.put("sourceType", "");
-			map.put("sourceTitle", "");
-			messageEntityService.insertMessageByParams(map);
-			return (Long) saveEntity(userFriendly);
+			id=(Long) saveEntity(userFriendly);
+			if(id==null) return null;
+			if(isSendMessage){
+				Map<String,String> map =new HashMap<String,String>();
+				map.put("type", "1");
+				map.put("createrId", userFriendly.getUserId().toString());
+				map.put("content", userFriendly.getContent());
+				map.put("sourceId", id.toString());
+				map.put("appid", userFriendly.getAppId());
+				map.put("sourceType", "");
+				map.put("sourceTitle", "");
+				map.put("receiverIds", userFriendly.getFriendId().toString());
+				Map<String, Object> result=messageEntityService.insertMessageByParams(map);
+				if(!result.get("result").equals("true")){
+					realDeleteUserFriendly(id);
+					return null;
+				}
+			}
+			return id;
 		} catch (Exception e) {
+			if(id!=null || id>0l)realDeleteUserFriendly(id);
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
@@ -95,5 +110,30 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 			throw new UserFriendlyServiceException(e);
 		}
 		return null;
+	}
+	@Override
+	public boolean realDeleteUserFriendly(Long id)throws UserFriendlyServiceException {
+		try {
+			if(id==null || id<=0l) return false;
+			return deleteEntity(id);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserFriendlyServiceException(e);
+		}
+	}
+	@Override
+	public UserFriendly getFriendly(Long userId, Long friendId)throws UserFriendlyServiceException {
+		try {
+			Long id =(Long) getMapId(UserFriendly_Map_FriendId, new Object[]{userId,friendId});
+			if(id!=null) return getEntity(id);
+			else return null;
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserFriendlyServiceException(e);
+		}
 	}
 }

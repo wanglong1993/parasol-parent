@@ -15,7 +15,7 @@ public interface UserFriendlyService {
 	 * @return Long
 	 * @throws UserFriendlyServiceException
 	 */
-	public Long createUserFriendly(UserFriendly userFriendly) throws UserFriendlyServiceException; 
+	public Long createUserFriendly(UserFriendly userFriendly,boolean isSendMessage) throws UserFriendlyServiceException; 
 	
 
 	/**
@@ -35,6 +35,21 @@ public interface UserFriendlyService {
 	 * @throws UserFriendlyServiceException
 	 */
 	public Boolean deleteFriendly(Long userId,Long friendId) throws UserFriendlyServiceException;	
+	/**
+	 * 获取用户好友
+	 * @param userId
+	 * @param friendId
+	 * @return Boolean
+	 * @throws UserFriendlyServiceException
+	 */
+	public UserFriendly getFriendly(Long userId,Long friendId) throws UserFriendlyServiceException;	
+	
+	/**
+	 * 通过主键删除
+	 * @param id
+	 * @throws UserFriendlyServiceException
+	 */
+	public boolean realDeleteUserFriendly(Long id)throws UserFriendlyServiceException;
 	
 
 }
