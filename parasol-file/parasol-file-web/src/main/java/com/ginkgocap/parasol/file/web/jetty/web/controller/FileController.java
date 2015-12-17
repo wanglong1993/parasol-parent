@@ -70,6 +70,7 @@ public class FileController extends BaseControl {
 	private static final String parameterAppId = "appKey"; // 应用的Key
 	private static final String parameterUserId = "userId"; // 访问的用户参数
 	private static final String parameterFile = "file"; // 上传文件
+	private static final String parameterIndexId = "indexId"; // 索引文件id
 	private static final String parameterFileType = "fileType"; // 文件类型
 	private static final String parameterTaskId = "taskId"; // taskId
 	private static final String parameterModuleType = "moduleType"; // 业务模块
@@ -112,11 +113,12 @@ public class FileController extends BaseControl {
 			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
 			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
 			String thumbnailsPath = "";
+			
 			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
 			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
 				generateAvatar(fields[0], fields[1], fileExtName, null);
+				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
 			}
-			thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
 			FileIndex index = new FileIndex();
 			index.setAppid(appId.toString());
 			index.setCreaterId(userId);
@@ -152,8 +154,21 @@ public class FileController extends BaseControl {
 		return mappingJacksonValue;
 	}
 
-	@RequestMapping(path = { "/cut/file" }, method = { RequestMethod.GET })
-	public MappingJacksonValue cutFile(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+	/**
+	 * 通过坐标截图，生成头像，生成140*140,90*90,60*60px缩略图
+	 * @param fileds
+	 * @param debug
+	 * @param appId
+	 * @param userId
+	 * @param indexId
+	 * @param xEnd
+	 * @param yEnd
+	 * @param xStart
+	 * @param yStart
+	 * @return fileIndex索引文件
+	 */
+	@RequestMapping(path = { "/file/scissorImage" }, method = { RequestMethod.GET })
+	public MappingJacksonValue scissorImage(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
@@ -192,6 +207,130 @@ public class FileController extends BaseControl {
 	}	
 	
 	/**
+	 * 文件下载
+	 * @param fileds
+	 * @param debug
+	 * @param appId
+	 * @param userId
+	 * @param taskId
+	 * @return	文件索引列表
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/file/getFileIndexesByTaskId" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getFileIndexesByTaskId(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
+			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId
+			) throws Exception {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			// 1.查询后台服务
+			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(files);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 文件下载
+	 * @param fileds
+	 * @param debug
+	 * @param appId
+	 * @param userId
+	 * @param taskId
+	 * @return	文件索引列表
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/file/deleteById" }, method = { RequestMethod.GET })
+	public MappingJacksonValue deleteFileById(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
+			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
+			@RequestParam(name = FileController.parameterIndexId, required = true) Long indexId
+			) throws Exception {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			FileIndex index = fileIndexService.getFileIndexById(indexId);
+			// fastDFS中删除上传的文件
+			deleteFileByFileId(index.getServerHost(),index.getFilePath(),index.getModuleType());
+			// 1.查询后台服务
+			boolean flag = fileIndexService.deleteFileIndexById(indexId);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(flag);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;	
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	private void deleteFileByFileId(String group, String fileId, int moduleType) {
+		try {
+			StorageClient storageClient = getStorageClient();
+			storageClient.delete_file(group, fileId);
+			// 文件为头像时，删除从文件140*140,90*90,60*60缩略图
+			if(moduleType == 1) {
+				int f = fileId.lastIndexOf(".");
+				String fileExtName = "";
+				if (f>-1) {
+					fileExtName = fileId.substring(f+1);
+				} else {
+					return ;
+				}
+				String file140 = fileId.replace("."+fileExtName, "_140_140."+fileExtName);
+				storageClient.delete_file(group, file140);
+				String file90 = fileId.replace("."+fileExtName, "_90_90."+fileExtName);
+				storageClient.delete_file(group, file90);
+				String file60 = fileId.replace("."+fileExtName, "_60_60."+fileExtName);
+				storageClient.delete_file(group, file60);
+			}
+		} catch (Exception e) {
+			
+		}
+	}
+	
+	/**
 	 * 根据图片group、fileId、宽度及高度生成缩略图
 	 * @param group
 	 * @param fileId
@@ -201,7 +340,7 @@ public class FileController extends BaseControl {
 	 * @throws IOException
 	 * @throws MyException
 	 */
-	private String getPicThumbnailByFileId(String group, String fileId, int width, int height, String fileExtName, byte[] mImage) throws IOException, MyException {
+	private void getPicThumbnail(String group, String fileId, int width, int height, String fileExtName, byte[] mImage) throws IOException, MyException {
 		
 		StorageClient storageClient = getStorageClient();
 		// 如果mImage为空，则通过fileId下载文件，生成字节数组
@@ -220,7 +359,7 @@ public class FileController extends BaseControl {
 		for (String field : fields) {
 			System.out.println("field="+field);
 		}
-		return fields[1];
+		return;
 	}
 	
 	/**
@@ -239,11 +378,11 @@ public class FileController extends BaseControl {
 						public void run() {
 							try {
 								// 生成140*140头像图片
-								getPicThumbnailByFileId(group, fileId, 140, 140, fileExtName, mImage);
+								getPicThumbnail(group, fileId, 140, 140, fileExtName, mImage);
 								// 生成90*90头像图片
-								getPicThumbnailByFileId(group, fileId, 90, 90, fileExtName, mImage);
+								getPicThumbnail(group, fileId, 90, 90, fileExtName, mImage);
 								// 生成90*90头像图片
-								getPicThumbnailByFileId(group, fileId, 60, 60, fileExtName, mImage);
+								getPicThumbnail(group, fileId, 60, 60, fileExtName, mImage);
 							} catch (IOException e) {
 								logger.error("group:{}, fileId:{},fileExtName:{}", group,fileId, fileExtName);
 								e.printStackTrace();
@@ -258,6 +397,11 @@ public class FileController extends BaseControl {
 		thread.start();
 	}
 	
+	/**
+	 * 获取StorageClient
+	 * @return
+	 * @throws IOException
+	 */
 	private StorageClient getStorageClient() throws IOException {
 		TrackerClient tracker = new TrackerClient(); 
 		TrackerServer trackerServer;
@@ -295,40 +439,6 @@ public class FileController extends BaseControl {
 		
 		generateAvatar(group, fileId, fileExtName, sImage);
 
-	}
-	
-	/**
-	 * 文件下载
-	 * @param fileds
-	 * @param debug
-	 * @param appId
-	 * @param userId
-	 * @param taskId
-	 * @return	文件索引列表
-	 * @throws Exception
-	 */
-	@RequestMapping(path = { "/file/download" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getEntityById(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId
-			) throws Exception {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(files);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (Exception e) {
-			throw e;
-		}
 	}
 	
 	/**
