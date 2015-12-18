@@ -49,7 +49,7 @@ public class FileIndex implements Serializable {
 	private String taskId;
 	// 类型	1:用户头像、2：知识模块、3：人脉模块、4：需求模块、5：组织客户 、6：会议模块 、7：其他（可扩展）
 	private int moduleType;
-	// 类型	1-图片，2-视频，3-附件, 4-文档
+	// 类型	1-图片，2-视频，3-音频, 4-文档, 5-附件
 	private int fileType;
     // 解压缩
 	private String crc32;

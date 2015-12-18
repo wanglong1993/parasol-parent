@@ -33,8 +33,6 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 	@Resource
 	private MessageRelationService messageRelationService;
 	
-	
-	
     private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Override
