@@ -16,7 +16,7 @@ public class DocumentAPIServiceTest extends TestBase{
 	private DocumentAPIService documentAPIService;
 	
 	@Test
-	public void TestSendMessage() {
+	public void TestSaveDocumentAPI() {
 		DocumentAPI document = new DocumentAPI();
 		document.setAttention("what a fucking day!!");
 		document.setCreateTime(System.currentTimeMillis());
