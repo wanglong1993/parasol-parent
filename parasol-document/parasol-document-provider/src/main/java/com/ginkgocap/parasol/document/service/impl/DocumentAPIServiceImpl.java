@@ -1,7 +1,11 @@
 package com.ginkgocap.parasol.document.service.impl;
 
+import javax.annotation.Resource;
+
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import com.ginkgocap.parasol.common.DocumentCommonService;
 import com.ginkgocap.parasol.document.model.DocumentAPI;
 import com.ginkgocap.parasol.document.service.DocumentAPIService;
 
@@ -17,22 +21,31 @@ import com.ginkgocap.parasol.document.service.DocumentAPIService;
 @Service("documentAPIService")
 public class DocumentAPIServiceImpl implements DocumentAPIService {
 
+    @Resource
+    private MongoTemplate mongoTemplate;
+    
+    @Resource
+    private DocumentCommonService documentCommonService;
+	
 	@Override
 	public DocumentAPI saveDocumentAPI(DocumentAPI document) {
-		// TODO Auto-generated method stub
-		return null;
+		if(document.getId() == 0) {
+			document.setId(documentCommonService.getDocumentIncreaseId());
+		}
+		mongoTemplate.save(document);
+		return document;
 	}
 
 	@Override
 	public DocumentAPI getDocumentAPIByID(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		DocumentAPI document = mongoTemplate.findById(id, DocumentAPI.class);
+		return document;
 	}
 
 	@Override
 	public DocumentAPI updateDocumentAPI(DocumentAPI document) {
-		// TODO Auto-generated method stub
-		return null;
+		mongoTemplate.insert(document);
+		return document;
 	}
 	
 }
