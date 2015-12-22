@@ -21,9 +21,7 @@
 	                   write-timeout="0"
 	                   write-fsync="true"/>
 	</mongo:mongo>
-	
 	<mongo:db-factory dbname="${mongodb.database}" mongo-ref="mongo"/>
-	
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 	  <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
 	</bean>
