@@ -3,6 +3,8 @@ package com.ginkgocap.parasol.document.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * 
 * @Title: DocumentAPI.java
@@ -36,7 +38,7 @@ public class DocumentAPI implements Serializable {
 	// 注意事项
 	private String attention;
 	// 返回结果
-	private String results;
+	private JSONObject results;
 	// 返回字段说明
 	private List<DocumentResponse> responses;
 	// 其他说明
@@ -91,10 +93,10 @@ public class DocumentAPI implements Serializable {
 	public void setAttention(String attention) {
 		this.attention = attention;
 	}
-	public String getResults() {
+	public JSONObject getResults() {
 		return results;
 	}
-	public void setResults(String results) {
+	public void setResults(JSONObject results) {
 		this.results = results;
 	}
 	public List<DocumentResponse> getResponses() {
