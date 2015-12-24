@@ -34,7 +34,7 @@
                         </p>
 
                         <p class="help-block">
-                            accessTokenUri value from 'spring-oauth-client.properties'
+                            accessTokenUri value from 'parasol-oauth2-client.properties'
                         </p>
                     </div>
                 </div>

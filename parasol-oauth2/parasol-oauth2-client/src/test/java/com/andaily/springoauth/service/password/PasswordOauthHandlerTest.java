@@ -27,13 +27,13 @@ public class PasswordOauthHandlerTest {
 
 
     /**
-     * Test variables from  'spring-oauth-client.properties'
+     * Test variables from  'parasol-oauth2-client.properties'
      *
      * @throws Exception
      */
     @Test(enabled = true)
     public void getAccessToken() throws Exception {
-        final String accessTokenUri = "http://localhost:8080/spring-oauth-server/oauth/token";
+        final String accessTokenUri = "http://localhost:8080/parasol-oauth2-server/oauth/token";
 
         /*
         *  Test case 1:  All variable are right
@@ -118,7 +118,7 @@ public class PasswordOauthHandlerTest {
 
     @Test(enabled = true)
     public void getMobileUserDto() throws Exception {
-        final String accessTokenUri = "http://localhost:8080/spring-oauth-server/oauth/token";
+        final String accessTokenUri = "http://localhost:8080/parasol-oauth2-server/oauth/token";
 
         PasswordParams params = new PasswordParams(accessTokenUri)
                 .setClientId("mobile-client")
@@ -129,8 +129,8 @@ public class PasswordOauthHandlerTest {
         final AccessTokenDto accessToken = passwordOauthHandler.getAccessToken(params);
         assertNotNull(accessToken);
 
-        //URI from ' spring-oauth-client.properties'
-        String mobileUserInfoUri = "http://localhost:8080/spring-oauth-server/m/user_info";
+        //URI from ' parasol-oauth2-client.properties'
+        String mobileUserInfoUri = "http://localhost:8080/parasol-oauth2-server/m/user_info";
 
         /*
         * Test case 1:  normally

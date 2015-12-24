@@ -81,7 +81,7 @@
                         </p>
 
                         <p class="help-block">
-                            authorizationUri value from 'spring-oauth-client.properties'
+                            authorizationUri value from 'parasol-oauth2-client.properties'
                         </p>
                     </div>
                 </div>

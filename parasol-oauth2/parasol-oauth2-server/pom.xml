@@ -15,7 +15,7 @@
 
         <spring.version>4.1.6.RELEASE</spring.version>
         <spring.security.version>4.0.3.RELEASE</spring.security.version>
-        <spring.security.oauth.version>2.0.7.RELEASE</spring.security.oauth.version>
+        <spring.security.oauth.version>2.0.8.RELEASE</spring.security.oauth.version>
         <fasterxml.jackson.version>2.5.4</fasterxml.jackson.version>
 
         <aspectj.version>1.8.6</aspectj.version>
@@ -40,7 +40,7 @@
 
 
     <build>
-        <finalName>spring-oauth-server</finalName>
+        <finalName>parasol-oauth2-server</finalName>
 
         <plugins>
             <plugin>
@@ -58,8 +58,8 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <!-- <warSourceExcludes>*/classes/spring-oauth-server.properties</warSourceExcludes>
-                    <packagingExcludes>*/classes/spring-oauth-server.properties</packagingExcludes> -->
+                    <!-- <warSourceExcludes>*/classes/parasol-oauth2-server.properties</warSourceExcludes>
+                    <packagingExcludes>*/classes/parasol-oauth2-server.properties</packagingExcludes> -->
                     <archive>
                         <manifestEntries>
                             <Implementation-BuildNumber>
@@ -154,7 +154,7 @@
 					</connectors>
 					<scanTargetPatterns>
 						<scanTargetPattern>
-							<directory>target/spring-oauth-server</directory>
+							<directory>target/parasol-oauth2-server</directory>
 						</scanTargetPattern>
 					</scanTargetPatterns>
 				</configuration>
@@ -169,7 +169,7 @@
                 </includes>
                 <excludes>
                     <!--exclude file list-->
-                    <!--<exclude>spring-oauth-server.properties</exclude>-->
+                    <!--<exclude>parasol-oauth2-server.properties</exclude>-->
                 </excludes>
             </resource>
         </resources>

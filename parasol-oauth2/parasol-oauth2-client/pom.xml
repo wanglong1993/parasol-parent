@@ -15,7 +15,7 @@
 		<test.skip>false</test.skip>
 	</properties>
 	<build>
-		<finalName>spring-oauth-client</finalName>
+		<finalName>parasol-oauth2-client</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -32,8 +32,8 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.6</version>
 				<configuration>
-					<!-- <warSourceExcludes>*/classes/spring-oauth-client.properties</warSourceExcludes>
-					<packagingExcludes>*/classes/spring-oauth-client.properties</packagingExcludes> -->
+					<!-- <warSourceExcludes>*/classes/parasol-oauth2-client.properties</warSourceExcludes>
+					<packagingExcludes>*/classes/parasol-oauth2-client.properties</packagingExcludes> -->
 					<archive>
 						<manifestEntries>
 							<Implementation-BuildNumber>
@@ -98,7 +98,7 @@
 				</includes>
 				<excludes>
 					<!--exclude file list -->
-					<!--<exclude>spring-oauth-server.properties</exclude> -->
+					<!--<exclude>parasol-oauth2-server.properties</exclude> -->
 				</excludes>
 			</resource>
 		</resources>

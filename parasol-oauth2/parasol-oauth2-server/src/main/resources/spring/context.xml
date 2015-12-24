@@ -16,7 +16,7 @@
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath:spring-oauth-server.properties</value>
+                <value>classpath:parasol-oauth2-server.properties</value>
             </list>
         </property>
     </bean>

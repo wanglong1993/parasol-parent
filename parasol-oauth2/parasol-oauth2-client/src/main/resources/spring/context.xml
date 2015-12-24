@@ -15,7 +15,7 @@
     <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
             <list>
-                <value>classpath:spring-oauth-client.properties</value>
+                <value>classpath:parasol-oauth2-client.properties</value>
             </list>
         </property>
     </bean>
