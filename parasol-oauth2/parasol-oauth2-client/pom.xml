@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.ginkgocap.parasol</groupId>
-	<artifactId>parasol-oauth-client</artifactId>
+	<artifactId>parasol-oauth2-client</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>parasol-oauth-client</name>
+	<name>parasol-oauth2-client</name>
 	<packaging>war</packaging>
 
 	<properties>
