@@ -8,10 +8,10 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.3.0.RELEASE</version>
 	</parent>
-	<artifactId>parasol-directory-web</artifactId>
+	<artifactId>parasol-tags-web</artifactId>
 	<groupId>com.ginkgocap.parasol</groupId>
-	<name>parasol directory web</name>
-	<description>parasol directory web project</description>
+	<name>parasol tags web</name>
+	<description>parasol tags web project</description>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://projects.spring.io/spring-boot/</url>
 	<organization>
