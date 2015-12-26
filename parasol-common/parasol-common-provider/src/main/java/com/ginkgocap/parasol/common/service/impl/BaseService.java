@@ -315,7 +315,24 @@ public abstract class BaseService<T> {
 			}
 		}
 	}
-	
+	@SuppressWarnings("unchecked")
+	protected List<Long> getSubIds(String region_name, int start, int count, Object... parameters) throws BaseServiceException {
+		if (ArrayUtils.isEmpty(parameters)) {
+			logger.error("getIds parameters is null or empty");
+			return ListUtils.EMPTY_LIST;
+		} else {
+			try {
+
+				List<Long> ids = dao.getIdList(region_name, parameters, start, count);
+				return ids == null ? ListUtils.EMPTY_LIST: ids;
+			} catch (DaoException e) {
+				if (logger.isDebugEnabled()) {
+					e.printStackTrace(System.err);
+				}
+				throw new BaseServiceException(e);
+			}
+		}
+	}
 	protected int deleteList(String region_name, Object ...parameters) throws BaseServiceException{
 		int iCount = countEntitys(region_name, parameters);
 		int iResult = 0;
