@@ -6,17 +6,18 @@
 			http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 		  http://www.springframework.org/schema/tx
 		  http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
-
+	<import resource="classpath:user-dubbo-consumer.xml" />
 
     <!--annotation configuration -->
     <context:annotation-config/>
-    <context:component-scan base-package="com.monkeyk.sos"/>
+    <context:component-scan base-package="com.ginkgocap.parasol.oauth2"/>
 
     <!-- property configuration -->
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
                 <value>classpath:parasol-oauth2-server.properties</value>
+                <value>classpath:parasol-oauth2-client.properties</value>
             </list>
         </property>
     </bean>
@@ -45,6 +46,5 @@
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-
-
+	<bean id="sha256PasswordEncoder" class="com.ginkgocap.parasol.oauth2.util.Sha256PasswordEncoder" />
 </beans>

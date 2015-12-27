@@ -49,11 +49,13 @@ public class AuthorizationCodeController {
    * Entrance:   step-1
    * */
     @RequestMapping(value = "authorization_code", method = RequestMethod.GET)
-    public String authorizationCode(Model model) {
+    public String authorizationCode(Model model,HttpServletRequest request) {
         model.addAttribute("userAuthorizationUri", userAuthorizationUri);
         model.addAttribute("host", host);
         model.addAttribute("unityUserInfoUri", unityUserInfoUri);
-        model.addAttribute("state", UUID.randomUUID().toString());
+        String state=UUID.randomUUID().toString();
+        model.addAttribute("state",state );
+        WebUtils.saveState(request, state);
         return "authorization_code";
     }
 

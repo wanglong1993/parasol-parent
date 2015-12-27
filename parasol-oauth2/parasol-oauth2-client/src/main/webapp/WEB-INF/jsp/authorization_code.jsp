@@ -105,7 +105,8 @@
 
                         <div class="col-sm-10">
                             <select name="scope" ng-model="scope" class="form-control">
-                                <option value="read">read</option>
+                                <!-- <option value="read">read</option> -->
+                                <option value="getIdentifyingCode">getIdentifyingCode</option>
                                 <option value="write">write</option>
                                 <option value="read write">read write</option>
                             </select>
@@ -169,7 +170,8 @@
     var AuthorizationCodeCtrl = ['$scope', function ($scope) {
         $scope.userAuthorizationUri = '${userAuthorizationUri}';
         $scope.responseType = 'code';
-        $scope.scope = 'read write';
+       // $scope.scope = 'read write';
+         $scope.scope = 'getIdentifyingCode';
 
         $scope.clientId = 'unity-client';
         $scope.redirectUri = '${host}authorization_code_callback';
