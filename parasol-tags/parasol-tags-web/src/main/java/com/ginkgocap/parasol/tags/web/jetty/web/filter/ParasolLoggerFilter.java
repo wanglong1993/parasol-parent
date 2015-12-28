@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.directory.web.jetty.web.filter;
+package com.ginkgocap.parasol.tags.web.jetty.web.filter;
 
 import java.io.IOException;
 
