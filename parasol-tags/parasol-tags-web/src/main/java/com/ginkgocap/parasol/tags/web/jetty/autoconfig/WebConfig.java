@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.directory.web.jetty.autoconfig;
+package com.ginkgocap.parasol.tags.web.jetty.autoconfig;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
