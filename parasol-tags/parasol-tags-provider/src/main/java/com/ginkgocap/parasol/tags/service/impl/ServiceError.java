@@ -117,26 +117,30 @@ public abstract class ServiceError {
 		}
 	}
 
-	
-	
 	public static void assertAppidIsNullForTagSource(Long appId) throws TagSourceServiceException {
 		if (appId == null || appId == 0l) {
 			throw new TagSourceServiceException(ERROR_PARAMETER_NULL, "Required Long parameter userId is not present");
 		}
 	}
-	
+
 	public static void assertTagSourceIdIsNullForTagSource(Long sourceId) throws TagSourceServiceException {
 		if (sourceId == null || sourceId == 0l) {
 			throw new TagSourceServiceException(ERROR_PARAMETER_NULL, "Required Long parameter sourceId is not present");
 		}
 	}
-	
+
 	public static void assertTagIdIsNullForTagSource(Long tagId) throws TagSourceServiceException {
 		if (tagId == null || tagId == 0l) {
 			throw new TagSourceServiceException(ERROR_PARAMETER_NULL, "Required Long parameter tagId is not present");
 		}
 	}
-	
+
+	public static void assertUserIdIsNullForTagSource(Long userId) throws TagSourceServiceException {
+		if (userId == null || userId == 0l) {
+			throw new TagSourceServiceException(ERROR_PARAMETER_NULL, "Required Long parameter userId is not present");
+		}
+	}
+
 	public static void assertTagSourceTypeIsNullForTagSource(Integer typeId) throws TagSourceServiceException {
 		if (typeId == null) {
 			throw new TagSourceServiceException(ERROR_PARAMETER_NULL, "Required Long parameter typeId is not present");
