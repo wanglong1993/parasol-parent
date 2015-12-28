@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.directory.web.jetty.modle;
+package com.ginkgocap.parasol.tags.web.jetty.modle;
 
 public class User {
 	private String name;
