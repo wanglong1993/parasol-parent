@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.directory.web.jetty.web.controller;
+package com.ginkgocap.parasol.tags.web.jetty.web.controller;
 
 import org.apache.log4j.Logger;
 /**
