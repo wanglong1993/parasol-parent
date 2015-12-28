@@ -18,7 +18,6 @@
 		<module>parasol-user</module>
     	<module>parasol-sensitive</module>
     	<module>parasol-file</module>
-		<module>parasol-document</module>
 	</modules>
 	<repositories>
 		<repository>
