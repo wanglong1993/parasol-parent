@@ -51,7 +51,7 @@ public class DirectoryServiceTest extends TestBase implements Test {
 		for (int i = 0; i < orgs.length; i++) {
 			Directory directory = new Directory();
 			directory.setAppId(System_AppId);
-			directory.setUserId(userId);
+			directory.setUserId(userId); 
 			directory.setName(orgs[i]);
 			directory.setPid(0);
 			directory.setTypeId(directoryType.getId());
