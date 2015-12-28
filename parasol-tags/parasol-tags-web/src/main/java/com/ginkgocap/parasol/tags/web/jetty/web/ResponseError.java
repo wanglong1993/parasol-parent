@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.directory.web.jetty.web;
+package com.ginkgocap.parasol.tags.web.jetty.web;
 
 import java.io.Serializable;
 
