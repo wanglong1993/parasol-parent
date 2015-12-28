@@ -32,7 +32,7 @@ public interface TagSourceService {
 	 * @return
 	 * @throws TagSourceServiceException
 	 */
-	public boolean removeTagSource(Long appId, long tagSourceId) throws TagSourceServiceException;
+	public boolean removeTagSource(Long appId, Long userId, Long tagSourceId) throws TagSourceServiceException;
 
 	/**
 	 * 查询一个TagSource
@@ -42,7 +42,7 @@ public interface TagSourceService {
 	 * @return
 	 * @throws TagSourceServiceException
 	 */
-	public TagSource getTagSource(Long appId, long tagSourceId) throws TagSourceServiceException;
+	public TagSource getTagSource(Long appId, Long tagSourceId) throws TagSourceServiceException;
 
 	/**
 	 * 查询一个资源下边的所有标签，比如查询一篇文章下边的所有标签。
@@ -74,7 +74,7 @@ public interface TagSourceService {
 	 * @return
 	 * @throws TagSourceServiceException
 	 */
-	public List<TagSource> getTagSourcesByAppIdTagId(Long appId, Long tagId, int iStart, int iCount) throws TagSourceServiceException;
+	public List<TagSource> getTagSourcesByAppIdTagId(Long appId, Long tagId, Integer iStart, Integer iCount) throws TagSourceServiceException;
 
 	/**
 	 * 根据一个应用的的TagId查找SourceId列表 比如：根据知识的“智能硬件”标签查找TagSource对象。
