@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.directory.web.jetty.autoconfig;
+package com.ginkgocap.parasol.tags.web.jetty.autoconfig;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
