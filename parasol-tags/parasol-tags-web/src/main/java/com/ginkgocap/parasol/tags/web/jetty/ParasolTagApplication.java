@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ginkgocap.parasol.directory.web.jetty;
+package com.ginkgocap.parasol.tags.web.jetty;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-public class ParasolDirectoryApplication{
+public class ParasolTagApplication{
 
 	public static void main(String[] args) throws Exception {
 		
