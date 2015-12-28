@@ -12,7 +12,7 @@ CREATE TABLE `tb_tag_source` (
   `id` bigint(20) NOT NULL COMMENT '主键',
   `tagId` bigint(20) NOT NULL COMMENT '标签ID',
   `appId` bigint(20) NOT NULL COMMENT 'Source 的应用ID',
-  `userId` bigint(20) NOT NULL COMMENT '资源所有者用户ID',
+  `userId` bigint(20) NOT NULL COMMENT '创建TagSource的人',
   `sourceId` bigint(20) NOT NULL COMMENT '资源ID',
   `sourceType` int(3) DEFAULT 0  COMMENT '资源类型 知识、人脉',
   `createAt` bigint(20) DEFAULT '0' COMMENT '更新时间',
