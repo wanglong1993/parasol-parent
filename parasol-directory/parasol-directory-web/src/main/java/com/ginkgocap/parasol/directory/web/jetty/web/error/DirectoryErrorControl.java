@@ -47,6 +47,7 @@ public class DirectoryErrorControl {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	@ResponseBody
 	public ResponseEntity<Map<String, Serializable>> defaultErrorHandler(HttpServletRequest request, Exception ex) {
+		ex.printStackTrace(System.err);
 		ResponseError responseError = new ResponseError();
 		Map<String, Serializable> errMap = new HashMap<String, Serializable>();
 		errMap.put("error", responseError);
@@ -54,30 +55,32 @@ public class DirectoryErrorControl {
 
 		if (ObjectUtils.equals(status, HttpStatus.BAD_REQUEST)) {
 			responseError.setMessage(ex.getLocalizedMessage());
-		} else {
-			if (ObjectUtils.equals(status, HttpStatus.INTERNAL_SERVER_ERROR)) { 
-				ResponseError prcError = processRpcExceptionError(ex);      //Rpc错误
-				if (prcError != null) { // prc error
-					responseError.setMessage(prcError.getMessage());
-					responseError.setError_subcode(prcError.getError_subcode());
-					responseError.setType(prcError.getType());
-				} else {
-					ResponseError bizError = getErrorCode(ex);            //业务错误
-					if (bizError != null) {
-						responseError.setMessage(bizError.getMessage());
-						responseError.setError_subcode(bizError.getError_subcode());
-						responseError.setType(bizError.getType());
-					}
-				}
-
-				if (ObjectUtils.equals(request.getParameter("debug"), "all")) {
-					StringWriter sw = new StringWriter();
-					PrintWriter pw = new PrintWriter(sw);
-					pw.flush();
-					ex.printStackTrace(pw);
-					errMap.put("__debug__", sw.toString());
+		} else if (ObjectUtils.equals(status, HttpStatus.INTERNAL_SERVER_ERROR)) {
+			ResponseError prcError = processRpcExceptionError(ex); // Rpc错误
+			if (prcError != null) { // prc error
+				responseError.setMessage(prcError.getMessage());
+				responseError.setError_subcode(prcError.getError_subcode());
+				responseError.setType(prcError.getType());
+			} else {
+				ResponseError bizError = getErrorCode(ex); // 业务错误
+				if (bizError != null) {
+					responseError.setMessage(bizError.getError_subcode() == -1 ? "未知业务错误": bizError.getMessage());
+					responseError.setError_subcode(bizError.getError_subcode());
+					responseError.setType(bizError.getType());
 				}
 			}
+		} else if (ObjectUtils.equals(status, HttpStatus.UNAUTHORIZED)) {
+			responseError.setMessage(ex.getMessage());
+			responseError.setError_subcode(HttpStatus.UNAUTHORIZED.value());
+			responseError.setType("authentication");
+		}
+
+		if (ObjectUtils.equals(request.getParameter("debug"), "all")) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			pw.flush();
+			ex.printStackTrace(pw);
+			errMap.put("__debug__", sw.toString());
 		}
 		ResponseEntity<Map<String, Serializable>> responseEntity = new ResponseEntity<Map<String, Serializable>>(errMap, status);
 		return responseEntity;
@@ -91,6 +94,7 @@ public class DirectoryErrorControl {
 		try {
 			return HttpStatus.valueOf(statusCode);
 		} catch (Exception e) {
+
 			return HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 	}
@@ -126,6 +130,9 @@ public class DirectoryErrorControl {
 		} else if (ex instanceof BindException) {
 			return HttpServletResponse.SC_BAD_REQUEST;
 		}
+//		} else if (ex instanceof AccessDeniedException) {
+//			return HttpServletResponse.SC_UNAUTHORIZED;
+//		}
 		return null;
 	}
 
@@ -180,7 +187,7 @@ public class DirectoryErrorControl {
 		}
 
 	}
-	
+
 	/**
 	 * 从错误日志中找到服务名称
 	 * 
