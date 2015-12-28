@@ -33,7 +33,7 @@ public class TagSource implements Serializable {
 	private long id; // 'tagSources 主键',
 	private long tagId; // '标签ID',
 	private long appId;// 'Source 的应用ID',
-	private long userId;// '资源所有者用户ID',
+	private long userId;// '创建TagSource的人',
 	private long sourceId; // '资源ID',
 	private int sourceType; // '资源类型 知识、人脉',
 	private long createAt; // '更新时间',
