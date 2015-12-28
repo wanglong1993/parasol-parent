@@ -20,7 +20,7 @@
 
     <!--spring logger-->
     <logger name="org.springframework" additivity="false">
-        <level value="WARN"/>
+        <level value="debug"/>
         <appender-ref ref="Console"/>
     </logger>
 

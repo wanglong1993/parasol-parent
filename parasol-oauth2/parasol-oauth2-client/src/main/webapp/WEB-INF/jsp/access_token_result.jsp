@@ -46,7 +46,7 @@
             <li>
                 方式2: 直接通过access_token去访问服务器的资源(该方式将直接获取JSON数据)
                 <br/>
-                <a href="${unityUserInfoUri}?access_token=${accessTokenDto.accessToken}" target="_blank">Oauth Server
+                <a href="${unityUserInfoUri}&access_token=${accessTokenDto.accessToken}" target="_blank">Oauth Server
                     用户信息
                     [JSON]</a>
             </li>
