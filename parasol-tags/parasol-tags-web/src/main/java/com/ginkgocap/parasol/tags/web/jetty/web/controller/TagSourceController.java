@@ -55,12 +55,8 @@ public class TagSourceController extends BaseControl {
 	private static final String paramenterTagId = "tagsId";
 	private static final String paramenterSourceId = "sourceId";
 	private static final String paramenterSourceType = "sourceType";
-	private static final String paramenterSourceUrl = "sourceUrl";
-	private static final String paramenterSourceTitle = "sourceTitle";
-	private static final String paramenterSourceData = "sourceData";
-	private static final String paramenterTagSourceIds="ids";
-	private static final String paramenterTagSourceId="id";
-
+	private static final String paramenterTagSourceIds = "ids";
+	private static final String paramenterTagSourceId = "id";
 
 	@Autowired
 	private TagSourceService tagsSourceService;
@@ -77,12 +73,12 @@ public class TagSourceController extends BaseControl {
 			@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
-			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagsId) {
+			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagId) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByTagId(appId, userId, tagsId);
+			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdTagId(appId, tagId, 0, 200);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
 			// 3.创建页面显示数据项的过滤器
@@ -110,10 +106,7 @@ public class TagSourceController extends BaseControl {
 			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagsId,
 			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
-			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) int sourceType,
-			@RequestParam(name = TagSourceController.paramenterSourceUrl, defaultValue = "", required = false) String sourceUrl,
-			@RequestParam(name = TagSourceController.paramenterSourceTitle, required = true) String sourceTitle,
-			@RequestParam(name = TagSourceController.paramenterSourceData, defaultValue = "", required = false) String sourceData) throws TagSourceServiceException {
+			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) int sourceType) throws TagSourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			TagSource source = new TagSource();
@@ -122,11 +115,8 @@ public class TagSourceController extends BaseControl {
 			source.setTagId(tagsId);
 			source.setSourceId(sourceId);
 			source.setSourceType(sourceType);
-			source.setSourceUrl(sourceUrl);
-			source.setSourceTitle(sourceTitle);
-			source.setSourceData(sourceData);
 
-			Long id = tagsSourceService.createTagSources(source);
+			Long id = tagsSourceService.createTagSource(source);
 			Map<String, Long> resultMap = new HashMap<String, Long>();
 			resultMap.put("id", id);
 			// 2.转成框架数据
@@ -154,50 +144,19 @@ public class TagSourceController extends BaseControl {
 			@RequestParam(name = TagSourceController.paramenterTagSourceId, required = true) Long id) throws TagSourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Boolean success = tagsSourceService.removeTagSources(appId,userId,id);
+			Boolean success = tagsSourceService.removeTagSource(appId, userId, id); //服务验证Owner
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
 			return mappingJacksonValue;
-		}  catch (TagSourceServiceException e) {
+		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
 		}
 	}
 
-	
-	/**
-	 * 2. 移动多个或者一个TagSource到其它目录下
-	 * 
-	 * @param request
-	 * @return
-	 * @throws TagSourceServiceException
-	 * @throws CodeServiceException
-	 */
-	@RequestMapping(path = "/tags/source/moveSource", method = { RequestMethod.GET })
-	public MappingJacksonValue moveTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
-			@RequestParam(name = TagSourceController.paramenterTagSourceIds, required = true) Long[] ids,
-			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagsId) throws TagSourceServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// TODO: 没有实现这个方法
-			Boolean success = tagsSourceService.moveTagSources(userId, appId, tagsId, ids);
-			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-			resultMap.put("success", success);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			// 4.返回结果
-			return mappingJacksonValue;
-		}  catch (TagSourceServiceException e) {
-			e.printStackTrace(System.err);
-			throw e;
-		}
-	}
-	
 	/**
 	 * 指定显示那些字段
 	 * 
@@ -220,9 +179,6 @@ public class TagSourceController extends BaseControl {
 			filter.add("id"); // id',
 			filter.add("sourceId"); // 资源ID
 			filter.add("sourceType"); // 资源类型
-			filter.add("sourceUrl"); // 资源URL
-			filter.add("sourceTitle"); // 资源的title
-			filter.add("sourceData"); // 资源的Data
 		}
 
 		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
