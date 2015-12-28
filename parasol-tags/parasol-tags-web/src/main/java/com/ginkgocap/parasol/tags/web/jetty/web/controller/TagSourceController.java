@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ginkgocap.parasol.directory.web.jetty.web.controller;
+package com.ginkgocap.parasol.tags.web.jetty.web.controller;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,9 +33,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException;
-import com.ginkgocap.parasol.directory.model.DirectorySource;
-import com.ginkgocap.parasol.directory.service.DirectorySourceService;
+import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
+import com.ginkgocap.parasol.tags.model.TagSource;
+import com.ginkgocap.parasol.tags.service.TagSourceService;
 
 /**
  * 
@@ -45,25 +45,25 @@ import com.ginkgocap.parasol.directory.service.DirectorySourceService;
  * @Copyright Copyright©2015 www.gintong.com
  */
 @RestController
-public class DirectorySourceController extends BaseControl {
-	private static Logger logger = Logger.getLogger(DirectorySourceController.class);
+public class TagSourceController extends BaseControl {
+	private static Logger logger = Logger.getLogger(TagSourceController.class);
 
 	private static final String paramenterFields = "fields";
 	private static final String paramenterDebug = "debug";
 	private static final String paramenterAppId = "appKey";
 	private static final String paramenterUserId = "userId";
-	private static final String paramenterDirectoryId = "directoryId";
+	private static final String paramenterTagId = "tagsId";
 	private static final String paramenterSourceId = "sourceId";
 	private static final String paramenterSourceType = "sourceType";
 	private static final String paramenterSourceUrl = "sourceUrl";
 	private static final String paramenterSourceTitle = "sourceTitle";
 	private static final String paramenterSourceData = "sourceData";
-	private static final String paramenterDirectorySourceIds="ids";
-	private static final String paramenterDirectorySourceId="id";
+	private static final String paramenterTagSourceIds="ids";
+	private static final String paramenterTagSourceId="id";
 
 
 	@Autowired
-	private DirectorySourceService directorySourceService;
+	private TagSourceService tagsSourceService;
 
 	/**
 	 * 1. （查询类）查询有哪些大分类
@@ -72,96 +72,96 @@ public class DirectorySourceController extends BaseControl {
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/directory/source/getSourceList", method = { RequestMethod.GET })
-	public MappingJacksonValue getSourceList(@RequestParam(name = DirectorySourceController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
-			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) {
+	@RequestMapping(path = "/tags/source/getSourceList", method = { RequestMethod.GET })
+	public MappingJacksonValue getSourceList(@RequestParam(name = TagSourceController.paramenterFields, defaultValue = "") String fileds,
+			@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
+			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
+			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagsId) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<DirectorySource> directoryTypes = directorySourceService.getDirectorySourcesByDirectoryId(appId, userId, directoryId);
+			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByTagId(appId, userId, tagsId);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(directoryTypes);
+			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
 			// 3.创建页面显示数据项的过滤器
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
 			return mappingJacksonValue;
-		} catch (DirectorySourceServiceException e) {
+		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 		}
 		return null;
 	}
 
 	/**
-	 * 2. 创建一个DirectorySource
+	 * 2. 创建一个TagSource
 	 * 
 	 * @param request
 	 * @return
-	 * @throws DirectorySourceServiceException
+	 * @throws TagSourceServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/directory/source/createSource", method = { RequestMethod.GET })
-	public MappingJacksonValue createDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
-			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId,
-			@RequestParam(name = DirectorySourceController.paramenterSourceId, required = true) Long sourceId,
-			@RequestParam(name = DirectorySourceController.paramenterSourceType, required = true) int sourceType,
-			@RequestParam(name = DirectorySourceController.paramenterSourceUrl, defaultValue = "", required = false) String sourceUrl,
-			@RequestParam(name = DirectorySourceController.paramenterSourceTitle, required = true) String sourceTitle,
-			@RequestParam(name = DirectorySourceController.paramenterSourceData, defaultValue = "", required = false) String sourceData) throws DirectorySourceServiceException {
+	@RequestMapping(path = "/tags/source/createSource", method = { RequestMethod.GET })
+	public MappingJacksonValue createTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
+			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
+			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagsId,
+			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
+			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) int sourceType,
+			@RequestParam(name = TagSourceController.paramenterSourceUrl, defaultValue = "", required = false) String sourceUrl,
+			@RequestParam(name = TagSourceController.paramenterSourceTitle, required = true) String sourceTitle,
+			@RequestParam(name = TagSourceController.paramenterSourceData, defaultValue = "", required = false) String sourceData) throws TagSourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			DirectorySource source = new DirectorySource();
+			TagSource source = new TagSource();
 			source.setAppId(appId);
 			source.setUserId(userId);
-			source.setDirectoryId(directoryId);
+			source.setTagId(tagsId);
 			source.setSourceId(sourceId);
 			source.setSourceType(sourceType);
 			source.setSourceUrl(sourceUrl);
 			source.setSourceTitle(sourceTitle);
 			source.setSourceData(sourceData);
 
-			Long id = directorySourceService.createDirectorySources(source);
+			Long id = tagsSourceService.createTagSources(source);
 			Map<String, Long> resultMap = new HashMap<String, Long>();
 			resultMap.put("id", id);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
 			return mappingJacksonValue;
-		} catch (DirectorySourceServiceException e) {
+		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
 		}
 	}
 
 	/**
-	 * 2. 删除一个DirectorySource
+	 * 2. 删除一个TagSource
 	 * 
 	 * @param request
 	 * @return
-	 * @throws DirectorySourceServiceException
+	 * @throws TagSourceServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/directory/source/deleteSource", method = { RequestMethod.GET })
-	public MappingJacksonValue deleteDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
-			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceId, required = true) Long id) throws DirectorySourceServiceException {
+	@RequestMapping(path = "/tags/source/deleteSource", method = { RequestMethod.GET })
+	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
+			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
+			@RequestParam(name = TagSourceController.paramenterTagSourceId, required = true) Long id) throws TagSourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Boolean success = directorySourceService.removeDirectorySources(appId,userId,id);
+			Boolean success = tagsSourceService.removeTagSources(appId,userId,id);
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
 			return mappingJacksonValue;
-		}  catch (DirectorySourceServiceException e) {
+		}  catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
 		}
@@ -169,30 +169,30 @@ public class DirectorySourceController extends BaseControl {
 
 	
 	/**
-	 * 2. 移动多个或者一个DirectorySource到其它目录下
+	 * 2. 移动多个或者一个TagSource到其它目录下
 	 * 
 	 * @param request
 	 * @return
-	 * @throws DirectorySourceServiceException
+	 * @throws TagSourceServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/directory/source/moveSource", method = { RequestMethod.GET })
-	public MappingJacksonValue moveDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
-			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceIds, required = true) Long[] ids,
-			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) throws DirectorySourceServiceException {
+	@RequestMapping(path = "/tags/source/moveSource", method = { RequestMethod.GET })
+	public MappingJacksonValue moveTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
+			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
+			@RequestParam(name = TagSourceController.paramenterTagSourceIds, required = true) Long[] ids,
+			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagsId) throws TagSourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// TODO: 没有实现这个方法
-			Boolean success = directorySourceService.moveDirectorySources(userId, appId, directoryId, ids);
+			Boolean success = tagsSourceService.moveTagSources(userId, appId, tagsId, ids);
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
 			return mappingJacksonValue;
-		}  catch (DirectorySourceServiceException e) {
+		}  catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
 		}
@@ -225,7 +225,7 @@ public class DirectorySourceController extends BaseControl {
 			filter.add("sourceData"); // 资源的Data
 		}
 
-		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
 }
