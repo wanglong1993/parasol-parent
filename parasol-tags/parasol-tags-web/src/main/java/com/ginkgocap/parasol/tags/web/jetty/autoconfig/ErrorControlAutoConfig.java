@@ -1,12 +1,12 @@
-package com.ginkgocap.parasol.directory.web.jetty.autoconfig;
+package com.ginkgocap.parasol.tags.web.jetty.autoconfig;
 
-import com.ginkgocap.parasol.directory.web.jetty.web.error.DirectoryErrorControl;
+import com.ginkgocap.parasol.tags.web.jetty.web.error.TagErrorControl;
 
 //@Configuration
 public class ErrorControlAutoConfig {
 	
 	//@Bean
-	public DirectoryErrorControl createMetadataErrorControl() {
-		return new DirectoryErrorControl();
+	public TagErrorControl createMetadataErrorControl() {
+		return new TagErrorControl();
 	}
 }
