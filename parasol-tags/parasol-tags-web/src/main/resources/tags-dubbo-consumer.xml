@@ -30,7 +30,6 @@
 	http://www.springframework.org/schema/integration/stream/spring-integration-stream-2.1.xsd 
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
-    <dubbo:reference id="tagsService" interface="com.ginkgocap.parasol.tags.service.TagService" version="2.0.0"/>
-    <dubbo:reference id="tagsTypeService" interface="com.ginkgocap.parasol.tags.service.TagTypeService" version="2.0.0"/>
-    <dubbo:reference id="tagsSourceService" interface="com.ginkgocap.parasol.tags.service.TagSourceService" version="2.0.0"/>
+    <dubbo:reference id="tagService" interface="com.ginkgocap.parasol.tags.service.TagService" version="2.0.0"/>
+    <dubbo:reference id="tagSourceService" interface="com.ginkgocap.parasol.tags.service.TagSourceService" version="2.0.0"/>
 </beans>
