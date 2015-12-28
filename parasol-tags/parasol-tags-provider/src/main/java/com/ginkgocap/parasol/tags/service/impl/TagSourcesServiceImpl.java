@@ -3,6 +3,7 @@ package com.ginkgocap.parasol.tags.service.impl;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
@@ -50,10 +51,20 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	}
 
 	@Override
-	public boolean removeTagSource(Long appId, long tagSourceId) throws TagSourceServiceException {
+	public boolean removeTagSource(Long appId, Long userId , Long tagSourceId) throws TagSourceServiceException {
 		ServiceError.assertAppidIsNullForTagSource(appId);
 		ServiceError.assertTagSourceIdIsNullForTagSource(tagSourceId);
+		ServiceError.assertUserIdIsNullForTagSource(userId);
 		try {
+			TagSource tagSource= this.getTagSource(appId, tagSourceId);
+			if (tagSource != null) {
+				if (ObjectUtils.equals(tagSource.getUserId(), userId)) {
+					return this.deleteEntity(tagSourceId);
+				} else {
+					throw new TagSourceServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own TagSource");
+				}
+			}
+			
 			return this.deleteEntity(tagSourceId);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
@@ -63,7 +74,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 
 	
 	@Override
-	public TagSource getTagSource(Long appId, long tagSourceId) throws TagSourceServiceException {
+	public TagSource getTagSource(Long appId, Long tagSourceId) throws TagSourceServiceException {
 		ServiceError.assertAppidIsNullForTagSource(appId);
 		ServiceError.assertTagSourceIdIsNullForTagSource(tagSourceId);
 		try {
@@ -101,7 +112,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	}
 
 	@Override
-	public List<TagSource> getTagSourcesByAppIdTagId(Long appId, Long tagId, int iStart, int iCount) throws TagSourceServiceException {
+	public List<TagSource> getTagSourcesByAppIdTagId(Long appId, Long tagId, Integer iStart, Integer iCount) throws TagSourceServiceException {
 		ServiceError.assertTagIdIsNullForTagSource(tagId);
 		ServiceError.assertAppidIsNullForTagSource(appId);
 		try {
