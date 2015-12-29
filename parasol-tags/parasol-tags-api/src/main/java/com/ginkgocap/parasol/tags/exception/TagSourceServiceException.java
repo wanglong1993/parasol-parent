@@ -8,7 +8,6 @@ package com.ginkgocap.parasol.tags.exception;
  * @Copyright Copyright©2015 www.gintong.com
  */
 public class TagSourceServiceException extends ServiceException {
-	private int errorCode = -1;
 
 	public TagSourceServiceException(Throwable cause) {
 		super(cause);
@@ -28,11 +27,7 @@ public class TagSourceServiceException extends ServiceException {
 	}
 
 	public TagSourceServiceException(int errorCode, String message) {
-		super(message);
-		this.errorCode = errorCode;
+		super(errorCode,message);
 	}
 
-	public int getErrorCode() {
-		return errorCode;
-	}
 }
