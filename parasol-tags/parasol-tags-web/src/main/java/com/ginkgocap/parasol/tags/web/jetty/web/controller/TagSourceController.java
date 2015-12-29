@@ -16,6 +16,7 @@
 
 package com.ginkgocap.parasol.tags.web.jetty.web.controller;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanGenerator;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,18 +54,18 @@ public class TagSourceController extends BaseControl {
 	private static final String paramenterDebug = "debug";
 	private static final String paramenterAppId = "appKey";
 	private static final String paramenterUserId = "userId";
-	private static final String paramenterTagId = "tagsId";
+	private static final String paramenterTagId = "tagId";
 	private static final String paramenterSourceId = "sourceId";
 	private static final String paramenterSourceType = "sourceType";
-	private static final String paramenterTagSourceIds = "ids";
 	private static final String paramenterTagSourceId = "id";
 
 	@Autowired
 	private TagSourceService tagsSourceService;
 
+	//@formatter:off
 	/**
-	 * 1. （查询类）查询有哪些大分类
-	 * 
+	 * 1. 查询一个资源下的标签
+	 * curl -i "http://localhost:8081/tags/source/getSourceList?appKey=1&userId=111&sourceId=1&sourceType=1"
 	 * @param request
 	 * @return
 	 * @throws CodeServiceException
@@ -73,12 +75,14 @@ public class TagSourceController extends BaseControl {
 			@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
-			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagId) {
+			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
+			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) Integer sourceType) {
+		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdTagId(appId, tagId, 0, 200);
+			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, sourceId, sourceType);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
 			// 3.创建页面显示数据项的过滤器
@@ -92,21 +96,26 @@ public class TagSourceController extends BaseControl {
 		return null;
 	}
 
+	//@formatter:off
 	/**
 	 * 2. 创建一个TagSource
+	 * curl -i "http://localhost:8081/tags/tags/createTag?appKey=1&userId=111&tagType=1&tagName=恶人" -d ""
+	 * curl -i http://localhost:8081/tags/source/createTagSource -d "appKey=1&userId=111&tagId=3925085861971496&sourceId=1&sourceType=1"
 	 * 
 	 * @param request
 	 * @return
 	 * @throws TagSourceServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/tags/source/createSource", method = { RequestMethod.GET })
+	@RequestMapping(path = "/tags/source/createTagSource", method = { RequestMethod.POST })
 	public MappingJacksonValue createTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagsId,
 			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
 			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) int sourceType) throws TagSourceServiceException {
+		//@formatter:on
+
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			TagSource source = new TagSource();
@@ -129,22 +138,24 @@ public class TagSourceController extends BaseControl {
 		}
 	}
 
+	//@formatter:off
 	/**
 	 * 2. 删除一个TagSource
-	 * 
+	 * curl -i "http://localhost:8081/tags/source/deleteSource?appKey=1&userId=111&id=3925349171986436"
 	 * @param request
 	 * @return
 	 * @throws TagSourceServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/tags/source/deleteSource", method = { RequestMethod.GET })
+	@RequestMapping(path = "/tags/source/deleteSource", method = { RequestMethod.GET, RequestMethod.DELETE})
 	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagSourceController.paramenterTagSourceId, required = true) Long id) throws TagSourceServiceException {
+		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Boolean success = tagsSourceService.removeTagSource(appId, userId, id); //服务验证Owner
+			Boolean success = tagsSourceService.removeTagSource(appId, userId, id); // 服务验证Owner
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
@@ -179,9 +190,15 @@ public class TagSourceController extends BaseControl {
 			filter.add("id"); // id',
 			filter.add("sourceId"); // 资源ID
 			filter.add("sourceType"); // 资源类型
+			filter.add("tagName"); // 标签名称
+
 		}
 
 		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
+
+
+
+
 }
