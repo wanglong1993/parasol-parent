@@ -7,11 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.TagName;
 
 /**
  * 
@@ -21,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
  * @Copyright Copyright©2015 www.gintong.com
  */
 
-@JsonFilter("com.ginkgocap.parasol.tags.model.Tag")
+@JsonFilter("com.ginkgocap.parasol.tags.model.TagSource")
 @Entity
 @Table(name = "tb_tag_source")
 public class TagSource implements Serializable {
@@ -37,6 +39,10 @@ public class TagSource implements Serializable {
 	private long sourceId; // '资源ID',
 	private int sourceType; // '资源类型 知识、人脉',
 	private long createAt; // '更新时间',
+
+	private String tagName; //不持久化
+	
+
 
 	@Id
 	@GeneratedValue(generator = "tagSourceId")
@@ -104,6 +110,14 @@ public class TagSource implements Serializable {
 		this.createAt = createAt;
 	}
 
+	@Transient //不持久化
+	public String getTagName() {
+		return tagName;
+	}
+
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
+	}
 	@Override
 	public String toString() {
 		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceType=" + sourceType + ", createAt="
