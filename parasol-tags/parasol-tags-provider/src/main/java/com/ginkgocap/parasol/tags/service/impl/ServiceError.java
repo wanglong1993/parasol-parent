@@ -12,6 +12,7 @@ import com.ginkgocap.parasol.tags.exception.ServiceException;
 import com.ginkgocap.parasol.tags.exception.TagServiceException;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
 import com.ginkgocap.parasol.tags.model.Tag;
+import com.ginkgocap.parasol.tags.model.TagSource;
 
 public abstract class ServiceError {
 	public final static Logger logger = Logger.getLogger(ServiceError.class);
@@ -58,7 +59,7 @@ public abstract class ServiceError {
 		try {
 			Class clazz = PropertyUtils.getPropertyType(Tag.class, properName);
 			if (clazz == null) {
-				logger.warn("properName isnot exist!");
+				logger.warn("properName is not exist!");
 				return;
 			}
 			String propertyType = clazz.getSimpleName();
@@ -88,7 +89,7 @@ public abstract class ServiceError {
 	@SuppressWarnings("rawtypes")
 	public static void assertPopertiesIsNullForTagSource(String properName) throws TagSourceServiceException {
 		try {
-			Class clazz = PropertyUtils.getPropertyType(Tag.class, properName);
+			Class clazz = PropertyUtils.getPropertyType(TagSource.class, properName);
 			if (clazz == null) {
 				logger.warn("properName isnot exist!");
 				return;
