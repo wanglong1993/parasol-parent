@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.tags.service.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -133,13 +135,39 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		ServiceError.assertTagIdIsNull(id);
 		// ServiceError.assertUserIdIsNull(userId);
 		try {
-			return this.getEntity(id);
+			Tag tag = this.getEntity(id);
+			if (tag !=null && ObjectUtils.equals(tag.getUserId(),userId)) {
+				return tag;
+			} else {
+				if (tag != null) {
+					logger.warn("tag userId property : " + tag.getUserId() + " not equal " + userId);
+				}
+				return null;
+			}
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new TagServiceException(e);
 		}
 	}
-
+	@Override
+	public List<Tag> getTags(Long userId, List<Long> ids) throws TagServiceException {
+		List<Tag> result = new ArrayList<Tag>();
+		if (userId != null && CollectionUtils.isNotEmpty(ids)) {
+			try {
+				List<Tag> tags = this.getEntityByIds(ids);
+				if (CollectionUtils.isNotEmpty(tags)) {
+					for (Tag tag : tags) {
+						if (tag !=null && ObjectUtils.equals(tag.getUserId(),userId)) {
+							result.add(tag);
+						}
+					}
+				}
+			} catch (BaseServiceException e) {
+				e.printStackTrace(System.err);
+				throw new TagServiceException(e);			}
+		}
+		return result;
+	}
 	@Override
 	public List<Tag> getTagsByUserIdAppidTagType(Long userId, Long appId, Integer tagType) throws TagServiceException {
 		ServiceError.assertUserIdIsNull(userId); // 检查用户ID
@@ -165,5 +193,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 			throw new TagServiceException(e);
 		}
 	}
+
+
 
 }
