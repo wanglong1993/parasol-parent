@@ -45,11 +45,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
-			<artifactId>parasol-oauth2-provider</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-util</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
