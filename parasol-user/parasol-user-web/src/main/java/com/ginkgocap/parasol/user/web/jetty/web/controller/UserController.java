@@ -839,7 +839,7 @@ public class UserController extends BaseControl {
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			byte[] bt = Base64.decode(password);
-			String salt=userLoginRegisterService.setSalt();
+			String salt=userLoginRegister.getSalt();
 			password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			if(!userLoginRegister.getPassword().equals(password)){
 				resultMap.put("error", "incorrect password .");
@@ -998,7 +998,8 @@ public class UserController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/getIdentifyingCode" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/user/getIdentifyingCode" }, method = { RequestMethod.POST})
+//	@RequestMapping(path = { "/user/getIdentifyingCode" })
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {

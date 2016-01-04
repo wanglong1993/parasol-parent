@@ -501,7 +501,7 @@ public class UserThirdController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/userThird/upload" }, method = { RequestMethod.GET})
-	public Long upload(
+	public Long upload(HttpServletRequest request,
 			@RequestParam(name = "posturl",required = true) String posturl
 			,@RequestParam(name = "source",required = true) String source
 			,@RequestParam(name = "userId",required = true) String userId
@@ -530,6 +530,7 @@ public class UserThirdController extends BaseControl {
 	    		conn.setRequestMethod("GET");
 	    		conn.setReadTimeout(6 * 10000);
 	        	InputStreamBody file = new InputStreamBody(conn.getInputStream(),"");
+	        	InputStreamBody file1 = new InputStreamBody(request.getInputStream(),"");
 	            HttpPost httpPost = new HttpPost("http://192.168.130.100:8091/file/upload");
 	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
 	            .addPart("file", file)

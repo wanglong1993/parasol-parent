@@ -1,8 +1,8 @@
 package com.ginkgocap.parasol.oauth2.exception;
 
-public class UserBasicServiceException extends Exception {
+public class OauthApprovalsServiceException extends Exception {
 	private int errorCode = -1;
-	public UserBasicServiceException(Throwable cause) {
+	public OauthApprovalsServiceException(Throwable cause) {
 		super(cause);
 	}
 
@@ -11,16 +11,16 @@ public class UserBasicServiceException extends Exception {
 	 */
 	private static final long serialVersionUID = -7821388402674737444L;
 
-	public UserBasicServiceException(String message, Throwable cause) {
+	public OauthApprovalsServiceException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public UserBasicServiceException(String message) {
+	public OauthApprovalsServiceException(String message) {
 		super(message);
 	}
 
 	
-	public UserBasicServiceException(int errorCode, String message) {
+	public OauthApprovalsServiceException(int errorCode, String message) {
 		super(message);
 		this.errorCode = errorCode;
 	}

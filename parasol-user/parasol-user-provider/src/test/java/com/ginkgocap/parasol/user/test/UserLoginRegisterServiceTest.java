@@ -35,7 +35,7 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testCreateUserLoginRegister(){
 		try {
-			Long id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister("54324322@qq.com",new Byte("1")));
+			Long id=userLoginRegisterService.createUserLoginRegister(setUserLoginRegister("13677687635",new Byte("0")));
 			Assert.assertTrue(id !=null && id > 0L);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,7 +61,7 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testGetUserLoginRegister(){
 		try {
-			UserLoginRegister userLoginRegister = userLoginRegisterService.getUserLoginRegister("13677687623");
+			UserLoginRegister userLoginRegister = userLoginRegisterService.getUserLoginRegister("13677687632");
 			if(userLoginRegister.getPassword().equals(userLoginRegisterService.setSha256Hash(userLoginRegister.getSalt(), "123456"))){
 				Assert.assertTrue(true);
 			}else Assert.assertTrue(false);
