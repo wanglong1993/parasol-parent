@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -169,17 +170,20 @@ public class OauthClientDetailsServiceImpl extends BaseService<OauthClientDetail
 
 	@Override
 	public List<ClientDetails> listClientDetails(){
-//		try{
-//			List<Long> ids =getIds(OauthClientDetails_List_Id,new Object[]{});
-//			List<ClientDetails> list =List<ClientDetails>getEntityByIds(ids);
-//			return getEntityByIds(ids);
-//		}catch(BaseServiceException e){
-//			if (logger.isDebugEnabled()) {
-//				e.printStackTrace(System.err);
-//			}
-//			throw new NoSuchClientException(e.getMessage());
-//		}
-		return null;
+		try{
+			List<Long> ids =getIds(OauthClientDetails_List_Id,new Object[]{1});
+			List<ClientDetails> list2=new ArrayList<ClientDetails>();
+			List<OauthClientDetails> list =getEntityByIds(ids);
+			for (OauthClientDetails oauthClientDetails : list) {
+				list2.add(oauthClientDetails);
+			}
+			return list2;
+		}catch(BaseServiceException e){
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new NoSuchClientException(e.getMessage());
+		}
 	}
 	@Override
 	public List<OauthClientDetails> listClientDetails(int start, int count)throws OauthClientDetailsServiceException {

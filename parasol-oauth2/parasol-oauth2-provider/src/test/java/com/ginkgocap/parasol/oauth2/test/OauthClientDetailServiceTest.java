@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.oauth2.test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import junit.framework.Test;
 import junit.framework.TestResult;
 
 import org.junit.Assert;
+import org.springframework.security.oauth2.provider.ClientDetails;
 
 import com.ginkgocap.parasol.oauth2.model.OauthClientDetails;
 import com.ginkgocap.parasol.oauth2.service.OauthClientDetailsService;
@@ -85,6 +87,22 @@ public class OauthClientDetailServiceTest  extends TestBase implements Test  {
 		try {
 			List<OauthClientDetails> list=oauthClientDetailsService.listClientDetails(0,2);
 			Assert.assertTrue(list.size()>0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	@org.junit.Test
+	public void testListClientDetails2(){
+		try {
+			List<OauthClientDetails> list2=new ArrayList<OauthClientDetails>();
+			List<ClientDetails> list=oauthClientDetailsService.listClientDetails();
+			for (ClientDetails clientDetails : list) {
+				list2.add((OauthClientDetails) clientDetails);
+			}
+			for (OauthClientDetails oauthClientDetails : list2) {
+				Assert.assertTrue(oauthClientDetails.getId()>0l);
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
