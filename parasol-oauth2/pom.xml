@@ -13,7 +13,7 @@
 	<modules>
 		<module>parasol-oauth2-api</module>
 		<module>parasol-oauth2-provider</module>
-		<module>parasol-oauth2-client</module>
-		<module>parasol-oauth2-server</module>
+<!-- 		<module>parasol-oauth2-client</module>
+		<module>parasol-oauth2-server</module> -->
 	</modules>
 </project>
