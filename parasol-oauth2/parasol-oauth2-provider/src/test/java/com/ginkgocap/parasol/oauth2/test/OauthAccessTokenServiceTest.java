@@ -30,12 +30,12 @@ import org.springframework.util.StringUtils;
 
 import com.ginkgocap.parasol.oauth2.model.OauthAccessToken;
 import com.ginkgocap.parasol.oauth2.model.OauthRefreshToken;
-import com.ginkgocap.parasol.oauth2.service.OauthAccessTokenService;
+import com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService;
 
 public class OauthAccessTokenServiceTest  extends TestBase implements Test  {
 
 	@Resource
-	private OauthAccessTokenService oauthAccessTokenService;
+	private OauthTokenStoreService oauthAccessTokenService;
 	
 	public int countTestCases() { 
 		return 0;  

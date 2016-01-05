@@ -25,15 +25,15 @@ import org.springframework.util.StringUtils;
 
 import com.ginkgocap.parasol.oauth2.model.OauthAccessToken;
 import com.ginkgocap.parasol.oauth2.model.OauthRefreshToken;
-import com.ginkgocap.parasol.oauth2.service.OauthAccessTokenService;
 import com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService;
+import com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService;
 
 public class OauthRefreshTokenServiceTest  extends TestBase implements Test  {
 
 	@Resource
 	private OauthRefreshTokenService oauthRefreshTokenService;
 	@Resource
-	private OauthAccessTokenService oauthAccessTokenService;
+	private OauthTokenStoreService oauthAccessTokenService;
 	
 	public int countTestCases() { 
 		return 0;  
@@ -102,8 +102,8 @@ public class OauthRefreshTokenServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testRemoveAccessToken(){
 		try {
-			OauthAccessToken oauthAccessToken=(OauthAccessToken) oauthRefreshTokenService.readAccessToken("1212312321");
-			oauthRefreshTokenService.removeAccessToken(oauthAccessToken);
+//			OauthAccessToken oauthAccessToken=(OauthAccessToken) oauthRefreshTokenService.readAccessToken("1212312321");
+//			oauthRefreshTokenService.removeAccessToken(oauthAccessToken);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

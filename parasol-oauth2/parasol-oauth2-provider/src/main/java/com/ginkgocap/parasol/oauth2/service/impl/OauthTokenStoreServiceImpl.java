@@ -25,13 +25,13 @@ import org.springframework.util.ObjectUtils;
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.oauth2.model.OauthAccessToken;
-import com.ginkgocap.parasol.oauth2.service.OauthAccessTokenService;
 import com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService;
+import com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService;
 
 @Service("oauthAccessTokenService")
-public class OauthAccessTokenServiceImpl extends BaseService<OauthAccessToken> implements OauthAccessTokenService {
+public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> implements OauthTokenStoreService {
 
-	private static Logger logger = Logger.getLogger(OauthAccessTokenServiceImpl.class);
+	private static Logger logger = Logger.getLogger(OauthTokenStoreServiceImpl.class);
 	
 	@Autowired
 	private OauthRefreshTokenService oauthRefreshTokenService;

@@ -19,15 +19,12 @@ import org.springframework.util.ObjectUtils;
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.oauth2.model.OauthRefreshToken;
-import com.ginkgocap.parasol.oauth2.service.OauthAccessTokenService;
 import com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService;
 
 @Service("oauthRefreshTokenService")
 public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken> implements OauthRefreshTokenService {
 
 	private static Logger logger = Logger.getLogger(OauthRefreshTokenServiceImpl.class);
-	@Autowired
-	private OauthAccessTokenService oauthAccessTokenService;
 	private static final String OauthRefreshToken_List_By_tokenId = "OauthRefreshToken_List_By_tokenId"; 
 
 	protected String extractTokenKey(String value) {
@@ -51,30 +48,6 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 		}
 	}
 	
-	@Override
-	public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
-		return oauthAccessTokenService.readAuthentication(token);
-	}
-	
-	@Override
-	public OAuth2Authentication readAuthentication(String token) {
-		return oauthAccessTokenService.readAuthentication(token);
-	}
-
-	@Override
-	public void storeAccessToken(OAuth2AccessToken token,OAuth2Authentication authentication) {
-		oauthAccessTokenService.storeAccessToken(token, authentication);
-	}
-
-	@Override
-	public OAuth2AccessToken readAccessToken(String tokenValue) {
-		return oauthAccessTokenService.readAccessToken(tokenValue);
-	}
-
-	@Override
-	public void removeAccessToken(OAuth2AccessToken token) {
-		oauthAccessTokenService.removeAccessToken(token);
-	}
 
 	@Override
 	public void storeRefreshToken(OAuth2RefreshToken refreshToken,OAuth2Authentication authentication) {
@@ -139,26 +112,6 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 			e1.printStackTrace();
 			return ;
 		}
-	}
-
-	@Override
-	public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken refreshToken) {
-		oauthAccessTokenService.removeAccessTokenUsingRefreshToken(refreshToken);
-	}
-
-	@Override
-	public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
-		return oauthAccessTokenService.getAccessToken(authentication);
-	}
-
-	@Override
-	public Collection<OAuth2AccessToken> findTokensByClientIdAndUserName(String clientId, String userName) {
-		return oauthAccessTokenService.findTokensByClientIdAndUserName(clientId, userName);
-	}
-
-	@Override
-	public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
-		return oauthAccessTokenService.findTokensByClientId(clientId);
 	}
 
 }
