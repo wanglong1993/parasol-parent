@@ -28,7 +28,7 @@ import com.ginkgocap.parasol.oauth2.model.OauthAccessToken;
 import com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService;
 import com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService;
 
-@Service("oauthAccessTokenService")
+@Service("oauthTokenStoreService")
 public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> implements OauthTokenStoreService {
 
 	private static Logger logger = Logger.getLogger(OauthTokenStoreServiceImpl.class);

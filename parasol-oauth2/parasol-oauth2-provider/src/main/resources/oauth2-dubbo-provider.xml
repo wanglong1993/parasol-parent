@@ -33,4 +33,8 @@
     
     <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.UserDetailService" ref="userDetailService" version="2.0.0"/>
     <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthClientDetailsService" ref="oauthClientDetailsService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthApprovalsService" ref="oauthApprovalsService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService" ref="oauthTokenStoreService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService" ref="oauthRefreshTokenService" version="2.0.0"/>
+    
 </beans>
