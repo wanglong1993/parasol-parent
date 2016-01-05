@@ -13,7 +13,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.TagName;
 
 /**
  * 
