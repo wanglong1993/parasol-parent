@@ -69,7 +69,7 @@ public class DirectoryController extends BaseControl {
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = { "/directory/directory/createDirectoryRoot" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/directory/directory/createDirectoryRoot" }, method = { RequestMethod.GET,RequestMethod.POST })
 	public MappingJacksonValue createDirectoryRoot(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectoryController.paramenterAppId, required = true) Long appId,
