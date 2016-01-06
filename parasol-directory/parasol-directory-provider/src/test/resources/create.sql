@@ -3,7 +3,7 @@ use parasol_metadata;
 CREATE TABLE `tb_directory_type` (
   `id` bigint(20) NOT NULL COMMENT '主键',
   `appId` bigint(20) NOT NULL COMMENT '应用ID',
-  `name` varchar(20) NOT NULL COMMENT '分类名字 (人脉、组织、需求、知识），应用系统自己定义的分类',
+  `name` varchar(250) NOT NULL COMMENT '分类名字 (人脉、组织、需求、知识），应用系统自己定义的分类',
   `updateAt` bigint(20) DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `appId_name` (`appId`,`name`) 
