@@ -37,9 +37,29 @@ public class OauthApprovals extends Approval implements java.io.Serializable {
 
 	private Date lastUpdatedAt;
 	
-
+	private ApprovalStatus status;
 	public OauthApprovals() { }
 
+	public OauthApprovals(String userId, String clientId, String scope, int expiresIn, ApprovalStatus status) {
+		this(userId, clientId, scope, new Date(), status, new Date());
+		Calendar expiresAt = Calendar.getInstance();
+		expiresAt.add(Calendar.MILLISECOND, expiresIn);
+		setExpiresAt(expiresAt.getTime());
+	}
+
+	public OauthApprovals(String userId, String clientId, String scope, Date expiresAt, ApprovalStatus status) {
+		this(userId, clientId, scope, expiresAt, status, new Date());
+	}
+
+	public OauthApprovals(String userId, String clientId, String scope, Date expiresAt, ApprovalStatus status, Date lastUpdatedAt) {
+		this.userId = userId;
+		this.clientId = clientId;
+		this.scope = scope;
+		this.expiresAt = expiresAt;
+		this.status = status;
+		this.lastUpdatedAt = lastUpdatedAt;
+	}
+	
 	@Id
 	@GeneratedValue(generator = "id")
 	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
@@ -119,6 +139,14 @@ public class OauthApprovals extends Approval implements java.io.Serializable {
 	@Column(name = "status", length = 10)
 	public String getStatus_() {
 		return this.status_;
+	}
+	
+	public void setStatus(ApprovalStatus status) {
+		this.status = status;
+	}
+	@Transient
+	public ApprovalStatus getStatus() {
+		return this.status;
 	}
 	@Override
 	public int hashCode() {

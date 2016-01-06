@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientAlreadyExistsException;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
@@ -74,7 +77,24 @@ public class OauthClientDetailsServiceImpl extends BaseService<OauthClientDetail
 			Long id =(Long)getMapId(OauthClientDetails_Map_clientId,clientId);
 			if(id!=null && id>0l){	
 				OauthClientDetails oauthClientDetails=(OauthClientDetails)getEntity(id);
-				return oauthClientDetails==null?null:oauthClientDetails;
+				if(oauthClientDetails!=null){
+					oauthClientDetails.setScope(org.springframework.util.StringUtils.commaDelimitedListToSet(oauthClientDetails.getScope_()));
+					oauthClientDetails.setResourceIds(org.springframework.util.StringUtils.commaDelimitedListToSet(oauthClientDetails.getResourceIds_()));
+					oauthClientDetails.setAuthorizedGrantTypes(org.springframework.util.StringUtils.commaDelimitedListToSet(oauthClientDetails.getAuthorizedGrantTypes_()));
+					oauthClientDetails.setRegisteredRedirectUri(org.springframework.util.StringUtils.commaDelimitedListToSet(oauthClientDetails.getRegisteredRedirectUris_()));
+					Collection<GrantedAuthority> authorities =new ArrayList<GrantedAuthority>();
+					Collection<String> list =org.springframework.util.StringUtils.commaDelimitedListToSet(oauthClientDetails.getAuthorities_());
+					for (String authoritie : list) {
+						authorities.add(new SimpleGrantedAuthority(authoritie));
+					}
+					oauthClientDetails.setAuthorities(authorities);
+					oauthClientDetails.setAutoApproveScopes(org.springframework.util.StringUtils.commaDelimitedListToSet(oauthClientDetails.getAutoapprove()));
+
+					return oauthClientDetails;
+				}
+				if(oauthClientDetails==null){
+					throw new NoSuchClientException("No client with requested id: " + clientId);
+				}
 			}
 			return null;
 		}catch (BaseServiceException e) {
