@@ -26,7 +26,7 @@ import com.ginkgocap.parasol.directory.service.DirectoryTypeService;
 @Service("directoryTypeService")
 public class DirectoryTypeServiceImpl extends BaseService<DirectoryType> implements DirectoryTypeService {
 	private static Logger logger = Logger.getLogger(DirectoryTypeServiceImpl.class);
-	private static int len_name = 15; // 名字长度
+	private static int len_name = 100; // 名字长度
 
 	private static final String LIST_DIRECTORYTYPE_ID_APPID = "List_DirectoryType_Id_AppId";
 	private static final String MAP_DIRECTORYTYPE_ID_APPID_NAME = "Map_DirectoryType_Id_AppId_Name";
