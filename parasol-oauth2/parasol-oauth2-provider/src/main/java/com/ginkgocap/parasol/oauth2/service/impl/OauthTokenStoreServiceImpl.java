@@ -6,6 +6,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -206,7 +207,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			List<Long> ids =getIds(OauthAccessToken_List_By_UserName_clientId,userName,clientId);
 			if(ids==null || ids.size()==0) return null;
 			accessTokens=getEntityByIds(ids);
-			if(ObjectUtils.isEmpty(accessTokens))return null;
+			if(ObjectUtils.isEmpty(accessTokens))return Collections.EMPTY_SET;
 			for (OauthAccessToken oauthAccessToken : accessTokens) {
 				collection.add(oauthAccessToken);
 			}
@@ -226,7 +227,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			List<Long> ids =getIds(OauthAccessToken_List_By_ClientId,clientId);
 			if(ids==null || ids.size()==0) return null;
 			accessTokens=getEntityByIds(ids);
-			if(ObjectUtils.isEmpty(accessTokens))return null;
+			if(ObjectUtils.isEmpty(accessTokens))return Collections.EMPTY_SET;
 			for (OauthAccessToken oauthAccessToken : accessTokens) {
 				collection.add(oauthAccessToken);
 			}
