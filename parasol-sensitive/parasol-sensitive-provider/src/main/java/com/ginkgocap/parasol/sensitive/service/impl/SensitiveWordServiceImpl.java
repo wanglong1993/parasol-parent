@@ -33,6 +33,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	private static int error_sensitiveword_blank = 101; // 敏感词对象为空
 	private static int error_checkword_blank = 102; // 检测字符串为空。	
 	private static int error_sensitivewordids_null = 103;	//	id列表为空
+	private static int error_checkword_exist = 104;	//	敏感词已存在
 	
 	SWSeeker sw = new SWSeeker();
 
@@ -82,12 +83,13 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	@Override
 	public boolean checkSensitiveWordExist(String word) throws SensitiveWordServiceException{
 		if( StringUtils.isBlank(word)) {
-			throw new SensitiveWordServiceException(error_checkword_blank,"worid is null");
+			throw new SensitiveWordServiceException(error_checkword_blank,"word is null");
 		}
 		logger.info("进入检查敏感词是否已存在，参数word:{}", word);
 		int count = 0;
 		try {
 			count = countEntitys("SensitiveWord_Id_Name",word);
+			if(count>0) throw new SensitiveWordServiceException(error_checkword_exist,word+" is null");
 		} catch (BaseServiceException e) {
 			logger.error("检查敏感词是否已存在失败，参数word:{}", word);
 			throw new SensitiveWordServiceException(e);

@@ -44,10 +44,12 @@ import com.ginkgocap.parasol.sensitive.web.jetty.web.ResponseError;
 
 /**
  * 
- * @author allenshen
- * @date 2015年11月20日
- * @time 下午1:19:18
- * @Copyright Copyright©2015 www.gintong.com
+* @Title: SensitiveWordController.java
+* @Package com.ginkgocap.parasol.sensitive.web.jetty.web.controller
+* @Description: TODO(敏感词控制器)
+* @author fuliwen@gintong.com  
+* @date 2016年1月6日 上午10:05:55
+* @version V1.0
  */
 @RestController
 public class SensitiveWordController extends BaseControl {
@@ -87,13 +89,16 @@ public class SensitiveWordController extends BaseControl {
 		param.put("type", type.toString());
 		param.put("createrId", userId.toString());
 		param.put("appid", appId.toString());
-		SensitiveWord sw = new SensitiveWord();
-		sw.setWord(word);
-		sw.setAppid(appId.toString());
-		sw.setCreaterId(userId);
-		sw.setLevel(level);
-		sw.setType(type);
+		
 		try {
+			// 先检查敏感词是否存在
+			sensitiveWordService.checkSensitiveWordExist(word);
+			SensitiveWord sw = new SensitiveWord();
+			sw.setWord(word);
+			sw.setAppid(appId.toString());
+			sw.setCreaterId(userId);
+			sw.setLevel(level);
+			sw.setType(type);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			sw = sensitiveWordService.saveOrUpdate(sw);
 			// 2.转成框架数据
