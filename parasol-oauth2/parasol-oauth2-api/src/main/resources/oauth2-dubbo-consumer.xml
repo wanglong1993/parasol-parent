@@ -31,9 +31,9 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
-    <dubbo:reference id="userDetailService" interface="com.ginkgocap.parasol.oauth2.service.UserDetailService" version="2.0.0" serialization="nativejava" />
-    <dubbo:reference id="oauthClientDetailsService" interface="com.ginkgocap.parasol.oauth2.service.OauthClientDetailsService" version="2.0.0" serialization="nativejava" />
-    <dubbo:reference id="oauthApprovalsService" interface="com.ginkgocap.parasol.oauth2.service.OauthApprovalsService" version="2.0.0" serialization="nativejava" />
-    <dubbo:reference id="oauthTokenStoreService" interface="com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService" version="2.0.0" serialization="nativejava" />
-    <dubbo:reference id="oauthRefreshTokenService" interface="com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService" version="2.0.0" serialization="nativejava" />
+    <dubbo:reference id="userDetailService" interface="com.ginkgocap.parasol.oauth2.service.UserDetailService" version="2.0.0"  />
+    <dubbo:reference id="oauthClientDetailsService" interface="com.ginkgocap.parasol.oauth2.service.OauthClientDetailsService" version="2.0.0"  />
+    <dubbo:reference id="oauthApprovalsService" interface="com.ginkgocap.parasol.oauth2.service.OauthApprovalsService" version="2.0.0"  />
+    <dubbo:reference id="oauthTokenStoreService" interface="com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService" version="2.0.0"  />
+    <dubbo:reference id="oauthRefreshTokenService" interface="com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService" version="2.0.0"  />
 </beans>

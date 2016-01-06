@@ -32,7 +32,7 @@
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
     <dubbo:application name="${user.dubbo.application.name}" />
-    <dubbo:protocol name="${user.dubbo.protocol.name}" port="${user.dubbo.protocol.port}" />
+    <dubbo:protocol name="${user.dubbo.protocol.name}" port="${user.dubbo.protocol.port}"  serialization="nativejava"  />
     <dubbo:registry address="${user.dubbo.registry.address}" protocol="${user.dubbo.protocol.name}"/>
     <dubbo:consumer timeout="10000" check="false" />
 </beans>
