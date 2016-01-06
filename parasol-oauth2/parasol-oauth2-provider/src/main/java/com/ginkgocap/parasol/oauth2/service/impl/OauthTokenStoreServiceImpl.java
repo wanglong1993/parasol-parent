@@ -199,13 +199,13 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 
 	@Override
 	public Collection<OAuth2AccessToken> findTokensByClientIdAndUserName(String clientId, String userName) {
-		if(StringUtils.isEmpty(clientId))return null;
-		if(StringUtils.isEmpty(userName))return null;
+		if(StringUtils.isEmpty(clientId))return Collections.EMPTY_SET;
+		if(StringUtils.isEmpty(userName))return Collections.EMPTY_SET;
 		List<OauthAccessToken> accessTokens = new ArrayList<OauthAccessToken>();
 		Collection<OAuth2AccessToken> collection = new HashSet<OAuth2AccessToken>();
 		try {
 			List<Long> ids =getIds(OauthAccessToken_List_By_UserName_clientId,userName,clientId);
-			if(ids==null || ids.size()==0) return null;
+			if(ids==null || ids.size()==0) return Collections.EMPTY_SET;
 			accessTokens=getEntityByIds(ids);
 			if(ObjectUtils.isEmpty(accessTokens))return Collections.EMPTY_SET;
 			for (OauthAccessToken oauthAccessToken : accessTokens) {
@@ -220,12 +220,12 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 
 	@Override
 	public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
-		if(StringUtils.isEmpty(clientId))return null;
+		if(StringUtils.isEmpty(clientId))return Collections.EMPTY_SET;
 		List<OauthAccessToken> accessTokens = new ArrayList<OauthAccessToken>();
 		Collection<OAuth2AccessToken> collection = new HashSet<OAuth2AccessToken>();
 		try {
 			List<Long> ids =getIds(OauthAccessToken_List_By_ClientId,clientId);
-			if(ids==null || ids.size()==0) return null;
+			if(ids==null || ids.size()==0) return Collections.EMPTY_SET;
 			accessTokens=getEntityByIds(ids);
 			if(ObjectUtils.isEmpty(accessTokens))return Collections.EMPTY_SET;
 			for (OauthAccessToken oauthAccessToken : accessTokens) {
