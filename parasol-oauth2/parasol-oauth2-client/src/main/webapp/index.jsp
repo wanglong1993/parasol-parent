@@ -57,7 +57,7 @@
     <strong>菜单</strong>
     <ul>
         <li>
-            <p><a href="authorization_code">authorization_code</a><br/>授权码模式(即先登录获取code,再获取token) [最常用]</p>
+            <p><a href="getAuthParamter">authorization_code</a><br/>授权码模式(即先登录获取code,再获取token) [最常用]</p>
         </li>
         <li>
             <p><a href="password">password</a> <br/>密码模式(将用户名,密码传过去,直接获取token) [适用于移动设备]</p>
