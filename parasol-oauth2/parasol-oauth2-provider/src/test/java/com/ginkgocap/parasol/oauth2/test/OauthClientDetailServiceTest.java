@@ -117,7 +117,7 @@ public class OauthClientDetailServiceTest  extends TestBase implements Test  {
 			Long ctime=System.currentTimeMillis();
 			OauthClientDetails oauthClientDetails = new OauthClientDetails();
 			oauthClientDetails.setCompanyName("北京金桐网投资有限公司");
-			oauthClientDetails.setApplicationName("社群1");
+			oauthClientDetails.setApplicationName("社群2");
 			oauthClientDetails.setScope_("getIdentifyingCode");
 			oauthClientDetails.setIp("192.168.101.1");
 			oauthClientDetails.setResourceIds_("unity-resource");

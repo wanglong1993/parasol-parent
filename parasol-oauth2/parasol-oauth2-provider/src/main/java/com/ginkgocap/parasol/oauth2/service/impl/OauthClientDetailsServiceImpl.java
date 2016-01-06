@@ -14,7 +14,6 @@ import java.util.Random;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientAlreadyExistsException;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
@@ -26,6 +25,7 @@ import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.oauth2.exception.OauthClientDetailsServiceException;
 import com.ginkgocap.parasol.oauth2.model.OauthClientDetails;
+import com.ginkgocap.parasol.oauth2.model.SimpleGrantedAuthority;
 import com.ginkgocap.parasol.oauth2.service.OauthClientDetailsService;
 
 @Service("oauthClientDetailsService")
