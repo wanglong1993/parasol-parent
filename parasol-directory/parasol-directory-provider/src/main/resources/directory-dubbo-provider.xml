@@ -31,7 +31,7 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
     
-    <dubbo:service interface="com.ginkgocap.parasol.directory.service.DirectoryTypeService" ref="directoryTypeService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.directory.service.DirectoryTypeService" ref="directoryTypeService" version="2.0.0" />
     <dubbo:service interface="com.ginkgocap.parasol.directory.service.DirectoryService" ref="directoryService" version="2.0.0"/>
     <dubbo:service interface="com.ginkgocap.parasol.directory.service.DirectorySourceService" ref="directorySourceService" version="2.0.0"/>
 </beans>
