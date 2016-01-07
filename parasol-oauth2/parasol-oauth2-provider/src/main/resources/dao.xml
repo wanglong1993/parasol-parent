@@ -44,7 +44,7 @@
                  sqlType="hsql" keyProperty="refresh_token" valueProperty="id"  update="true"/>
           <map name="OauthAccessToken_List_By_Authentication_Id"
                  sqlitem="select id from oauth_access_token where authentication_id=?"
-                 sqlType="hsql" keyProperty="key" valueProperty="id"  update="true"/>
+                 sqlType="hsql" keyProperty="authenticationId" valueProperty="id"  update="true"/>
           <list name="OauthAccessToken_List_By_UserName_clientId"
                  sqlitem="select id from oauth_access_token where user_name = ? and client_id = ?"
                  sqlType="hsql" keyProperty="userName,clientId" valueProperty="id"  update="true"/>
