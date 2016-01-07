@@ -22,7 +22,7 @@ public class OauthApprovalsServiceImpl extends BaseService<OauthApprovals> imple
 	private static Logger logger = Logger.getLogger(OauthApprovalsServiceImpl.class);
 	private static String OauthApprovals_List_Id="OauthApprovals_List_Id";
 	@Override
-	public boolean addApprovals(Collection<Approval> approvals) {
+	public boolean addApprovals(Collection<OauthApprovals> approvals) {
 		List<OauthApprovals> list=new ArrayList<OauthApprovals>();
 		OauthApprovals oauthApprovals=null;
 		for (Approval approval : approvals) {
@@ -49,7 +49,7 @@ public class OauthApprovalsServiceImpl extends BaseService<OauthApprovals> imple
 	}
 
 	@Override
-	public boolean revokeApprovals(Collection<Approval> approvals) {
+	public boolean revokeApprovals(Collection<OauthApprovals> approvals) {
 		List<Long> ids=new ArrayList<Long>();
 		OauthApprovals oauthApprovals=null;
 		for (Approval approval : approvals) {
@@ -66,11 +66,11 @@ public class OauthApprovalsServiceImpl extends BaseService<OauthApprovals> imple
 	}
 
 	@Override
-	public Collection<Approval> getApprovals(String userId, String clientId) {
+	public Collection<OauthApprovals> getApprovals(String userId, String clientId) {
 		try {
 			List<Long> ids=getIds(OauthApprovals_List_Id,clientId,userId);
 			List<OauthApprovals> list=getEntityByIds(ids);
-			Collection<Approval> collection = new HashSet<Approval>();
+			Collection<OauthApprovals> collection = new HashSet<OauthApprovals>();
 			for (OauthApprovals oauthApprovals : list) {
 				oauthApprovals.setExpiresAt(oauthApprovals.getExpiresAt());
 				if(oauthApprovals.getStatus_().equals("APPROVED")){
