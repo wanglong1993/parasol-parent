@@ -91,12 +91,12 @@ public class OauthClientDetailsServiceImpl extends BaseService<OauthClientDetail
 					oauthClientDetails.setAutoApproveScopes(org.springframework.util.StringUtils.commaDelimitedListToSet(oauthClientDetails.getAutoapprove()));
 
 					return oauthClientDetails;
-				}
-				if(oauthClientDetails==null){
+				} else { 
 					throw new NoSuchClientException("No client with requested id: " + clientId);
 				}
+			} else {
+				throw new NoSuchClientException("No client with requested id: " + clientId);
 			}
-			return null;
 		}catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()){
 				e.printStackTrace(System.err);
