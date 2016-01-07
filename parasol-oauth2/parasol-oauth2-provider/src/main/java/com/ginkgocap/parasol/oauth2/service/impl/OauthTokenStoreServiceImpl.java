@@ -103,7 +103,6 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	        if (token.getRefreshToken() != null) {  
 	            refreshToken = token.getRefreshToken().getValue();  
 	        }
-//	        DefaultOAuth2AccessToken defaultOAuth2AccessToken=(DefaultOAuth2AccessToken)token;
 	        OauthAccessToken oauthAccessToken=new OauthAccessToken();
 	        oauthAccessToken.setTokenId(extractTokenKey(token.getValue()));
 	        oauthAccessToken.setToken(SerializationUtils.serialize(token));

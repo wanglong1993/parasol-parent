@@ -49,7 +49,6 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 
 	@Override
 	public void storeRefreshToken(OAuth2RefreshToken refreshToken,OAuth2Authentication authentication) {
-//		DefaultExpiringOAuth2RefreshToken defaultExpiringOAuth2RefreshToken=(DefaultExpiringOAuth2RefreshToken) refreshToken;  
 		OauthRefreshToken oauthRefreshToken=new OauthRefreshToken();  
         oauthRefreshToken.setTokenId(extractTokenKey(refreshToken.getValue()));  
         oauthRefreshToken.setAuthentication(SerializationUtils.serialize(authentication));  
