@@ -213,7 +213,10 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			accessTokens=getEntityByIds(ids);
 			if(ObjectUtils.isEmpty(accessTokens))return Collections.EMPTY_SET;
 			for (OauthAccessToken oauthAccessToken : accessTokens) {
-				collection.add(oauthAccessToken);
+				if(oauthAccessToken!=null){
+					OAuth2AccessToken oAuth2AccessToken =SerializationUtils.deserialize(oauthAccessToken.getToken());
+					collection.add(oAuth2AccessToken);
+				}
 			}
 			return collection;
 		} catch (BaseServiceException e) {
@@ -221,7 +224,6 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			return  null;
 		}
 	}
-
 	@Override
 	public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
 		if(StringUtils.isEmpty(clientId))return Collections.EMPTY_SET;
@@ -233,7 +235,10 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			accessTokens=getEntityByIds(ids);
 			if(ObjectUtils.isEmpty(accessTokens))return Collections.EMPTY_SET;
 			for (OauthAccessToken oauthAccessToken : accessTokens) {
-				collection.add(oauthAccessToken);
+				if(oauthAccessToken!=null){
+					OAuth2AccessToken oAuth2AccessToken =SerializationUtils.deserialize(oauthAccessToken.getToken());
+					collection.add(oAuth2AccessToken);
+				}
 			}
 			return collection;
 		} catch (BaseServiceException e) {
