@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
@@ -101,13 +102,16 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			String refreshToken = null;  
 	        if (token.getRefreshToken() != null) {  
 	            refreshToken = token.getRefreshToken().getValue();  
-	        }  
-	        OauthAccessToken oauthAccessToken=(OauthAccessToken) token;
-	        oauthAccessToken.setTokenId(extractTokenKey(token.getValue()));
-	        oauthAccessToken.setToken(SerializationUtils.serialize(oauthAccessToken));
+	        }
+	        DefaultOAuth2AccessToken defaultOAuth2AccessToken=(DefaultOAuth2AccessToken)token;
+	        OauthAccessToken oauthAccessToken=new OauthAccessToken();
+	        oauthAccessToken.setTokenId(extractTokenKey(defaultOAuth2AccessToken.getValue()));
+	        oauthAccessToken.setToken(SerializationUtils.serialize(defaultOAuth2AccessToken));
 	        oauthAccessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(authentication));
 	        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
 	        oauthAccessToken.setRefreshToken_(extractTokenKey(refreshToken));
+	        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
+	        oauthAccessToken.setUserName(authentication.getPrincipal().toString());
 	        try {
 				saveEntity(oauthAccessToken);
 			} catch (BaseServiceException e) {
@@ -128,6 +132,17 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			oauthAccessToken=getEntity(id);
 			if(ObjectUtils.isEmpty(oauthAccessToken))return null;
 			oauthAccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
+//			OAuth2Authentication authentication = null;  
+//	        try {  
+//	            authentication = SerializationUtils.deserialize(oauthAccessToken.getAuthentication());  
+//	            oauthAccessToken.setScope(authentication.getOAuth2Request().getScope());
+//	            oauthAccessToken.setRefreshToken(readRefreshToken(tokenValue));
+//	        }  
+//	        catch (EmptyResultDataAccessException e) {  
+//	            if (logger.isDebugEnabled()) {  
+//	            	logger.info("Failed to find access token for token " + tokenValue);  
+//	            }  
+//	        }  
 			return oauthAccessToken;
 		} catch (BaseServiceException e1) {
 			e1.printStackTrace();

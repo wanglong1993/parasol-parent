@@ -4,12 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -51,10 +49,11 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 
 	@Override
 	public void storeRefreshToken(OAuth2RefreshToken refreshToken,OAuth2Authentication authentication) {
-		OauthRefreshToken oauthRefreshToken=(OauthRefreshToken) refreshToken;  
-        oauthRefreshToken.setTokenId(extractTokenKey(refreshToken.getValue()));  
+		DefaultExpiringOAuth2RefreshToken defaultExpiringOAuth2RefreshToken=(DefaultExpiringOAuth2RefreshToken) refreshToken;  
+		OauthRefreshToken oauthRefreshToken=new OauthRefreshToken();  
+        oauthRefreshToken.setTokenId(extractTokenKey(defaultExpiringOAuth2RefreshToken.getValue()));  
         oauthRefreshToken.setAuthentication(SerializationUtils.serialize(authentication));  
-        oauthRefreshToken.setToken(SerializationUtils.serialize(oauthRefreshToken));  
+        oauthRefreshToken.setToken(SerializationUtils.serialize(defaultExpiringOAuth2RefreshToken));  
         try {
 			saveEntity(oauthRefreshToken);
 		} catch (BaseServiceException e) {
