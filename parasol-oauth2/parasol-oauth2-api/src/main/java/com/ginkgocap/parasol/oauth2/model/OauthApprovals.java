@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.security.oauth2.provider.approval.Approval;
+import org.springframework.security.oauth2.provider.approval.Approval.ApprovalStatus;
 
 
 
@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.provider.approval.Approval;
  */
 @Entity
 @Table(name = "oauth_approvals", catalog = "parasol_oauth2")
-public class OauthApprovals extends Approval implements java.io.Serializable {
+public class OauthApprovals implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -40,25 +40,6 @@ public class OauthApprovals extends Approval implements java.io.Serializable {
 	private ApprovalStatus status;
 	public OauthApprovals() { }
 
-	public OauthApprovals(String userId, String clientId, String scope, int expiresIn, ApprovalStatus status) {
-		this(userId, clientId, scope, new Date(), status, new Date());
-		Calendar expiresAt = Calendar.getInstance();
-		expiresAt.add(Calendar.MILLISECOND, expiresIn);
-		setExpiresAt(expiresAt.getTime());
-	}
-
-	public OauthApprovals(String userId, String clientId, String scope, Date expiresAt, ApprovalStatus status) {
-		this(userId, clientId, scope, expiresAt, status, new Date());
-	}
-
-	public OauthApprovals(String userId, String clientId, String scope, Date expiresAt, ApprovalStatus status, Date lastUpdatedAt) {
-		this.userId = userId;
-		this.clientId = clientId;
-		this.scope = scope;
-		this.expiresAt = expiresAt;
-		this.status = status;
-		this.lastUpdatedAt = lastUpdatedAt;
-	}
 	
 	@Id
 	@GeneratedValue(generator = "id")
