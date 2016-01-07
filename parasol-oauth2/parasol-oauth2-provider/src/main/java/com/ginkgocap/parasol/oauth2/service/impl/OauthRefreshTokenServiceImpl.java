@@ -72,8 +72,8 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 			if(id==null || id<=0l) return null;
 			oauthRefreshToken=getEntity(id);
 			if(ObjectUtils.isEmpty(oauthRefreshToken))return null;
-			oauthRefreshToken=SerializationUtils.deserialize(oauthRefreshToken.getToken());
-			return oauthRefreshToken;
+			OAuth2RefreshToken oAuth2RefreshToken=SerializationUtils.deserialize(oauthRefreshToken.getToken());
+			return oAuth2RefreshToken;
 		} catch (BaseServiceException e1) {
 			e1.printStackTrace();
 			return null;
