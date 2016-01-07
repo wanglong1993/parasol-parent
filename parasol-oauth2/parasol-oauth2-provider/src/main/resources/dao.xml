@@ -61,6 +61,15 @@
                  sqlitem="select id from oauth_refresh_token where token_id=? "
                  sqlType="hsql" keyProperty="tokenId" valueProperty="id"  update="true"/>
 		</object>															
+		<object name="com.ginkgocap.parasol.oauth2.model.OauthCode" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="id">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+          <map name="OauthCode_List_By_Code"
+                 sqlitem="select id from oauth_code where code=? "
+                 sqlType="hsql" keyProperty="code" valueProperty="id"  update="true"/>
+		</object>															
 	</route>
 </dal>
 
