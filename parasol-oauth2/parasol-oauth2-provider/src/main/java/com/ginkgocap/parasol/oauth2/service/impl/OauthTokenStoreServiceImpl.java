@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
@@ -111,6 +111,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	        oauthAccessToken.setRefreshToken_(extractTokenKey(refreshToken));
 	        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
 	        oauthAccessToken.setUserName(authentication.getPrincipal().toString());
+	        oauthAccessToken.setCreateTime(new Date());
 	        try {
 				saveEntity(oauthAccessToken);
 			} catch (BaseServiceException e) {

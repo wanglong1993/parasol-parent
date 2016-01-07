@@ -4,10 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -53,6 +53,7 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
         oauthRefreshToken.setTokenId(extractTokenKey(refreshToken.getValue()));  
         oauthRefreshToken.setAuthentication(SerializationUtils.serialize(authentication));  
         oauthRefreshToken.setToken(SerializationUtils.serialize(refreshToken));  
+        oauthRefreshToken.setCreateTime(new Date());
         try {
 			saveEntity(oauthRefreshToken);
 		} catch (BaseServiceException e) {
