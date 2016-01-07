@@ -36,4 +36,5 @@
     <dubbo:reference id="oauthApprovalsService" interface="com.ginkgocap.parasol.oauth2.service.OauthApprovalsService" version="2.0.0"  />
     <dubbo:reference id="oauthTokenStoreService" interface="com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService" version="2.0.0"  />
     <dubbo:reference id="oauthRefreshTokenService" interface="com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService" version="2.0.0"  />
+    <dubbo:reference id="oauthCodeService" interface="com.ginkgocap.parasol.oauth2.service.OauthCodeService" version="2.0.0"  />
 </beans>
