@@ -111,11 +111,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
 	        oauthAccessToken.setRefreshToken_(extractTokenKey(refreshToken));
 	        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
-	        UserLoginRegister userLoginRegister =null;
-	        if(authentication.getPrincipal()!=null){
-	        	userLoginRegister =(UserLoginRegister)authentication.getPrincipal();
-	        }
-	        oauthAccessToken.setUserName(userLoginRegister.getPassport());
+	        oauthAccessToken.setUserName(authentication.getName());
 	        oauthAccessToken.setCreateTime(new Date());
 	        try {
 				saveEntity(oauthAccessToken);
