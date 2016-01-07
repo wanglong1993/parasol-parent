@@ -23,7 +23,6 @@ import org.junit.Assert;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.util.StringUtils;
@@ -32,7 +31,7 @@ import com.ginkgocap.parasol.oauth2.model.OauthAccessToken;
 import com.ginkgocap.parasol.oauth2.model.OauthRefreshToken;
 import com.ginkgocap.parasol.oauth2.service.OauthCodeService;
 
-public class OauthCodeServiceTest  extends TestBase implements Test  {
+public class OauthCodeServiceTest  extends TestBase  implements Test  {
 
 	@Resource
 	private OauthCodeService oauthCodeService;
@@ -78,7 +77,7 @@ public class OauthCodeServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testConsumeAuthorizationCode(){
 		try {
-			OAuth2Authentication  authentication=oauthCodeService.consumeAuthorizationCode("HxLh4d");
+			OAuth2Authentication  authentication=oauthCodeService.consumeAuthorizationCode("nh95bG");
 			Assert.assertTrue(authentication!=null);
 		} catch (Exception e) {
 			e.printStackTrace();
