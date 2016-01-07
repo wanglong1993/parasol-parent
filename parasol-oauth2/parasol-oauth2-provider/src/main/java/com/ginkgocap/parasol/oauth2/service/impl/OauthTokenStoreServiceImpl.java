@@ -103,10 +103,10 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	        if (token.getRefreshToken() != null) {  
 	            refreshToken = token.getRefreshToken().getValue();  
 	        }
-	        DefaultOAuth2AccessToken defaultOAuth2AccessToken=(DefaultOAuth2AccessToken)token;
+//	        DefaultOAuth2AccessToken defaultOAuth2AccessToken=(DefaultOAuth2AccessToken)token;
 	        OauthAccessToken oauthAccessToken=new OauthAccessToken();
-	        oauthAccessToken.setTokenId(extractTokenKey(defaultOAuth2AccessToken.getValue()));
-	        oauthAccessToken.setToken(SerializationUtils.serialize(defaultOAuth2AccessToken));
+	        oauthAccessToken.setTokenId(extractTokenKey(token.getValue()));
+	        oauthAccessToken.setToken(SerializationUtils.serialize(token));
 	        oauthAccessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(authentication));
 	        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
 	        oauthAccessToken.setRefreshToken_(extractTokenKey(refreshToken));
@@ -132,17 +132,6 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			oauthAccessToken=getEntity(id);
 			if(ObjectUtils.isEmpty(oauthAccessToken))return null;
 			oauthAccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
-//			OAuth2Authentication authentication = null;  
-//	        try {  
-//	            authentication = SerializationUtils.deserialize(oauthAccessToken.getAuthentication());  
-//	            oauthAccessToken.setScope(authentication.getOAuth2Request().getScope());
-//	            oauthAccessToken.setRefreshToken(readRefreshToken(tokenValue));
-//	        }  
-//	        catch (EmptyResultDataAccessException e) {  
-//	            if (logger.isDebugEnabled()) {  
-//	            	logger.info("Failed to find access token for token " + tokenValue);  
-//	            }  
-//	        }  
 			return oauthAccessToken;
 		} catch (BaseServiceException e1) {
 			e1.printStackTrace();

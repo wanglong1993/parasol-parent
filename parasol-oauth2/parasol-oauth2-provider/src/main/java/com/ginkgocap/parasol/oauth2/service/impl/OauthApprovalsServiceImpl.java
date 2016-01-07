@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.oauth2.provider.approval.Approval;
+import org.springframework.security.oauth2.provider.approval.Approval.ApprovalStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -70,10 +71,14 @@ public class OauthApprovalsServiceImpl extends BaseService<OauthApprovals> imple
 			List<Long> ids=getIds(OauthApprovals_List_Id,clientId,userId);
 			List<OauthApprovals> list=getEntityByIds(ids);
 			Collection<Approval> collection = new HashSet<Approval>();
-			Approval approval=null;
 			for (OauthApprovals oauthApprovals : list) {
-				approval=oauthApprovals;
-				collection.add(approval);
+				oauthApprovals.setExpiresAt(oauthApprovals.getExpiresAt());
+				if(oauthApprovals.getStatus_().equals("APPROVED")){
+					oauthApprovals.setStatus(ApprovalStatus.APPROVED);
+				}else if(oauthApprovals.getStatus_().equals("DENIED")) {
+					oauthApprovals.setStatus(ApprovalStatus.DENIED);
+				}
+				collection.add(oauthApprovals);
 			}
 			return collection;
 		} catch (BaseServiceException e) {
