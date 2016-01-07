@@ -29,6 +29,7 @@ import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.oauth2.model.OauthAccessToken;
 import com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService;
 import com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService;
+import com.ginkgocap.parasol.user.model.UserLoginRegister;
 
 @Service("oauthTokenStoreService")
 public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> implements OauthTokenStoreService {
@@ -110,7 +111,11 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
 	        oauthAccessToken.setRefreshToken_(extractTokenKey(refreshToken));
 	        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
-	        oauthAccessToken.setUserName(authentication.getPrincipal().toString());
+	        UserLoginRegister userLoginRegister =null;
+	        if(authentication.getPrincipal()!=null){
+	        	userLoginRegister =(UserLoginRegister)authentication.getPrincipal();
+	        }
+	        oauthAccessToken.setUserName(userLoginRegister.getPassport());
 	        oauthAccessToken.setCreateTime(new Date());
 	        try {
 				saveEntity(oauthAccessToken);
