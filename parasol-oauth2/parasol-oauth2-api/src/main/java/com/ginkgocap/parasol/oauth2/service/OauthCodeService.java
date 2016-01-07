@@ -1,11 +1,11 @@
 package com.ginkgocap.parasol.oauth2.service;
 
-import org.springframework.security.oauth2.provider.code.RandomValueAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 
 /**
  * 操作用户临时授权码
  * 
  */
-public abstract class OauthCodeService  extends RandomValueAuthorizationCodeServices  {
+public interface OauthCodeService extends AuthorizationCodeServices{
 
 }
