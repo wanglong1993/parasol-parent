@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.oauth2.service.impl;
 
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
@@ -24,6 +26,7 @@ public class OauthCodeServiceImpl extends BaseService<OauthCode> implements Oaut
 		OauthCode oauthCode =new OauthCode();
 		oauthCode.setCode(code);
 		oauthCode.setAuthentication(SerializationUtils.serialize(authentication));
+		oauthCode.setCreateTime(new Date());
 		try {
 			Long id=(Long) saveEntity(oauthCode);
 			if(id==null || id<=0l) return null;
