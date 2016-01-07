@@ -131,8 +131,8 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			if(id==null || id<=0l) return null;
 			oauthAccessToken=getEntity(id);
 			if(ObjectUtils.isEmpty(oauthAccessToken))return null;
-			oauthAccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
-			return oauthAccessToken;
+			OAuth2AccessToken  oAuth2AccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
+			return oAuth2AccessToken;
 		} catch (BaseServiceException e1) {
 			e1.printStackTrace();
 			return null;
