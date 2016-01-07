@@ -29,7 +29,6 @@ import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.oauth2.model.OauthAccessToken;
 import com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService;
 import com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService;
-import com.ginkgocap.parasol.user.model.UserLoginRegister;
 
 @Service("oauthTokenStoreService")
 public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> implements OauthTokenStoreService {
