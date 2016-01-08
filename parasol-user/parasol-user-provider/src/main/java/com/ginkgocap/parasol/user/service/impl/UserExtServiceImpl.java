@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.user.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -28,6 +29,7 @@ public class UserExtServiceImpl extends BaseService<UserExt> implements UserExtS
 	private static Logger logger = Logger.getLogger(UserExtServiceImpl.class);
 	private static String UserExt_List_Id_ProvinceId="UserExt_List_Id_ProvinceId";
 	private static String UserExt_List_Id_CountyId="UserExt_List_Id_CountyId";
+	private static String UserExt_List_Id_ThirdIndustryId="UserExt_List_Id_ThirdIndustryId";
 	/**
 	 * 检查数据
 	 * @param userExt
@@ -146,8 +148,26 @@ public class UserExtServiceImpl extends BaseService<UserExt> implements UserExtS
 	@Override
 	public List<UserExt> getUserExtListByProvinceId(int start,int count,Long provinceId)throws UserExtServiceException {
 		try {
-			if(provinceId==null || provinceId<=0l)throw new UserExtServiceException("provinceId is null or empty");
+			if(provinceId==null || provinceId<=0l) return Collections.EMPTY_LIST;;
+			if(start<0)return Collections.EMPTY_LIST;
+			if(count<=0)return Collections.EMPTY_LIST;
 			return getEntityByIds(getIds(UserExt_List_Id_ProvinceId, start, count, new Object[]{provinceId}));
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserExtServiceException(e);
+		}
+	}
+
+	
+	@Override
+	public List<UserExt> getUserListByThirdIndustryId(int start, int count,Long thirdIndustryId) throws UserExtServiceException {
+		try {
+			if(thirdIndustryId==null || thirdIndustryId<=0l)return Collections.EMPTY_LIST;
+			if(start<0)return Collections.EMPTY_LIST;
+			if(count<=0)return Collections.EMPTY_LIST;
+			return getEntityByIds(getIds(UserExt_List_Id_ThirdIndustryId, start, count, new Object[]{thirdIndustryId}));
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

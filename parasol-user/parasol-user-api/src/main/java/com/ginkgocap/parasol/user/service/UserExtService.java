@@ -46,7 +46,7 @@ public interface UserExtService {
 	 */
 	public List<UserExt> getUserExtList(List<Long> userIds) throws UserExtServiceException;	
 	/**
-	 * 根据用户所在县id获取用户id列表
+	 * 根据用户所在县id获取用户列表
 	 * @param start 
 	 * @param count
 	 * @param countyId  
@@ -55,7 +55,7 @@ public interface UserExtService {
 	 */
 	public List<UserExt> getUserExtListByCountryId(int start,int count,Long countyId) throws UserExtServiceException;	
 	/**
-	 * 根据用户所在地区省id获取用户id列表
+	 * 根据用户所在地区省id获取用户列表
 	 * @param start 
 	 * @param count 
 	 * @param ProvinceId 
@@ -63,6 +63,15 @@ public interface UserExtService {
 	 * @throws UserExtServiceException
 	 */
 	public List<UserExt> getUserExtListByProvinceId(int start,int count,Long ProvinceId) throws UserExtServiceException;
+	/**
+	 * 根据第三级行业ID获取用户列表
+	 * @param start 
+	 * @param count 
+	 * @param ProvinceId 
+	 * @return List
+	 * @throws UserExtServiceException
+	 */
+	public List<UserExt> getUserListByThirdIndustryId(int start,int count,Long thirdIndustryId) throws UserExtServiceException;
 	/**
 	 * 根据id真删除用户基本信息
 	 * @param id

@@ -36,7 +36,7 @@ public class UserExtServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testCreateUserExt(){
 		try {
-			Long id=userLoginRegisterService.getId("15966467469");
+			Long id=userLoginRegisterService.getId("13677687632");
 			Long id2 =userExtService.createUserExt(setUserExt(id));
 			Assert.assertTrue(id2!=null && id2>0l);
 		} catch (Exception e) {
@@ -63,6 +63,18 @@ public class UserExtServiceTest  extends TestBase implements Test  {
 	public void testGetUserIdListByIndustryId(){
 		try {
 			List<Long> list =userInterestIndustryService.getUserIdListByIndustryId(1, 2, 2l);
+			Assert.assertTrue(list.size()>0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 根据第三级行业ID获取用户列表
+	 */
+	@org.junit.Test
+	public void testGetUserListByThirdIndustryId(){
+		try {
+			List<UserExt> list =userExtService.getUserListByThirdIndustryId(0, 10, 1308l);
 			Assert.assertTrue(list.size()>0);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -154,6 +166,7 @@ public class UserExtServiceTest  extends TestBase implements Test  {
 			UserExt userExt = new UserExt();
 			userExt.setUserId(userId);
 			userExt.setName("安详");
+			userExt.setThirdIndustryId(1308l);
 			Byte sex=1;
 //			UserExt.setProvinceId(null);
 //			UserExt.setCityId(null);

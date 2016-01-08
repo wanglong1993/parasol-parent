@@ -1051,6 +1051,11 @@ public class UserController extends BaseControl {
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+				if(!userLoginRegisterService.passportIsExist(passport)){
+					resultMap.put("error", "passport is not exists.");
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
 				if(StringUtils.isEmpty(provinceId)){
 					resultMap.put( "error", "provinceId is null or empty.");
 					resultMap.put( "status", 0);
@@ -1079,6 +1084,59 @@ public class UserController extends BaseControl {
 				}
 				List<UserBasic> list2 = userBasicService.getUserBasecList(ids);
 				return new MappingJacksonValue(list2);
+		}catch (Exception e ){
+			throw e;
+		}
+	}	
+	/**
+	 * 根据第三级行业ID获取用户列表
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/getUserListByThirdIndustryId" }, method = { RequestMethod.GET})
+	public MappingJacksonValue getUserListByThirdIndustryId(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "thirdIndustryId",required = true) Long thirdIndustryId
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			if(!userLoginRegisterService.passportIsExist(passport)){
+				resultMap.put("error", "passport is not exists.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(StringUtils.isEmpty(thirdIndustryId)){
+				resultMap.put( "error", "provinceId is null or empty.");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(StringUtils.isEmpty(passport)){
+				resultMap.put( "error", "passport is null or empty.");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(start<0){
+				resultMap.put( "error", "start must be than zero.");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(count<=0){
+				resultMap.put( "error", "count must be than zero.");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			List<UserExt> list=userExtService.getUserListByThirdIndustryId(start, count, thirdIndustryId);
+			if(list==null || list.size()==0)  return new MappingJacksonValue(list);
+			List<Long> ids=new ArrayList<Long>();
+			for (UserExt userExt : list) {
+				if(userExt!=null)ids.add(userExt.getUserId());
+			}
+			List<UserBasic> list2 = userBasicService.getUserBasecList(ids);
+			return new MappingJacksonValue(list2);
 		}catch (Exception e ){
 			throw e;
 		}
