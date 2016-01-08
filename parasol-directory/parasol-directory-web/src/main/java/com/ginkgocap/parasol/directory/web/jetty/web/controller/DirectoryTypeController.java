@@ -54,7 +54,7 @@ public class DirectoryTypeController extends BaseControl {
 	private DirectoryTypeService directoryTypeService;
 
 	/**
-	 * 1. （查询类）查询有哪些大分类
+	 * 查询目录的类型
 	 * 
 	 * @param request
 	 * @return
