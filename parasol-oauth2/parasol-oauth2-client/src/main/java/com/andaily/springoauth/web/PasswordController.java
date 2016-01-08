@@ -20,7 +20,7 @@ public class PasswordController {
     private static final Logger LOG = LoggerFactory.getLogger(PasswordController.class);
 
 
-    @Value("#{properties['access-token-uri']}")
+    @Value("#{properties['oauth-token-uri']}")
     private String accessTokenUri;
 
 

@@ -34,7 +34,7 @@ public class RefreshTokenController {
     private OauthService oauthService;
 
 
-    @Value("#{properties['access-token-uri']}")
+    @Value("#{properties['oauth-token-uri']}")
     private String accessTokenUri;
 
 

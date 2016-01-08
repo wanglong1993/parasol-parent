@@ -29,7 +29,7 @@ public class ClientCredentialsController {
     private static final Logger LOG = LoggerFactory.getLogger(ClientCredentialsController.class);
 
 
-    @Value("#{properties['access-token-uri']}")
+    @Value("#{properties['oauth-token-uri']}")
     private String accessTokenUri;
 
 

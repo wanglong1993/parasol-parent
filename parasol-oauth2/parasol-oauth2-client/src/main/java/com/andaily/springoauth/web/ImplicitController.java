@@ -19,14 +19,14 @@ public class ImplicitController {
     private static final Logger LOG = LoggerFactory.getLogger(ImplicitController.class);
 
 
-    @Value("#{properties['user-authorization-uri']}")
+    @Value("#{properties['oauth-authorize-uri']}")
     private String userAuthorizationUri;
 
 
     @Value("#{properties['unityUserInfoUri']}")
     private String unityUserInfoUri;
 
-    @Value("#{properties['application-host']}")
+    @Value("#{properties['client-host']}")
     private String host;
 
 
