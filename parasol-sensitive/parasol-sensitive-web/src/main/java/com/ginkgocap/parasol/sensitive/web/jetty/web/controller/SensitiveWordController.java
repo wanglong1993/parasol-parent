@@ -135,12 +135,12 @@ public class SensitiveWordController extends BaseControl {
 			@RequestParam(name = SensitiveWordController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = SensitiveWordController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = SensitiveWordController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = SensitiveWordController.parameterWordId, required = true) long id
+			@RequestParam(name = SensitiveWordController.parameterWordId, required = true) Long id
 			) throws SensitiveWordServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		// 0.校验输入参数（框架搞定，如果业务业务搞定）
 		// 1.查询后台服务
-		SensitiveWord sw = sensitiveWordService.findOne(id);
+		SensitiveWord sw = sensitiveWordService.getSensitiveWordById(id);
 		// 2.转成框架数据
 		mappingJacksonValue = new MappingJacksonValue(sw);
 		// 3.创建页面显示数据项的过滤器

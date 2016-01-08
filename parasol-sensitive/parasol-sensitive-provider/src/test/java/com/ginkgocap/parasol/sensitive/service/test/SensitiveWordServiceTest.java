@@ -31,13 +31,13 @@ public class SensitiveWordServiceTest extends TestBase{
 	
 	@Test
 	public void TestGetSensitiveWordById() throws SensitiveWordServiceException{
-		SensitiveWord word = sensitiveWordService.findOne(3914808483381253l);
+		SensitiveWord word = sensitiveWordService.getSensitiveWordById(3914808483381253l);
 		System.out.println("word==="+word.getWord());
 	}
 	
 	@Test
 	public void TestUpdateSensitiveWord() throws SensitiveWordServiceException {
-		SensitiveWord word = sensitiveWordService.findOne(3914808483381253l);
+		SensitiveWord word = sensitiveWordService.getSensitiveWordById(3914808483381253l);
 		word.setWord("江泽民王八蛋");
 		sensitiveWordService.saveOrUpdate(word);
 		System.out.println("word==="+word.getWord());

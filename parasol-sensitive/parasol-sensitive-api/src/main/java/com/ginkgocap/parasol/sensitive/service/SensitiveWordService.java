@@ -21,7 +21,7 @@ public interface SensitiveWordService {
 	 * @param id
 	 * @return
 	 */
-	public SensitiveWord findOne(long id)  throws SensitiveWordServiceException;
+	public SensitiveWord getSensitiveWordById(long id)  throws SensitiveWordServiceException;
 	/**
 	 * 保存或者更新
 	 * @param sensitiveWord

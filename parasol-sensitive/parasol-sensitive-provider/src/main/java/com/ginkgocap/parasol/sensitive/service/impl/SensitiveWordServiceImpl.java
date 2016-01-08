@@ -54,7 +54,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	@Override
-	public SensitiveWord findOne(long id) throws SensitiveWordServiceException {
+	public SensitiveWord getSensitiveWordById(long id) throws SensitiveWordServiceException {
 		if(id == 0) {
 			throw new SensitiveWordServiceException(error_sensitiveid_blank,"sensitive worid id is null");
 		}

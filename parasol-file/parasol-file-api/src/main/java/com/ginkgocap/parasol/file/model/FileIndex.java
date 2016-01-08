@@ -58,7 +58,7 @@ public class FileIndex implements Serializable {
 	// 缩略图地址
 	private String thumbnailsPath;
 	// appid
-	private String appid;
+	private long appId;
 
 	@Id
 	@GeneratedValue(generator = "id")
@@ -189,13 +189,13 @@ public class FileIndex implements Serializable {
 		this.thumbnailsPath = thumbnailsPath;
 	}
 
-	@Column(name = "appid")	
-	public String getAppid() {
-		return appid;
+	@Column(name = "appId")	
+	public long getAppId() {
+		return appId;
 	}
 
-	public void setAppid(String appid) {
-		this.appid = appid;
+	public void setAppId(long appId) {
+		this.appId = appId;
 	}
 
 }
