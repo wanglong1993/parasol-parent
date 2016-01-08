@@ -66,7 +66,7 @@ public class DirectorySourceController extends BaseControl {
 	private DirectorySourceService directorySourceService;
 
 	/**
-	 * 1. （查询类）查询有哪些大分类
+	 * 查询目录下的资源
 	 * 
 	 * @param request
 	 * @return
