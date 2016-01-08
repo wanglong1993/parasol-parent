@@ -18,7 +18,7 @@ public class MessageRelationServiceTest extends TestBase{
 	public void TestInsertMessageRelation () {
 		
 		MessageRelation rel = new MessageRelation();
-		rel.setEntityId(3911302733103109l);
+		rel.setEntityId(3928965047910405l);
 		rel.setIsRead(0);
 		rel.setReceiverId(0l);
 		rel.setStatus(0);
@@ -28,16 +28,16 @@ public class MessageRelationServiceTest extends TestBase{
 	
 	@Test
 	public void TestGetMessageRelationsByUserId() {
-		List<MessageRelation> rels = messageRelationService.getMessageRelationsByUserId(1);
+		List<MessageRelation> rels = messageRelationService.getMessageRelationsByUserId(1,111111);
 		System.out.println("rels="+rels.toString());
 	}
 	
 	@Test
 	public void TestCountMessageRelationByUserId() {
 		
-		int count = messageRelationService.countMessageRelationByUserId(1l);
+		int count = messageRelationService.countMessageRelationByUserId(1l,111111);
 		System.out.println("count===="+count);
-		int count2 = messageRelationService.countMessageRelationByUserIdAndType(1l,0);
+		int count2 = messageRelationService.countMessageRelationByUserIdAndType(1l,0,111111);
 		System.out.println("count2====="+count2);
 	}
 	

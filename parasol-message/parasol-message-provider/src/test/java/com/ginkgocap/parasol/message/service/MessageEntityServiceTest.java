@@ -20,7 +20,7 @@ public class MessageEntityServiceTest extends TestBase{
 	public void TestInsertMessageEntity() throws MessageEntityServiceException {
 		MessageEntity entity = new MessageEntity();
 		entity.setId(111111111111l);
-		entity.setAppid("test");
+		entity.setAppid(111111);
 		entity.setContent("what a fucking day!");
 		entity.setSourceId(111l);
 		messageEntityService.insertMessageEntity(entity);
@@ -28,7 +28,7 @@ public class MessageEntityServiceTest extends TestBase{
 	
 	@Test
 	public void TestGetMessageEntity() throws MessageEntityServiceException {
-		long id = 3911302733103109l;
+		long id = 3928965047910405l;
 		MessageEntity entity = messageEntityService.getMessageEntityById(id);
 		System.out.println("entity = "+entity.getContent());
 	}
@@ -44,7 +44,7 @@ public class MessageEntityServiceTest extends TestBase{
 		params.put("sourceId", "112233");
 		params.put("sourceType", "1");
 		params.put("sourceTitle", "中华人名共和国");
-		params.put("appid","Test");
+		params.put("appId","111111");
 		params.put("receiverIds", "1,2,3,4,5,6");
 		result = messageEntityService.insertMessageByParams(params);
 		
@@ -53,13 +53,13 @@ public class MessageEntityServiceTest extends TestBase{
 	
 	@Test
 	public void TestGetMessagesByUserId() throws MessageEntityServiceException {
-		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1, 0);
+		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1, 0, 111111);
 		System.out.println("entities="+entities);
 	}
 	
 	@Test
 	public void TestGetMessagesByUserIdAndType() throws MessageEntityServiceException {
-		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1l, 0);
+		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1l, 0,111111);
 		System.out.println("entities"+entities);
 	}
 }

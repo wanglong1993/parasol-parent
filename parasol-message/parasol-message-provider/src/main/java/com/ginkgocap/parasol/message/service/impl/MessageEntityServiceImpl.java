@@ -101,7 +101,7 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 			String sourceId = params.get("sourceId");
 			String sourceType = params.get("sourceType");
 			String sourceTitle = params.get("sourceTitle");
-			String appid = params.get("appid");
+			String appId = params.get("appId");
 			
 			entity.setCreaterId(Long.valueOf(createrId));
 			entity.setSourceId(Long.valueOf(sourceId));
@@ -109,7 +109,7 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 			entity.setSourceType(sourceType);
 			entity.setContent(content);
 			entity.setType(Integer.valueOf(type));
-			entity.setAppid(appid);
+			entity.setAppid(Long.valueOf(appId));
 		} catch (Exception e) {
 			throw new MessageEntityServiceException(e);
 		}
@@ -127,6 +127,7 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 		List<MessageRelation> relations = new ArrayList<MessageRelation>();
 		String type = params.get("type");
 		String receiverIds = params.get("receiverIds");
+		String appId = params.get("appId");
 		List<String> ids = Arrays.asList(receiverIds.split(","));
 		for(String id : ids) {
 			MessageRelation rel = new MessageRelation();
@@ -135,6 +136,7 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 			rel.setReceiverId(Long.valueOf(id));
 			rel.setStatus(0);
 			rel.setType(Integer.valueOf(type));
+			rel.setAppId(Long.valueOf(appId));
 			rel.setDealTime(System.currentTimeMillis());
 			relations.add(rel);
 		}
@@ -143,7 +145,7 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 	
 	
 	@Override
-	public List<MessageEntity> getMessagesByUserIdAndType(long userId, int type) throws MessageEntityServiceException {
+	public List<MessageEntity> getMessagesByUserIdAndType(long userId, int type, long appId) throws MessageEntityServiceException {
 		if(userId == 0) {
 			throw new MessageEntityServiceException(error_userid_null,"userid can not null!");
 		}
@@ -153,9 +155,9 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 		List<MessageRelation> relations = new ArrayList<MessageRelation>();
 		// 通过userId获取消息关系列表
 		if(type==0) {
-			relations = messageRelationService.getMessageRelationsByUserId(userId);
+			relations = messageRelationService.getMessageRelationsByUserId(userId, appId);
 		}else {
-			relations = messageRelationService.getMessageRelationsByUserIdAndType(userId, type);
+			relations = messageRelationService.getMessageRelationsByUserIdAndType(userId, type, appId);
 		}
 		// 新建map，用于存放消息关系
 		Map<Long, MessageRelation> mapRel = new HashMap<Long, MessageRelation>();

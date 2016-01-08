@@ -18,7 +18,7 @@
            
            <!-- Í¨¹ýÃû×ÖÕÒCode --> 
 
-           <list name="MessageEntity_List_Id_ReceiverId"
+           <list name="MessageEntity_List_Id_ReceiverId_AppId"
                   sqlitem="select entityId from tb_message_relation where receiverId=? and status=0 order by entityId desc"
                   sqlType="hsql" keyProperty="id" valueProperty="id"  update="true"/>
                   
@@ -30,13 +30,13 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
 			
-           <list name="MessageRelation_List_Id_ReceiverId"
-                  sqlitem="select id from tb_message_relation where receiverId=? and status=0 order by entityId desc"
-                  sqlType="hsql" keyProperty="receiverId" valueProperty="id"  update="true"/>			
+           <list name="MessageRelation_List_Id_ReceiverId_AppId"
+                  sqlitem="select id from tb_message_relation where receiverId=? and appId=? and status=0 order by entityId desc"
+                  sqlType="hsql" keyProperty="receiverId,appId" valueProperty="id"  update="true"/>			
 			
-           <list name="MessageRelation_List_Id_ReceiverId_Type"
-                  sqlitem="select id from tb_message_relation where receiverId=? and type=? and status=0 order by entityId desc"
-                  sqlType="hsql" keyProperty="receiverId,type" valueProperty="id"  update="true"/>
+           <list name="MessageRelation_List_Id_ReceiverId_Type_AppId"
+                  sqlitem="select id from tb_message_relation where receiverId=? and appId=? and type=? and status=0 order by entityId desc"
+                  sqlType="hsql" keyProperty="receiverId,appId,type" valueProperty="id"  update="true"/>
 		</object>
 	</route>
 </dal>

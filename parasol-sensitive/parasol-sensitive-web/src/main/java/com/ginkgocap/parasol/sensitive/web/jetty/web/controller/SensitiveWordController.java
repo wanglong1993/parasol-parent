@@ -27,7 +27,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,7 +53,6 @@ import com.ginkgocap.parasol.sensitive.web.jetty.web.ResponseError;
  */
 @RestController
 public class SensitiveWordController extends BaseControl {
-	private static Logger logger = Logger.getLogger(SensitiveWordController.class);
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
@@ -128,6 +126,7 @@ public class SensitiveWordController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws SensitiveWordServiceException 
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
@@ -137,29 +136,25 @@ public class SensitiveWordController extends BaseControl {
 			@RequestParam(name = SensitiveWordController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = SensitiveWordController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = SensitiveWordController.parameterWordId, required = true) long id
-			) throws Exception {
+			) throws SensitiveWordServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			SensitiveWord sw = sensitiveWordService.findOne(id);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(sw);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
+		// 0.校验输入参数（框架搞定，如果业务业务搞定）
+		// 1.查询后台服务
+		SensitiveWord sw = sensitiveWordService.findOne(id);
+		// 2.转成框架数据
+		mappingJacksonValue = new MappingJacksonValue(sw);
+		// 3.创建页面显示数据项的过滤器
+		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+		mappingJacksonValue.setFilters(filterProvider);
+		// 4.返回结果
+		return mappingJacksonValue;
+	}	
 	/**
 	 * 1. 获取用户消息实体列表
 	 * 
 	 * @param request
 	 * @return
+	 * @throws SensitiveWordServiceException 
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
@@ -169,22 +164,18 @@ public class SensitiveWordController extends BaseControl {
 			@RequestParam(name = SensitiveWordController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = SensitiveWordController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = SensitiveWordController.parameterText, required = true) String text
-			) throws Exception {
+			) throws SensitiveWordServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			List<String> words = sensitiveWordService.sensitiveWord(text);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(words);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (Exception e) {
-			throw e;
-		}
+		// 0.校验输入参数（框架搞定，如果业务业务搞定）
+		// 1.查询后台服务
+		List<String> words = sensitiveWordService.sensitiveWord(text);
+		// 2.转成框架数据
+		mappingJacksonValue = new MappingJacksonValue(words);
+		// 3.创建页面显示数据项的过滤器
+		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+		mappingJacksonValue.setFilters(filterProvider);
+		// 4.返回结果
+		return mappingJacksonValue;
 	}
 	
 	/**

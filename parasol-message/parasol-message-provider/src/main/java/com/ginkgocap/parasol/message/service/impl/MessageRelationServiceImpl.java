@@ -45,11 +45,11 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 	}
 
 	@Override
-	public int countMessageRelationByUserId(long userId) {
+	public int countMessageRelationByUserId(long userId, long appId) {
 		logger.info("进入查询我的消息提醒数：参数userId:{}", userId);		
 		int count = 0;
 		try {
-			count = countEntitys("MessageRelation_List_Id_ReceiverId",userId);
+			count = countEntitys("MessageRelation_List_Id_ReceiverId_AppId",userId, appId);
 		} catch (BaseServiceException e) {
 			logger.error("查询我的消息提醒数失败：参数userId:{}", userId);
 			e.printStackTrace();
@@ -58,26 +58,26 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 	}
 	
 	@Override
-	public int countMessageRelationByUserIdAndType(long userId, int type) {
-		logger.info("进入查询我的消息提醒数：参数userId:{}, type:{}", userId, type);		
+	public int countMessageRelationByUserIdAndType(long userId, int type, long appId) {
+		logger.info("进入查询我的消息提醒数：参数userId:{}, type:{}, appId:{}", userId, type, appId);		
 		int count = 0;
 		try {
-			count = countEntitys("MessageRelation_List_Id_ReceiverId_Type",userId,type);
+			count = countEntitys("MessageRelation_List_Id_ReceiverId_Type_AppId", userId, type, appId);
 		} catch (BaseServiceException e) {
-			logger.error("查询我的消息提醒数失败：参数userId:{},type:{}", userId, type);
+			logger.error("查询我的消息提醒数失败：参数userId:{},type:{}, appId{}", userId, type, appId);
 			e.printStackTrace();
 		}
 		return count;
 	}
 
 	@Override
-	public List<MessageRelation> getMessageRelationsByUserId(long userId) {
-		logger.info("进入获取我的消息列表：参数userId:{}", userId);
+	public List<MessageRelation> getMessageRelationsByUserId(long userId, long appId) {
+		logger.info("进入获取我的消息列表：参数userId:{}, appId:{}", userId, appId);
 		List<MessageRelation> relations = null;
 		try {
-			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId", 0,20, userId);
+			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId_AppId", 0,20, userId, appId);
 		} catch (BaseServiceException e) {
-			logger.info("获取我的消息列表失败：参数userId:{}", userId);
+			logger.info("获取我的消息列表失败：参数userId:{}, appId:{}", userId, appId);
 			e.printStackTrace();
 		}
 		return relations;
@@ -85,13 +85,13 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 	
 
 	@Override
-	public List<MessageRelation> getMessageRelationsByUserIdAndType(long userId, int type) {
-		logger.info("进入获取我的特定消息列表：参数userId:{}, type:{}", userId, type);
+	public List<MessageRelation> getMessageRelationsByUserIdAndType(long userId, int type, long appId) {
+		logger.info("进入获取我的特定消息列表：参数userId:{}, type:{}, appId:{}", userId, type, appId);
 		List<MessageRelation> relations = null;
 		try {
-			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId_Type", 0,20, userId);
+			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId_Type_AppId", 0,20, userId,type,appId);
 		} catch (BaseServiceException e) {
-			logger.info("获取我的特定消息列表失败：参数userId:{}, type:{}", userId, type);
+			logger.info("获取我的特定消息列表失败：参数userId:{}, type:{}, appId{} ", userId, type, appId);
 			e.printStackTrace();
 		}
 		return relations;

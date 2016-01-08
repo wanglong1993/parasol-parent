@@ -38,6 +38,7 @@ import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.ginkgocap.parasol.message.exception.MessageEntityServiceException;
 import com.ginkgocap.parasol.message.model.MessageEntity;
 import com.ginkgocap.parasol.message.service.MessageEntityService;
 import com.ginkgocap.parasol.message.web.jetty.web.ResponseError;
@@ -74,6 +75,7 @@ public class MessageController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws MessageEntityServiceException 
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
@@ -88,7 +90,7 @@ public class MessageController extends BaseControl {
 			@RequestParam(name = MessageController.parameterSourceType, required = true) Integer sourceType,
 			@RequestParam(name = MessageController.parameterSourceTitle, required = true) String sourceTitle,
 			@RequestParam(name = MessageController.parameterReceiverIds, required = true) String receiverIds,
-			@RequestParam(name = MessageController.parameterType, required = true) Long type) {
+			@RequestParam(name = MessageController.parameterType, required = true) Long type) throws MessageEntityServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("type", type.toString());
@@ -98,7 +100,7 @@ public class MessageController extends BaseControl {
 		param.put("sourceType", sourceType.toString());
 		param.put("sourceTitle", sourceTitle);
 		param.put("receiverIds", receiverIds);
-		param.put("appid", appId.toString());
+		param.put("appId", appId.toString());
 		
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -120,10 +122,7 @@ public class MessageController extends BaseControl {
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			e.printStackTrace(System.err);
 			return mappingJacksonValue;
-		} catch (Exception e) {
-			
-		}
-		return mappingJacksonValue;
+		} 
 	}
 
 	/**
@@ -131,6 +130,7 @@ public class MessageController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws MessageEntityServiceException 
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
@@ -140,22 +140,18 @@ public class MessageController extends BaseControl {
 			@RequestParam(name = MessageController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = MessageController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = MessageController.parameterEntityId, required = true) long id
-			) throws Exception {
+			) throws MessageEntityServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			MessageEntity entities = messageEntityService.getMessageEntityById(id);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(entities);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (Exception e) {
-			throw e;
-		}
+		// 0.校验输入参数（框架搞定，如果业务业务搞定）
+		// 1.查询后台服务
+		MessageEntity entities = messageEntityService.getMessageEntityById(id);
+		// 2.转成框架数据
+		mappingJacksonValue = new MappingJacksonValue(entities);
+		// 3.创建页面显示数据项的过滤器
+		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+		mappingJacksonValue.setFilters(filterProvider);
+		// 4.返回结果
+		return mappingJacksonValue;
 	}
 	
 	/**
@@ -163,6 +159,7 @@ public class MessageController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws MessageEntityServiceException 
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
@@ -172,23 +169,19 @@ public class MessageController extends BaseControl {
 			@RequestParam(name = MessageController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = MessageController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = MessageController.parameterType, required = true) Integer type
-			) throws Exception {
+			) throws MessageEntityServiceException  {
 		MappingJacksonValue mappingJacksonValue = null;
 		
-		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(userId, type);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(entities);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (Exception e) {
-			throw e;
-		}
+		// 0.校验输入参数（框架搞定，如果业务业务搞定）
+		// 1.查询后台服务
+		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(userId, type, appId);
+		// 2.转成框架数据
+		mappingJacksonValue = new MappingJacksonValue(entities);
+		// 3.创建页面显示数据项的过滤器
+		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+		mappingJacksonValue.setFilters(filterProvider);
+		// 4.返回结果
+		return mappingJacksonValue;
 	}
 	
 	/**

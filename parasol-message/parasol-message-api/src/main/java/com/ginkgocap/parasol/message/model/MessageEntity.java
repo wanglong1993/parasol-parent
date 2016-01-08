@@ -51,7 +51,7 @@ public class MessageEntity implements Serializable{
 	private String sourceTitle;
 
 	// 源appId
-	private String appid;
+	private long appid;
 	
 	// 接受者id
 	@Transient
@@ -136,11 +136,11 @@ public class MessageEntity implements Serializable{
 	}
 
 	@Column(name = "appid")
-	public String getAppid() {
+	public long getAppid() {
 		return appid;
 	}
 
-	public void setAppid(String appid) {
+	public void setAppid(long appid) {
 		this.appid = appid;
 	}
 

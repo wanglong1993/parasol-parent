@@ -33,7 +33,7 @@ public interface MessageRelationService {
 	 * @param userId 用户id
 	 ** @return 消息总数
 	 */
-	public int countMessageRelationByUserId(long userId);
+	public int countMessageRelationByUserId(long userId, long appId);
 	
 	/**
 	 * 获取用户未读消息数
@@ -41,14 +41,14 @@ public interface MessageRelationService {
 	 * @param type
 	 * @return 消息总数
 	 */
-	public int countMessageRelationByUserIdAndType(long userId, int type);
+	public int countMessageRelationByUserIdAndType(long userId, int type, long appId);
 	
 	/**
 	 * 获取用户未读消息列表
 	 * @param userId
 	 * @return
 	 */
-	public List<MessageRelation> getMessageRelationsByUserId(long userId);
+	public List<MessageRelation> getMessageRelationsByUserId(long userId, long appId);
 	
 	/**
 	 * 获取用户某种类型的消息
@@ -56,7 +56,7 @@ public interface MessageRelationService {
 	 * @param type
 	 * @return
 	 */
-	public List<MessageRelation> getMessageRelationsByUserIdAndType(long userId, int type);
+	public List<MessageRelation> getMessageRelationsByUserIdAndType(long userId, int type, long appId);
 	
 	/**
 	 * 根据entity id列表批量删除消息关系

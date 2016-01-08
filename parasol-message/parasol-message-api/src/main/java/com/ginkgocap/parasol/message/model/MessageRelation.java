@@ -43,6 +43,8 @@ public class MessageRelation implements Serializable{
 	private long dealTime;
 	// 消息类型
 	private int type;
+	// appId
+	private long appId;
 	
 	@Id
 	@GeneratedValue(generator = "id")
@@ -94,6 +96,14 @@ public class MessageRelation implements Serializable{
 	public void setDealTime(long dealTime) {
 		this.dealTime = dealTime;
 	}
+	
+	@Column(name = "appId")
+	public long getAppId() {
+		return appId;
+	}
+	public void setAppId(long appId) {
+		this.appId = appId;
+	}	
 	
 	@Column(name = "type")
 	public int getType() {

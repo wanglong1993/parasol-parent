@@ -42,6 +42,8 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	private static int error_sensitivewordids_null = 103;	//	id列表为空
 	private static int error_checkword_exist = 104;	//	敏感词已存在
 	
+	private static int error_checktext_blank = 105; //	需要校验的文本
+	
 	
 	private SessionFactory sessionFactory = DaoHelper.getSessionFactory();
 	private HibernateTemplate hibernateTemplate = new HibernateTemplate(sessionFactory);
@@ -212,7 +214,10 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 		return sw.highlight(text, matchType, formate);
 	}
 	
-	public List<String> sensitiveWord(String text){
+	public List<String> sensitiveWord(String text) throws SensitiveWordServiceException {
+		if( StringUtils.isBlank(text)) {
+			throw new SensitiveWordServiceException(error_checktext_blank," text is null");
+		}
 		init();
 		return sw.sensitiveWord(text);
 	}
