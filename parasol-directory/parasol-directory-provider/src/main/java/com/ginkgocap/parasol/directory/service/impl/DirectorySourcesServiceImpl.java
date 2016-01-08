@@ -112,6 +112,16 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	}
 
 	@Override
+	public List<DirectorySource> getDirectorySourcesBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException {
+		try {
+			return this.getEntitys(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID, userId, appId, sourceType, sourceId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
+	}
+
+	@Override
 	public boolean moveDirectorySources(long userId, long appId, Long directoryId, Long[] ids) throws DirectorySourceServiceException {
 
 		ServiceError.assertAppIdForDirectorySource(appId);
@@ -266,4 +276,5 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 		}
 		return null;
 	}
+
 }
