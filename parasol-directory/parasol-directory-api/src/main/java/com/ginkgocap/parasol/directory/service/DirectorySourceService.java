@@ -16,7 +16,7 @@ import com.ginkgocap.parasol.directory.model.DirectorySource;
 public interface DirectorySourceService {
 
 	/**
-	 * 创建一个目录下的资源 注意依赖条件：目录的存在。
+	 * 创建一个目录下的资源 注意依赖条件：目录必须存在。
 	 * 
 	 * @param appId
 	 *            应用Id
@@ -52,6 +52,17 @@ public interface DirectorySourceService {
 	public boolean removeDirectorySourcesBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException;
 	
 	
+	
+	/**
+	 * 从资源中是查询具有资源Id的所有目录资源
+	 * Example: 一篇知识都是在什么目录下；一个文件都是在什么组织下
+	 * @param appId
+	 * @param userId
+	 * @param DirectorySourcesId
+	 * @return
+	 * @throws DirectoryServiceException
+	 */
+	public List<DirectorySource> getDirectorySourcesBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException;
 	
 	
 	/**
