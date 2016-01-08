@@ -69,8 +69,9 @@ public class SensitiveWordServiceTest extends TestBase{
 	
 	@Test
 	public void TestSensitiveWord() throws SensitiveWordServiceException {
-		String text = "线上发布的时候，如果失败，不能在5分钟之内解决。立即选择回滚。发布之前需要执行的一切脚本和Sql都需要由开发工程师在Wiki上存放。运维只需要按操作步骤执行，发布的时候工程师必须在场,打倒李克强";
+		String text = "傻逼温家宝呵呵呵呵打倒共产党打到共产党毛泽东付利文";
 		List<String> result = sensitiveWordService.sensitiveWord(text);
+		sensitiveWordService.updateWord();
 		System.out.println("result===="+result);
 	}
 	

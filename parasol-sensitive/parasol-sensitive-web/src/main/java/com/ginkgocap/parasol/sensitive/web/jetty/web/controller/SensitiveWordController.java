@@ -38,6 +38,7 @@ import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.ginkgocap.parasol.sensitive.exception.SensitiveWordServiceException;
 import com.ginkgocap.parasol.sensitive.model.SensitiveWord;
 import com.ginkgocap.parasol.sensitive.service.SensitiveWordService;
 import com.ginkgocap.parasol.sensitive.web.jetty.web.ResponseError;
@@ -73,17 +74,18 @@ public class SensitiveWordController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws SensitiveWordServiceException 
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = { "/sensitive/word/saveSensitive" }, method = { RequestMethod.GET })
-	public MappingJacksonValue createMessageEntity(@RequestParam(name = SensitiveWordController.parameterFields, defaultValue = "") String fileds,
+	public MappingJacksonValue saveSensitive(@RequestParam(name = SensitiveWordController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = SensitiveWordController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = SensitiveWordController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = SensitiveWordController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = SensitiveWordController.parameterLevel, defaultValue = "2") Integer level,
 			@RequestParam(name = SensitiveWordController.parameterWord, required = true) String word,
-			@RequestParam(name = SensitiveWordController.parameterType, defaultValue = "0") Integer type) {
+			@RequestParam(name = SensitiveWordController.parameterType, defaultValue = "0") Integer type) throws SensitiveWordServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("type", type.toString());
@@ -118,10 +120,7 @@ public class SensitiveWordController extends BaseControl {
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			e.printStackTrace(System.err);
 			return mappingJacksonValue;
-		} catch (Exception e) {
-			
 		}
-		return mappingJacksonValue;
 	}
 
 	/**
@@ -133,7 +132,7 @@ public class SensitiveWordController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = { "/sensitive/word/getSensitiveWordById" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getEntityById(@RequestParam(name = SensitiveWordController.parameterFields, defaultValue = "") String fileds,
+	public MappingJacksonValue getSensitiveWordById(@RequestParam(name = SensitiveWordController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = SensitiveWordController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = SensitiveWordController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = SensitiveWordController.parameterUserId, required = true) Long userId,
@@ -165,7 +164,7 @@ public class SensitiveWordController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = { "/sensitive/word/checkWord" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getEntityByUserId(@RequestParam(name = SensitiveWordController.parameterFields, defaultValue = "") String fileds,
+	public MappingJacksonValue checkWord(@RequestParam(name = SensitiveWordController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = SensitiveWordController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = SensitiveWordController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = SensitiveWordController.parameterUserId, required = true) Long userId,

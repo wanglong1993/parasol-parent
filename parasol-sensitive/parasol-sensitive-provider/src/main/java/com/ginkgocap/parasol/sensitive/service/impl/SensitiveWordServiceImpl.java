@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.HibernateException;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
@@ -16,6 +21,8 @@ import com.ginkgocap.parasol.sensitive.service.SensitiveWordService;
 import com.ginkgocap.parasol.sensitive.sw.SWSeeker;
 import com.ginkgocap.parasol.util.sw.format.AbstractFormat;
 import com.ginkgocap.parasol.util.sw.format.HTMLFormat;
+import com.ginkgocap.ywxt.framework.dal.dao.config.helper.DaoHelper;
+import com.ginkgocap.ywxt.framework.dal.dao.impl.DBAgentHibernateImpl.HibernateCallbackTransaction;
 
 /**
  * 
@@ -35,7 +42,13 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	private static int error_sensitivewordids_null = 103;	//	id列表为空
 	private static int error_checkword_exist = 104;	//	敏感词已存在
 	
-	SWSeeker sw = new SWSeeker();
+	
+	private SessionFactory sessionFactory = DaoHelper.getSessionFactory();
+	private HibernateTemplate hibernateTemplate = new HibernateTemplate(sessionFactory);
+	
+	volatile SWSeeker sw = new SWSeeker();
+	
+	volatile boolean needUpdate = false;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	@Override
@@ -57,7 +70,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	@Override
 	public SensitiveWord saveOrUpdate(SensitiveWord sensitiveWord) throws SensitiveWordServiceException {
 		if(sensitiveWord == null) {
-			throw new SensitiveWordServiceException(error_sensitiveword_blank,"sensitive worid id is null");
+			throw new SensitiveWordServiceException(error_sensitiveword_blank,"sensitive word id is null");
 		}
 		logger.info("进入保存或修改敏感词，参数word:{}", sensitiveWord.getWord());
 		if(sensitiveWord.getId()>0){
@@ -67,6 +80,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 				logger.error("修改敏感词失败，参数word:{}", sensitiveWord.getWord());
 				throw new SensitiveWordServiceException(e);
 			}
+			needUpdate = true;
 			return sensitiveWord;
 		}else{
 			try {
@@ -76,6 +90,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 				logger.error("保存敏感词失败，参数word:{}", sensitiveWord.getWord());
 				throw new SensitiveWordServiceException(e);
 			}
+			needUpdate = true;
 			return sensitiveWord;
 		}
 	}
@@ -89,7 +104,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 		int count = 0;
 		try {
 			count = countEntitys("SensitiveWord_Id_Name",word);
-			if(count>0) throw new SensitiveWordServiceException(error_checkword_exist,word+" is null");
+			if(count>0) throw new SensitiveWordServiceException(error_checkword_exist,word+" already exist!");
 		} catch (BaseServiceException e) {
 			logger.error("检查敏感词是否已存在失败，参数word:{}", word);
 			throw new SensitiveWordServiceException(e);
@@ -101,7 +116,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 	@Override
 	public boolean deleteById(Long id) throws SensitiveWordServiceException{
 		if(id == 0) {
-			throw new SensitiveWordServiceException(error_sensitiveid_blank,"delete sensitive worid id is null");
+			throw new SensitiveWordServiceException(error_sensitiveid_blank,"delete sensitive word id is null");
 		}
 		logger.info("进入根据id删除敏感词，参数id:{}", id);
 		boolean flag = false;
@@ -111,13 +126,14 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 			logger.error("根据id删除敏感词失败，参数id:{}", id);
 			throw new SensitiveWordServiceException(e);
 		}
+		needUpdate = true;
 		return flag;
 	}	
 	
 	@Override
 	public boolean deleteByIds(List<Long> ids) throws SensitiveWordServiceException {
 		if(ids == null || ids.size() == 0) {
-			throw new SensitiveWordServiceException(error_sensitivewordids_null,"delete sensitive worid ids is null");
+			throw new SensitiveWordServiceException(error_sensitivewordids_null,"delete sensitive word ids is null");
 		}
 		logger.info("进入根据id列表删除敏感词，参数id:{}", ids);
 		boolean flag = false;
@@ -127,30 +143,30 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 			logger.error("根据id列表删除敏感词失败，参数id:{}", ids);
 			throw new SensitiveWordServiceException(e);
 		}
+		needUpdate = true;
 		return flag;
 	}
 	
 	public int updateWord(){
-		logger.info("进入更新敏感词！");
+
 		SWSeeker sw2 = new SWSeeker();
 		try {
-			if(!sw2.isReady()){
+			if(needUpdate){
+				logger.info("进入更新敏感词！");
 				int start=0;
 				int step=100;
-				List<SensitiveWord> list = getSubEntitys("SensitiveWord_Id_Level", start ,step, -1);
-				while(list.size()>0){
-					List<String> words = new ArrayList<String>();
-					for(SensitiveWord s:list){
-						words.add(s.getWord());
-					}
+				List<String> words = getAllSensitiveWord(start, step);
+				while(words.size()>0){
 					sw2.initData(words);
 					start+=100;
-					list = getEntitys("SensitiveWord_Id_Level", start ,step, -1);
+					words = getAllSensitiveWord(start, step);
 				}
 			}
 			if(sw2!=null){
 				sw=sw2;
 			}
+			// 改变状态
+			needUpdate = false;
 			return 1;
 		} catch (Exception e) {
 			logger.error("更新敏感词失败！错误信息"+e.getMessage());
@@ -158,6 +174,22 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 			return 0;
 		}
 	}
+	
+	private List<String> getAllSensitiveWord(final int start , final int step) {
+
+		
+		return hibernateTemplate.execute(new HibernateCallbackTransaction<List<String>>() {
+			@Override
+			public List<String> doInHibernateTransaction(Session session) throws HibernateException {
+				SQLQuery query = session.createSQLQuery("select word from tb_sensitive_word");
+				query.setFirstResult(start);
+				query.setMaxResults(step);
+				List<String> result = query.list();
+				return result == null ? new ArrayList<String>() : result;
+			}
+		});
+	}
+	
 	/**
 	 * 高亮文本中的关键词
 	 * @param text 文本
@@ -191,15 +223,11 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 			try {
 				int start=0;
 				int step=100;
-				List<SensitiveWord> list = getSubEntitys("SensitiveWord_Id_Level", start ,step, -1);
-				while(list.size()>0){
-					List<String> words = new ArrayList<String>();
-					for(SensitiveWord s:list){
-						words.add(s.getWord());
-					}
+				List<String> words = getAllSensitiveWord(start, step);
+				while(words.size()>0){
 					sw.initData(words);
 					start+=100;
-					list = getSubEntitys("SensitiveWord_Id_Level", start ,step, -1);
+					words = getAllSensitiveWord(start, step);
 				}
 			}catch(Exception e) {
 				logger.error("初始化敏感词失败！错误信息"+e.getMessage());
@@ -221,6 +249,7 @@ public class SensitiveWordServiceImpl extends BaseService<SensitiveWord> impleme
 			logger.info("批量保存敏感词方法失败！"+e.getMessage());
 			e.printStackTrace();
 		}
+		updateWord();
 		return false; 
 	}
 
