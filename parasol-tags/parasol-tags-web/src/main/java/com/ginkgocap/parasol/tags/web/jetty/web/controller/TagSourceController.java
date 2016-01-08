@@ -139,13 +139,13 @@ public class TagSourceController extends BaseControl {
 	//@formatter:off
 	/**
 	 * 2. 删除一个TagSource
-	 * curl -i "http://localhost:8081/tags/source/deleteSource?appKey=1&userId=111&id=3925349171986436"
+	 * curl -i "http://localhost:8081/tags/source/deleteTagSource?appKey=1&userId=111&id=3925349171986436"
 	 * @param request
 	 * @return
 	 * @throws TagSourceServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/tags/source/deleteSource", method = { RequestMethod.GET, RequestMethod.DELETE})
+	@RequestMapping(path = "/tags/source/deleteTagSource", method = { RequestMethod.GET, RequestMethod.DELETE})
 	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
