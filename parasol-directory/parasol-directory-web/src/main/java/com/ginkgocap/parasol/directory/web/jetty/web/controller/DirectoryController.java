@@ -193,7 +193,7 @@ public class DirectoryController extends BaseControl {
 	}
 
 	/**
-	 * 1. （查询类）查询分类下的根目录
+	 * 查询根目录
 	 * 
 	 * @param request
 	 * @return
@@ -201,7 +201,7 @@ public class DirectoryController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = { "/directory/directory/getRootList" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getFunctionClassList(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
+	public MappingJacksonValue getRootList(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectoryController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = DirectoryController.paramenterUserId, required = true) Long userId,
@@ -224,7 +224,7 @@ public class DirectoryController extends BaseControl {
 	}
 
 	/**
-	 * 1. （查询类)查询一个子目录
+	 * 查询子目录
 	 * 
 	 * @param request
 	 * @return
