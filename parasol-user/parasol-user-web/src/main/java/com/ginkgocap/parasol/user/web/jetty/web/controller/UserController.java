@@ -132,15 +132,15 @@ public class UserController extends BaseControl {
 		try {
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
 				if(exists){
-					if(type==1)resultMap.put( "error", "email already exists.");
-					if(type==2)resultMap.put( "error", "mobile already exists.");
+					if(type==1)resultMap.put( "message", "email already exists.");
+					if(type==2)resultMap.put( "message", "mobile already exists.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				//个人用户组织用户邮箱注册
 				if((type==1 && userType.equals("0")) ||(type==1 && userType.equals("1"))){
 					if(!isEmail(passport)){
-						resultMap.put( "error", "email format is not correct.");
+						resultMap.put( "message", "email format is not correct.");
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
 					}
@@ -148,7 +148,7 @@ public class UserController extends BaseControl {
 				//个人用户手机注册
 				if(type==2 && userType.equals("0")){
 					if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
-						resultMap.put( "error", "code is not right");
+						resultMap.put( "message", "code is not right");
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
 					}
@@ -193,7 +193,7 @@ public class UserController extends BaseControl {
 						resultMap.put( "message", "send mail success");
 						resultMap.put( "status", 1);
 					}else{
-						resultMap.put( "error", "send email failed.");
+						resultMap.put( "message", "send email failed.");
 						resultMap.put( "status", 0);
 					}
 					return new MappingJacksonValue(resultMap);
@@ -259,12 +259,12 @@ public class UserController extends BaseControl {
 						resultMap.put( "message", "send mail success");
 						resultMap.put( "status", 1);
 					}else{
-						resultMap.put( "error", "send email failed.");
+						resultMap.put( "message", "send email failed.");
 						resultMap.put( "status", 1);
 					}
 					return new MappingJacksonValue(resultMap);
 				}
-				resultMap.put("error", "paramter type or userType error.");
+				resultMap.put("message", "paramter type or userType error.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
@@ -304,7 +304,7 @@ public class UserController extends BaseControl {
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(userLoginRegister==null){
-				resultMap.put("error", "passport is not exists.");
+				resultMap.put("message", "passport is not exists.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -350,7 +350,7 @@ public class UserController extends BaseControl {
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(userLoginRegister==null){
-				resultMap.put("error", "passport is not exists in UserLoginRegister.");
+				resultMap.put("message", "passport is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -383,7 +383,7 @@ public class UserController extends BaseControl {
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(userLoginRegister==null){
-				resultMap.put("error", "passport is not exists in UserLoginRegister.");
+				resultMap.put("message", "passport is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -416,7 +416,7 @@ public class UserController extends BaseControl {
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(userLoginRegister==null){
-				resultMap.put("error", "passport is not exists in UserLoginRegister.");
+				resultMap.put("message", "passport is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -448,15 +448,15 @@ public class UserController extends BaseControl {
 		UserFriendly userFriendly=null;
 		try {
 			if(!status.equals("0")){
-				resultMap.put("error", "status must be 0.");
+				resultMap.put("message", "status must be 0.");
 				resultMap.put("status",0);
 			}
 			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
-				resultMap.put("error", "userId is not exists in UserLoginRegister.");
+				resultMap.put("message", "userId is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
 			}
 			if(userLoginRegisterService.getUserLoginRegister(friendId)==null){
-				resultMap.put("error", "friendId is not exists in UserLoginRegister.");
+				resultMap.put("message", "friendId is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
 			}
 			userFriendly=new UserFriendly();
@@ -500,24 +500,24 @@ public class UserController extends BaseControl {
 		boolean bl=false;
 		try {
 				if(!status.equals("1")){
-					resultMap.put("error", "status must be 1.");
+					resultMap.put("message", "status must be 1.");
 					resultMap.put("status",0);
 				}
 				userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 				if(userLoginRegister==null){
-					resultMap.put("error", "userId is not exists in UserLoginRegister.");
+					resultMap.put("message", "userId is not exists in UserLoginRegister.");
 					resultMap.put("status",0);
 				}
 				userLoginRegisterFriend=userLoginRegisterService.getUserLoginRegister(friendId);
 				if(userLoginRegisterFriend==null){
-					resultMap.put("error", "friendId is not exists in UserLoginRegister.");
+					resultMap.put("message", "friendId is not exists in UserLoginRegister.");
 					resultMap.put("status",0);
 				}
 				//检查个人好友是否存在
 				if(userLoginRegisterFriend.getUsetType().intValue()==0){
 					userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
 					if(userBasic==null){
-						resultMap.put("error", "friendId is not exists in UserBasic.");
+						resultMap.put("message", "friendId is not exists in UserBasic.");
 						resultMap.put("status",0);
 					}
 				}
@@ -525,7 +525,7 @@ public class UserController extends BaseControl {
 				if(userLoginRegisterFriend.getUsetType().intValue()==1){
 					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegisterFriend.getId());
 					if(userOrganBasic==null){
-						resultMap.put("error", "friendId is not exists in UserOrganBasic.");
+						resultMap.put("message", "friendId is not exists in UserOrganBasic.");
 						resultMap.put("status",0);
 					}
 				}
@@ -633,19 +633,19 @@ public class UserController extends BaseControl {
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(userLoginRegister==null){
-				resultMap.put("error", "userId is not exists in UserLoginRegister.");
+				resultMap.put("message", "userId is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
 			}
 			userLoginRegisterFriend=userLoginRegisterService.getUserLoginRegister(friendId);
 			if(userLoginRegisterFriend==null){
-				resultMap.put("error", "friendId is not exists in UserLoginRegister.");
+				resultMap.put("message", "friendId is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
 			}
 			//检查个人好友是否存在
 			if(userLoginRegisterFriend.getUsetType().intValue()==0){
 				userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
 				if(userBasic==null){
-					resultMap.put("error", "friendId is not exists in UserBasic.");
+					resultMap.put("message", "friendId is not exists in UserBasic.");
 					resultMap.put("status",0);
 				}
 			}
@@ -653,7 +653,7 @@ public class UserController extends BaseControl {
 			if(userLoginRegisterFriend.getUsetType().intValue()==1){
 				userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegisterFriend.getId());
 				if(userOrganBasic==null){
-					resultMap.put("error", "friendId is not exists in UserOrganBasic.");
+					resultMap.put("message", "friendId is not exists in UserOrganBasic.");
 					resultMap.put("status",0);
 				}
 			}
@@ -740,7 +740,7 @@ public class UserController extends BaseControl {
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(ObjectUtils.isEmpty(userLoginRegister)){
-				resultMap.put("error", "passport is not exists.");
+				resultMap.put("message", "passport is not exists.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -749,7 +749,7 @@ public class UserController extends BaseControl {
 			if(userLoginRegister.getUsetType().intValue()==1){
 				userOrganBasic= userOrganBasicService.getUserOrganBasic(userId);
 				if(userOrganBasic==null){
-					resultMap.put( "error", "userId is not exist in UserOrganBasic.");
+					resultMap.put( "message", "userId is not exist in UserOrganBasic.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -796,7 +796,7 @@ public class UserController extends BaseControl {
 			if(userLoginRegister.getUsetType().intValue()==2){
 				userBasic= userBasicService.getUserBasic(userId);
 				if(userBasic==null){
-					resultMap.put( "error", "userId is not exist in UserBasic.");
+					resultMap.put( "message", "userId is not exist in UserBasic.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -843,12 +843,12 @@ public class UserController extends BaseControl {
 	/**
 	 * 用户登录
 	 * 
-	 * @param passport 为邮箱和手机号
+	 * @param passport 为邮箱或者手机号
 	 * @param password 用户密码
 	 * @param source  来源的appkey
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/login" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/login" }, method = { RequestMethod.POST})
 	public MappingJacksonValue login(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
@@ -862,7 +862,7 @@ public class UserController extends BaseControl {
 			String salt=userLoginRegister.getSalt();
 			password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			if(!userLoginRegister.getPassword().equals(password)){
-				resultMap.put("error", "incorrect password .");
+				resultMap.put("message", "incorrect password .");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -887,10 +887,10 @@ public class UserController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			if(userLoginRegisterService.passportIsExist(passport)){
-				if(isEmail(passport))resultMap.put("error", "email already exists.");
-				else resultMap.put("error", "email format is not correct.");
-				if(isMobileNo(passport))resultMap.put("error", "mobile already exists.");
-				else resultMap.put("error", "mobile phone number is not correct.");
+				if(isEmail(passport))resultMap.put("message", "email already exists.");
+				else resultMap.put("message", "email format is not correct.");
+				if(isMobileNo(passport))resultMap.put("message", "mobile already exists.");
+				else resultMap.put("message", "mobile phone number is not correct.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -918,7 +918,7 @@ public class UserController extends BaseControl {
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
 			if(userLoginRegister==null){
-				resultMap.put("error", "email is not exists in UserLogniRegister.");
+				resultMap.put("message", "email is not exists in UserLogniRegister.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -926,17 +926,17 @@ public class UserController extends BaseControl {
 				if(userLoginRegister.getUsetType().intValue()==0){
 					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
 					if(userBasic==null){
-						resultMap.put("error", "email is not exists in UserBasic.");
+						resultMap.put("message", "email is not exists in UserBasic.");
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
 					userBasic.setAuth(new Byte("1"));
 					if(userBasicService.updateUserBasic(userBasic)){
-						resultMap.put("error", "email validate success.");
+						resultMap.put("message", "email validate success.");
 						resultMap.put("status",1);
 						return new MappingJacksonValue(resultMap);
 					}else{
-						resultMap.put("error", "email validate failed.");
+						resultMap.put("message", "email validate failed.");
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
@@ -944,17 +944,17 @@ public class UserController extends BaseControl {
 				if(userLoginRegister.getUsetType().intValue()==1){
 					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
 					if(userOrganBasic==null){
-						resultMap.put("error", "email is not exists in UserOrganBasic.");
+						resultMap.put("message", "email is not exists in UserOrganBasic.");
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
 					userOrganBasic.setAuth(new Byte("1"));
 					if(userOrganBasicService.updateUserOrganBasic(userOrganBasic)){
-						resultMap.put("error", "email validate success.");
+						resultMap.put("message", "email validate success.");
 						resultMap.put("status",1);
 						return new MappingJacksonValue(resultMap);
 					}else{
-						resultMap.put("error", "email validate failed.");
+						resultMap.put("message", "email validate failed.");
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
@@ -987,7 +987,7 @@ public class UserController extends BaseControl {
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(ObjectUtils.isEmpty(userLoginRegister)){
-				resultMap.put("error", "passport is not exists.");
+				resultMap.put("message", "passport is not exists.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -995,7 +995,7 @@ public class UserController extends BaseControl {
 			String salt=userLoginRegisterService.setSalt();
 			oldpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			if(!userLoginRegister.getPassword().equals(oldpassword)){
-				resultMap.put("error", "incorrect oldpassword .");
+				resultMap.put("message", "incorrect oldpassword .");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -1026,23 +1026,23 @@ public class UserController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 				if(StringUtils.isEmpty(passport)){
-					resultMap.put( "error", "passport is null or empty.");
+					resultMap.put( "message", "passport is null or empty.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(!isMobileNo(passport)){
-					resultMap.put( "error", "passport is not right phone number.");
+					resultMap.put( "message", "passport is not right phone number.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(userLoginRegisterService.passportIsExist(passport)){
-					resultMap.put( "error", "mobile already exists.");
+					resultMap.put( "message", "mobile already exists.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				String code=userLoginRegisterService.sendIdentifyingCode(passport);
 				if(StringUtils.isEmpty(code)){
-					resultMap.put( "error", "failed to get the verfication code.");
+					resultMap.put( "message", "failed to get the verfication code.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);	
 				}else{
@@ -1072,27 +1072,27 @@ public class UserController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 				if(!userLoginRegisterService.passportIsExist(passport)){
-					resultMap.put("error", "passport is not exists.");
+					resultMap.put("message", "passport is not exists.");
 					resultMap.put("status",0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(StringUtils.isEmpty(provinceId)){
-					resultMap.put( "error", "provinceId is null or empty.");
+					resultMap.put( "message", "provinceId is null or empty.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(StringUtils.isEmpty(passport)){
-					resultMap.put( "error", "passport is null or empty.");
+					resultMap.put( "message", "passport is null or empty.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(start<0){
-					resultMap.put( "error", "start must be than zero.");
+					resultMap.put( "message", "start must be than zero.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(count<=0){
-					resultMap.put( "error", "count must be than zero.");
+					resultMap.put( "message", "count must be than zero.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -1125,27 +1125,27 @@ public class UserController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			if(!userLoginRegisterService.passportIsExist(passport)){
-				resultMap.put("error", "passport is not exists.");
+				resultMap.put("message", "passport is not exists.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
 			if(StringUtils.isEmpty(thirdIndustryId)){
-				resultMap.put( "error", "provinceId is null or empty.");
+				resultMap.put( "message", "provinceId is null or empty.");
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
 			if(StringUtils.isEmpty(passport)){
-				resultMap.put( "error", "passport is null or empty.");
+				resultMap.put( "message", "passport is null or empty.");
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
 			if(start<0){
-				resultMap.put( "error", "start must be than zero.");
+				resultMap.put( "message", "start must be than zero.");
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
 			if(count<=0){
-				resultMap.put( "error", "count must be than zero.");
+				resultMap.put( "message", "count must be than zero.");
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
