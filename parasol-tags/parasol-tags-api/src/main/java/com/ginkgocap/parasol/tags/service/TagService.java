@@ -73,7 +73,7 @@ public interface TagService {
 	 * @return
 	 * @throws TagServiceException
 	 */
-	public List<Tag> getTagsByUserIdAppidTagType(Long userId, Long appId, Integer tagType) throws TagServiceException;
+	public List<Tag> getTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException;
 
 	/**
 	 * 查找指定用户指定应用指定分类的Tag列表
@@ -84,6 +84,6 @@ public interface TagService {
 	 * @return
 	 * @throws TagServiceException
 	 */
-	public int countTagsByUserIdAppidTagType(Long userId, Long appId, Integer tagType) throws TagServiceException;
+	public int countTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException;
 
 }
