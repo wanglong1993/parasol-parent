@@ -19,7 +19,7 @@ import junit.framework.TestResult;
 public class TagServiceTest extends TestBase implements Test {
 	private static long System_AppId = 1;
 	private static Long userId = 111l;
-	private static int tagType = 1; //表示是什么类型，比如万能插座中的知识、事物等
+	private static long tagType = 1l; //表示是什么类型，比如万能插座中的知识、事物等
 
 	private static Long sourceId = 1l; //资源的Id
 	private static int sourceType =1;  //资源的类型
