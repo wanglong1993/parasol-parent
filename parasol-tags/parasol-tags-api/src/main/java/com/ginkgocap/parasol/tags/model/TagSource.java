@@ -96,7 +96,7 @@ public class TagSource implements Serializable {
 		return sourceType;
 	}
 
-	public void setSourceType(int sourceType) {
+	public void setSourceType(long sourceType) {
 		this.sourceType = sourceType;
 	}
 
