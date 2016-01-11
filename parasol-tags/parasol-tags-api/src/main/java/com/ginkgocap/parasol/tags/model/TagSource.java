@@ -36,7 +36,7 @@ public class TagSource implements Serializable {
 	private long appId;// 'Source 的应用ID',
 	private long userId;// '创建TagSource的人',
 	private long sourceId; // '资源ID',
-	private int sourceType; // '资源类型 知识、人脉',
+	private long sourceType; // '资源类型 知识、人脉',
 	private long createAt; // '更新时间',
 
 	private String tagName; //不持久化
@@ -92,7 +92,7 @@ public class TagSource implements Serializable {
 	}
 
 	@Column(name = "sourceType")
-	public int getSourceType() {
+	public long getSourceType() {
 		return sourceType;
 	}
 
