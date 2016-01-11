@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -67,6 +68,8 @@ public class UserController extends BaseControl {
 	private UserFriendlyService userFriendlyService;
 	@Autowired
 	private UserOrgPerCusRelService userOrgPerCusRelService;
+	@Value("${user.web.url}")  
+    private String userWebUrl;  
 
 	/**
 	 * 用户注册
@@ -92,10 +95,10 @@ public class UserController extends BaseControl {
 	 * @return MappingJacksonValue
 	 * http://www.jsjtt.com/java/Javakuangjia/67.html
 	 */
-	@RequestMapping(path = { "/user/register" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/register" }, method = { RequestMethod.POST })
 	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "type",required = true) int type
-			,@RequestParam(name = "code",required = true) String code
+			,@RequestParam(name = "code",required = false) String code
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
 			,@RequestParam(name = "userType",required = true) String userType
@@ -160,13 +163,24 @@ public class UserController extends BaseControl {
 				userLoginRegister.setUsetType(new Byte(userType));
 				userLoginRegister.setIp(ip);
 				userLoginRegister.setSource(source);
+				userLoginRegister.setCtime(System.currentTimeMillis());
+				userLoginRegister.setUtime(System.currentTimeMillis());
 				if(type==1)userLoginRegister.setEmail(passport);
 				if(type==2)userLoginRegister.setMobile((passport));
 				id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 				//个人用户邮箱注册
 				if((type==1 && userType.equals("0"))){
+					userBasic= new UserBasic();
+					userBasic.setName(name);
+					userBasic.setMobile(passport);
+					userBasic.setPicId(picId);
+					userBasic.setStatus(new Byte("1"));
+					userBasic.setSex(new Byte("1"));
+					userBasic.setUserId(id);
+					userBasic.setAuth(new Byte("0"));
+					userBasicId=userBasicService.createUserBasic(userBasic);
 			        Map<String, Object> map = new HashMap<String, Object>();
-			        map.put("email", "http://www.gintong.com/user/verification?eamil="+Base64.decode(passport.getBytes()));
+			        map.put("email", userWebUrl+"/user/validateEmail?eamil="+passport);
 			        map.put("acceptor",passport);
 			        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 					if(userLoginRegisterService.sendEmail(passport, type, map)){
@@ -182,12 +196,12 @@ public class UserController extends BaseControl {
 				if(type==2 && userType.equals("0")){
 					userBasic= new UserBasic();
 					userBasic.setName(name);
-					userBasic.setPicId(picId);
 					userBasic.setMobile(passport);
 					userBasic.setPicId(picId);
 					userBasic.setStatus(new Byte("1"));
 					userBasic.setSex(new Byte("1"));
 					userBasic.setUserId(id);
+					userBasic.setAuth(new Byte("1"));
 					userBasicId=userBasicService.createUserBasic(userBasic);
 					userExt=new UserExt();
 					userExt.setName(name);
@@ -204,7 +218,7 @@ public class UserController extends BaseControl {
 						list.add(userInterestIndustry);
 						list=userInterestIndustryService.createUserInterestIndustryByList(list, id);
 					}
-					resultMap.put( "userLoginRegister", userLoginRegister);
+					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -232,7 +246,7 @@ public class UserController extends BaseControl {
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
 					//邮箱验证地址
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("email", "http://www.gintong.com/user/verification?eamil="+Base64.decode(passport.getBytes()));
+					map.put("email",  userWebUrl+"/user/validateEmail?eamil="+passport);
 					map.put("acceptor",passport);
 					map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 					if(userLoginRegisterService.sendEmail(passport, type, map)){
@@ -998,7 +1012,7 @@ public class UserController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/getIdentifyingCode" }, method = { RequestMethod.POST})
+	@RequestMapping(path = { "/user/getIdentifyingCode" }, method = { RequestMethod.GET})
 //	@RequestMapping(path = { "/user/getIdentifyingCode" })
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
@@ -1181,5 +1195,7 @@ public class UserController extends BaseControl {
 			ip = request.getRemoteAddr();
 		}
 		return ip;
-	}	
+	}
+	public static void main(String[] args) {
+	}
 }
