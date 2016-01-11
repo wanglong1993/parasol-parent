@@ -109,7 +109,7 @@ public class UserExtServiceImpl extends BaseService<UserExt> implements UserExtS
 	 */
 	private CodeRegion getCodeRegion(Long codeRegionId) throws UserExtServiceException{
 		try {
-			if(codeRegionId==null || codeRegionId<=0L)throw new UserExtServiceException("codeRegionId is null or empty");
+			if(codeRegionId==null || codeRegionId<=0L)return null;
 			CodeRegion codeRegion=codeRegionService.getCodeRegionById(codeRegionId);
 			return codeRegion;
 		} catch (Exception e) {
