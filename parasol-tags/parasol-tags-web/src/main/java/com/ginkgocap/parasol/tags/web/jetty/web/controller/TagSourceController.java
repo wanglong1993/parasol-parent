@@ -74,7 +74,7 @@ public class TagSourceController extends BaseControl {
 			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
 			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
-			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) Integer sourceType) {
+			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) Long sourceType) {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
