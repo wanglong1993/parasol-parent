@@ -443,14 +443,16 @@ public class UserController extends BaseControl {
 	 * @param userId  当前用户ID
 	 * @param friendId 要添加的好友的用户ID
 	 * @param content 添加用户时发送的消息.
+	 * @param appId 来源应用id.
+	 * @param status 申请状态.
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/applyToAddFriendly" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/applyToAddFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue applyToAddFriendly(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
 			,@RequestParam(name = "content",required = true) String content
-			,@RequestParam(name = "appId",required = true) String appId
+			,@RequestParam(name = "appId",required = true) Long appId
 			,@RequestParam(name = "status",required = true) String status
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -858,14 +860,12 @@ public class UserController extends BaseControl {
 	 * 
 	 * @param passport 为邮箱或者手机号
 	 * @param password 用户密码
-	 * @param source  来源的appkey
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/user/login" }, method = { RequestMethod.POST})
 	public MappingJacksonValue login(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
-			,@RequestParam(name = "source",required = true) String source
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
@@ -944,7 +944,7 @@ public class UserController extends BaseControl {
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("登录失败:"+passport);
+			logger.info("失败:"+passport);
 			throw e;
 		}
 	}
@@ -1017,17 +1017,16 @@ public class UserController extends BaseControl {
 	 * 修改密码
 	 * 
 	 * @param passport 为邮箱和手机号
-	 * @param oldpassword 用户密码
-	 * @param newpassword 用户密码
+	 * @param oldpassword 旧用户密码
+	 * @param newpassword 新用户密码
 	 * @param source  来源的appkey
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/updatepassword" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/updatepassword" }, method = { RequestMethod.POST })
 	public MappingJacksonValue updatepassword(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "oldpassword",required = true) String oldpassword
 			,@RequestParam(name = "newpassword",required = true) String newpassword
-			,@RequestParam(name = "source",required = true) String source
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
@@ -1039,17 +1038,18 @@ public class UserController extends BaseControl {
 				return new MappingJacksonValue(resultMap);
 			}
 			byte[] bt = Base64.decode(oldpassword);
-			String salt=userLoginRegisterService.setSalt();
+			String salt=userLoginRegister.getSalt();
 			oldpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			if(!userLoginRegister.getPassword().equals(oldpassword)){
 				resultMap.put("message", "incorrect oldpassword .");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			salt=userLoginRegisterService.setSalt();
+			bt = Base64.decode(newpassword);
+			salt=userLoginRegister.getSalt();
 			newpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			userLoginRegisterService.updatePassword(userLoginRegister.getId(), newpassword);
-			resultMap.put("userLoginRegister", userLoginRegister);
+			resultMap.put("message", "update password successed.");
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
