@@ -33,7 +33,7 @@ public class Tag implements Serializable {
 	private long id;// '标签ID'
 	private long userId; // '用户ID',
 	private long appId; // '应用ID',
-	private int tagType;// tag的分类（比如是：知识、组织、人、图片）默认0',
+	private long tagType;// tag的分类（比如是：知识、组织、人、图片）默认0',
 	private String tagName; // '标签名称',
 
 	@Id
@@ -48,7 +48,7 @@ public class Tag implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name="userId")
+	@Column(name = "userId")
 	public long getUserId() {
 		return userId;
 	}
@@ -57,7 +57,7 @@ public class Tag implements Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name="appId")
+	@Column(name = "appId")
 	public long getAppId() {
 		return appId;
 	}
@@ -66,16 +66,16 @@ public class Tag implements Serializable {
 		this.appId = appId;
 	}
 
-	@Column(name="tagType")
-	public int getTagType() {
+	@Column(name = "tagType")
+	public long getTagType() {
 		return tagType;
 	}
 
-	public void setTagType(int tagType) {
+	public void setTagType(long tagType) {
 		this.tagType = tagType;
 	}
 
-	@Column(name="tagName")
+	@Column(name = "tagName")
 	public String getTagName() {
 		return tagName;
 	}
@@ -84,6 +84,8 @@ public class Tag implements Serializable {
 		this.tagName = tagName;
 	}
 
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -91,7 +93,7 @@ public class Tag implements Serializable {
 		result = prime * result + (int) (appId ^ (appId >>> 32));
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((tagName == null) ? 0 : tagName.hashCode());
-		result = prime * result + tagType;
+		result = prime * result + (int) (tagType ^ (tagType >>> 32));
 		result = prime * result + (int) (userId ^ (userId >>> 32));
 		return result;
 	}
@@ -120,7 +122,5 @@ public class Tag implements Serializable {
 			return false;
 		return true;
 	}
-
-	
 
 }
