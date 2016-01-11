@@ -856,8 +856,15 @@ public class UserController extends BaseControl {
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
+		UserBasic userBasic=null;
+		UserOrganBasic userOrganBasic=null;
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			if(userLoginRegister==null){
+				resultMap.put( "message", "passport is not exist in UserLoginRegister.");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
 			byte[] bt = Base64.decode(password);
 			String salt=userLoginRegister.getSalt();
 			password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
@@ -866,7 +873,34 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			resultMap.put("userLoginRegister", userLoginRegister);
+			
+			if(isEmail(passport)){
+				if(userLoginRegister.getUsetType().intValue()==0)userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+				if(userBasic==null){
+					resultMap.put( "message", "passport is not exist in UserBasic.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userBasic.getAuth().intValue()==0){
+					resultMap.put( "message", "please verify your personal email address.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userLoginRegister.getUsetType().intValue()==1)userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+				if(userOrganBasic==null){
+					resultMap.put( "message", "passport is not exist in UserOrganBasic.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userOrganBasic.getAuth().intValue()==0){
+					resultMap.put( "message", "please verify your organization email address.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
+			resultMap.put("id", userLoginRegister.getId());
+			resultMap.put("passport", userLoginRegister.getPassport());
+			resultMap.put("userType", userLoginRegister.getUsetType());
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
