@@ -53,7 +53,7 @@ public interface TagSourceService {
 	 * @return
 	 * @throws TagSourceServiceException
 	 */
-	public List<TagSource> getTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Integer sourceType) throws TagSourceServiceException;
+	public List<TagSource> getTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Long sourceType) throws TagSourceServiceException;
 
 	/**
 	 * 统计一个资源下边的标签数量。
@@ -64,7 +64,7 @@ public interface TagSourceService {
 	 * @return
 	 * @throws TagSourceServiceException
 	 */
-	public Integer countTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Integer sourceType) throws TagSourceServiceException;
+	public Integer countTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Long sourceType) throws TagSourceServiceException;
 
 	/**
 	 * 根据一个应用的的TagId查找SourceId列表 比如：根据知识的“智能硬件”标签查找TagSource对象。
