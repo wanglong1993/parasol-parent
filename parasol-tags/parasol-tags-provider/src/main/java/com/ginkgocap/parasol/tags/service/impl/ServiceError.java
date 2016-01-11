@@ -142,7 +142,7 @@ public abstract class ServiceError {
 		}
 	}
 
-	public static void assertTagSourceTypeIsNullForTagSource(Integer typeId) throws TagSourceServiceException {
+	public static void assertTagSourceTypeIsNullForTagSource(Long typeId) throws TagSourceServiceException {
 		if (typeId == null) {
 			throw new TagSourceServiceException(ERROR_PARAMETER_NULL, "Required Long parameter typeId is not present");
 		}
