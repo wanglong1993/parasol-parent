@@ -169,7 +169,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		return result;
 	}
 	@Override
-	public List<Tag> getTagsByUserIdAppidTagType(Long userId, Long appId, Integer tagType) throws TagServiceException {
+	public List<Tag> getTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException {
 		ServiceError.assertUserIdIsNull(userId); // 检查用户ID
 		try {
 			List<Long> ids = this.getIds(LIST_TAG_ID_USERID_APPID_TAGTYPE, userId, appId, tagType);
@@ -184,7 +184,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	}
 
 	@Override
-	public int countTagsByUserIdAppidTagType(Long userId, Long appId, Integer tagType) throws TagServiceException {
+	public int countTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException {
 		ServiceError.assertUserIdIsNull(userId); // 检查用户ID
 		try {
 			return this.countEntitys(LIST_TAG_ID_USERID_APPID_TAGTYPE, userId, appId, tagType);
