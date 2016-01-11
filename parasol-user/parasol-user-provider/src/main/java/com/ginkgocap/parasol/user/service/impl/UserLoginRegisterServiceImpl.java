@@ -116,8 +116,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			// 根据id查找实体
 			UserLoginRegister userLoginRegister = getEntity(id);
 			if(userLoginRegister==null) throw new UserLoginRegisterServiceException("id is not exists in UserLoginRegister.");
-			userLoginRegister.setSalt(setSalt());
-			userLoginRegister.setPassword(setSha256Hash(userLoginRegister.getSalt(),password));
+			userLoginRegister.setPassword(password);
 			if(updateEntity(userLoginRegister))return true;
 			throw new UserLoginRegisterServiceException("updatePassword failed.");
 		}catch (BaseServiceException e) {
