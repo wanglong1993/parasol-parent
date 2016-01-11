@@ -179,6 +179,12 @@ public class UserController extends BaseControl {
 					userBasic.setUserId(id);
 					userBasic.setAuth(new Byte("0"));
 					userBasicId=userBasicService.createUserBasic(userBasic);
+					userExt=new UserExt();
+					userExt.setName(name);
+					userExt.setShortName(name);
+					userExt.setIp(ip);
+					userExt.setUserId(id);
+					userExtId=userExtService.createUserExt(userExt);
 			        Map<String, Object> map = new HashMap<String, Object>();
 			        map.put("email", userWebUrl+"/user/validateEmail?eamil="+passport);
 			        map.put("acceptor",passport);
