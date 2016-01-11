@@ -52,7 +52,7 @@ public class UserFriendly implements java.io.Serializable {
 	/**
 	 * appId.
 	 */
-	private String appId;
+	private Long appId;
 
 	public UserFriendly() {
 	}
@@ -135,11 +135,11 @@ public class UserFriendly implements java.io.Serializable {
 	}
 
 	@Transient
-	public String getAppId() {
+	public Long getAppId() {
 		return appId;
 	}
 
-	public void setAppId(String appId) {
+	public void setAppId(Long appId) {
 		this.appId = appId;
 	}
 
