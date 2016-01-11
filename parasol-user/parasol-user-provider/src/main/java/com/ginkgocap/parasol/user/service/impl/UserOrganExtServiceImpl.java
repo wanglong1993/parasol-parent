@@ -115,9 +115,9 @@ public class UserOrganExtServiceImpl extends BaseService<UserOrganExt> implement
 	 */
 	private FileIndex getFileIndex(Long fileIndexId) throws UserOrganExtServiceException {
 		try {
-			if(fileIndexId==null || fileIndexId<=0L)throw new UserOrganExtServiceException("fileIndexId is null or empty");
+			if(fileIndexId==null || fileIndexId<=0L)return null;
 			FileIndex fileIndex=fileIndexService.getFileIndexById(fileIndexId.longValue());
-			if(fileIndex==null) throw new UserOrganExtServiceException("fileIndexId is not exist in FileIndex");
+			if(fileIndex==null)return null;
 			return fileIndex;
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {

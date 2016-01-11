@@ -301,6 +301,7 @@ public class UserController extends BaseControl {
 		UserOrganExt userOrganExt= null;
 		UserBasic userBasic= null;
 		UserExt userExt= null;
+		List<UserDefined> list=null;
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(userLoginRegister==null){
@@ -311,19 +312,27 @@ public class UserController extends BaseControl {
 			if(userLoginRegister.getUsetType().intValue()==1){
 				userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
 				userOrganExt=userOrganExtService.getUserOrganExt(userLoginRegister.getId());
+				List<Long> ids=userDefinedService.getIdList(userLoginRegister.getId());
+				if(ids!=null && ids.size()!=0)list=userDefinedService.getIdList(ids);
 				resultMap.put("userLoginRegister", userLoginRegister);
 				resultMap.put("userOrganBasic", userOrganBasic);
 				resultMap.put("userOrganExt", userOrganExt);
+				resultMap.put("userDefinedList", list);
 				resultMap.put("status",1);
 			}
 			if(userLoginRegister.getUsetType().intValue()==0){
 				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
 				userExt=userExtService.getUserExt(userLoginRegister.getId());
 				resultMap.put("userLoginRegister", userLoginRegister);
+				List<Long> ids=userDefinedService.getIdList(userLoginRegister.getId());
+				if(ids!=null && ids.size()!=0)list=userDefinedService.getIdList(ids);
 				resultMap.put("userBasic", userBasic);
 				resultMap.put("userExt", userExt);
+				resultMap.put("userDefinedList", list);
 				resultMap.put("status",1);
 			}
+			userLoginRegister.setPassword(null);
+			userLoginRegister.setSalt(null);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("获取用户资料失败:"+passport);
@@ -706,7 +715,7 @@ public class UserController extends BaseControl {
 	 * @throws Exception
 	 * @return MappingJacksonValue
 	 */
-	@RequestMapping(path = { "/user/updateUser" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/updateUser" }, method = { RequestMethod.POST})
 	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "name",required = true) String name
@@ -789,11 +798,13 @@ public class UserController extends BaseControl {
 				userOrganExt.setIp(ip);
 				userOrganExt.setName(name);
 				userOrganExtService.updateUserOrganExt(userOrganExt);
+				resultMap.put( "message", "updateUser success.");
+				resultMap.put( "passport", passport);
 				resultMap.put("status",1);
 				return new MappingJacksonValue(resultMap);
 			}
 			//修改个人
-			if(userLoginRegister.getUsetType().intValue()==2){
+			if(userLoginRegister.getUsetType().intValue()==0){
 				userBasic= userBasicService.getUserBasic(userId);
 				if(userBasic==null){
 					resultMap.put( "message", "userId is not exist in UserBasic.");
@@ -814,6 +825,7 @@ public class UserController extends BaseControl {
 						String object[]=strUserDefined.split(",");
 						userDefined= new UserDefined();
 						userDefined.setUserId(userId);
+						userDefined.setIp(ip);
 						for (int i = 0; i < object.length; i++) {
 							if(i==0)userDefined.setUserDefinedModel(object[i]);
 							if(i==1)userDefined.setUserDefinedFiled(object[i]);
@@ -828,12 +840,13 @@ public class UserController extends BaseControl {
 				userExt.setCityId(cityId);
 				userExt.setCountyId(countyId);
 				userExt.setIp(ip);
+				userExt.setName(name);
 				userExtService.updateUserExt(userExt);
+				resultMap.put( "message", "updateUser success.");
+				resultMap.put( "passport", passport);
 				resultMap.put("status",1);
 				return new MappingJacksonValue(resultMap);
 			}			
-			resultMap.put("userLoginRegister", userLoginRegister);
-			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("登录失败:"+passport);
