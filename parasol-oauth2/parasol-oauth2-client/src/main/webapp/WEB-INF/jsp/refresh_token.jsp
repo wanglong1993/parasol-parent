@@ -57,7 +57,7 @@
                     若是开发者关心请求的参数,可点击'显示请求参数' 展示请求的参数细节.
                 </p>
 
-                <form class="form-horizontal" action="#" method="post" onsubmit="return false;">
+                <form class="form-horizontal" action="${accessTokenUri}" method="post" onsubmit="return false;">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">accessTokenUri</label>
 
