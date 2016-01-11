@@ -136,7 +136,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	}
 
 	@Override
-	public List<TagSource> getTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Integer sourceType) throws TagSourceServiceException {
+	public List<TagSource> getTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Long sourceType) throws TagSourceServiceException {
 		ServiceError.assertAppidIsNullForTagSource(appId);
 		ServiceError.assertTagSourceIdIsNullForTagSource(sourceId);
 		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
@@ -201,7 +201,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	}
 
 	@Override
-	public Integer countTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Integer sourceType) throws TagSourceServiceException {
+	public Integer countTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Long sourceType) throws TagSourceServiceException {
 		ServiceError.assertAppidIsNullForTagSource(appId);
 		ServiceError.assertTagSourceIdIsNullForTagSource(sourceId);
 		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
