@@ -28,6 +28,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +63,8 @@ public class UserThirdController extends BaseControl {
 	private UserExtService userExtService;
 	@Autowired
 	private UserOrganExtService userOrganExtService;
+	@Value("${upload.web.url}")  
+    private String uploadWebUrl;  
 	/**
 	 * 获取第三方登录url地址
 	 * 
@@ -101,23 +104,23 @@ public class UserThirdController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 				if(StringUtils.isEmpty(passport)){
-					resultMap.put( "error", "passport is null or empty.");
+					resultMap.put( "message", "passport is null or empty.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(!isMobileNo(passport)){
-					resultMap.put( "error", "passport is not right phone number.");
+					resultMap.put( "message", "passport is not right phone number.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(userLoginRegisterService.passportIsExist(passport)){
-					resultMap.put( "error", "mobile already exists.");
+					resultMap.put( "message", "mobile already exists.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				String code=userLoginRegisterService.sendIdentifyingCode(passport);
 				if(StringUtils.isEmpty(code)){
-					resultMap.put( "error", "failed to get the verfication code.");
+					resultMap.put( "message", "failed to get the verfication code.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);	
 				}else{
@@ -133,11 +136,21 @@ public class UserThirdController extends BaseControl {
 	/**
 	 * 第三方注册绑定
 	 * 
-	 * @param request
+	 * @param loginType 第三方类型:100为QQ,200为新浪微博
+	 * @param accessToken 第三方访问token
+	 * @param openId 开放平台的用户ID
+	 * @param name QQ或微博上的昵称
+	 * @param password 绑定的通行证的密码
+	 * @param passport 绑定的通行证
+	 * @param code 验证码
+	 * @param headPic QQ或微博头像地址
+	 * @param userType 0.个人用户,1.组织用户
+	 * @param source  来源的appkey
+	 * @param sex 性别
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userThird/bind" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/bind" }, method = { RequestMethod.POST})
 	public MappingJacksonValue bind(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "loginType",required = true) String loginType
 		,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -168,17 +181,16 @@ public class UserThirdController extends BaseControl {
 				userLoginThird=userLoginThirdService.getUserLoginThirdByOpenId(openId);
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
 				//没有绑定过且是新注册帐号
-				if(userLoginThird==null && exists){
+				if(userLoginThird==null && !exists){
 					//检查短信验证码
 					if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
-						resultMap.put( "error", "code is not right");
+						resultMap.put( "message", "code is not right");
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
 					}
 					//设置userLoginRegister开始
 					if(loginType.equals("100"))suffix="@qq";
 					if(loginType.equals("200"))suffix="@sina";
-					userLoginRegister.setPassport(passport);
 					byte[] bt = Base64.decode(password);
 					String salt=userLoginRegisterService.setSalt();
 					password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
@@ -188,16 +200,24 @@ public class UserThirdController extends BaseControl {
 					userLoginRegister.setIp(ip);
 					userLoginRegister.setSource(source);
 					userLoginRegister.setPassport(openId+suffix);
+					userLoginRegister.setMobile(passport);
 					
 					//设置userBasic开始
 					userBasic.setName(name);
+					userBasic.setMobile(passport);
 					userBasic.setSex(new Byte(sex));
+					Long picId=upload(request,uploadWebUrl,source,id.toString(), headPic);
+					if(picId==null || picId<=0L) {
+						resultMap.put( "message", "upload headPic failed.");
+						resultMap.put("status",0);
+					}
+					userBasic.setPicId(picId);
 					userBasic.setStatus(new Byte("1"));
-					userBasicId=userBasicService.createUserBasic(userBasic);
+					userBasic.setAuth(new Byte("1"));
 					userExt=new UserExt();
 					userExt.setName(name);
 					userExt.setIp(ip);
-					userExtId=userExtService.createUserExt(userExt);
+					
 					//设置userLoginThird开始
 					userLoginThird= new UserLoginThird();
 					userLoginThird.setAccesstoken(accessToken);
@@ -210,24 +230,31 @@ public class UserThirdController extends BaseControl {
 					//保存userBasic开始
 					userBasic.setUserId(id);
 					userId=userBasicService.createUserBasic(userBasic);
+					//保存userExt开始
+					userExt.setUserId(id);
+					userExtId=userExtService.createUserExt(userExt);
 					//保存userLoginThird开始
 					userLoginThird.setUserId(id);
 					id2=userLoginThirdService.saveUserLoginThird(userLoginThird);
 					
-					resultMap.put("userLoginRegister",userLoginRegister);
-					resultMap.put("userBasic",userBasic);
-					resultMap.put("userLoginThird",userLoginThird);
+					resultMap.put("userId", id);
+					resultMap.put("openId", userLoginThird.getOpenId());
+					resultMap.put("headPic", userLoginThird.getHeadPic());
+					resultMap.put("name", userBasic.getName());
+					resultMap.put("sex", userBasic.getSex());
 					resultMap.put("status",1);
 					logger.info("第三注册绑定新用户成功,用户id:"+id);
 					return new MappingJacksonValue(resultMap);
 				}
-				//没有绑定过绑定一个已经存在的帐号
-				if(userLoginThird==null && !exists){
+				//没有绑定过,绑定一个已经存在的帐号
+				if(userLoginThird==null && exists){
 					mappingJacksonValue=bindExistsPassport(request,response,loginType, accessToken,openId,password,passport,headPic);
+					return mappingJacksonValue;
 				}
 				//绑定过就直接登录
 				if(userLoginThird!=null){
 					mappingJacksonValue=login(request,response,loginType, accessToken,openId,headPic,name);
+					return mappingJacksonValue;
 				}
 				return mappingJacksonValue;
 		}catch (Exception e ){
@@ -248,7 +275,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userThird/bindExistsPassport" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/bindExistsPassport" }, method = { RequestMethod.POST})
 	public MappingJacksonValue bindExistsPassport(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "loginType",required = true) String loginType
 		,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -271,7 +298,7 @@ public class UserThirdController extends BaseControl {
 				String salt=userLoginRegister.getSalt();
 				String tablePssword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 				if(!userLoginRegister.getPassword().equals(tablePssword)){
-					resultMap.put( "error", "password is error");
+					resultMap.put( "message", "password is error.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -279,7 +306,7 @@ public class UserThirdController extends BaseControl {
 				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
 				int status=userBasic.getStatus().intValue();
 				if(status==0 || status==-1 || status==2  ){
-					resultMap.put( "error", "user have been logic deleted or locked or canceled");
+					resultMap.put( "message", "user have been logic deleted or locked or canceled");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -311,9 +338,12 @@ public class UserThirdController extends BaseControl {
 				userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);
 				//创建userLoginThird开始
 				id=userLoginThirdService.saveUserLoginThird(userLoginThird);
-				resultMap.put("userLoginRegister",userLoginRegister);
-				resultMap.put("userBasic",userBasic);
-				resultMap.put("userLoginThird",userLoginThird);
+				resultMap.put("userId", userLoginRegister.getId());
+				resultMap.put("openId", userLoginThird.getOpenId());
+				resultMap.put("headPic", userLoginThird.getHeadPic());
+				resultMap.put("name", userBasic.getName());
+				resultMap.put("sex", userBasic.getSex());
+				resultMap.put("status",1);
 				resultMap.put("status",1);
 				logger.info("第三方注册绑定已经存在的用户成功,用户passport:"+passport);
 				return new MappingJacksonValue(resultMap);
@@ -327,11 +357,12 @@ public class UserThirdController extends BaseControl {
 	/**
 	 * 设置里面解绑第三方登录
 	 * 
-	 * @param request
+	 * @param passport 用户通行证
+	 * @param openId 用户的openId
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userThird/unbindExistPassport" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/unbindExistPassport" }, method = { RequestMethod.POST})
 	public MappingJacksonValue unbindExistPassport(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 		,@RequestParam(name = "openId",required = true) String openId
@@ -345,17 +376,18 @@ public class UserThirdController extends BaseControl {
 				//查找此passport之前是否绑定过
 				userLoginThird=userLoginThirdService.getUserLoginThirdByOpenId(openId);
 				if(userLoginThird==null){
-					resultMap.put( "error", "openId never bind in userLoginThird.");
+					resultMap.put( "message", "openId never bind in userLoginThird.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(!userLoginThird.getUserId().equals(userLoginRegister.getId())){
-					resultMap.put( "error", "the userId in the userLoginRegister is different from the userId in the userLoginThird.");
+					resultMap.put( "message", "the userId in the userLoginRegister is different from the userId in the userLoginThird.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
 				//删除解绑
 				userLoginThirdService.realDeleteUserLoginThird(userLoginThird.getId());
+				resultMap.put( "message", "unbind successed.");
 				resultMap.put("status",1);
 				logger.info("解绑成功,用户passport:"+passport);
 				return new MappingJacksonValue(resultMap);
@@ -372,7 +404,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userThird/login" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/userThird/login" }, method = { RequestMethod.POST })
 	public MappingJacksonValue login(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "loginType",required = true) String loginType
 			,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -398,9 +430,11 @@ public class UserThirdController extends BaseControl {
 				userBasicService.updateUserBasic(userBasic);
 			}
 			userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);
-			resultMap.put("userLoginRegister",userLoginRegister);
-			resultMap.put("userBasic",userBasic);
-			resultMap.put("userLoginThird",userLoginThird);
+			resultMap.put("userId", userLoginRegister.getId());
+			resultMap.put("openId", userLoginThird.getOpenId());
+			resultMap.put("headPic", userLoginThird.getHeadPic());
+			resultMap.put("name", userBasic.getName());
+			resultMap.put("sex", userBasic.getSex());
 			resultMap.put("status",1);
 			logger.info("/userThird/login:success");
 			return new MappingJacksonValue(resultMap);
@@ -459,7 +493,11 @@ public class UserThirdController extends BaseControl {
 					userBasic.setName(name);
 					userBasic.setSex(new Byte(sex));
 					userBasic.setStatus(new Byte("1"));
-//					picId=upload("","123",id.toString(), "http://ww1.sinaimg.cn/thumbnail/9573641ejw1eumrd6vviyj20go0b474s.jpg");
+					picId=upload(request,uploadWebUrl,source,id.toString(), headPic);
+					if(picId==null || picId<=0L) {
+						resultMap.put( "message", "upload headPic failed.");
+						resultMap.put("status",0);
+					}
 					userBasic.setUserId(id);
 					userBasic.setPicId(picId);
 					userBasicId=userBasicService.createUserBasic(userBasic);
@@ -496,11 +534,14 @@ public class UserThirdController extends BaseControl {
 	/**
 	 * 上传头像
 	 * 
-	 * @param request
+	 * @param posturl 上传头像服务器地址
+	 * @param source  来源的appkey
+	 * @param userId  用户ID
+	 * @param headPic 图片的http地址
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userThird/upload" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/userThird/upload" }, method = { RequestMethod.POST})
 	public Long upload(HttpServletRequest request,
 			@RequestParam(name = "posturl",required = true) String posturl
 			,@RequestParam(name = "source",required = true) String source
@@ -522,16 +563,15 @@ public class UserThirdController extends BaseControl {
 	        	httpClient = HttpClients.custom()
 	        			.setDefaultRequestConfig(defaultRequestConfig)
 	        			.build();
-	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
-	        		.setProxy(new HttpHost("192.168.130.100", 8091))
-	        	    .build();
+//	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+//	        		.setProxy(new HttpHost("192.168.130.100", 8091))
+//	        	    .build();
 	        	URL url = new URL(headPic);
 	        	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	    		conn.setRequestMethod("GET");
 	    		conn.setReadTimeout(6 * 10000);
 	        	InputStreamBody file = new InputStreamBody(conn.getInputStream(),"");
-	        	InputStreamBody file1 = new InputStreamBody(request.getInputStream(),"");
-	            HttpPost httpPost = new HttpPost("http://192.168.130.100:8091/file/upload");
+	            HttpPost httpPost = new HttpPost(posturl);
 	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
 	            .addPart("file", file)
 	            .addPart("appKey",  new StringBody(source, ContentType.create("text/plain", Consts.UTF_8)))
@@ -543,7 +583,7 @@ public class UserThirdController extends BaseControl {
 	            .addPart("name", new StringBody("", ContentType.create("text/plain", Consts.UTF_8)))
 	            .build();  
 	            httpPost.setEntity(reqEntity);  
-	            httpPost.setConfig(requestConfig);
+//	            httpPost.setConfig(requestConfig);
 	            CloseableHttpResponse response = httpClient.execute(httpPost);  
 	            try {  
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
