@@ -477,6 +477,7 @@ public class UserController extends BaseControl {
 			userFriendly.setContent(content);
 			userFriendly.setAppId(appId);
 			userFriendlyService.createUserFriendly(userFriendly,true);
+			resultMap.put("message", "apply to add friendly successed.");
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
@@ -488,14 +489,15 @@ public class UserController extends BaseControl {
 	 * 同意添加好友
 	 * @param userId  当前用户ID
 	 * @param friendId 要添加的好友的用户ID
-	 * @param appId 添加用户时发送的消息.
+	 * @param appId  应用的appId.
+	 * @param status 申请状态.
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/auditByAddFriendly" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/auditByAddFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue auditByAddFriendly(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
-			,@RequestParam(name = "appId",required = true) String appId
+			,@RequestParam(name = "appId",required = true) Long appId
 			,@RequestParam(name = "status",required = true) String  status
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -574,6 +576,7 @@ public class UserController extends BaseControl {
 						userOrgPerCusRel.setName(userOrganBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
+					resultMap.put("message", "add friendId successed.");
 					resultMap.put("status",1);
 				}
 				//同意添加组织好友
@@ -602,6 +605,7 @@ public class UserController extends BaseControl {
 						userOrgPerCusRel.setName(userOrganBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
+					resultMap.put("message", "add friendId successed.");
 					resultMap.put("status",1);
 				}
 			
@@ -623,7 +627,7 @@ public class UserController extends BaseControl {
 	 * @param appId 应用的appId
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/deleteFriendly" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/deleteFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue deleteFriendly(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
@@ -675,6 +679,7 @@ public class UserController extends BaseControl {
 			bl1=userOrgPerCusRelService.deleteFriendly(userId);
 			bl2=userOrgPerCusRelService.deleteFriendly(friendId);
 			bl3=userFriendlyService.deleteFriendly(userId, friendId);
+			resultMap.put("message","delete friendly successed.");
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
@@ -1066,7 +1071,6 @@ public class UserController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/user/getIdentifyingCode" }, method = { RequestMethod.GET})
-//	@RequestMapping(path = { "/user/getIdentifyingCode" })
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
@@ -1105,7 +1109,10 @@ public class UserController extends BaseControl {
 	/**
 	 * 根据地区省ID获取用户列表
 	 * 
-	 * @param request
+	 * @param passport 用户通行证
+	 * @param provinceId 省ID
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
 	 * @return
 	 * @throws Exception
 	 */
@@ -1144,13 +1151,19 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				List<UserExt> list=userExtService.getUserExtListByProvinceId(start, count, provinceId);
-				if(list==null || list.size()==0)  return new MappingJacksonValue(list);
+				if(list==null || list.size()==0){
+					resultMap.put( "status", 0);
+					resultMap.put("message", "not found userId list.");
+					return new MappingJacksonValue(resultMap);
+				}
 				List<Long> ids=new ArrayList<Long>();
 				for (UserExt userExt : list) {
 					if(userExt!=null)ids.add(userExt.getUserId());
 				}
 				List<UserBasic> list2 = userBasicService.getUserBasecList(ids);
-				return new MappingJacksonValue(list2);
+				resultMap.put( "status", 1);
+				resultMap.put( "list", list2);
+				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			throw e;
 		}
@@ -1158,7 +1171,10 @@ public class UserController extends BaseControl {
 	/**
 	 * 根据第三级行业ID获取用户列表
 	 * 
-	 * @param request
+	 * @param passport 用户通行证
+	 * @param thirdIndustryId 三级行业ID
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
 	 * @return
 	 * @throws Exception
 	 */
@@ -1177,7 +1193,7 @@ public class UserController extends BaseControl {
 				return new MappingJacksonValue(resultMap);
 			}
 			if(StringUtils.isEmpty(thirdIndustryId)){
-				resultMap.put( "message", "provinceId is null or empty.");
+				resultMap.put( "message", "thirdIndustryId is null or empty.");
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -1197,13 +1213,19 @@ public class UserController extends BaseControl {
 				return new MappingJacksonValue(resultMap);
 			}
 			List<UserExt> list=userExtService.getUserListByThirdIndustryId(start, count, thirdIndustryId);
-			if(list==null || list.size()==0)  return new MappingJacksonValue(list);
+			if(list==null || list.size()==0){
+				resultMap.put( "status", 0);
+				resultMap.put("message", "not found userId list.");
+				return new MappingJacksonValue(resultMap);
+			}
 			List<Long> ids=new ArrayList<Long>();
 			for (UserExt userExt : list) {
 				if(userExt!=null)ids.add(userExt.getUserId());
 			}
 			List<UserBasic> list2 = userBasicService.getUserBasecList(ids);
-			return new MappingJacksonValue(list2);
+			resultMap.put( "status", 1);
+			resultMap.put( "list", list2);
+			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			throw e;
 		}
