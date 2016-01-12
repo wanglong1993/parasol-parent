@@ -84,7 +84,6 @@ public class MessageController extends BaseControl {
 			@RequestParam(name = MessageController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = MessageController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = MessageController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = MessageController.parameterName, required = true) String name,
 			@RequestParam(name = MessageController.parameterContent, required = true) String content,
 			@RequestParam(name = MessageController.parameterSourceId, required = true) Long sourceId,
 			@RequestParam(name = MessageController.parameterSourceType, required = true) Integer sourceType,

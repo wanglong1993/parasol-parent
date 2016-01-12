@@ -176,7 +176,7 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = FileController.parameterTaskId, required = true) Long indexId,
+			@RequestParam(name = FileController.parameterIndexId, required = true) Long indexId,
 			@RequestParam(name = FileController.parameterXEnd, required = true) Integer xEnd,
 			@RequestParam(name = FileController.parameterYEnd, required = true) Integer yEnd,
 			@RequestParam(name = FileController.parameterXStart, required = true) Integer xStart,
@@ -270,12 +270,13 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
 			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
-			@RequestParam(name = FileController.parameterIndexId, required = true) Long indexId
+			@RequestParam(name = FileController.parameterIndexId, required = true) long indexId
 			) throws FileIndexServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			FileIndex index = fileIndexService.getFileIndexById(indexId);
+			if(index == null) return mappingJacksonValue;
 			// fastDFS中删除上传的文件
 			deleteFileByFileId(index.getServerHost(),index.getFilePath(),index.getModuleType());
 			// 1.查询后台服务

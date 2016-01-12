@@ -89,7 +89,7 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 		logger.info("进入获取我的特定消息列表：参数userId:{}, type:{}, appId:{}", userId, type, appId);
 		List<MessageRelation> relations = null;
 		try {
-			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId_Type_AppId", 0,20, userId,type,appId);
+			relations = getSubEntitys("MessageRelation_List_Id_ReceiverId_Type_AppId", 0,20, userId, appId, type);
 		} catch (BaseServiceException e) {
 			logger.info("获取我的特定消息列表失败：参数userId:{}, type:{}, appId{} ", userId, type, appId);
 			e.printStackTrace();
