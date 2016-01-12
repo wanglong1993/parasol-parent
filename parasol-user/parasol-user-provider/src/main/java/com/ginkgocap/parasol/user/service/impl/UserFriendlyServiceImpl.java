@@ -54,7 +54,7 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 				map.put("createrId", userFriendly.getUserId().toString());
 				map.put("content", userFriendly.getContent());
 				map.put("sourceId", id.toString());
-				map.put("appid", userFriendly.getAppId());
+				map.put("appId", userFriendly.getAppId().toString());
 				map.put("sourceType", "");
 				map.put("sourceTitle", "");
 				map.put("receiverIds", userFriendly.getFriendId().toString());
