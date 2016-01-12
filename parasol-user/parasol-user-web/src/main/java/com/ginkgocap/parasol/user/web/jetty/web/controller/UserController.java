@@ -564,7 +564,8 @@ public class UserController extends BaseControl {
 						userOrgPerCusRel=new UserOrgPerCusRel();
 						userOrgPerCusRel.setUserId(friendId);
 						userOrgPerCusRel.setFriendId(userId);
-						userOrgPerCusRel.setName(userBasic.getName());
+						userOrgPerCusRel.setReleationType(new Byte("1"));
+						if(userBasic!=null)userOrgPerCusRel.setName(userBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
 					//添加对方的组织好友
@@ -573,7 +574,8 @@ public class UserController extends BaseControl {
 						userOrgPerCusRel=new UserOrgPerCusRel();
 						userOrgPerCusRel.setUserId(friendId);
 						userOrgPerCusRel.setFriendId(userId);
-						userOrgPerCusRel.setName(userOrganBasic.getName());
+						userOrgPerCusRel.setReleationType(new Byte("2"));
+						if(userOrganBasic!=null)userOrgPerCusRel.setName(userOrganBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
 					resultMap.put("message", "add friendId successed.");
@@ -584,7 +586,7 @@ public class UserController extends BaseControl {
 					userOrgPerCusRel=new UserOrgPerCusRel();
 					userOrgPerCusRel.setUserId(userId);
 					userOrgPerCusRel.setFriendId(friendId);
-					userOrgPerCusRel.setName(userOrganBasic.getName());
+					if(userOrganBasic!=null)userOrgPerCusRel.setName(userOrganBasic.getName());
 					userOrgPerCusRel.setReleationType(new Byte("2"));
 					userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					//添加对方的个人好友
@@ -593,7 +595,7 @@ public class UserController extends BaseControl {
 						userOrgPerCusRel=new UserOrgPerCusRel();
 						userOrgPerCusRel.setUserId(friendId);
 						userOrgPerCusRel.setFriendId(userId);
-						userOrgPerCusRel.setName(userBasic.getName());
+						if(userBasic!=null)userOrgPerCusRel.setName(userBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
 					//添加对方的组织好友
@@ -602,7 +604,7 @@ public class UserController extends BaseControl {
 						userOrgPerCusRel=new UserOrgPerCusRel();
 						userOrgPerCusRel.setUserId(friendId);
 						userOrgPerCusRel.setFriendId(userId);
-						userOrgPerCusRel.setName(userOrganBasic.getName());
+						if(userOrganBasic!=null)userOrgPerCusRel.setName(userOrganBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
 					resultMap.put("message", "add friendId successed.");
