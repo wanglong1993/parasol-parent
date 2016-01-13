@@ -99,5 +99,38 @@ public class UnityController {
     		throw e;
     	}
         }
-
+//	@RequestMapping("/user/getIdentifyingCode")
+//	@ResponseBody
+//	public void getIdentifyingCodePost(HttpServletRequest request,HttpServletResponse response, RedirectAttributesModelMap modelMap)throws Exception {
+//		
+//		modelMap.addAttribute("passport", request.getParameter("passport"));
+//		final Authentication authentication =SecurityContextHolder.getContext().getAuthentication();
+//		final Object principal = authentication.getPrincipal();
+//		SecurityUserDetails ocd=(SecurityUserDetails)principal;
+//		if(!ocd.user().getPassport().equals(modelMap.get("passport"))){
+//			doBgPostReq(response,getIdentifyingCode,modelMap); 
+//		}
+//	}
+//
+//	/**
+//	 * @Description: 后台进行POST请求(请写在代码执行结尾)
+//	 * @return void 返回类型
+//	 */
+//	public static void doBgPostReq(HttpServletResponse response,
+//			String postUrl, Map<String, ?> paramMap) throws IOException {
+//		response.setContentType("text/html;charset=utf-8");
+//		PrintWriter out = response.getWriter();
+//		out.println("<!DOCTYPE html><html>");
+//		out.println("<form name='postSubmit' method='POST' action='" + postUrl
+//				+ "' >");
+//		for (String key : paramMap.keySet()) {
+//			out.println("<input type='hidden' name='" + key + "' value='"
+//					+ paramMap.get(key) + "'>");
+//		}
+//		out.println("</form>");
+//		out.println("<script>");
+//		out.println("  document.postSubmit.submit()");
+//		out.println("</script>");
+//		out.println("</html>");
+//	}
 }
