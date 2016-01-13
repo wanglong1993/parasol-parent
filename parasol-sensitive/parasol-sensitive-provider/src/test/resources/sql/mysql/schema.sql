@@ -14,8 +14,8 @@ create table tb_sensitive_word
    level                int,
    type                 int,
    createrId            bigint,
-   appid                varchar(50),
+   appId                bigint,
    primary key (id)
-);  ENGINE=INNODB DEFAULT CHARSET=utf8;
+)  ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 alter table tb_sensitive_word comment 'sensitive word database';

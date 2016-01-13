@@ -16,7 +16,7 @@ create table tb_message_entity
    sourceId             bigint(20)                     null,
    sourceType           varchar(10)                        null,
    sourceTitle          varchar(255)                   null,
-   appid                bigint(50)                    null,
+   appId                bigint(20)                    null,
    PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 

@@ -20,7 +20,7 @@ public class SensitiveWordServiceTest extends TestBase{
 	@Test
 	public void TestInsertSensitiveWord() throws SensitiveWordServiceException {
 		SensitiveWord word = new SensitiveWord();
-		word.setAppid("gintong");
+		word.setAppId(11111);
 		word.setCreaterId(1l);
 		word.setLevel(2);
 		word.setType(5);
@@ -56,7 +56,7 @@ public class SensitiveWordServiceTest extends TestBase{
 		List<SensitiveWord> sensitiveWords = new ArrayList<SensitiveWord>();
 		for (String word : words) {
 			SensitiveWord sw = new SensitiveWord();
-			sw.setAppid("gintong");
+			sw.setAppId(111111);
 			sw.setCreaterId(1l);
 			sw.setLevel(4);
 			sw.setType(4);

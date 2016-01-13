@@ -40,7 +40,7 @@ public class SensitiveWord implements Serializable {
 	// 创建人姓名
 	private long createrId;
 	// 应用id
-	private String appid;
+	private long appId;
 
 	@Id
 	@GeneratedValue(generator = "id")
@@ -85,12 +85,12 @@ public class SensitiveWord implements Serializable {
 		this.createrId = createrId;
 	}
 	
-	@Column(name="appid")
-	public String getAppid() {
-		return appid;
+	@Column(name="appId")
+	public long getAppId() {
+		return appId;
 	}
-	public void setAppid(String appid) {
-		this.appid = appid;
+	public void setAppId(long appId) {
+		this.appId = appId;
 	}
 	
 }
