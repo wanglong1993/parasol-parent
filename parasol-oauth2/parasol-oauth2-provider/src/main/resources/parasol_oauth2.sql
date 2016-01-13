@@ -62,8 +62,8 @@ CREATE TABLE `oauth_client_details` (
   `client_id` varchar(255) NOT NULL COMMENT '客户端(client), 在实际应用中的另一个名称叫appKey,与client_id是同一个概念',
   `resource_ids` varchar(255) DEFAULT NULL COMMENT '客户端所能访问的资源id集合,多个资源时用逗号(,)',
   `client_secret` varchar(255) DEFAULT NULL COMMENT '用于指定客户端(client)的访问密匙,由服务端自动生成',
-  `company_name` varchar(50) DEFAULT NULL,
-  `application_name` varchar(50) DEFAULT NULL,
+  `company_name` varchar(50) DEFAULT NULL COMMENT '公司名或者个人名',
+  `application_name` varchar(50) DEFAULT NULL COMMENT '应用名称',
   `scope` varchar(255) DEFAULT NULL COMMENT '指定客户端申请的权限范围,可选值包括read,write,trust;若有多个权限范围用逗号(,)分隔,如: "read,write".',
   `authorized_grant_types` varchar(255) DEFAULT NULL COMMENT '指定客户端支持的grant_type,可选值包括authorization_code,password,refresh_token,implicit,client_credentials, 若支持多个grant_type用逗号(,)分隔,如: "authorization_code,password".',
   `web_server_redirect_uri` varchar(255) DEFAULT NULL COMMENT '客户端的重定向URI,在Oauth的流程中会使用并检查与注册时填写的redirect_uri是否一致',
@@ -74,9 +74,13 @@ CREATE TABLE `oauth_client_details` (
   `autoapprove` varchar(255) DEFAULT 'false' COMMENT '设置用户是否自动Approval操作, 默认值为 ''false'', 可选值包括 ''true'',''false'', ''read'',''write''. ',
   `archived` tinyint(1) DEFAULT '0',
   `trusted` tinyint(1) DEFAULT '0' COMMENT '设置客户端是否为受信任的,默认为''0''(即不受信任的,1为受信任的). ',
+  `userId` bigint(20) DEFAULT NULL COMMENT '创建人Id',
+  `status` tinyint(4) DEFAULT NULL COMMENT '应用状态:1.测试状态，2.提交申请，3审核上线。',
+  `type` tinyint(4) DEFAULT NULL COMMENT '应用类型：1.app应用，2.web应用',
+  `logoId` bigint(20) DEFAULT NULL COMMENT '公司logo文件ID',
   `ctime` bigint(20) NOT NULL,
   `utime` bigint(20) NOT NULL,
-  `ip` varchar(16) NOT NULL,
+  `ip` varchar(16) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_client_id` (`client_id`) USING BTREE,
@@ -84,7 +88,6 @@ CREATE TABLE `oauth_client_details` (
   UNIQUE KEY `index_application_name` (`application_name`) USING BTREE,
   KEY `index_company_name` (`company_name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 -- ----------------------------
 -- Table structure for `oauth_code`
