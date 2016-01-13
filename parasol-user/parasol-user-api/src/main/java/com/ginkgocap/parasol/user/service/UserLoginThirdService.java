@@ -1,7 +1,5 @@
 package com.ginkgocap.parasol.user.service;
 
-import java.util.Map;
-
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginThirdServiceException;
 import com.ginkgocap.parasol.user.model.UserLoginThird;
@@ -60,39 +58,6 @@ public interface UserLoginThirdService {
 	 */
 	public Boolean updateAccesstoken(String openId, String accesstoken)throws UserLoginThirdServiceException;
 
-	/**
-	 * 功能描述:根据openId查询是否绑定
-	 * @param openId
-	 * @param loginType
-	 * @return string
-	 */
-	String isBingByUid(String openId, int loginType)throws UserLoginThirdServiceException;
-
-	/**
-	 * 功能描述：绑定第三方登录
-	 * 
-	 * @param user
-	 * @param userLoginThird
-	 * @return map
-	 */
-	Map<String, Object> binding(Long userId, UserLoginThird userLoginThird)throws UserLoginThirdServiceException;
-
-	/**
-	 * 功能描述：解绑第三方登录
-	 * 
-	 * @param userLoginThird
-	 * @return
-	 */
-	Map<String, Object> unBinding(UserLoginThird userLoginThird) throws UserLoginThirdServiceException;
-
-	/**
-	 * 功能描述：根据用户access_token第三方用户信息
-	 * 
-	 * @param access_token
-	 * @param login_type
-	 * @return userLoginThird
-	 */
-	Map<String, Object> getThirdUserInfoByAccessToken(String access_token,int login_type) throws UserLoginThirdServiceException;
 
 	/**
 	 * 功能描述：判断是否绑定第三方
@@ -104,15 +69,6 @@ public interface UserLoginThirdService {
 	 */
 	boolean isBinding(String openId, Byte loginType) throws UserLoginThirdServiceException;
 
-	/**
-	 * 功能描述：注册绑定第三方账号
-	 * 
-	 * @param login_type
-	 * @param access_token
-	 * @param nikeName
-	 * @return map
-	 */
-	Map<String, Object> registerBinding(int login_type,String access_token, String nikeName)throws UserLoginThirdServiceException;
 
 	/**
 	 * 

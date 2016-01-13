@@ -5,16 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Resource;
-
-import jersey.repackaged.com.google.common.collect.Maps;
-import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.mime.content.InputStreamBody;
@@ -22,23 +15,15 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import weibo4j.model.WeiboException;
-
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.user.exception.UserBasicServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginThirdServiceException;
-import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserLoginThird;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserLoginThirdService;
-import com.ginkgocap.parasol.user.thirdlogin.autho.Autho2;
-import com.ginkgocap.parasol.user.thirdlogin.exception.QQException;
-import com.ginkgocap.parasol.user.thirdlogin.user.OpenID;
-import com.ginkgocap.parasol.user.thirdlogin.user.UserInfo;
-import com.ginkgocap.parasol.user.thirdlogin.utils.ThirdLoginConstantCode;
 @Service("userLoginThirdService")
 public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  implements UserLoginThirdService {
 	
@@ -58,7 +43,7 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 			String url=null;
 			if(type!=1 && type !=2 ) throw new UserLoginThirdServiceException("value of type is must be 1 or 2.");
 			if(type==1)url = new weibo4j.Oauth().authorize("code", "", "");
-			else if(type==2) url = new Autho2().getRedirect();
+//			else if(type==2) url = new Autho2().getRedirect();
 			return  url;
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
@@ -109,175 +94,7 @@ public class UserLoginThirdServiceImpl extends BaseService<UserLoginThird>  impl
 		}
 		return false;		
 	}
-	@Override
-	public String isBingByUid(String openId,int loginType) throws UserLoginThirdServiceException{
-		String url = "";
-		try{
-				UserLoginThird userLoginThird = selectUserByOpenId(openId, loginType);
-				if(userLoginThird!=null ) {   
-					if(ThirdLoginConstantCode.LOGIN_QQ.getKey() == loginType){
-					   logger.info(ThirdLoginConstantCode.LOGIN_QQ_BIND.getDescription());
-					   url = ThirdLoginConstantCode.LOGIN_QQ_BIND.getValue();
-					}else{
-					   logger.info(ThirdLoginConstantCode.LOGIN_WEIBO_BIND.getDescription());
-					   url = ThirdLoginConstantCode.LOGIN_WEIBO_BIND.getValue();
-					}
-				}
-				else {
-					if(ThirdLoginConstantCode.LOGIN_QQ.getKey() == loginType){
-					     logger.info(ThirdLoginConstantCode.LOGIN_QQ_NO_BIND.getDescription());
-					     url = ThirdLoginConstantCode.LOGIN_QQ_NO_BIND.getValue();
-					}
-					else{
-						 logger.info(ThirdLoginConstantCode.LOGIN_WEIBO_NO_BIND.getDescription());
-					     url = ThirdLoginConstantCode.LOGIN_WEIBO_NO_BIND.getValue();
-					}
-				}
-		} catch (Exception e) {
-			logger.error(ThirdLoginConstantCode.LOGIN_WEIBO_ERROR.getDescription() +"或"+ThirdLoginConstantCode.LOGIN_QQ_ERROR.getDescription() +e.getMessage(),e);
-			url = ThirdLoginConstantCode.LOGIN_WEIBO_ERROR.getValue();
-		}
-		return url;
-	}
 
-
-	@Override
-	public Map<String, Object> binding(Long userId, UserLoginThird userLoginThird) throws UserLoginThirdServiceException {
-		try {
-		boolean binding_status = false;
-		Map<String, Object> responseDataMap = Maps.newHashMap();
-		UserLoginThird users = selectUserByOpenId(userLoginThird.getOpenId(), userLoginThird.getLoginType());
-		responseDataMap.put(ThirdLoginConstantCode.LOGIN_TYPE.getValue(), userLoginThird.getLoginType()) ;
-		if(null == users){
-			Long id=saveUserLoginThird(userLoginThird);
-			if(id!=null && id>0l )	
-			binding_status = true;
-		   UserBasic userBasic =userBasicService.getUserBasic(userId);
-		   if(null != userBasic){
-			  String default_user_image = USER_DEFAULT_PIC_PATH_FAMALE;
-//			  if(null==userBasic.getPicPath() || userBasic.getPicPath().equals("") || default_user_image.equals(userBasic.getPicPath())){
-//				 userBasic.setPicPath(userLoginThird.getFigureurl());
-//			  }
-			  if(null == userBasic.getName() || userBasic.getName().equals("")){
-//				 userBasic.setName(userLoginThird.getNikeName());
-			  }
-			  if(binding_status) userBasicService.updateUserBasic(userBasic);
-		   }
-	    }
-		responseDataMap.put("binding_status", binding_status);
-		return responseDataMap;
-		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserLoginThirdServiceException(e);
-		}
-	}
-
-	@Override
-	public Map<String, Object> unBinding(UserLoginThird userLoginThird) throws UserLoginThirdServiceException{
-		try {
-	    boolean unBinding_status = true;
-	    Map<String, Object> responseDataMap = Maps.newHashMap();
-	    responseDataMap.put(ThirdLoginConstantCode.LOGIN_TYPE.getValue(), userLoginThird.getLoginType()) ;
-	    UserLoginThird ult = selectUserByOpenId(userLoginThird.getOpenId(), userLoginThird.getLoginType());
-	    if(null != ult)	ult.setOpenId("");
-	    updateUserLoginThird(ult);
-		responseDataMap.put("unBinding_status", unBinding_status);
-		return responseDataMap;
-		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserLoginThirdServiceException(e);
-		}
-	}
-
-	@Override
-	public Map<String, Object> getThirdUserInfoByAccessToken(String access_token, int login_type) throws UserLoginThirdServiceException{
-		Map<String, Object> responseDataMap = Maps.newHashMap();
-		Map<String, Object> notificationMap = Maps.newHashMap();
-		Map<String, Object> model = new HashMap<String, Object>();
-		if(StringUtils.isNotEmpty(access_token) && login_type>0){
-		   UserLoginThird userLoginThird = new UserLoginThird();	
-		   userLoginThird.setAccesstoken(access_token);
-		   if(new Integer(login_type).equals(String.valueOf(ThirdLoginConstantCode.LOGIN_QQ.getKey()))){ //QQ
-		      try{
-			     String open_id = new OpenID(access_token).getJson();
-				 String openid_json = StringUtils.substringBetween(open_id, "(", ")");
-				 String openId = JSONObject.fromObject(openid_json).get("openid").toString();
-				 userLoginThird.setOpenId(openId);
-				 userLoginThird.setLoginType(new Byte("100"));
-				 UserInfo userInfo = new UserInfo(access_token, openId); 
-//				 userLoginThird.setNikeName(userInfo.getNikeName());
-//				 userLoginThird.setFigureurl(userInfo.getFigureurl());
-				 responseDataMap.put("qqUserInfo", userInfo);
-			  }
-			  catch(QQException e){
-				 notificationMap.put("get_qq_openid_error", e.getMessage());
-				 model.put("notification", notificationMap);
-				 return model;
-			  }
-		   } 	
-		   else{	
-			   try {
-				   weibo4j.http.AccessToken accessTokenObj = (new weibo4j.Oauth()).getAccessTokentInfo(access_token);
-				   String uid = accessTokenObj.getUid();				   
-				   userLoginThird.setOpenId(uid);
-				   userLoginThird.setLoginType(new Byte("100"));
-				   weibo4j.Users weiboUsers = new weibo4j.Users();
-				   weiboUsers.client.setToken(access_token);
-				   weibo4j.model.User weibouser = weiboUsers.showUserById(uid);
-//				   userLoginThird.setNikeName(weibouser.getScreenName());
-//				   userLoginThird.setFigureurl(weibouser.getavatarLarge());
-				   responseDataMap.put("weiboUserInfo", weibouser);
-				} catch (WeiboException e) {
-				   logger.error(e.getMessage(),e);
-				   notificationMap.put("get_weibo_openid_error", e.getMessage());
-				   model.put("notification", notificationMap);
-				   return model;
-				}
-		   }
-		   responseDataMap.put("userLoginThird", userLoginThird);
-		}
-		return responseDataMap;
-	}
-
-
-	@Override
-	public Map<String, Object> registerBinding(int login_type,String access_token,String nikeName) throws UserLoginThirdServiceException{
-		try{
-			Map<String, Object> parameterMap = Maps.newHashMap();
-			Map<String,Object> responseDataMap = getThirdUserInfoByAccessToken(access_token,login_type);
-			if(null == responseDataMap.get("notification")){
-			   UserLoginThird userLoginThird = (UserLoginThird) responseDataMap.get("userLoginThird");
-			   parameterMap.put("userStatus", 2);
-			   parameterMap.put("login_type", login_type);
-			   parameterMap.put("access_token", access_token);
-			   parameterMap.put("uid", userLoginThird.getOpenId());
-			   if(login_type== ThirdLoginConstantCode.LOGIN_QQ.getKey()){
-				  UserInfo qqUserInfo = (UserInfo)responseDataMap.get("qqUserInfo");
-			      parameterMap.put("name", null != nikeName ?nikeName:qqUserInfo.getNikeName());
-				  parameterMap.put("picPath", qqUserInfo.getFigureurl());
-			   	  parameterMap.put("sex", qqUserInfo.getGender().equals("男")?1:2);
-			   }
-			   else{
-			      weibo4j.model.User weiboUserInfo = (weibo4j.model.User)responseDataMap.get("weiboUserInfo");
-				  parameterMap.put("name",weiboUserInfo.getScreenName());
-				  parameterMap.put("picPath", weiboUserInfo.getavatarLarge());
-				  parameterMap.put("sex", weiboUserInfo.getGender().equals("男")?1:2);
-			   }
-			}else{
-				return responseDataMap;
-			}
-			return parameterMap;
-		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserLoginThirdServiceException(e);
-		}
-	}
 	@Override
 	public UserLoginThird selectUserByOpenId(String openId, int loginType) throws UserLoginThirdServiceException{
 		try {

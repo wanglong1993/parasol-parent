@@ -80,7 +80,7 @@ public class UserFriendlyServiceTest  extends TestBase  implements Test{
 			userFriendly.setContent("我是芈月，请加我");
 			userFriendly.setCtime(ctime);
 			userFriendly.setUtime(ctime);
-			userFriendly.setAppId("3432432");
+			userFriendly.setAppId(3432432l);
 			return userFriendly;
 		} catch (Exception e) {
 			e.printStackTrace();
