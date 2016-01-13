@@ -206,12 +206,6 @@ public class UserThirdController extends BaseControl {
 					userBasic.setName(name);
 					userBasic.setMobile(passport);
 					userBasic.setSex(new Byte(sex));
-					Long picId=upload(request,uploadWebUrl,source,id.toString(), headPic);
-					if(picId==null || picId<=0L) {
-						resultMap.put( "message", "upload headPic failed.");
-						resultMap.put("status",0);
-					}
-					userBasic.setPicId(picId);
 					userBasic.setStatus(new Byte("1"));
 					userBasic.setAuth(new Byte("1"));
 					userExt=new UserExt();
@@ -228,6 +222,12 @@ public class UserThirdController extends BaseControl {
 					//保存userLoginRegister开始
 					id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 					//保存userBasic开始
+					Long picId=upload(request,uploadWebUrl,source,id.toString(), headPic);
+					if(picId==null || picId<=0L) {
+						resultMap.put( "message", "upload headPic failed.");
+						resultMap.put("status",0);
+					}
+					userBasic.setPicId(picId);
 					userBasic.setUserId(id);
 					userId=userBasicService.createUserBasic(userBasic);
 					//保存userExt开始
@@ -563,15 +563,16 @@ public class UserThirdController extends BaseControl {
 	        	httpClient = HttpClients.custom()
 	        			.setDefaultRequestConfig(defaultRequestConfig)
 	        			.build();
-//	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
-//	        		.setProxy(new HttpHost("192.168.130.100", 8091))
-//	        	    .build();
+	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+	        		.setProxy(new HttpHost("192.168.130.100", 8091))
+	        	    .build();
 	        	URL url = new URL(headPic);
 	        	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	    		conn.setRequestMethod("GET");
 	    		conn.setReadTimeout(6 * 10000);
 	        	InputStreamBody file = new InputStreamBody(conn.getInputStream(),"");
-	            HttpPost httpPost = new HttpPost(posturl);
+	        	InputStreamBody file1 = new InputStreamBody(request.getInputStream(),"");
+	            HttpPost httpPost = new HttpPost("http://192.168.130.100:8091/file/upload");
 	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
 	            .addPart("file", file)
 	            .addPart("appKey",  new StringBody(source, ContentType.create("text/plain", Consts.UTF_8)))
@@ -583,7 +584,7 @@ public class UserThirdController extends BaseControl {
 	            .addPart("name", new StringBody("", ContentType.create("text/plain", Consts.UTF_8)))
 	            .build();  
 	            httpPost.setEntity(reqEntity);  
-//	            httpPost.setConfig(requestConfig);
+	            httpPost.setConfig(requestConfig);
 	            CloseableHttpResponse response = httpClient.execute(httpPost);  
 	            try {  
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
