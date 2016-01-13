@@ -138,9 +138,14 @@ public class OauthClientDetailsServiceImpl extends BaseService<OauthClientDetail
 	public void updateClientDetails(ClientDetails clientDetails)throws NoSuchClientException {
 		try {
 			if(clientDetails==null) throw new NoSuchClientException("clientDetails is null.");
+			String 	clientId=clientDetails.getClientId();
+			if(clientId==null) throw new NoSuchClientException("clientId is null.");
+			Long id =(Long)getMapId(OauthClientDetails_Map_clientId,clientId);
+			if(id==null || id<=0l)throw new NoSuchClientException("clientId is not exists.");
+			OauthClientDetails clientDetails2=getEntity(id);
 			OauthClientDetails oauthClientDetails=(OauthClientDetails)clientDetails;
-			oauthClientDetails.setClientId(generationClientId());
-			oauthClientDetails.setClientSecret(generationClientSecret(clientDetails));
+			oauthClientDetails.setClientId(clientDetails2.getClientId());
+			oauthClientDetails.setClientSecret(clientDetails2.getClientSecret());
 			if(StringUtils.isEmpty(oauthClientDetails.getResourceIds_())) throw new NoSuchClientException("resourceIds is null.");
 			if(StringUtils.isEmpty(oauthClientDetails.getAuthorizedGrantTypes_())) throw new NoSuchClientException("authorizedGrantTypes is null.");
 			if(StringUtils.isEmpty(oauthClientDetails.getRegisteredRedirectUris_())) throw new NoSuchClientException("registeredRedirectUris is null.");
