@@ -10,7 +10,7 @@
 	</default>
 	<route>
 		<!-- 在一个侦听器中实现before after -->
-		<object name="com.ginkgocap.parasol.file.model.FileIndex" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="pid">
+		<object name="com.ginkgocap.parasol.file.model.FileIndex" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="createrId">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
