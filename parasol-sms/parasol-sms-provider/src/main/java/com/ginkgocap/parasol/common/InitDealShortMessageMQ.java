@@ -76,16 +76,14 @@ public class InitDealShortMessageMQ {
 				logger.error("从memcacheq获取数据失败：{}", e.toString());
 				e.printStackTrace();
 			
-			} catch (ClassCastException e) {
-				// 连接不上memcacheq时，休眠30s
+			} catch (Exception e) {
+				logger.error("处理短信队列失败，异常："+e.toString());
+				// 出异常后，休眠30s
 				try {
 					Thread.sleep(30000);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
-			} catch (Exception e) {
-				
-				logger.error("处理短信队列失败，异常："+e.toString());
 			} finally {
 				sm = null;
 			}
