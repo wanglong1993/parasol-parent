@@ -33,7 +33,7 @@ public class OauthClientDetailServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testLoadUserByUsername(){
 		try {
-			OauthClientDetails oauthClientDetails=(OauthClientDetails) oauthClientDetailsService.loadClientByClientId("unity-client");
+			OauthClientDetails oauthClientDetails=(OauthClientDetails) oauthClientDetailsService.loadClientByClientId("9142816641");
 			Assert.assertTrue(oauthClientDetails.getClientSecret()!=null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,7 +58,7 @@ public class OauthClientDetailServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testUpdateClientDetails(){
 		try {
-			OauthClientDetails oauthClientDetails=(OauthClientDetails) oauthClientDetailsService.loadClientByClientId("7992116517");
+			OauthClientDetails oauthClientDetails=(OauthClientDetails) oauthClientDetailsService.loadClientByClientId("9142816641");
 			oauthClientDetails.setScope_("getIdentifyingCode,getUserInfo");
 			oauthClientDetailsService.updateClientDetails(oauthClientDetails);
 			Assert.assertTrue(oauthClientDetails.getId()>0l);
@@ -72,8 +72,8 @@ public class OauthClientDetailServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testUpdateClientSecret(){
 		try {
-			OauthClientDetails oauthClientDetails=(OauthClientDetails) oauthClientDetailsService.loadClientByClientId("7992116517");
-			oauthClientDetailsService.updateClientSecret("7992116517","qwerytyu");
+			OauthClientDetails oauthClientDetails=(OauthClientDetails) oauthClientDetailsService.loadClientByClientId("9142816641");
+			oauthClientDetailsService.updateClientSecret("9142816641","trewrewrewtr55");
 			Assert.assertTrue(oauthClientDetails.getId()>0l);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,7 +117,11 @@ public class OauthClientDetailServiceTest  extends TestBase implements Test  {
 			Long ctime=System.currentTimeMillis();
 			OauthClientDetails oauthClientDetails = new OauthClientDetails();
 			oauthClientDetails.setCompanyName("北京金桐网投资有限公司");
-			oauthClientDetails.setApplicationName("社群2");
+			oauthClientDetails.setStatus(new Byte("1"));
+			oauthClientDetails.setType(new Byte("1"));
+			oauthClientDetails.setUserId(34111146l);
+			oauthClientDetails.setLogoId(582543284l);
+			oauthClientDetails.setApplicationName("社群6");
 			oauthClientDetails.setScope_("getIdentifyingCode");
 			oauthClientDetails.setIp("192.168.101.1");
 			oauthClientDetails.setResourceIds_("unity-resource");

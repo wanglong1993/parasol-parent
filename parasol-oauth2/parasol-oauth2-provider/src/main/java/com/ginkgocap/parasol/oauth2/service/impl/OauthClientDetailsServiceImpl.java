@@ -106,16 +106,22 @@ public class OauthClientDetailsServiceImpl extends BaseService<OauthClientDetail
 
 	public void addClientDetails(ClientDetails clientDetails)throws ClientAlreadyExistsException {
 		try {
-			OauthClientDetails oauthClientDetails=new OauthClientDetails();;
+			if(clientDetails==null) throw new ClientAlreadyExistsException("clientDetails is null.");
+			OauthClientDetails oauthClientDetails=(OauthClientDetails)clientDetails;
 			oauthClientDetails.setClientId(generationClientId());
 			oauthClientDetails.setClientSecret(generationClientSecret(clientDetails));
-			oauthClientDetails.setResourceIds_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getResourceIds()));
-			oauthClientDetails.setAuthorizedGrantTypes_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getAuthorizedGrantTypes()));
-			oauthClientDetails.setRegisteredRedirectUris_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getRegisteredRedirectUri()));
-			oauthClientDetails.setAuthorities_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getAuthorities()));
-			oauthClientDetails.setScope_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getScope()));
-			oauthClientDetails.setAccessTokenValiditySeconds(clientDetails.getAccessTokenValiditySeconds());
-			oauthClientDetails.setRefreshTokenValiditySeconds(clientDetails.getRefreshTokenValiditySeconds());
+			if(StringUtils.isEmpty(oauthClientDetails.getResourceIds_())) throw new ClientAlreadyExistsException("resourceIds is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getAuthorizedGrantTypes_())) throw new ClientAlreadyExistsException("authorizedGrantTypes is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getRegisteredRedirectUris_())) throw new ClientAlreadyExistsException("registeredRedirectUris is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getAuthorities_())) throw new ClientAlreadyExistsException("authorities is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getScope_())) throw new ClientAlreadyExistsException("scope is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getScope_())) throw new ClientAlreadyExistsException("scope is null.");
+			if(oauthClientDetails.getUserId()<=0l) throw new ClientAlreadyExistsException("userId is null or empty.");
+			if(oauthClientDetails.getStatus().intValue()!=1)oauthClientDetails.setStatus(new Byte("1"));
+			if(oauthClientDetails.getType().intValue()!=1 && oauthClientDetails.getType().intValue()!=2 )throw new ClientAlreadyExistsException("type must be 1 or 2.");
+			if(oauthClientDetails.getLogoId()<=0l)throw new ClientAlreadyExistsException("logoId is null or empty.");
+			if(StringUtils.isEmpty(oauthClientDetails.getCompanyName())) throw new ClientAlreadyExistsException("companyName is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getApplicationName())) throw new ClientAlreadyExistsException("applicationName is null.");
 			if(oauthClientDetails.getCtime()==null || oauthClientDetails.getCtime()<=0l)oauthClientDetails.setCtime(System.currentTimeMillis());
 			if(oauthClientDetails.getUtime()==null || oauthClientDetails.getUtime()<=0l)oauthClientDetails.setUtime(System.currentTimeMillis());
 			Object obj=saveEntity(oauthClientDetails);
@@ -131,29 +137,24 @@ public class OauthClientDetailsServiceImpl extends BaseService<OauthClientDetail
 	@Override
 	public void updateClientDetails(ClientDetails clientDetails)throws NoSuchClientException {
 		try {
-			String clientId=clientDetails.getClientId();
-			if(StringUtils.isEmpty(clientId)) throw new NoSuchClientException("clientId is null or empty.");
-			Long id =(Long)getMapId(OauthClientDetails_Map_clientId,clientId);
-			OauthClientDetails oauthClientDetails;
-			if(id!=null || id>0l){
-				oauthClientDetails=getEntity(id);
-				if(oauthClientDetails!=null){
-					oauthClientDetails.setClientId(clientDetails.getClientId());
-					oauthClientDetails.setClientSecret(clientDetails.getClientSecret());
-					oauthClientDetails.setResourceIds_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getResourceIds()));
-					oauthClientDetails.setAuthorizedGrantTypes_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getAuthorizedGrantTypes()));
-					oauthClientDetails.setRegisteredRedirectUris_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getRegisteredRedirectUri()));
-					oauthClientDetails.setAuthorities_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getAuthorities()));
-					oauthClientDetails.setScope_(org.springframework.util.StringUtils.collectionToCommaDelimitedString(clientDetails.getScope()));
-					oauthClientDetails.setAccessTokenValiditySeconds(clientDetails.getAccessTokenValiditySeconds());
-					oauthClientDetails.setRefreshTokenValiditySeconds(clientDetails.getRefreshTokenValiditySeconds());
-					if(oauthClientDetails.getUtime()==null || oauthClientDetails.getUtime()<=0l)oauthClientDetails.setUtime(System.currentTimeMillis());
-				}else{
-					throw new NoSuchClientException("No client with requested id: " + clientId);
-				}
-			}else{
-				throw new NoSuchClientException("No client with requested id: " + clientId);
-			}
+			if(clientDetails==null) throw new NoSuchClientException("clientDetails is null.");
+			OauthClientDetails oauthClientDetails=(OauthClientDetails)clientDetails;
+			oauthClientDetails.setClientId(generationClientId());
+			oauthClientDetails.setClientSecret(generationClientSecret(clientDetails));
+			if(StringUtils.isEmpty(oauthClientDetails.getResourceIds_())) throw new NoSuchClientException("resourceIds is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getAuthorizedGrantTypes_())) throw new NoSuchClientException("authorizedGrantTypes is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getRegisteredRedirectUris_())) throw new NoSuchClientException("registeredRedirectUris is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getAuthorities_())) throw new NoSuchClientException("authorities is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getScope_())) throw new NoSuchClientException("scope is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getScope_())) throw new NoSuchClientException("scope is null.");
+			if(oauthClientDetails.getUserId()<=0l) throw new NoSuchClientException("userId is null or empty.");
+			if(oauthClientDetails.getStatus().intValue()!=1)oauthClientDetails.setStatus(new Byte("1"));
+			if(oauthClientDetails.getType().intValue()!=1 && oauthClientDetails.getType().intValue()!=2 )throw new NoSuchClientException("type must be 1 or 2.");
+			if(oauthClientDetails.getLogoId()<=0l)throw new NoSuchClientException("logoId is null or empty.");
+			if(StringUtils.isEmpty(oauthClientDetails.getCompanyName())) throw new NoSuchClientException("companyName is null.");
+			if(StringUtils.isEmpty(oauthClientDetails.getApplicationName())) throw new NoSuchClientException("applicationName is null.");
+			if(oauthClientDetails.getCtime()==null || oauthClientDetails.getCtime()<=0l)oauthClientDetails.setCtime(System.currentTimeMillis());
+			if(oauthClientDetails.getUtime()==null || oauthClientDetails.getUtime()<=0l)oauthClientDetails.setUtime(System.currentTimeMillis());
 			Object obj=updateEntity(oauthClientDetails);
 			if(ObjectUtils.isEmpty(obj))throw new NoSuchClientException("updateOauthClientDetails failed.");
 		} catch (BaseServiceException e) {

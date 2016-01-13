@@ -50,42 +50,92 @@ public class OauthClientDetails implements ClientDetails {
 	private Map<String, Object> additionalInformation = new LinkedHashMap<String, Object>();
 
 	private long id;
-	
+	/**
+	 * 客户端(client), 在实际应用中的另一个名称叫appKey,与client_id是同一个概念.
+	 */
 	private String clientId;
-	
+	/**
+	 * 客户端所能访问的资源id集合,多个资源时用逗号(,).
+	 */
 	private String resourceIds_;
-
+	/**
+	 * 用于指定客户端(client)的访问密匙,由服务端自动生成.
+	 */
 	private String clientSecret;
-	
+	/**
+	 * 指定客户端申请的权限范围,可选值包括read,write,trust;若有多个权限范围用逗号(,)分隔,如: "read,write"..
+	 */
 	private String scope_;
-	
+	/**
+	 * 指定客户端支持的grant_type,可选值包括authorization_code,password,refresh_token,implicit,client_credentials, 若支持多个grant_type用逗号(,)分隔,如: "authorization_code,password"..
+	 */
 	private String authorizedGrantTypes_;
-	
+	/**
+	 * 客户端的重定向URI,在Oauth的流程中会使用并检查与注册时填写的redirect_uri是否一致.
+	 */
 	private String registeredRedirectUris_;
-	
+	/**
+	 * 指定客户端所拥有的Spring Security的权限值.
+	 */
 	private String authorities_;
-	
+	/**
+	 * 设定客户端的access_token的有效时间值(单位:秒),可选, 若不设定值则使用默认的有效时间值(60 * 60 * 12, 12小时). .
+	 */
 	private Integer accessTokenValiditySeconds;
-	
+	/**
+	 * 设定客户端的refresh_token的有效时间值(单位:秒),可选, 若不设定值则使用默认的有效时间值(60 * 60 * 24 * 30, 30天). .
+	 */
 	private Integer refreshTokenValiditySeconds;
-	
+	/**
+	 * 这是一个预留的字段,在Oauth的流程中没有实际的使用,可选,但若设置值,必须是JSON格式的数据,.
+	 */
 	private String additionalInformation_;
-	
+	/**
+	 * 设置用户是否自动Approval操作, 默认值为 'false', 可选值包括 'true','false' .
+	 */
 	private String autoapprove;
-	
+	/**
+	 * 公司名或者个人名
+	 */
 	private String companyName;
-	
+	/**
+	 * 应用名称
+	 */
 	private String applicationName;
-	
+	/**
+	 * 创建时间.
+	 */
 	private Long ctime;
-	
+	/**
+	 * 修改时间.
+	 */
 	private Long utime;
-	
+	/**
+	 * 用户IP.
+	 */
 	private String ip;
 
 	private boolean archived = false;
-
+	/**
+	 * 设置客户端是否为受信任的,默认为'0'(即不受信任的,1为受信任的). .
+	 */
 	private boolean trusted = false;
+	/**
+	 * 创建人Id
+	 */	
+	private Long userId;
+	/**
+	 * 应用状态:1.测试状态，2.提交申请，3审核上线。
+	 */	
+	private Byte status;
+	/**
+	 * 应用类型：1.app应用，2.web应用
+	 */	
+	private Byte type;
+	/**
+	 * 公司logo文件ID
+	 */	
+	private Long logoId;
 	
 	public OauthClientDetails() {
 	}
@@ -456,6 +506,38 @@ public class OauthClientDetails implements ClientDetails {
 
 	public void setAdditionalInformation_(String additionalInformation_) {
 		this.additionalInformation_ = additionalInformation_;
+	}
+	@Column(name = "userId")
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	@Column(name = "status")
+	public Byte getStatus() {
+		return status;
+	}
+
+	public void setStatus(Byte status) {
+		this.status = status;
+	}
+	@Column(name = "type")
+	public Byte getType() {
+		return type;
+	}
+
+	public void setType(Byte type) {
+		this.type = type;
+	}
+	@Column(name = "logoId")
+	public Long getLogoId() {
+		return logoId;
+	}
+
+	public void setLogoId(Long logoId) {
+		this.logoId = logoId;
 	}
 
 	@Override
