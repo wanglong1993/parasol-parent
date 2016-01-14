@@ -85,17 +85,12 @@ public class SensitiveWordController extends BaseControl {
 			@RequestParam(name = SensitiveWordController.parameterWord, required = true) String word,
 			@RequestParam(name = SensitiveWordController.parameterType, defaultValue = "0") Integer type) throws SensitiveWordServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
-		Map<String, String> param = new HashMap<String, String>();
-		param.put("type", type.toString());
-		param.put("createrId", userId.toString());
-		param.put("appid", appId.toString());
-		
 		try {
 			// 先检查敏感词是否存在
 			sensitiveWordService.checkSensitiveWordExist(word);
 			SensitiveWord sw = new SensitiveWord();
 			sw.setWord(word);
-			sw.setAppid(appId.toString());
+			sw.setAppId(appId);
 			sw.setCreaterId(userId);
 			sw.setLevel(level);
 			sw.setType(type);
