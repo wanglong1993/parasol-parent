@@ -12,16 +12,14 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.http.HttpCookie;
 import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.oauth2.model.OauthSessions;
 import com.ginkgocap.parasol.oauth2.service.OauthSessionsService;
 
-@Service("oauthCodeService")
+@Service("oauthSessionsService")
 public class OauthSessionsServiceImpl extends BaseService<OauthSessions> implements OauthSessionsService{
-	private RandomValueStringGenerator generator = new RandomValueStringGenerator();
 	private static Logger logger = Logger.getLogger(OauthSessionsServiceImpl.class);
 	private static final String OauthCode_List_By_Code = "OauthCode_List_By_Code";
 	@Override

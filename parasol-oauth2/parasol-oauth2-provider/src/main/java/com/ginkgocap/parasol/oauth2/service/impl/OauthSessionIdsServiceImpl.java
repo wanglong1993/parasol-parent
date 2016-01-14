@@ -1,27 +1,17 @@
 package com.ginkgocap.parasol.oauth2.service.impl;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
-import org.springframework.security.oauth2.common.util.SerializationUtils;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 
-import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.oauth2.model.OauthCode;
 import com.ginkgocap.parasol.oauth2.model.OauthSessionIds;
 import com.ginkgocap.parasol.oauth2.service.OauthSessionIdsService;
 
-@Service("oauthCodeService")
+@Service("oauthSessionIdsService")
 public class OauthSessionIdsServiceImpl extends BaseService<OauthSessionIds> implements OauthSessionIdsService{
-	private RandomValueStringGenerator generator = new RandomValueStringGenerator();
 	private static Logger logger = Logger.getLogger(OauthSessionIdsServiceImpl.class);
 	private static final String OauthCode_List_By_Code = "OauthCode_List_By_Code";
 	@Override

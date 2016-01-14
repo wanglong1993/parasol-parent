@@ -5,11 +5,24 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.session.AbstractSession;
+import org.eclipse.jetty.server.session.AbstractSessionManager;
+import org.eclipse.jetty.server.session.JDBCSessionManager;
 
 @Entity
 @Table(name = "oauth_sessions", catalog = "parasol_oauth2")
-public class OauthSessions implements java.io.Serializable {
+public class OauthSessions extends AbstractSession implements  java.io.Serializable {
 
+	protected OauthSessions(AbstractSessionManager abstractSessionManager,
+			long created, long accessed, String clusterId) {
+		super(abstractSessionManager, created, accessed, clusterId);
+	}
+    protected OauthSessions(AbstractSessionManager abstractSessionManager, HttpServletRequest request){
+    	super(abstractSessionManager,request);
+    }
 	/**
 	 * 
 	 */
@@ -41,31 +54,6 @@ public class OauthSessions implements java.io.Serializable {
 
 	private byte[] map;
 
-	public OauthSessions() {
-	}
-
-	public OauthSessions(String rowId) {
-		this.rowId = rowId;
-	}
-
-	public OauthSessions(String rowId, String sessionId, String contextPath,
-			String virtualHost, String lastNode, Long accessTime,
-			Long lastAccessTime, Long createTime, Long cookieTime,
-			Long lastSavedTime, Long expiryTime, Long maxInterval, byte[] map) {
-		this.rowId = rowId;
-		this.sessionId = sessionId;
-		this.contextPath = contextPath;
-		this.virtualHost = virtualHost;
-		this.lastNode = lastNode;
-		this.accessTime = accessTime;
-		this.lastAccessTime = lastAccessTime;
-		this.createTime = createTime;
-		this.cookieTime = cookieTime;
-		this.lastSavedTime = lastSavedTime;
-		this.expiryTime = expiryTime;
-		this.maxInterval = maxInterval;
-		this.map = map;
-	}
 
 	@Id
 	@Column(name = "rowId", unique = true, nullable = false, length = 120)
@@ -184,5 +172,7 @@ public class OauthSessions implements java.io.Serializable {
 	public void setMap(byte[] map) {
 		this.map = map;
 	}
-
+public static void main(String[] args) {
+	OauthSessions OauthSessions = new OauthSessions(new JDBCSessionManager(),new Request());
+}
 }
