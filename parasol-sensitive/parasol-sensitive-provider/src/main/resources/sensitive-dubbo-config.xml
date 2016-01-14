@@ -10,7 +10,7 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
-    <dubbo:application name="${dubbo.application.name}" />
-    <dubbo:protocol name="${dubbo.protocol.name}" port="${sensitive.dubbo.protocol.port}" />
-    <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
+    <dubbo:application name="${sensitive.dubbo.application.name}" />
+    <dubbo:protocol name="${sensitive.dubbo.protocol.name}" port="${sensitive.dubbo.protocol.port}" />
+    <dubbo:registry address="${sensitive.dubbo.registry.address}" protocol="${sensitive.dubbo.protocol.name}"/>
 </beans>
