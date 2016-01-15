@@ -11,7 +11,7 @@
 	<packaging>jar</packaging>
 	<name>parasol-util</name>
 	<properties>
-	<util.releases>1.0.0-SNAPSHOT</util.releases>
+	<util.releases>1.0.0</util.releases>
 	</properties>
 	<repositories>
 		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. -->

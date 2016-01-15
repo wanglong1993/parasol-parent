@@ -12,6 +12,6 @@
   	<module>parasol-file-provider</module>
   </modules>
   	<properties>
-		<file.version>1.0.0-SNAPSHOT</file.version>
+		<file.version>1.0.0</file.version>
 	</properties>
 </project>

@@ -18,6 +18,6 @@
 		<module>parasol-sms-provider</module>
 	</modules>
 	<properties>
-		<sms.version>1.0.0-SNAPSHOT</sms.version>
+		<sms.version>1.0.0</sms.version>
 	</properties>
 </project>

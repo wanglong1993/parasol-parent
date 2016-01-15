@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.ginkgocap.parasol</groupId>
 		<artifactId>parasol-email</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 	<artifactId>parasol-email-provider</artifactId>
 	<packaging>jar</packaging>
@@ -26,12 +26,12 @@
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-email-api</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-cache</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>		
 		<dependency>
 			<groupId>junit</groupId>
@@ -46,11 +46,6 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ginkgocap.parasol</groupId>
-			<artifactId>parasol-email-api</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -174,7 +169,7 @@
 								<artifactItem>
 									<groupId>com.ginkgocap.parasol</groupId>
 									<artifactId>parasol-common-provider</artifactId>
-									<version>1.0.0-SNAPSHOT</version>
+									<version>1.0.0</version>
 									<outputDirectory>${project.build.directory}/dubbo</outputDirectory>
 									<includes>META-INF/assembly/**</includes>
 								</artifactItem>
