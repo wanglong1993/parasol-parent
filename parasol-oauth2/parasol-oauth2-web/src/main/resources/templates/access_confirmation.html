@@ -1,0 +1,75 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Hello Amaze UI</title>
+
+  <!-- Set render engine for 360 browser -->
+  <meta name="renderer" content="webkit" />
+
+  <!-- No Baidu Siteapp-->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+
+  <link rel="icon" type="image/png" href="/i/favicon.png" />
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="icon" sizes="192x192" href="/i/app-icon72x72@2x.png" />
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Amaze UI"/>
+  <link rel="apple-touch-icon-precomposed" href="/i/app-icon72x72@2x.png" />
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="/i/app-icon72x72@2x.png" />
+  <meta name="msapplication-TileColor" content="#0e90d2" />
+
+  <link rel="stylesheet" href="/css/amazeui.min.css" />
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+<div class="am-g">
+	<div class="am-u-sm-3 am-u-sm-centered">
+		<form class="am-form" id="confirmationForm" name="confirmationForm"
+			th:action="@{/oauth/authorize}" action="/oauth/authorize"
+			method="post">
+		  <fieldset>
+		    <legend>金桐开放平台应用授权</legend>
+			<input name="user_oauth_approval" value="true" type="hidden" />
+		
+			<div class="am-from-group">
+				<p>将允许  <b th:text="${client.clientId}" ></b> <b th:text="${clientName}" ></b>  进行如下操作</p>
+			</div>
+		    <div class="am-form-group" th:each="scope : ${scopes}">
+		      <label>
+		        <input type="checkbox" th:name='${scope.key}' th:text="${scope.key}" checked="true" value="true"></input>
+		      </label>
+		    </div>
+		    <div>
+		    	<input class="am-btn am-btn-success am-radius" type="submit" name="authorize" value="授权" />
+		    </div>
+		
+
+		  </fieldset>
+		</form>
+	</div>
+</div>
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/js/jquery.min.js"></script>
+<!--<![endif]-->
+<!--[if lte IE 8 ]>
+<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+<script src="/js/amazeui.min.js"></script>
+</body>
+</html>
