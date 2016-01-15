@@ -193,6 +193,10 @@ public class UserController extends BaseControl {
 						resultMap.put( "message", "send mail success");
 						resultMap.put( "status", 1);
 					}else{
+						//异常失败回滚
+						if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
+						if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
+						if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
 						resultMap.put( "message", "send email failed.");
 						resultMap.put( "status", 0);
 					}
@@ -259,6 +263,10 @@ public class UserController extends BaseControl {
 						resultMap.put( "message", "send mail success");
 						resultMap.put( "status", 1);
 					}else{
+						//异常失败回滚
+						if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
+						if(userOrganExtId!=null && userOrganExtId>0l)userOrganExtService.realDeleteUserOrganExt(userOrganExtId);
+						if(userOrganBasicId!=null && userOrganBasicId>0l)userOrganBasicService.realDeleteUserOrganBasic(userOrganBasicId);
 						resultMap.put( "message", "send email failed.");
 						resultMap.put( "status", 1);
 					}
