@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-sensitive-api</artifactId>
-			<version>${message.version}</version> 
+			<version>${sensitive.version}</version> 
 		</dependency>
   		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -326,7 +326,7 @@
 								<artifactItem>
 									<groupId>com.ginkgocap.parasol</groupId>
 									<artifactId>parasol-common-provider</artifactId>
-									<version>1.0.0-SNAPSHOT</version>
+									<version>1.0.0</version>
 									<outputDirectory>${project.build.directory}/dubbo</outputDirectory>
 									<includes>META-INF/assembly/**</includes>
 								</artifactItem>

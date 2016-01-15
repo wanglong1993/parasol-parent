@@ -16,6 +16,6 @@
 		<module>parasol-sensitive-provider</module>
 	</modules>
 	<properties>
-		<message.version>1.0.0-SNAPSHOT</message.version>
+		<sensitive.version>1.0.0</sensitive.version>
 	</properties>
 </project>
