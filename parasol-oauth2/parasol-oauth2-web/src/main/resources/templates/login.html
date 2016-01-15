@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+<meta charset="UTF-8" />
+<title>金桐 开放平台</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="alternate icon" type="image/png" href="/i/favicon.png" />
+<link rel="stylesheet" href="/css/amazeui.min.css" />
+<style>
+.header {
+	text-align: center;
+}
+.footer {
+	text-align: center;
+}
+
+.header h1 {
+	font-size: 200%;
+	color: #333;
+	margin-top: 30px;
+}
+
+.header p {
+	font-size: 14px;
+}
+</style>
+</head>
+<body>
+	<div class="header">
+		<div class="am-g">
+			<h1>金桐 开放平台</h1>
+			<p>
+				人、组织、知识、事件<br /> 关联、目录、标签、权限
+			</p>
+		</div>
+	</div>
+
+	<div class="am-g">
+		<div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+			<form name="form" th:action="@{/login.jhtml}" action="/login.jhtml"
+				method="post" class="am-form">
+				<legend>登录</legend>
+				<div class="am-form-group">
+					<label for="username" class="am-u-sm-2 am-form-label">用户:</label>
+					<div class="am-u-sm-10">
+						<input type="text" name="username" id="username" value="13677687632"
+							placeholder="输入电子邮件/手机号" />
+					</div>
+				</div>
+				<div class="am-form-group">
+					<label for="password" class="am-u-sm-2 am-form-label">密码:</label>
+					<div class="am-u-sm-10">
+						<input type="password" name="password" id="password" value="123456"
+							placeholder="输入密码" />
+					</div>
+				</div>
+				<div class="am-form-group">
+					<div class="am-u-sm-offset-2 am-u-sm-10">
+						<div class="checkbox">
+							<label> <input type="checkbox" /> 记住十万年
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="am-form-group">
+					<div class="am-u-sm-10 am-u-sm-offset-2">
+						<input type="submit" name="" value="登 录"
+							class="am-btn am-btn-primary am-btn-sm am-fl" /> <input
+							type="submit" name="" value="忘记密码 ^_^? "
+							class="am-btn am-btn-default am-btn-sm am-fr" />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="am-g footer">
+		<hr />
+		<p>© 2015 北京金桐网络投资有限公司</p>
+	</div>
+
+</body>
+</html>
