@@ -8,6 +8,8 @@ import com.ginkgocap.parasol.directory.model.DirectorySource;
 
 /**
  * 
+ * 
+ * 
  * @author allenshen
  * @date 2015年11月24日
  * @time 下午1:10:30
@@ -18,25 +20,20 @@ public interface DirectorySourceService {
 	/**
 	 * 创建一个目录下的资源 注意依赖条件：目录必须存在。
 	 * 
-	 * @param appId
-	 *            应用Id
 	 * @param DirectorySource
-	 *            目录分类
-	 * @param directory
-	 * @return
+	 * @return Long
+	 * 
 	 * @throws DirectoryServiceException
 	 */
 	public Long createDirectorySources(DirectorySource sources) throws DirectorySourceServiceException;
 
 	/**
 	 * 删除目录下的一个资源 小心使用
-	 * 
 	 * @param appId
 	 * @param userId
 	 * @param id
-	 *            DirectorSource的ID
 	 * @return
-	 * @throws DirectoryServiceException
+	 * @throws DirectorySourceServiceException
 	 */
 	public boolean removeDirectorySources(Long appId, Long userId, Long id) throws DirectorySourceServiceException;
 
@@ -45,7 +42,7 @@ public interface DirectorySourceService {
 	 * 
 	 * @param appId
 	 * @param userId
-	 * @param DirectorySourcesId
+	 * @param sourceId : DirectorySource.sourceId
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
@@ -58,7 +55,9 @@ public interface DirectorySourceService {
 	 * Example: 一篇知识都是在什么目录下；一个文件都是在什么组织下
 	 * @param appId
 	 * @param userId
-	 * @param DirectorySourcesId
+	 * @param sourceType
+	 * @param sourceId 业务数据的Id(DirectorySource.sourceId)
+	 * @param sourceId : 
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
