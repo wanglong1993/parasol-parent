@@ -64,7 +64,7 @@ public class WebConfig {
 				queuedThreadPool.setMaxQueued(1024);
 				queuedThreadPool.setMinThreads(50);
 				server.setThreadPool(queuedThreadPool);
-				
+//				server.setSessionIdManager(sessionIdManager);
 			}});
 	    //factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/notfound.html"));
 	    return factory;
