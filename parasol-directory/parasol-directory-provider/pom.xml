@@ -32,12 +32,12 @@
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-common-provider</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-directory-api</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
