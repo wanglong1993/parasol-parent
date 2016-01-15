@@ -4,18 +4,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ginkgocap.parasol</groupId>
 	<artifactId>parasol-parent</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<packaging>pom</packaging>
 
 	<name>parasol-parent</name>
 	<url>http://192.168.101.101:3000/</url>
 	<modules>
-		<module>parasol-metadata</module>
+	<module>parasol-metadata</module>
+	<module>parasol-directory</module>
+	<module>parasol-tags</module>
     	<module>parasol-sms</module>
-		<module>parasol-common</module>
+	<module>parasol-common</module>
     	<module>parasol-message</module>
-		<module>parasol-user</module>
+	<module>parasol-user</module>
     	<module>parasol-sensitive</module>
     	<module>parasol-file</module>
 	</modules>
