@@ -5,27 +5,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.session.AbstractSession;
-import org.eclipse.jetty.server.session.AbstractSessionManager;
-import org.eclipse.jetty.server.session.JDBCSessionManager;
 
 @Entity
 @Table(name = "oauth_sessions", catalog = "parasol_oauth2")
-public class OauthSessions extends AbstractSession implements  java.io.Serializable {
-
-	protected OauthSessions(AbstractSessionManager abstractSessionManager,
-			long created, long accessed, String clusterId) {
-		super(abstractSessionManager, created, accessed, clusterId);
-	}
-    protected OauthSessions(AbstractSessionManager abstractSessionManager, HttpServletRequest request){
-    	super(abstractSessionManager,request);
-    }
-	/**
-	 * 
-	 */
+public class OauthSessions  implements  java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String rowId;
@@ -54,6 +37,9 @@ public class OauthSessions extends AbstractSession implements  java.io.Serializa
 
 	private byte[] map;
 
+	public OauthSessions(){
+		
+	}
 
 	@Id
 	@Column(name = "rowId", unique = true, nullable = false, length = 120)
@@ -172,7 +158,4 @@ public class OauthSessions extends AbstractSession implements  java.io.Serializa
 	public void setMap(byte[] map) {
 		this.map = map;
 	}
-public static void main(String[] args) {
-	OauthSessions OauthSessions = new OauthSessions(new JDBCSessionManager(),new Request());
-}
 }
