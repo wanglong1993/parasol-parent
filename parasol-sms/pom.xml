@@ -4,7 +4,7 @@
     <parent>
             <groupId>com.ginkgocap.parasol</groupId>
             <artifactId>parasol-parent</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
     </parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -12,7 +12,7 @@
 	<groupId>com.ginkgocap.parasol</groupId>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<modules>
 		<module>parasol-sms-api</module>
 		<module>parasol-sms-provider</module>

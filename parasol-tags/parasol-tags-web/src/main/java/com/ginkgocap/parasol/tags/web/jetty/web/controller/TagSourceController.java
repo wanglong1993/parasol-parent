@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
@@ -71,16 +72,16 @@ public class TagSourceController extends BaseControl {
 	@RequestMapping(path = "/tags/source/getSourceList", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceList(@RequestParam(name = TagSourceController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
 			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) Long sourceType) {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, sourceId, sourceType);
+			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdSourceIdSourceType(loginAppId, sourceId, sourceType);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
 			// 3.创建页面显示数据项的过滤器
@@ -113,12 +114,13 @@ public class TagSourceController extends BaseControl {
 			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
 			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) int sourceType) throws TagSourceServiceException {
 		//@formatter:on
-
+		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginUserId = LoginUserContextHolder.getUserId();
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			TagSource source = new TagSource();
-			source.setAppId(appId);
-			source.setUserId(userId);
+			source.setAppId(loginAppId);
+			source.setUserId(loginUserId);
 			source.setTagId(tagsId);
 			source.setSourceId(sourceId);
 			source.setSourceType(sourceType);
@@ -147,13 +149,13 @@ public class TagSourceController extends BaseControl {
 	 */
 	@RequestMapping(path = "/tags/source/deleteTagSource", method = { RequestMethod.GET, RequestMethod.DELETE})
 	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagSourceController.paramenterTagSourceId, required = true) Long id) throws TagSourceServiceException {
 		//@formatter:on
+		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginUserId = LoginUserContextHolder.getUserId();
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Boolean success = tagsSourceService.removeTagSource(appId, userId, id); // 服务验证Owner
+			Boolean success = tagsSourceService.removeTagSource(loginAppId, loginUserId, id); // 服务验证Owner
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据

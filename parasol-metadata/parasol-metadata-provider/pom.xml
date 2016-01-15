@@ -5,12 +5,12 @@
 	<parent>
 		<artifactId>parasol-metadata</artifactId>
 		<groupId>com.ginkgocap.parasol</groupId>
-		<version>1.0.0</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 	<groupId>com.ginkgocap.parasol</groupId>
 	<artifactId>parasol-metadata-provider</artifactId>
 	<name>${project.artifactId}</name>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 	<properties>
 		<skip_maven_deploy>true</skip_maven_deploy>

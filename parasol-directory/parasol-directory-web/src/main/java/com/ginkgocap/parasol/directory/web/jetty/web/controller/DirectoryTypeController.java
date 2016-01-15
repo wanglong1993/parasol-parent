@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.directory.exception.DirectoryTypeServiceException;
 import com.ginkgocap.parasol.directory.model.DirectoryType;
 import com.ginkgocap.parasol.directory.service.DirectoryTypeService;
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 
 /**
  * 
@@ -62,13 +63,13 @@ public class DirectoryTypeController extends BaseControl {
 	 */
 	@RequestMapping(path = "/directory/type/getTypeList", method = { RequestMethod.GET })
 	public MappingJacksonValue getFunctionClassList(@RequestParam(name = DirectoryTypeController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryTypeController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryTypeController.paramenterAppId, required = true) Long appId) {
+			@RequestParam(name = DirectoryTypeController.paramenterDebug, defaultValue = "") String debug) {
+		Long loginAppId = LoginUserContextHolder.getAppKey();
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<DirectoryType> directoryTypes = directoryTypeService.getDirectoryTypessByAppId(appId);
+			List<DirectoryType> directoryTypes = directoryTypeService.getDirectoryTypessByAppId(loginAppId);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(directoryTypes);
 			// 3.创建页面显示数据项的过滤器
@@ -81,7 +82,6 @@ public class DirectoryTypeController extends BaseControl {
 		}
 		return null;
 	}
-
 
 	/**
 	 * 指定显示那些字段

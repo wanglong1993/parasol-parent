@@ -32,7 +32,11 @@
 	</bean>
 	<import resource="classpath:tags-dubbo-config.xml" />
 	<import resource="classpath:tags-dubbo-consumer.xml" />
-	<context:component-scan base-package="com.ginkgocap.parasol.tags">
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	<import resource="classpath:user-dubbo-consumer.xml" />
+	<import resource="classpath:oauth2-dubbo-consumer.xml" />
+	<context:component-scan
+		base-package="com.ginkgocap.parasol.tags,com.ginkgocap.parasol.oauth2">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 </beans>

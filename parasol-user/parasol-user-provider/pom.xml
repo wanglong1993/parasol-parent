@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>parasol-user</artifactId>
 		<groupId>com.ginkgocap.parasol</groupId>
-		<version>1.0.0</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>parasol-user-provider</artifactId>
 	<name>${project.artifactId}</name>
@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-util</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

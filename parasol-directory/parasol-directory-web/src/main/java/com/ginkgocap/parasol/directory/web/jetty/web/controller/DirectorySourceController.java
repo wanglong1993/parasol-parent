@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 
 /**
  * 
@@ -75,14 +76,15 @@ public class DirectorySourceController extends BaseControl {
 	@RequestMapping(path = "/directory/source/getSourceList", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceList(@RequestParam(name = DirectorySourceController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+			
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<DirectorySource> directoryTypes = directorySourceService.getDirectorySourcesByDirectoryId(appId, userId, directoryId);
+			List<DirectorySource> directoryTypes = directorySourceService.getDirectorySourcesByDirectoryId(loginAppId, loginUserId, directoryId);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(directoryTypes);
 			// 3.创建页面显示数据项的过滤器
@@ -106,8 +108,6 @@ public class DirectorySourceController extends BaseControl {
 	 */
 	@RequestMapping(path = "/directory/source/createSource", method = { RequestMethod.GET })
 	public MappingJacksonValue createDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId,
 			@RequestParam(name = DirectorySourceController.paramenterSourceId, required = true) Long sourceId,
 			@RequestParam(name = DirectorySourceController.paramenterSourceType, required = true) int sourceType,
@@ -116,9 +116,12 @@ public class DirectorySourceController extends BaseControl {
 			@RequestParam(name = DirectorySourceController.paramenterSourceData, defaultValue = "", required = false) String sourceData) throws DirectorySourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+			
 			DirectorySource source = new DirectorySource();
-			source.setAppId(appId);
-			source.setUserId(userId);
+			source.setAppId(loginAppId);
+			source.setUserId(loginUserId);
 			source.setDirectoryId(directoryId);
 			source.setSourceId(sourceId);
 			source.setSourceType(sourceType);
@@ -149,12 +152,13 @@ public class DirectorySourceController extends BaseControl {
 	 */
 	@RequestMapping(path = "/directory/source/deleteSource", method = { RequestMethod.GET })
 	public MappingJacksonValue deleteDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceId, required = true) Long id) throws DirectorySourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Boolean success = directorySourceService.removeDirectorySources(appId,userId,id);
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+			
+			Boolean success = directorySourceService.removeDirectorySources(loginAppId,loginUserId,id);
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
@@ -178,14 +182,15 @@ public class DirectorySourceController extends BaseControl {
 	 */
 	@RequestMapping(path = "/directory/source/moveSource", method = { RequestMethod.GET })
 	public MappingJacksonValue moveDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = DirectorySourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceIds, required = true) Long[] ids,
 			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) throws DirectorySourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+			
 			// TODO: 没有实现这个方法
-			Boolean success = directorySourceService.moveDirectorySources(userId, appId, directoryId, ids);
+			Boolean success = directorySourceService.moveDirectorySources(loginAppId, loginUserId, directoryId, ids);
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据

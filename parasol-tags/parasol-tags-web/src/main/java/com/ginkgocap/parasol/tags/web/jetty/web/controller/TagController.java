@@ -33,10 +33,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.tags.exception.TagServiceException;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
 import com.ginkgocap.parasol.tags.model.Tag;
-import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagService;
 
 /**
@@ -68,18 +68,20 @@ public class TagController extends BaseControl {
 	 * @throws TagServiceException
 	 * @throws CodeServiceException
 	 */
+							
 	@RequestMapping(path = "/tags/tags/getTagList", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceList(@RequestParam(name = TagController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = TagController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagController.paramenterTagType, required = false,defaultValue="0") Long tagType) throws TagServiceException {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<Tag> tag = tagService.getTagsByUserIdAppidTagType(userId, appId, tagType);
+			List<Tag> tag = tagService.getTagsByUserIdAppidTagType(loginUserId, loginAppId, tagType);
 			tag = tag == null ? new ArrayList<Tag>() : tag;
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(tag);
@@ -106,21 +108,21 @@ public class TagController extends BaseControl {
 	 */
 	@RequestMapping(path = "/tags/tags/createTag", method = { RequestMethod.POST })
 	public MappingJacksonValue createTagSource(@RequestParam(name = TagController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = TagController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagController.paramenterTagType, required = true) int tagType,
 			@RequestParam(name = TagController.paramenterTagName, required = true) String tagName)
 			throws TagServiceException {
 		//@formatter:on
+		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginUserId = LoginUserContextHolder.getUserId();
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Tag tag = new Tag();
-			tag.setAppId(appId);
-			tag.setUserId(userId);
+			tag.setAppId(loginAppId);
+			tag.setUserId(loginUserId);
 			tag.setTagType(tagType);
 			tag.setTagName(tagName);
 
-			Long id = tagService.createTag(userId, tag);
+			Long id = tagService.createTag(loginUserId, tag);
 			Map<String, Long> resultMap = new HashMap<String, Long>();
 			resultMap.put("id", id);
 			// 2.转成框架数据
@@ -145,13 +147,13 @@ public class TagController extends BaseControl {
 	 */
 	@RequestMapping(path = "/tags/tags/deleteTag", method = { RequestMethod.GET , RequestMethod.DELETE})
 	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.paramenterAppId, required = true) Long appId, 
-			@RequestParam(name = TagController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagController.paramenterTagId, required = true) Long id) throws TagSourceServiceException, TagServiceException {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Boolean success = tagService.removeTag(userId, id); // 服务验证Owner
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+			Boolean success = tagService.removeTag(loginUserId, id); // 服务验证Owner
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
