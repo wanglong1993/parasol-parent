@@ -5,12 +5,12 @@
 	<parent>
 		<artifactId>parasol-tags</artifactId>
 		<groupId>com.ginkgocap.parasol</groupId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 	<groupId>com.ginkgocap.parasol</groupId>
 	<artifactId>parasol-tags-provider</artifactId>
 	<name>${project.artifactId}</name>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<properties>
 		<skip_maven_deploy>true</skip_maven_deploy>
@@ -32,12 +32,12 @@
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-common-provider</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-tags-api</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
