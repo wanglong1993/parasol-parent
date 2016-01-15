@@ -14,7 +14,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -30,12 +29,15 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ginkgocap.parasol.file.model.FileIndex;
+import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserExt;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
@@ -60,11 +62,15 @@ public class UserThirdController extends BaseControl {
 	@Autowired
 	private UserBasicService userBasicService;
 	@Autowired
+	private FileIndexService fileIndexService;
+	@Autowired
 	private UserExtService userExtService;
 	@Autowired
 	private UserOrganExtService userOrganExtService;
 	@Value("${upload.web.url}")  
     private String uploadWebUrl;  
+	@Value("${file.web.url}")  
+    private String fileWebUrl;  
 	/**
 	 * 获取第三方登录url地址
 	 * 
@@ -134,73 +140,80 @@ public class UserThirdController extends BaseControl {
 		}
 	}
 	/**
-	 * 第三方注册绑定
+	 * 第三方注册登录
 	 * 
 	 * @param loginType 第三方类型:100为QQ,200为新浪微博
-	 * @param accessToken 第三方访问token
 	 * @param openId 开放平台的用户ID
 	 * @param name QQ或微博上的昵称
-	 * @param password 绑定的通行证的密码
-	 * @param passport 绑定的通行证
-	 * @param code 验证码
 	 * @param headPic QQ或微博头像地址
-	 * @param userType 0.个人用户,1.组织用户
-	 * @param source  来源的appkey
 	 * @param sex 性别
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/userThird/bind" }, method = { RequestMethod.POST})
-	public MappingJacksonValue bind(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/userThird/registerOrLogin" }, method = { RequestMethod.POST})
+	public MappingJacksonValue registerOrLogin(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "loginType",required = true) String loginType
-		,@RequestParam(name = "accessToken",required = true) String accessToken
 		,@RequestParam(name = "openId",required = true) String openId
 		,@RequestParam(name = "name",required = true) String name
-		,@RequestParam(name = "password",required = true) String password
-		,@RequestParam(name = "passport",required = true) String passport
-		,@RequestParam(name = "code",required = true) String code
 		,@RequestParam(name = "headPic",required = true) String headPic
-		,@RequestParam(name = "userType",required = true) String userType
-		,@RequestParam(name = "source",required = true) String source
 		,@RequestParam(name = "sex",required = true) String sex
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= new UserLoginRegister();
 		UserBasic userBasic= new UserBasic();
-		UserLoginThird userLoginThird= new UserLoginThird();
-		MappingJacksonValue mappingJacksonValue=null;
 		UserExt userExt= null;
 		String ip=getIpAddr(request);
 		Long userId=0l;
 		Long id=0l;
-		Long id2=0l;
 		Long userBasicId=0l;
 		Long userExtId=0l;
 		String suffix=null;
-		try {   
-				userLoginThird=userLoginThirdService.getUserLoginThirdByOpenId(openId);
-				boolean exists=userLoginRegisterService.passportIsExist(passport);
-				//没有绑定过且是新注册帐号
-				if(userLoginThird==null && !exists){
-					//检查短信验证码
-					if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
-						resultMap.put( "message", "code is not right");
-						resultMap.put( "status", 0);
-						return new MappingJacksonValue(resultMap);
-					}
+		String passport=null;
+		JSONObject json=null;
+		try { 
+				if(StringUtils.isEmpty(openId)){
+					resultMap.put( "message", "openId is null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(loginType)){
+					resultMap.put( "message", "loginType is null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(loginType.equals("100") && loginType.equals("200") ){
+					resultMap.put( "message", "loginType must be 100 or 200.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(name) ){
+					resultMap.put( "message", "name is null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(headPic) ){
+					resultMap.put( "message", "headPic is null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(loginType.equals("100"))suffix="@qq";
+				if(loginType.equals("200"))suffix="@sina";
+				passport=openId+suffix;
+				userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+				//不存在就用openId新注册帐号
+				if(ObjectUtils.isEmpty(userLoginRegister)){
 					//设置userLoginRegister开始
-					if(loginType.equals("100"))suffix="@qq";
-					if(loginType.equals("200"))suffix="@sina";
-					byte[] bt = Base64.decode(password);
+					userLoginRegister=new UserLoginRegister();
+					userLoginRegister.setUsetType(new Byte("0"));
+					userLoginRegister.setIp(ip);
+					userLoginRegister.setSource(loginType.equals("100")?"qq":"sina");
+					userLoginRegister.setPassport(openId+suffix);
+//					userLoginRegister.setMobile(passport);
+					byte[] bt = Base64.decode("123456");
 					String salt=userLoginRegisterService.setSalt();
-					password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
+					String password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 					userLoginRegister.setSalt(salt);
 					userLoginRegister.setPassword(password);
-					userLoginRegister.setUsetType(new Byte(userType));
-					userLoginRegister.setIp(ip);
-					userLoginRegister.setSource(source);
-					userLoginRegister.setPassport(openId+suffix);
-					userLoginRegister.setMobile(passport);
 					
 					//设置userBasic开始
 					userBasic.setName(name);
@@ -208,63 +221,65 @@ public class UserThirdController extends BaseControl {
 					userBasic.setSex(new Byte(sex));
 					userBasic.setStatus(new Byte("1"));
 					userBasic.setAuth(new Byte("1"));
+					//设置userExt开始
 					userExt=new UserExt();
 					userExt.setName(name);
 					userExt.setIp(ip);
-					
-					//设置userLoginThird开始
-					userLoginThird= new UserLoginThird();
-					userLoginThird.setAccesstoken(accessToken);
-					userLoginThird.setOpenId(openId);
-					userLoginThird.setLoginType(Integer.parseInt(loginType));
-					userLoginThird.setIp(ip);
-					userLoginThird.setHeadPic(headPic);
 					//保存userLoginRegister开始
 					id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 					//保存userBasic开始
-					Long picId=upload(request,uploadWebUrl,source,id.toString(), headPic);
-					if(picId==null || picId<=0L) {
+					json=upload(request,uploadWebUrl,"3",id.toString(), headPic);
+					if(json==null){
+						//异常失败回滚
+						if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
 						resultMap.put( "message", "upload headPic failed.");
 						resultMap.put("status",0);
 					}
-					userBasic.setPicId(picId);
+	                if(json.has("serverHost") && json.has("filePath") && !StringUtils.isEmpty(json.getString("serverHost")) && !StringUtils.isEmpty(json.getString("filePath"))){
+	                	headPic=fileWebUrl+json.getString("serverHost")+"/"+json.getString("thumbnailsPath");
+	                }
+					if(StringUtils.isEmpty(headPic)){
+						//异常失败回滚
+						if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
+						resultMap.put( "message", "upload headPic failed.");
+						resultMap.put("status",0);
+					}
+					userBasic.setPicId(json.getLong("id"));
 					userBasic.setUserId(id);
 					userId=userBasicService.createUserBasic(userBasic);
 					//保存userExt开始
 					userExt.setUserId(id);
 					userExtId=userExtService.createUserExt(userExt);
-					//保存userLoginThird开始
-					userLoginThird.setUserId(id);
-					id2=userLoginThirdService.saveUserLoginThird(userLoginThird);
 					
 					resultMap.put("userId", id);
-					resultMap.put("openId", userLoginThird.getOpenId());
-					resultMap.put("headPic", userLoginThird.getHeadPic());
-					resultMap.put("name", userBasic.getName());
-					resultMap.put("sex", userBasic.getSex());
+					resultMap.put("openId", openId);
+					resultMap.put("headPic", headPic);
+					resultMap.put("name", name);
+					resultMap.put("sex", sex);
 					resultMap.put("status",1);
-					logger.info("第三注册绑定新用户成功,用户id:"+id);
+					return new MappingJacksonValue(resultMap);
+				}else{//openId已经存在帐号直接返回登录了
+					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+					if(userBasic!=null){
+						FileIndex fileIndex=fileIndexService.getFileIndexById(userBasic.getPicId());
+						if(fileIndex!=null)
+						headPic=fileWebUrl+fileIndex.getServerHost()+"/"+fileIndex.getThumbnailsPath();
+					}
+					resultMap.put("userId", userLoginRegister.getId());
+					resultMap.put("openId", openId);
+					resultMap.put("headPic", headPic);
+					resultMap.put("name", name);
+					resultMap.put("sex", sex);
+					resultMap.put("status",1);
 					return new MappingJacksonValue(resultMap);
 				}
-				//没有绑定过,绑定一个已经存在的帐号
-				if(userLoginThird==null && exists){
-					mappingJacksonValue=bindExistsPassport(request,response,loginType, accessToken,openId,password,passport,headPic);
-					return mappingJacksonValue;
-				}
-				//绑定过就直接登录
-				if(userLoginThird!=null){
-					mappingJacksonValue=login(request,response,loginType, accessToken,openId,headPic,name);
-					return mappingJacksonValue;
-				}
-				return mappingJacksonValue;
 		}catch (Exception e ){
 			//异常失败回滚
 			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
 			if(userId!=null && userId>0l)userBasicService.realDeleteUserBasic(userId);
-			if(id2!=null && id2>0l)userLoginThirdService.realDeleteUserLoginThird(id2);
 			if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
 			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
-			logger.info("第三方注册失败:"+passport);
+			logger.info("第三方注册登录失败:"+passport);
 			throw e;
 		}
 	}
@@ -468,9 +483,9 @@ public class UserThirdController extends BaseControl {
 		Long id=0l;
 		Long userBasicId=0l;
 		Long userExtId=0l;
-		Long picId=0L;
 		String suffix=null;
 		String password=null;
+		JSONObject json=null;
 		if(loginType.equals("100"))suffix="@qq";
 		if(loginType.equals("200"))suffix="@sina";
 		try {   
@@ -493,13 +508,26 @@ public class UserThirdController extends BaseControl {
 					userBasic.setName(name);
 					userBasic.setSex(new Byte(sex));
 					userBasic.setStatus(new Byte("1"));
-					picId=upload(request,uploadWebUrl,source,id.toString(), headPic);
-					if(picId==null || picId<=0L) {
+					json=upload(request,uploadWebUrl,"11",id.toString(), headPic);
+					if(json==null){
+						//异常失败回滚
+						if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
+						resultMap.put( "message", "upload headPic failed.");
+						resultMap.put("status",0);
+					}
+					if(json!=null){
+		                if(json.has("serverHost") && json.has("filePath") && !StringUtils.isEmpty(json.getString("serverHost")) && !StringUtils.isEmpty(json.getString("filePath"))){
+		                	headPic=fileWebUrl+json.getString("serverHost")+json.getString("filePath");
+		                }
+	                }
+					if(StringUtils.isEmpty(headPic)) {
+						//异常失败回滚
+						if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
 						resultMap.put( "message", "upload headPic failed.");
 						resultMap.put("status",0);
 					}
 					userBasic.setUserId(id);
-					userBasic.setPicId(picId);
+					userBasic.setPicId(json.getLong("id"));
 					userBasicId=userBasicService.createUserBasic(userBasic);
 					//设置userExt开始
 					userExt=new UserExt();
@@ -542,7 +570,7 @@ public class UserThirdController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/userThird/upload" }, method = { RequestMethod.POST})
-	public Long upload(HttpServletRequest request,
+	public JSONObject upload(HttpServletRequest request,
 			@RequestParam(name = "posturl",required = true) String posturl
 			,@RequestParam(name = "source",required = true) String source
 			,@RequestParam(name = "userId",required = true) String userId
@@ -563,28 +591,27 @@ public class UserThirdController extends BaseControl {
 	        	httpClient = HttpClients.custom()
 	        			.setDefaultRequestConfig(defaultRequestConfig)
 	        			.build();
-	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
-	        		.setProxy(new HttpHost("192.168.130.100", 8091))
-	        	    .build();
+//	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+//	        		.setProxy(new HttpHost("192.168.130.100", 8091))
+//	        	    .build();
 	        	URL url = new URL(headPic);
 	        	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	    		conn.setRequestMethod("GET");
 	    		conn.setReadTimeout(6 * 10000);
-	        	InputStreamBody file = new InputStreamBody(conn.getInputStream(),"");
-	        	InputStreamBody file1 = new InputStreamBody(request.getInputStream(),"");
-	            HttpPost httpPost = new HttpPost("http://192.168.130.100:8091/file/upload");
+	        	InputStreamBody file = new InputStreamBody(conn.getInputStream(),"1qw3e.jpg");
+	            HttpPost httpPost = new HttpPost(uploadWebUrl);
 	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
 	            .addPart("file", file)
 	            .addPart("appKey",  new StringBody(source, ContentType.create("text/plain", Consts.UTF_8)))
 	            .addPart("userId", new StringBody(userId, ContentType.create("text/plain", Consts.UTF_8)))
 	            .addPart("fileType", new StringBody("1", ContentType.create("text/plain", Consts.UTF_8)))
 	            .addPart("moduleType", new StringBody("1", ContentType.create("text/plain", Consts.UTF_8)))
-	            .addPart("taskId", new StringBody("", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("taskId", new StringBody(String.valueOf(System.currentTimeMillis()), ContentType.create("text/plain", Consts.UTF_8)))
 	            .addPart("fileExtName", new StringBody("jpg", ContentType.create("text/plain", Consts.UTF_8)))
 	            .addPart("name", new StringBody("", ContentType.create("text/plain", Consts.UTF_8)))
 	            .build();  
 	            httpPost.setEntity(reqEntity);  
-	            httpPost.setConfig(requestConfig);
+//	            httpPost.setConfig(requestConfig);
 	            CloseableHttpResponse response = httpClient.execute(httpPost);  
 	            try {  
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -595,7 +622,7 @@ public class UserThirdController extends BaseControl {
 						logger.info("json:"+respJson);
 					}
 	                EntityUtils.consume(entity);
-	                return json.has("id")?json.getLong("id"):null;
+	                return json;
 	            } finally {  
 	                response.close();  
 	            }  
@@ -635,5 +662,5 @@ public class UserThirdController extends BaseControl {
 			ip = request.getRemoteAddr();
 		}
 		return ip;
-	}	
+	}
 }
