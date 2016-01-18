@@ -62,8 +62,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.springframework.security.oauth</groupId> 
-			<artifactId>spring-security-oauth2</artifactId> </dependency> -->
+		<!-- parasol oauth2 begin -->
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-oauth2-resource</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<!-- parasol oauth2 end -->
 		<!-- dubbo -->
 		<dependency>
 			<groupId>com.alibaba</groupId>

@@ -35,20 +35,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.dubbo.rpc.RpcException;
-import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.message.exception.MessageEntityServiceException;
 import com.ginkgocap.parasol.message.model.MessageEntity;
 import com.ginkgocap.parasol.message.service.MessageEntityService;
 import com.ginkgocap.parasol.message.web.jetty.web.ResponseError;
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 
 /**
  * 
- * @author allenshen
- * @date 2015年11月20日
- * @time 下午1:19:18
- * @Copyright Copyright©2015 www.gintong.com
+* @Title: MessageController.java
+* @Package com.ginkgocap.parasol.message.web.jetty.web.controller
+* @Description: TODO(消息提醒控制器)
+* @author fuliwen@gintong.com  
+* @date 2016年1月18日 上午11:03:00
+* @version V1.0
  */
 @RestController
 public class MessageController extends BaseControl {
@@ -56,10 +58,7 @@ public class MessageController extends BaseControl {
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
-	private static final String parameterAppId = "appKey"; // 应用的Key
-	private static final String parameterUserId = "userId"; // 访问的用户参数
 	private static final String parameterType = "type"; // 查询的应用分类
-	private static final String parameterName = "name"; // 目录名称
 	private static final String parameterEntityId = "entityId"; // 目录ID
 	private static final String parameterContent = "content"; // 消息内容
 	private static final String parameterSourceId = "sourceId"; // 消息源id
@@ -82,8 +81,6 @@ public class MessageController extends BaseControl {
 	@RequestMapping(path = { "/message/message/createMessageEntity" }, method = { RequestMethod.GET })
 	public MappingJacksonValue createMessageEntity(@RequestParam(name = MessageController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = MessageController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = MessageController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = MessageController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = MessageController.parameterContent, required = true) String content,
 			@RequestParam(name = MessageController.parameterSourceId, required = true) Long sourceId,
 			@RequestParam(name = MessageController.parameterSourceType, required = true) Integer sourceType,
@@ -91,15 +88,18 @@ public class MessageController extends BaseControl {
 			@RequestParam(name = MessageController.parameterReceiverIds, required = true) String receiverIds,
 			@RequestParam(name = MessageController.parameterType, required = true) Long type) throws MessageEntityServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
+		
+		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginUserId = LoginUserContextHolder.getUserId();
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("type", type.toString());
-		param.put("createrId", userId.toString());
+		param.put("createrId", loginUserId.toString());
 		param.put("content", content);
 		param.put("sourceId", sourceId.toString());
 		param.put("sourceType", sourceType.toString());
 		param.put("sourceTitle", sourceTitle);
 		param.put("receiverIds", receiverIds);
-		param.put("appId", appId.toString());
+		param.put("appId", loginAppId.toString());
 		
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -136,8 +136,6 @@ public class MessageController extends BaseControl {
 	@RequestMapping(path = { "/message/message/getEntityById" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getEntityById(@RequestParam(name = MessageController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = MessageController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = MessageController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = MessageController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = MessageController.parameterEntityId, required = true) long id
 			) throws MessageEntityServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
@@ -165,15 +163,14 @@ public class MessageController extends BaseControl {
 	@RequestMapping(path = { "/message/message/getEntityByUserId" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getEntityByUserId(@RequestParam(name = MessageController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = MessageController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = MessageController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = MessageController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = MessageController.parameterType, required = true) Integer type
 			) throws MessageEntityServiceException  {
 		MappingJacksonValue mappingJacksonValue = null;
-		
+		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginUserId = LoginUserContextHolder.getUserId();
 		// 0.校验输入参数（框架搞定，如果业务业务搞定）
 		// 1.查询后台服务
-		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(userId, type, appId);
+		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(loginUserId, type, loginAppId);
 		// 2.转成框架数据
 		mappingJacksonValue = new MappingJacksonValue(entities);
 		// 3.创建页面显示数据项的过滤器
@@ -203,13 +200,15 @@ public class MessageController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // id',
-			filter.add("name"); // '分类名称',
-			filter.add("typeId"); // '应用的分类分类ID',
-			filter.add("appId"); // '应用的分类分类ID',
-			filter.add("userId"); // '应用的分类分类ID',
+			filter.add("createrId"); // '创建者',
+			filter.add("content"); // '消息内容',
+			filter.add("sourceId"); // '消息源ID',
+			filter.add("sourceType"); // '消息源类型',
+			filter.add("sourceTitle"); // '消息源标题',
+			filter.add("appid"); // '应用ID',
 		}
 
-		filterProvider.addFilter(Directory.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		filterProvider.addFilter(MessageEntity.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
 

@@ -37,6 +37,7 @@ import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.sensitive.exception.SensitiveWordServiceException;
 import com.ginkgocap.parasol.sensitive.model.SensitiveWord;
 import com.ginkgocap.parasol.sensitive.service.SensitiveWordService;
@@ -79,19 +80,19 @@ public class SensitiveWordController extends BaseControl {
 	@RequestMapping(path = { "/sensitive/word/saveSensitive" }, method = { RequestMethod.GET })
 	public MappingJacksonValue saveSensitive(@RequestParam(name = SensitiveWordController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = SensitiveWordController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = SensitiveWordController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = SensitiveWordController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = SensitiveWordController.parameterLevel, defaultValue = "2") Integer level,
 			@RequestParam(name = SensitiveWordController.parameterWord, required = true) String word,
 			@RequestParam(name = SensitiveWordController.parameterType, defaultValue = "0") Integer type) throws SensitiveWordServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
 			// 先检查敏感词是否存在
 			sensitiveWordService.checkSensitiveWordExist(word);
 			SensitiveWord sw = new SensitiveWord();
 			sw.setWord(word);
-			sw.setAppId(appId);
-			sw.setCreaterId(userId);
+			sw.setAppId(loginAppId);
+			sw.setCreaterId(loginUserId);
 			sw.setLevel(level);
 			sw.setType(type);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -128,8 +129,6 @@ public class SensitiveWordController extends BaseControl {
 	@RequestMapping(path = { "/sensitive/word/getSensitiveWordById" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getSensitiveWordById(@RequestParam(name = SensitiveWordController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = SensitiveWordController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = SensitiveWordController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = SensitiveWordController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = SensitiveWordController.parameterWordId, required = true) Long id
 			) throws SensitiveWordServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
@@ -156,8 +155,6 @@ public class SensitiveWordController extends BaseControl {
 	@RequestMapping(path = { "/sensitive/word/checkWord" }, method = { RequestMethod.GET })
 	public MappingJacksonValue checkWord(@RequestParam(name = SensitiveWordController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = SensitiveWordController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = SensitiveWordController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = SensitiveWordController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = SensitiveWordController.parameterText, required = true) String text
 			) throws SensitiveWordServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
@@ -193,13 +190,13 @@ public class SensitiveWordController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // id',
-			filter.add("name"); // '分类名称',
-			filter.add("typeId"); // '应用的分类分类ID',
-			filter.add("appId"); // '应用的分类分类ID',
-			filter.add("userId"); // '应用的分类分类ID',
+			filter.add("word"); // '敏感词',
+			filter.add("level"); // '敏感词等级',
+			filter.add("type"); // '敏感词类型',
+			filter.add("appId"); // '应用ID',
 		}
 
-		filterProvider.addFilter(Directory.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		filterProvider.addFilter(SensitiveWord.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
 

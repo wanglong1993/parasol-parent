@@ -32,6 +32,11 @@
 	</bean>
 	<import resource="classpath:sensitive-dubbo-config.xml" />
 	<import resource="classpath:sensitive-dubbo-consumer.xml" />
+	
+	<import resource="classpath:user-dubbo-consumer.xml"/>
+	<import resource="classpath:oauth2-dubbo-consumer.xml"/>
+	<context:component-scan base-package="com.ginkgocap.parasol.directory,com.ginkgocap.parasol.oauth2">
+              </context:component-scan>
 	<context:component-scan base-package="com.ginkgocap.parasol.sensitive">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
