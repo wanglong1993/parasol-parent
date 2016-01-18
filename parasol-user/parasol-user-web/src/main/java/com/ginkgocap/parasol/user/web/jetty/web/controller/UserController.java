@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserDefined;
 import com.ginkgocap.parasol.user.model.UserExt;
@@ -130,6 +131,8 @@ public class UserController extends BaseControl {
 		Long userOrganExtId=0l;
 		Long id=0l;
 		try {
+//				Long loginAppId = LoginUserContextHolder.getAppKey(); 
+//				Long loginUserId = LoginUserContextHolder.getUserId();
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
 				if(exists){
 					if(type==1)resultMap.put( "message", "email already exists.");
@@ -311,6 +314,8 @@ public class UserController extends BaseControl {
 		UserExt userExt= null;
 		List<UserDefined> list=null;
 		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(userLoginRegister==null){
 				resultMap.put("message", "passport is not exists.");
@@ -882,6 +887,7 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
 			)throws Exception {
+		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
 		UserBasic userBasic=null;
