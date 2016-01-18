@@ -13,6 +13,8 @@ public interface OauthRefreshTokenService  {
 	
 	public OAuth2RefreshToken readRefreshToken(String tokenValue) ;
 	
+	public OAuth2RefreshToken getRefreshToken(String tokenId) ;
+	
 	public OAuth2Authentication readAuthenticationForRefreshToken(OAuth2RefreshToken token);
 	
 	public void removeRefreshToken(OAuth2RefreshToken token);

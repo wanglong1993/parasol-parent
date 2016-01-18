@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ import org.springframework.util.ObjectUtils;
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.oauth2.model.OauthAccessToken;
+import com.ginkgocap.parasol.oauth2.model.OauthClientDetails;
+import com.ginkgocap.parasol.oauth2.service.OauthClientDetailsService;
 import com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService;
 import com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService;
 
@@ -37,6 +41,8 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	
 	@Autowired
 	private OauthRefreshTokenService oauthRefreshTokenService;
+	@Autowired
+	private OauthClientDetailsService oauthClientDetailsService;
 	
 	private AuthenticationKeyGenerator authenticationKeyGenerator = new DefaultAuthenticationKeyGenerator();  
 	private static final String OauthAccessToken_List_By_tokenId = "OauthAccessToken_List_By_tokenId"; 
@@ -85,8 +91,36 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			return null;
 		}
 		OAuth2Authentication authentication = null;  
+		OAuth2Request storedRequest = null;
+		boolean isChange=false;
         try {  
             authentication = SerializationUtils.deserialize(oauthAccessToken.getAuthentication());  
+            OauthClientDetails oauthClientDetails =(OauthClientDetails) oauthClientDetailsService.loadClientByClientId(authentication.getOAuth2Request().getClientId());
+            Set<String> resourceIds= oauthClientDetails.getResourceIds();
+            Set<String> scopes= oauthClientDetails.getScope();
+            OAuth2Request oauth2Request=authentication.getOAuth2Request();
+            if(!scopes.equals(oauth2Request.getScope()) && !resourceIds.equals(oauth2Request.getResourceIds())){
+            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),scopes,resourceIds,oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
+            	isChange=true;
+            }
+            if(!isChange){
+	            if(!scopes.equals(oauth2Request.getScope())){
+	            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),oauth2Request.getScope(),resourceIds,oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
+	            	isChange=true;
+	            }
+            }
+            if(!isChange){
+	            if(!resourceIds.equals(oauth2Request.getResourceIds())){
+	            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),scopes,oauth2Request.getResourceIds(),oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
+	            	isChange=true;
+	            }
+            }
+            if(isChange){
+            	authentication =new OAuth2Authentication(storedRequest,authentication.getUserAuthentication());
+            	storeAccessToken(oauthAccessToken,authentication);
+            	OAuth2RefreshToken oAuth2RefreshToken=oauthRefreshTokenService.getRefreshToken(oauthAccessToken.getRefreshToken_());
+            	storeRefreshToken(oAuth2RefreshToken, authentication);
+            }
         }  
         catch (EmptyResultDataAccessException e) {  
             if (logger.isDebugEnabled()) {  

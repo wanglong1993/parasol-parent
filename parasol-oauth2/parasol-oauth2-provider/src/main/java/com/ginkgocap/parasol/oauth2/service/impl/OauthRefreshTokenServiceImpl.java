@@ -113,4 +113,23 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 		}
 	}
 
+
+	@Override
+	public OAuth2RefreshToken getRefreshToken(String tokenId) {
+		if(StringUtils.isBlank(tokenId))return null;
+		Long id;
+		OauthRefreshToken oauthRefreshToken;
+		try {
+			id = (Long)getMapId(OauthRefreshToken_List_By_tokenId,tokenId);
+			if(id==null || id<=0l) return null;
+			oauthRefreshToken=getEntity(id);
+			if(ObjectUtils.isEmpty(oauthRefreshToken))return null;
+			OAuth2RefreshToken oAuth2RefreshToken=SerializationUtils.deserialize(oauthRefreshToken.getToken());
+			return oAuth2RefreshToken;
+		} catch (BaseServiceException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+	}
+
 }
