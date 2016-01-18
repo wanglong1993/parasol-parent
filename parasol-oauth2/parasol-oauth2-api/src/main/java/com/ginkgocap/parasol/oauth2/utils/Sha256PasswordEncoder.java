@@ -9,10 +9,10 @@ public class Sha256PasswordEncoder implements PasswordEncoder {
 	public String encodePassword(String rawPass, Object salt) {
 		int hashIterations = 5000;
 		// Base64解密
-//		byte[] bt = Base64.decode(rawPass);
+		byte[] bt = Base64.decode(rawPass);
 		// 生成新的code
-//		String password = new String(bt);
-		String newPass = new Sha256Hash(rawPass, salt, hashIterations).toHex();
+		String password = new String(bt);
+		String newPass = new Sha256Hash(password, salt, hashIterations).toHex();
 		return newPass;
 	}
 
