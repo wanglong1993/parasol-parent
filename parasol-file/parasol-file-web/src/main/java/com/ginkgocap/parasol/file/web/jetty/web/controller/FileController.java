@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.dubbo.rpc.RpcException;
-import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
@@ -51,6 +50,7 @@ import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 
 /**
  * 
@@ -68,8 +68,6 @@ public class FileController extends BaseControl {
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
-	private static final String parameterAppId = "appKey"; // 应用的Key
-	private static final String parameterUserId = "userId"; // 访问的用户参数
 	private static final String parameterFile = "file"; // 上传文件
 	private static final String parameterIndexId = "indexId"; // 索引文件id
 	private static final String parameterFileType = "fileType"; // 文件类型
@@ -100,14 +98,14 @@ public class FileController extends BaseControl {
 	@RequestMapping(path = { "/file/upload" }, method = { RequestMethod.POST })
 	public MappingJacksonValue fileUpload(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = FileController.parameterAppId, required = true) long appId,
 			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
-			@RequestParam(name = FileController.parameterUserId, required = true) long userId,
 			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
 			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
 			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId ) throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
 			byte[] file_buff = file.getBytes();
 			StorageClient storageClient = getStorageClient();
 			String fileName = file.getOriginalFilename();
@@ -124,8 +122,8 @@ public class FileController extends BaseControl {
 				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
 			}
 			FileIndex index = new FileIndex();
-			index.setAppId(appId);
-			index.setCreaterId(userId);
+			index.setAppId(loginAppId);
+			index.setCreaterId(loginUserId);
 			index.setServerHost(fields[0]);
 			index.setFilePath(fields[1]);
 			index.setFileSize(file.getSize());
@@ -137,6 +135,9 @@ public class FileController extends BaseControl {
 			index = fileIndexService.insertFileIndex(index);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(index);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		} catch (RpcException e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
@@ -174,8 +175,6 @@ public class FileController extends BaseControl {
 	@RequestMapping(path = { "/file/scissorImage" }, method = { RequestMethod.GET })
 	public MappingJacksonValue scissorImage(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = FileController.parameterIndexId, required = true) Long indexId,
 			@RequestParam(name = FileController.parameterXEnd, required = true) Integer xEnd,
 			@RequestParam(name = FileController.parameterYEnd, required = true) Integer yEnd,
@@ -189,6 +188,9 @@ public class FileController extends BaseControl {
 			getScissorImage(index.getServerHost(),index.getFilePath(),xEnd-xStart,yEnd-yStart,xStart,yStart);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(index);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		} catch (RpcException e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
@@ -221,8 +223,6 @@ public class FileController extends BaseControl {
 	@RequestMapping(path = { "/file/getFileIndexesByTaskId" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getFileIndexesByTaskId(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId
 			) throws FileIndexServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
@@ -268,8 +268,6 @@ public class FileController extends BaseControl {
 	@RequestMapping(path = { "/file/deleteById" }, method = { RequestMethod.GET })
 	public MappingJacksonValue deleteFileById(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = FileController.parameterAppId, required = true) Long appId,
-			@RequestParam(name = FileController.parameterUserId, required = true) Long userId,
 			@RequestParam(name = FileController.parameterIndexId, required = true) long indexId
 			) throws FileIndexServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
@@ -461,13 +459,17 @@ public class FileController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // id',
-			filter.add("name"); // '分类名称',
-			filter.add("typeId"); // '应用的分类分类ID',
-			filter.add("appId"); // '应用的分类分类ID',
-			filter.add("userId"); // '应用的分类分类ID',
+			filter.add("filePath"); // '文件路径',
+			filter.add("serverHost"); // '分布式文件所在group',
+			filter.add("fileTitle"); // '文件名称',
+			filter.add("taskId"); // '上传时taskId',
+			filter.add("moduleType"); // '上传模块类型',
+			filter.add("fileType"); // '文件类型',
+			filter.add("thumbnailsPath"); // '图片缩略图地址',
+			filter.add("appId"); // '应用ID',
 		}
 
-		filterProvider.addFilter(Directory.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		filterProvider.addFilter(FileIndex.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
 
