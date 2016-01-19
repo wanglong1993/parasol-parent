@@ -42,11 +42,11 @@ fi
 
 JAVA_OPTS=" -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true "
 JAVA_DEBUG_OPTS=""
-if [ "$1" = "debug" ]; then
+if [ "$2" = "debug" ]; then
     JAVA_DEBUG_OPTS=" -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n "
 fi
 JAVA_JMX_OPTS=""
-if [ "$1" = "jmx" ]; then
+if [ "$2" = "jmx" ]; then
     JAVA_JMX_OPTS=" -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false "
 fi
 JAVA_MEM_OPTS=""
