@@ -105,7 +105,6 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "userType",required = true) String userType
 			,@RequestParam(name = "firstIndustryIds", required = true) Long[] firstIndustryIds
 			,@RequestParam(name = "name",required = true) String name
-			,@RequestParam(name = "source",required = true) String source
 			,@RequestParam(name = "shortName",required = true) String shortName
 			,@RequestParam(name = "picId",required = false) Long picId
 			,@RequestParam(name = "businessLicencePicId",required = true) Long businessLicencePicId
@@ -131,8 +130,12 @@ public class UserController extends BaseControl {
 		Long userOrganExtId=0l;
 		Long id=0l;
 		try {
-				Long loginAppId = LoginUserContextHolder.getAppKey(); 
-//				Long loginUserId = LoginUserContextHolder.getUserId();
+				Long appId = LoginUserContextHolder.getAppKey();
+				if(appId==null){
+					resultMap.put( "message", "appId is null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
 				if(exists){
 					if(type==1)resultMap.put( "message", "email already exists.");
@@ -165,7 +168,7 @@ public class UserController extends BaseControl {
 				userLoginRegister.setPassword(password);
 				userLoginRegister.setUsetType(new Byte(userType));
 				userLoginRegister.setIp(ip);
-				userLoginRegister.setSource(loginAppId.toString());
+				userLoginRegister.setSource(appId.toString());
 				userLoginRegister.setCtime(System.currentTimeMillis());
 				userLoginRegister.setUtime(System.currentTimeMillis());
 				if(type==1)userLoginRegister.setEmail(passport);
@@ -304,7 +307,6 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/getUserDetail" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "userId",required = false) String userId
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
@@ -313,15 +315,15 @@ public class UserController extends BaseControl {
 		UserBasic userBasic= null;
 		UserExt userExt= null;
 		List<UserDefined> list=null;
-		Long loginUserId=null;
+		Long userId=null;
 		try {
-			loginUserId = LoginUserContextHolder.getUserId();
-			if(loginUserId==null){
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
 				resultMap.put("message", "userId is null or empty.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(loginUserId);
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(userLoginRegister==null){
 				resultMap.put("message", "passport is not exists.");
 				resultMap.put("status",0);
@@ -353,7 +355,7 @@ public class UserController extends BaseControl {
 			userLoginRegister.setSalt(null);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("获取用户资料失败:"+loginUserId);
+			logger.info("获取用户资料失败:"+userId);
 			throw e;
 		}
 	}
@@ -367,15 +369,21 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/getOrgFriendlylList" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getOrgFriendlylList(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "start",required = true) int start
 			,@RequestParam(name = "count",required = true) int count
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		List<UserOrgPerCusRel> list=null;
 		UserLoginRegister userLoginRegister=null;
+		Long userId=null;
 		try {
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", "userId is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(userLoginRegister==null){
 				resultMap.put("message", "passport is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
@@ -386,7 +394,7 @@ public class UserController extends BaseControl {
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("根据userId获取用户我的里面的组织好友列表失败:"+passport);
+			logger.info("根据userId获取用户我的里面的组织好友列表失败:"+userId);
 			throw e;
 		}
 	}	
@@ -400,15 +408,21 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/getUserFriendlyList" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getUserFriendlyList(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "start",required = true) int start
 			,@RequestParam(name = "count",required = true) int count
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		List<UserOrgPerCusRel> list=null;
 		UserLoginRegister userLoginRegister=null;
+		Long userId=null;
 		try {
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", "userId is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(userLoginRegister==null){
 				resultMap.put("message", "passport is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
@@ -419,7 +433,7 @@ public class UserController extends BaseControl {
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("根据userId获取用户我的里面的组织好友列表失败:"+passport);
+			logger.info("根据userId获取用户我的里面的个人好友列表失败:"+userId);
 			throw e;
 		}
 	}	
@@ -433,15 +447,21 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/getUserAndOrgFriendlyList" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getUserAndOrgFriendlyList(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "start",required = true) int start
 			,@RequestParam(name = "count",required = true) int count
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		List<UserOrgPerCusRel> list=null;
 		UserLoginRegister userLoginRegister=null;
+		Long userId=null;
 		try {
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", "userId is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(userLoginRegister==null){
 				resultMap.put("message", "passport is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
@@ -452,7 +472,7 @@ public class UserController extends BaseControl {
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("根据userId获取用户我的里面的组织好友列表失败:"+passport);
+			logger.info("根据userId获取用户我的里面的个人和组织好友列表失败:"+userId);
 			throw e;
 		}
 	}	
@@ -467,15 +487,22 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/applyToAddFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue applyToAddFriendly(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
 			,@RequestParam(name = "content",required = true) String content
-			,@RequestParam(name = "appId",required = true) Long appId
 			,@RequestParam(name = "status",required = true) String status
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserFriendly userFriendly=null;
+		Long userId=null;
+		Long appId=null;
 		try {
+			userId = LoginUserContextHolder.getUserId();
+			appId=LoginUserContextHolder.getAppKey();
+			if(userId==null){
+				resultMap.put("message", "userId is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
 			if(!status.equals("0")){
 				resultMap.put("message", "status must be 0.");
 				resultMap.put("status",0);
@@ -513,9 +540,7 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/auditByAddFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue auditByAddFriendly(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
-			,@RequestParam(name = "appId",required = true) Long appId
 			,@RequestParam(name = "status",required = true) String  status
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -529,7 +554,16 @@ public class UserController extends BaseControl {
 		Long userOrgPerCusRelId=0l;
 		Long userOrgPerCusRelFriendlyId=0l;
 		boolean bl=false;
+		Long userId=null;
+		Long appId=null;
 		try {
+				userId = LoginUserContextHolder.getUserId();
+				appId=LoginUserContextHolder.getAppKey();
+				if(userId==null){
+					resultMap.put("message", "userId is null or empty.");
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
 				if(!status.equals("1")){
 					resultMap.put("message", "status must be 1.");
 					resultMap.put("status",0);
@@ -649,9 +683,7 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/deleteFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue deleteFriendly(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
-			,@RequestParam(name = "appId",required = true) String appId
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister=null;
@@ -665,7 +697,14 @@ public class UserController extends BaseControl {
 		boolean bl1=false;
 		boolean bl2=false;
 		boolean bl3=false;
+		Long userId=null;
 		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", "userId is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(userLoginRegister==null){
 				resultMap.put("message", "userId is not exists in UserLoginRegister.");
@@ -744,7 +783,6 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/updateUser" }, method = { RequestMethod.POST})
 	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "name",required = true) String name
 			,@RequestParam(name = "sex",required = false) String sex
 			,@RequestParam(name = "picId",required = true) Long picId
@@ -772,11 +810,17 @@ public class UserController extends BaseControl {
 		List<UserInterestIndustry> list = null;
 		List<UserDefined> listUserDefined = null;
 		String ip=getIpAddr(request);
-		Long userId=0L;
+		Long userId=null;
 		try {
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", "userId is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(ObjectUtils.isEmpty(userLoginRegister)){
-				resultMap.put("message", "passport is not exists.");
+				resultMap.put("message", "userId is not exists.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -826,7 +870,7 @@ public class UserController extends BaseControl {
 				userOrganExt.setName(name);
 				userOrganExtService.updateUserOrganExt(userOrganExt);
 				resultMap.put( "message", "updateUser success.");
-				resultMap.put( "passport", passport);
+				resultMap.put( "userId", userId);
 				resultMap.put("status",1);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -870,13 +914,13 @@ public class UserController extends BaseControl {
 				userExt.setName(name);
 				userExtService.updateUserExt(userExt);
 				resultMap.put( "message", "updateUser success.");
-				resultMap.put( "passport", passport);
+				resultMap.put( "userId", userId);
 				resultMap.put("status",1);
 				return new MappingJacksonValue(resultMap);
 			}			
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("登录失败:"+passport);
+			logger.info("登录失败:"+userId);
 			throw e;
 		}
 	}	
@@ -1050,14 +1094,20 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/updatepassword" }, method = { RequestMethod.POST })
 	public MappingJacksonValue updatepassword(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "oldpassword",required = true) String oldpassword
 			,@RequestParam(name = "newpassword",required = true) String newpassword
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
+		Long userId=null;
 		try {
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			userId=LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", "userId is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(ObjectUtils.isEmpty(userLoginRegister)){
 				resultMap.put("message", "passport is not exists.");
 				resultMap.put("status",0);
@@ -1079,7 +1129,7 @@ public class UserController extends BaseControl {
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("登录失败:"+passport);
+			logger.info("修改密码失败:"+userId);
 			throw e;
 		}
 	}
@@ -1139,25 +1189,26 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/getUserListByProvinceId" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getUserListByProvinceId(HttpServletRequest request,HttpServletResponse response
-		,@RequestParam(name = "passport",required = true) String passport
 		,@RequestParam(name = "provinceId",required = true) Long provinceId
 		,@RequestParam(name = "start",required = true) int start
 		,@RequestParam(name = "count",required = true) int count
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
 		try {
-				if(!userLoginRegisterService.passportIsExist(passport)){
-					resultMap.put("message", "passport is not exists.");
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", "userId is null or empty.");
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+					resultMap.put("message", "userId is not exists in UserLoginRegister.");
 					resultMap.put("status",0);
 					return new MappingJacksonValue(resultMap);
 				}
 				if(StringUtils.isEmpty(provinceId)){
 					resultMap.put( "message", "provinceId is null or empty.");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				if(StringUtils.isEmpty(passport)){
-					resultMap.put( "message", "passport is null or empty.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -1201,25 +1252,26 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/getUserListByThirdIndustryId" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getUserListByThirdIndustryId(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "thirdIndustryId",required = true) Long thirdIndustryId
 			,@RequestParam(name = "start",required = true) int start
 			,@RequestParam(name = "count",required = true) int count
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
 		try {
-			if(!userLoginRegisterService.passportIsExist(passport)){
-				resultMap.put("message", "passport is not exists.");
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", "userId is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+				resultMap.put("message", "userId is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
 			if(StringUtils.isEmpty(thirdIndustryId)){
 				resultMap.put( "message", "thirdIndustryId is null or empty.");
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(StringUtils.isEmpty(passport)){
-				resultMap.put( "message", "passport is null or empty.");
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
