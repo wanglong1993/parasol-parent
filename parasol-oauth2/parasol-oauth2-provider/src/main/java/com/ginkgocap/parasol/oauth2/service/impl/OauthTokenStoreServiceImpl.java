@@ -105,20 +105,22 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
             }
             if(!isChange){
 	            if(!scopes.equals(oauth2Request.getScope())){
-	            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),oauth2Request.getScope(),resourceIds,oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
+	            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),scopes,oauth2Request.getResourceIds(),oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
 	            	isChange=true;
 	            }
             }
             if(!isChange){
 	            if(!resourceIds.equals(oauth2Request.getResourceIds())){
-	            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),scopes,oauth2Request.getResourceIds(),oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
+	            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),oauth2Request.getScope(),resourceIds,oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
 	            	isChange=true;
 	            }
             }
             if(isChange){
             	authentication =new OAuth2Authentication(storedRequest,authentication.getUserAuthentication());
+            	removeAccessToken(oauthAccessToken);
             	storeAccessToken(oauthAccessToken,authentication);
             	OAuth2RefreshToken oAuth2RefreshToken=oauthRefreshTokenService.getRefreshToken(oauthAccessToken.getRefreshToken_());
+            	removeRefreshToken(oAuth2RefreshToken);
             	storeRefreshToken(oAuth2RefreshToken, authentication);
             }
         }  
@@ -134,18 +136,31 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	public void storeAccessToken(OAuth2AccessToken token,OAuth2Authentication authentication) {
 		if(!ObjectUtils.isEmpty(token) && !ObjectUtils.isEmpty(authentication)){
 			String refreshToken = null;  
+			OauthAccessToken oauthAccessToken=new OauthAccessToken();
+			OauthAccessToken token2=null;
 	        if (token.getRefreshToken() != null) {  
 	            refreshToken = token.getRefreshToken().getValue();  
 	        }
-	        OauthAccessToken oauthAccessToken=new OauthAccessToken();
-	        oauthAccessToken.setTokenId(extractTokenKey(token.getValue()));
-	        oauthAccessToken.setToken(SerializationUtils.serialize(token));
-	        oauthAccessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(authentication));
-	        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
-	        oauthAccessToken.setRefreshToken_(extractTokenKey(refreshToken));
-	        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
-	        oauthAccessToken.setUserName(authentication.getName());
-	        oauthAccessToken.setCreateTime(new Date());
+	        if(token instanceof OauthAccessToken){
+	        	token2=((OauthAccessToken)token);
+		        oauthAccessToken.setTokenId(token2.getTokenId());
+		        oauthAccessToken.setToken(token2.getToken());
+		        oauthAccessToken.setRefreshToken_(token2.getRefreshToken_());
+		        oauthAccessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(authentication));
+		        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
+		        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
+		        oauthAccessToken.setUserName(authentication.getName());
+		        oauthAccessToken.setCreateTime(new Date());
+	        }else{
+		        oauthAccessToken.setTokenId(extractTokenKey(token.getValue()));
+		        oauthAccessToken.setToken(SerializationUtils.serialize(token));
+		        oauthAccessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(authentication));
+		        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
+		        oauthAccessToken.setRefreshToken_(extractTokenKey(refreshToken));
+		        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
+		        oauthAccessToken.setUserName(authentication.getName());
+		        oauthAccessToken.setCreateTime(new Date());
+	        }
 	        try {
 				saveEntity(oauthAccessToken);
 			} catch (BaseServiceException e) {
@@ -177,6 +192,17 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	public void removeAccessToken(OAuth2AccessToken token) {
 		if(ObjectUtils.isEmpty(token))return ;
 		String tokenId= extractTokenKey(token.getValue());
+		if(StringUtils.isEmpty(tokenId)){
+			if( token instanceof OauthAccessToken){
+				try {
+					deleteEntity(((OauthAccessToken)token).getId());
+					return;
+				} catch (BaseServiceException e) {
+					e.printStackTrace();
+					return;
+				}
+			}
+		}
 		try {
 			Long id = (Long)getMapId(OauthAccessToken_List_By_tokenId,tokenId);
 			deleteEntity(id);

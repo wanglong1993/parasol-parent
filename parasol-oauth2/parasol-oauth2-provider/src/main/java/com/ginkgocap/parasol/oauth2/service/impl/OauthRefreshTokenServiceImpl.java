@@ -50,10 +50,19 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 	@Override
 	public void storeRefreshToken(OAuth2RefreshToken refreshToken,OAuth2Authentication authentication) {
 		OauthRefreshToken oauthRefreshToken=new OauthRefreshToken();  
-        oauthRefreshToken.setTokenId(extractTokenKey(refreshToken.getValue()));  
-        oauthRefreshToken.setAuthentication(SerializationUtils.serialize(authentication));  
-        oauthRefreshToken.setToken(SerializationUtils.serialize(refreshToken));  
-        oauthRefreshToken.setCreateTime(new Date());
+		OauthRefreshToken oauthRefreshToken2=null;
+		if(refreshToken instanceof OauthRefreshToken){
+			oauthRefreshToken2=(OauthRefreshToken)refreshToken;
+	        oauthRefreshToken.setTokenId(oauthRefreshToken2.getTokenId());  
+	        oauthRefreshToken.setAuthentication(SerializationUtils.serialize(authentication));  
+	        oauthRefreshToken.setToken(oauthRefreshToken2.getToken());  
+	        oauthRefreshToken.setCreateTime(new Date());
+		}else{
+	        oauthRefreshToken.setTokenId(extractTokenKey(refreshToken.getValue()));  
+	        oauthRefreshToken.setAuthentication(SerializationUtils.serialize(authentication));  
+	        oauthRefreshToken.setToken(SerializationUtils.serialize(refreshToken));  
+	        oauthRefreshToken.setCreateTime(new Date());
+		}
         try {
 			saveEntity(oauthRefreshToken);
 		} catch (BaseServiceException e) {
@@ -102,6 +111,17 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 	public void removeRefreshToken(OAuth2RefreshToken token) {
 		if(ObjectUtils.isEmpty(token))return ;
 		String tokenId=extractTokenKey(token.getValue());
+		if(StringUtils.isEmpty(tokenId)){
+			if( token instanceof OauthRefreshToken){
+				try {
+					deleteEntity(((OauthRefreshToken)token).getId());
+					return ;
+				} catch (BaseServiceException e) {
+					e.printStackTrace();
+					return;
+				}
+			}
+		}
 		Long id;
 		try {
 			id = (Long)getMapId(OauthRefreshToken_List_By_tokenId,tokenId);
