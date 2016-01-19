@@ -159,11 +159,28 @@
 			<id>dev</id>
 			<properties>
 				<!-- dubbo -->
-				<dubbo.application.name>messageWeb</dubbo.application.name>
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.223:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<dubbo.protocol.port>20885</dubbo.protocol.port>
 			</properties>
 		</profile>
+		<profile>
+			<id>online</id>
+			<properties>
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://zk.gintong.local:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://192.168.101.223:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+			</properties>
+		</profile>		
 	</profiles>
 </project>
