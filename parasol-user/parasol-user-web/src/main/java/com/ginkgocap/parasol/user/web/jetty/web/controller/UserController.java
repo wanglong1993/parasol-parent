@@ -131,7 +131,7 @@ public class UserController extends BaseControl {
 		Long userOrganExtId=0l;
 		Long id=0l;
 		try {
-//				Long loginAppId = LoginUserContextHolder.getAppKey(); 
+				Long loginAppId = LoginUserContextHolder.getAppKey(); 
 //				Long loginUserId = LoginUserContextHolder.getUserId();
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
 				if(exists){
@@ -165,7 +165,7 @@ public class UserController extends BaseControl {
 				userLoginRegister.setPassword(password);
 				userLoginRegister.setUsetType(new Byte(userType));
 				userLoginRegister.setIp(ip);
-				userLoginRegister.setSource(source);
+				userLoginRegister.setSource(loginAppId.toString());
 				userLoginRegister.setCtime(System.currentTimeMillis());
 				userLoginRegister.setUtime(System.currentTimeMillis());
 				if(type==1)userLoginRegister.setEmail(passport);
@@ -304,7 +304,7 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/getUserDetail" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "userId",required = false) String userId
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
@@ -313,10 +313,15 @@ public class UserController extends BaseControl {
 		UserBasic userBasic= null;
 		UserExt userExt= null;
 		List<UserDefined> list=null;
+		Long loginUserId=null;
 		try {
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			loginUserId = LoginUserContextHolder.getUserId();
+			if(loginUserId==null){
+				resultMap.put("message", "userId is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(loginUserId);
 			if(userLoginRegister==null){
 				resultMap.put("message", "passport is not exists.");
 				resultMap.put("status",0);
@@ -348,7 +353,7 @@ public class UserController extends BaseControl {
 			userLoginRegister.setSalt(null);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("获取用户资料失败:"+passport);
+			logger.info("获取用户资料失败:"+loginUserId);
 			throw e;
 		}
 	}
@@ -1286,7 +1291,5 @@ public class UserController extends BaseControl {
 			ip = request.getRemoteAddr();
 		}
 		return ip;
-	}
-	public static void main(String[] args) {
 	}
 }
