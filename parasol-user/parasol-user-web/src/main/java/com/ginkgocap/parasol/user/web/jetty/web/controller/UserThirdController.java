@@ -78,7 +78,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/userThirdr/getLoginThirdUrl" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/userThird/getLoginThirdUrl" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getLoginThirdUrl(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "type",required = true) int type
 			)throws Exception {
@@ -103,7 +103,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/userThirdr/getIdentifyingCode" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/user/userThird/getIdentifyingCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
@@ -150,7 +150,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/userThirdr/registerOrLogin" }, method = { RequestMethod.POST})
+	@RequestMapping(path = { "/user/userThird/registerOrLogin" }, method = { RequestMethod.POST})
 	public MappingJacksonValue registerOrLogin(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "loginType",required = true) String loginType
 		,@RequestParam(name = "openId",required = true) String openId
@@ -290,7 +290,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/userThirdr/bindExistsPassport" }, method = { RequestMethod.POST})
+	@RequestMapping(path = { "/user/userThird/bindExistsPassport" }, method = { RequestMethod.POST})
 	public MappingJacksonValue bindExistsPassport(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "loginType",required = true) String loginType
 		,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -377,7 +377,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/userThirdr/unbindExistPassport" }, method = { RequestMethod.POST})
+	@RequestMapping(path = { "/user/userThird/unbindExistPassport" }, method = { RequestMethod.POST})
 	public MappingJacksonValue unbindExistPassport(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 		,@RequestParam(name = "openId",required = true) String openId
@@ -419,7 +419,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/userThirdr/login" }, method = { RequestMethod.POST })
+	@RequestMapping(path = { "/user/userThird/login" }, method = { RequestMethod.POST })
 	public MappingJacksonValue login(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "loginType",required = true) String loginType
 			,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -451,10 +451,10 @@ public class UserThirdController extends BaseControl {
 			resultMap.put("name", userBasic.getName());
 			resultMap.put("sex", userBasic.getSex());
 			resultMap.put("status",1);
-			logger.info("/user/userThirdr/login:success");
+			logger.info("/user/userThird/login:success");
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("/user/userThirdr/login:error");
+			logger.info("/user/userThird/login:error");
 			throw e;
 		}
 	}
@@ -465,7 +465,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/userThirdr/registerLogin" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/user/userThird/registerLogin" }, method = { RequestMethod.GET})
 	public MappingJacksonValue registerLogin(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "loginType",required = true) String loginType
 		,@RequestParam(name = "accessToken",required = true) String accessToken
@@ -546,7 +546,7 @@ public class UserThirdController extends BaseControl {
 					userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);
 					resultMap.put("userLoginRegister",userLoginRegister);
 					resultMap.put("status",1);
-					logger.info("/user/userThirdr/registerLogin:success");
+					logger.info("/user/userThird/registerLogin:success");
 					return new MappingJacksonValue(resultMap);
 				}
 		}catch (Exception e ){
@@ -569,7 +569,7 @@ public class UserThirdController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/userThirdr/upload" }, method = { RequestMethod.POST})
+	@RequestMapping(path = { "/user/userThird/upload" }, method = { RequestMethod.POST})
 	public JSONObject upload(HttpServletRequest request,
 			@RequestParam(name = "posturl",required = true) String posturl
 			,@RequestParam(name = "source",required = true) String source
