@@ -96,7 +96,7 @@ public class UserController extends BaseControl {
 	 * @return MappingJacksonValue
 	 * http://www.jsjtt.com/java/Javakuangjia/67.html
 	 */
-	@RequestMapping(path = { "/user/register" }, method = { RequestMethod.POST })
+	@RequestMapping(path = { "/user/user/user/register" }, method = { RequestMethod.POST })
 	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "type",required = true) int type
 			,@RequestParam(name = "code",required = false) String code
@@ -189,7 +189,7 @@ public class UserController extends BaseControl {
 					userExt.setUserId(id);
 					userExtId=userExtService.createUserExt(userExt);
 			        Map<String, Object> map = new HashMap<String, Object>();
-			        map.put("email", userWebUrl+"/user/validateEmail?eamil="+passport);
+			        map.put("email", userWebUrl+"/user/user/validateEmail?eamil="+passport);
 			        map.put("acceptor",passport);
 			        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 					if(userLoginRegisterService.sendEmail(passport, type, map)){
@@ -259,7 +259,7 @@ public class UserController extends BaseControl {
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
 					//邮箱验证地址
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("email",  userWebUrl+"/user/validateEmail?eamil="+passport);
+					map.put("email",  userWebUrl+"/user/user/validateEmail?eamil="+passport);
 					map.put("acceptor",passport);
 					map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 					if(userLoginRegisterService.sendEmail(passport, type, map)){
@@ -302,7 +302,7 @@ public class UserController extends BaseControl {
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/getUserDetail" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/user/getUserDetail" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
@@ -360,7 +360,7 @@ public class UserController extends BaseControl {
 	 * @param count 每页多少个
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/getOrgFriendlylList" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/user/getOrgFriendlylList" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getOrgFriendlylList(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "start",required = true) int start
@@ -393,7 +393,7 @@ public class UserController extends BaseControl {
 	 * @param count 每页多少个
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/getUserFriendlyList" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/user/getUserFriendlyList" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getUserFriendlyList(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "start",required = true) int start
@@ -426,7 +426,7 @@ public class UserController extends BaseControl {
 	 * @param count 每页多少个
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/getUserAndOrgFriendlyList" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/user/getUserAndOrgFriendlyList" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getUserAndOrgFriendlyList(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "start",required = true) int start
@@ -460,7 +460,7 @@ public class UserController extends BaseControl {
 	 * @param status 申请状态.
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/applyToAddFriendly" }, method = { RequestMethod.POST })
+	@RequestMapping(path = { "/user/user/applyToAddFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue applyToAddFriendly(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
@@ -506,7 +506,7 @@ public class UserController extends BaseControl {
 	 * @param status 申请状态.
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/auditByAddFriendly" }, method = { RequestMethod.POST })
+	@RequestMapping(path = { "/user/user/auditByAddFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue auditByAddFriendly(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
@@ -642,7 +642,7 @@ public class UserController extends BaseControl {
 	 * @param appId 应用的appId
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/deleteFriendly" }, method = { RequestMethod.POST })
+	@RequestMapping(path = { "/user/user/deleteFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue deleteFriendly(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "userId",required = true) Long userId
 			,@RequestParam(name = "friendId",required = true) Long friendId
@@ -737,7 +737,7 @@ public class UserController extends BaseControl {
 	 * @throws Exception
 	 * @return MappingJacksonValue
 	 */
-	@RequestMapping(path = { "/user/updateUser" }, method = { RequestMethod.POST})
+	@RequestMapping(path = { "/user/user/updateUser" }, method = { RequestMethod.POST})
 	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "name",required = true) String name
@@ -882,7 +882,7 @@ public class UserController extends BaseControl {
 	 * @param password 用户密码
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/login" }, method = { RequestMethod.POST})
+	@RequestMapping(path = { "/user/user/login" }, method = { RequestMethod.POST})
 	public MappingJacksonValue login(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
@@ -948,7 +948,7 @@ public class UserController extends BaseControl {
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/validatPassport" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/user/validatPassport" }, method = { RequestMethod.GET })
 	public MappingJacksonValue validatPassport(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
@@ -975,7 +975,7 @@ public class UserController extends BaseControl {
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/validateEmail" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/user/validateEmail" }, method = { RequestMethod.GET })
 	public MappingJacksonValue validateEmail(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "eamil",required = true) String email
 			)throws Exception {
@@ -1043,7 +1043,7 @@ public class UserController extends BaseControl {
 	 * @param source  来源的appkey
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/updatepassword" }, method = { RequestMethod.POST })
+	@RequestMapping(path = { "/user/user/updatepassword" }, method = { RequestMethod.POST })
 	public MappingJacksonValue updatepassword(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "oldpassword",required = true) String oldpassword
@@ -1086,7 +1086,7 @@ public class UserController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/getIdentifyingCode" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/user/user/getIdentifyingCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
@@ -1132,7 +1132,7 @@ public class UserController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/getUserListByProvinceId" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/user/user/getUserListByProvinceId" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getUserListByProvinceId(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 		,@RequestParam(name = "provinceId",required = true) Long provinceId
@@ -1194,7 +1194,7 @@ public class UserController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/getUserListByThirdIndustryId" }, method = { RequestMethod.GET})
+	@RequestMapping(path = { "/user/user/getUserListByThirdIndustryId" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getUserListByThirdIndustryId(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "thirdIndustryId",required = true) Long thirdIndustryId
