@@ -155,6 +155,7 @@
 						<goals>
 							<goal>unpack</goal>
 						</goals>
+						<!-- 
 						<configuration>
 							<artifactItems>
 								<artifactItem>
@@ -165,7 +166,8 @@
 									<includes>META-INF/assembly/**</includes>
 								</artifactItem>
 							</artifactItems>
-						</configuration>
+						</configuration> 
+						 -->
 					</execution>
 				</executions>
 			</plugin>
