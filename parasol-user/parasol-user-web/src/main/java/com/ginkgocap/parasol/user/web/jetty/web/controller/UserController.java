@@ -96,7 +96,7 @@ public class UserController extends BaseControl {
 	 * @return MappingJacksonValue
 	 * http://www.jsjtt.com/java/Javakuangjia/67.html
 	 */
-	@RequestMapping(path = { "/user/user/user/register" }, method = { RequestMethod.POST })
+	@RequestMapping(path = { "/user/user/register" }, method = { RequestMethod.POST })
 	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "type",required = true) int type
 			,@RequestParam(name = "code",required = false) String code
