@@ -129,13 +129,14 @@ public class UserController extends BaseControl {
 		Long userOrganBasicId=0l;
 		Long userOrganExtId=0l;
 		Long id=0l;
+		Long appId =0l;
 		try {
-				Long appId = LoginUserContextHolder.getAppKey();
-				if(appId==null){
-					resultMap.put( "message", "appId is null or empty.");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
+//				Long appId = LoginUserContextHolder.getAppKey();
+//				if(appId==null){
+//					resultMap.put( "message", "appId is null or empty.");
+//					resultMap.put( "status", 0);
+//					return new MappingJacksonValue(resultMap);
+//				}
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
 				if(exists){
 					if(type==1)resultMap.put( "message", "email already exists.");
@@ -391,6 +392,33 @@ public class UserController extends BaseControl {
 			}
 			list= userOrgPerCusRelService.getOrgFriendlylList(start, count, userLoginRegister.getId());
 			resultMap.put("list", list);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("根据userId获取用户我的里面的组织好友列表失败:"+userId);
+			throw e;
+		}
+	}
+	
+	/**
+	 *获取当前登录用户的userId及appId
+	 * 
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserIdAndAppId" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserBase(HttpServletRequest request,HttpServletResponse response
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", "userId is null or empty,please first authentication and get access_token.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			resultMap.put("userId", userId);
+			resultMap.put("appId", LoginUserContextHolder.getAppKey());
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
