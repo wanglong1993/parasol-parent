@@ -5,11 +5,11 @@
 	<parent>
 		<artifactId>parasol-directory</artifactId>
 		<groupId>com.ginkgocap.parasol</groupId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.0.1</version>
 	</parent>
 	<artifactId>parasol-directory-api</artifactId>
 	<name>${project.artifactId}</name>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<properties>
 
 	</properties>
