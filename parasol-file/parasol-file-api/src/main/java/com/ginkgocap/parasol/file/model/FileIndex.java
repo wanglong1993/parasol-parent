@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 
 * <p>Title: FileIndex.java<／p> 
@@ -20,6 +22,7 @@ import org.hibernate.annotations.Parameter;
 * @date 2015-11-30 
 * @version 1.0
  */
+@JsonFilter("com.ginkgocap.parasol.file.model.FileIndex")
 @Entity
 @Table(name = "tb_file_index")
 public class FileIndex implements Serializable {

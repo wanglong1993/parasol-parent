@@ -10,6 +10,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 /**
  * 
 * <p>Title: SensitiveWord.java<／p> 
@@ -19,6 +21,7 @@ import org.hibernate.annotations.Parameter;
 * @date 2015-11-26 
 * @version 1.0
  */
+@JsonFilter("com.ginkgocap.parasol.sensitive.model.SensitiveWord")
 @Entity
 @Table(name = "tb_sensitive_word")
 

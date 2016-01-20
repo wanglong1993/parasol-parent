@@ -12,6 +12,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 
 * <p>Title: MessageEntity.java<／p> 
@@ -21,6 +23,7 @@ import org.hibernate.annotations.Parameter;
 * @date 2015-11-18 
 * @version 1.0
  */
+@JsonFilter("com.ginkgocap.parasol.message.model.MessageEntity")
 @Entity
 @Table(name = "tb_message_entity")
 public class MessageEntity implements Serializable{

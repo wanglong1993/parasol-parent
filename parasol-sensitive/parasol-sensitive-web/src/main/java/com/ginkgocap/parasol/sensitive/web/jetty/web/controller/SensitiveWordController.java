@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.dubbo.rpc.RpcException;
-import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
@@ -57,8 +56,6 @@ public class SensitiveWordController extends BaseControl {
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
-	private static final String parameterAppId = "appKey"; // 应用的Key
-	private static final String parameterUserId = "userId"; // 访问的用户参数
 	private static final String parameterType = "type"; // 查询的应用分类
 	private static final String parameterWord = "word"; // 敏感词
 	private static final String parameterLevel = "level"; // 敏感词等级
