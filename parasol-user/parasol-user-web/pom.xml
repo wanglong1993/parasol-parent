@@ -23,6 +23,52 @@
 		<jetty-jsp.version>2.2.0.v201112011158</jetty-jsp.version>
 		<main.basedir>${basedir}/../..</main.basedir>
 	</properties>
+	<repositories>
+	    <repository>
+	      <releases>
+	        <enabled>true</enabled>
+	        <updatePolicy>always</updatePolicy>
+	        <checksumPolicy>ignore</checksumPolicy>
+	      </releases>
+	      <snapshots>
+	        <enabled>true</enabled>
+	        <updatePolicy>always</updatePolicy>
+	        <checksumPolicy>ignore</checksumPolicy>
+	      </snapshots>
+	      <id>nexus</id>
+	      <name>Team Nexus Repository</name>
+	      <url>http://192.168.101.89:8081/nexus/content/groups/public</url>
+	    </repository>
+	    <repository>
+	      <snapshots>
+	        <enabled>false</enabled>
+	      </snapshots>
+	      <id>central</id>
+	      <name>Central Repository</name>
+	      <url>https://repo.maven.apache.org/maven2</url>
+	    </repository>
+	</repositories>
+	<pluginRepositories>
+	    <pluginRepository>
+	      <id>Codehaus repository</id>
+	      <url>http://repository.codehaus.org/</url>
+	    </pluginRepository>
+	    <pluginRepository>
+	      <id>localhost plugins</id>
+	      <url>http://192.168.101.89:8081/nexus/content/groups/public/</url>
+	    </pluginRepository>
+	    <pluginRepository>
+	      <releases>
+	        <updatePolicy>never</updatePolicy>
+	      </releases>
+	      <snapshots>
+	        <enabled>false</enabled>
+	      </snapshots>
+	      <id>central</id>
+	      <name>Central Repository</name>
+	      <url>https://repo.maven.apache.org/maven2</url>
+	    </pluginRepository>
+	</pluginRepositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
