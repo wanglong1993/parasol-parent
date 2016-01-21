@@ -146,12 +146,31 @@
 				<memcached.list_1.ip>192.168.101.22</memcached.list_1.ip>
 				<memcached.list_1.port>11211</memcached.list_1.port>
 				<memcached.object_1.ip>192.168.101.22</memcached.object_1.ip>
-				<memcached.object_1.port>11211</memcached.object_1.port>				
+				<memcached.object_1.port>11211</memcached.object_1.port>
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>20885</dubbo.protocol.port>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<!-- database -->
+				<jdbc.url>jdbc:mysql://192.168.101.187:3306/parasol_tags?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8&amp;amp;autoReconnect=true</jdbc.url>
+				<jdbc.username>root</jdbc.username>
+				<jdbc.password>bunengshiyong</jdbc.password>
+				<!-- memcached -->
+				<memcached.list_1.ip>192.168.101.187</memcached.list_1.ip>
+				<memcached.list_1.port>11211</memcached.list_1.port>
+				<memcached.object_1.ip>192.168.101.187</memcached.object_1.ip>
+				<memcached.object_1.port>11211</memcached.object_1.port>
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://192.168.101.223:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.protocol.port>8826</dubbo.protocol.port>
 			</properties>
 		</profile>
 		<profile>
