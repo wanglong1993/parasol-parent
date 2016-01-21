@@ -53,28 +53,30 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		if (ObjectUtils.equals(directory.getAppId(), null) || directory.getAppId() <= 0) { // appId
 			throw new DirectoryServiceException(ServiceError.ERROR_PERTIES, "appId property must have a value and greater than zero");
 		}
+//		// @formatter:off
+//		// 1.2 check type id
+//		if (directory.getTypeId() <= 0) { // type 必须有值且的大于1
+//			throw new DirectoryServiceException(ServiceError.ERROR_PERTIES, "type property must have a value and greater than zero");
+//		} 
 
-		// 1.2 check type id
-		if (directory.getTypeId() <= 0) { // type 必须有值且的大于1
-			throw new DirectoryServiceException(ServiceError.ERROR_PERTIES, "type property must have a value and greater than zero");
-		} else {
-			// 1.2.1 检查目录树分类是否存在
-			DirectoryType directoryType = null;
-			try {
-				directoryType = directoryTypeService.getDirectoryType(directory.getAppId(), directory.getTypeId());
-			} catch (DirectoryTypeServiceException e) {
-				if (logger.isDebugEnabled()) {
-					e.printStackTrace(System.err);
-				}
-				throw new DirectoryServiceException(e);
-			}
-			if (directoryType == null) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("don't find the DirectoryType by appid is ").append(directory.getAppId()).append(" and type is ").append(directory.getTypeId());
-				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
-			}
-		}
-
+//		else {
+//			// 1.2.1 检查目录树分类是否存在
+//			DirectoryType directoryType = null;
+//			try {
+//				directoryType = directoryTypeService.getDirectoryType(directory.getAppId(), directory.getTypeId());
+//			} catch (DirectoryTypeServiceException e) {
+//				if (logger.isDebugEnabled()) {
+//					e.printStackTrace(System.err);
+//				}
+//				throw new DirectoryServiceException(e);
+//			}
+//			if (directoryType == null) {
+//				StringBuffer sb = new StringBuffer();
+//				sb.append("don't find the DirectoryType by appid is ").append(directory.getAppId()).append(" and type is ").append(directory.getTypeId());
+//				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
+//			}
+//		}
+//		// @formatter:on
 		// 1.3 检查名字
 		// TODO: 检查敏感词
 		logger.info("请检查敏感词");
@@ -99,13 +101,14 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		Directory parentDirectory = null;
 		if (pId != null && pId != 0) {
 			parentDirectory = this.getDirectory(directory.getAppId(), directory.getUserId(), pId);
-			if (parentDirectory == null || !ObjectUtils.equals(parentDirectory.getTypeId(), directory.getTypeId())) {
+			if (parentDirectory == null) {
 				StringBuffer sb = new StringBuffer();
 				sb.append("don't find the parent Directory by appid is ").append(directory.getAppId()).append(" userId is ").append(directory.getUserId());
 				sb.append(" or directory type mismatched parent directory type");
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
 			} else {
 				directory.setPid(pId);
+				directory.setTypeId(parentDirectory.getTypeId());
 			}
 		}
 
@@ -261,6 +264,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			
 			// TODO 还的检查不能移动到自己的子目录下
 			// TODO 不能存在相同的文件名字
+			// TODO 检查是不是同一个分类
 			
 		
 
