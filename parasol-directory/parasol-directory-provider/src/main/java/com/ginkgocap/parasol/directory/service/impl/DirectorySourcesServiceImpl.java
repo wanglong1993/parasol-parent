@@ -149,7 +149,6 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 							if (ds != null) {
 								logger.error("Operation of the non own directory source");
 							} else {
-
 								logger.error("dont find the DirectorySource by [ userId=" + userId + " and id=" + id + "]");
 							}
 						}
