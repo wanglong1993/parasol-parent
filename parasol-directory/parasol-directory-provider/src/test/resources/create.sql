@@ -1,5 +1,5 @@
-create database parasol_metadata;
-use parasol_metadata;
+create database parasol_directory;
+use parasol_directory;
 CREATE TABLE `tb_directory_type` (
   `id` bigint(20) NOT NULL COMMENT '主键',
   `appId` bigint(20) NOT NULL COMMENT '应用ID',
@@ -7,7 +7,7 @@ CREATE TABLE `tb_directory_type` (
   `updateAt` bigint(20) DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `appId_name` (`appId`,`name`) 
-) ENGINE=InnoDB AUTO_INCREMENT=1307 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=1307 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tb_directory` (
   `id` bigint(20) NOT NULL COMMENT '主键',
@@ -24,7 +24,7 @@ CREATE TABLE `tb_directory` (
   `updateAt` bigint(20) DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `appId_pid_userId_name` (`appId`, `pid`,`userId`,`name`) 
-) ENGINE=InnoDB AUTO_INCREMENT=1307 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=1307 DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `tb_directory_source` (
@@ -41,6 +41,6 @@ CREATE TABLE `tb_directory_source` (
   `createAt` bigint(20) DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `directoryId_appId_userId_sourceId_sourceType` (`directoryId`, `appId`,`userId`,`sourceId`,`sourceType`) 
-) ENGINE=InnoDB AUTO_INCREMENT=1307 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=1307 DEFAULT CHARSET=utf8;
 
 
