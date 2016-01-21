@@ -106,7 +106,7 @@ public class DirectorySourceController extends BaseControl {
 	 * @throws DirectorySourceServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/directory/source/createSource", method = { RequestMethod.GET })
+	@RequestMapping(path = "/directory/source/createSource", method = { RequestMethod.POST })
 	public MappingJacksonValue createDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId,
 			@RequestParam(name = DirectorySourceController.paramenterSourceId, required = true) Long sourceId,
@@ -180,7 +180,7 @@ public class DirectorySourceController extends BaseControl {
 	 * @throws DirectorySourceServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/directory/source/moveSource", method = { RequestMethod.GET })
+	@RequestMapping(path = "/directory/source/moveSource", method = { RequestMethod.POST })
 	public MappingJacksonValue moveDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceIds, required = true) Long[] ids,
 			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) throws DirectorySourceServiceException {
@@ -190,7 +190,7 @@ public class DirectorySourceController extends BaseControl {
 			Long loginUserId = LoginUserContextHolder.getUserId();
 			
 			// TODO: 没有实现这个方法
-			Boolean success = directorySourceService.moveDirectorySources(loginAppId, loginUserId, directoryId, ids);
+			Boolean success = directorySourceService.moveDirectorySources(loginUserId, loginAppId, directoryId, ids);
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
