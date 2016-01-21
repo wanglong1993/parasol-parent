@@ -108,8 +108,6 @@ public class TagSourceController extends BaseControl {
 	 */
 	@RequestMapping(path = "/tags/source/createTagSource", method = { RequestMethod.POST })
 	public MappingJacksonValue createTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagSourceController.paramenterAppId, required = true) Long appId,
-			@RequestParam(name = TagSourceController.paramenterUserId, required = true) Long userId,
 			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagsId,
 			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
 			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) int sourceType) throws TagSourceServiceException {
