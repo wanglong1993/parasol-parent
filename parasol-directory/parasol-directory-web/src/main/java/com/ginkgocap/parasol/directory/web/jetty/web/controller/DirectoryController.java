@@ -75,7 +75,7 @@ public class DirectoryController extends BaseControl {
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = { "/directory/directory/createDirectoryRoot" }, method = { RequestMethod.GET,RequestMethod.POST })
+	@RequestMapping(path = { "/directory/directory/createRootDirectory" }, method = { RequestMethod.POST })
 	public MappingJacksonValue createDirectoryRoot(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectoryController.paramenterName, required = true) String name,
@@ -94,6 +94,43 @@ public class DirectoryController extends BaseControl {
 			directory.setTypeId(rootType);
 
 			Long id = directoryService.createDirectoryForRoot(rootType, directory);
+			Map<String, Long> reusltMap = new HashMap<String, Long>();
+			reusltMap.put("id", id);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(reusltMap);
+			return mappingJacksonValue;
+		}  catch (DirectoryServiceException e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 3.创建子目录
+	 * 
+	 * @param request
+	 * @return
+	 * @throws DirectoryServiceException
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = { "/directory/directory/createSubDirectory" }, method = {RequestMethod.POST })
+	public MappingJacksonValue createSubDirectory(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
+			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectoryController.paramenterName, required = true) String name,
+			@RequestParam(name = DirectoryController.paramenterDirectoryId, required = true) long parentId) throws DirectoryServiceException {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+			
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			Directory directory = new Directory();
+			directory.setAppId(loginAppId);
+			directory.setUserId(loginUserId);
+			directory.setName(name);
+			directory.setPid(parentId);
+
+			Long id = directoryService.createDirectoryForChildren(parentId, directory);
 			Map<String, Long> reusltMap = new HashMap<String, Long>();
 			reusltMap.put("id", id);
 			// 2.转成框架数据
