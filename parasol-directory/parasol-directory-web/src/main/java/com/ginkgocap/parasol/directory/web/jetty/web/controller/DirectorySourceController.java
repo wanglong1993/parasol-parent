@@ -48,11 +48,8 @@ import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 @RestController
 public class DirectorySourceController extends BaseControl {
 	private static Logger logger = Logger.getLogger(DirectorySourceController.class);
-
 	private static final String paramenterFields = "fields";
 	private static final String paramenterDebug = "debug";
-	private static final String paramenterAppId = "appKey";
-	private static final String paramenterUserId = "userId";
 	private static final String paramenterDirectoryId = "directoryId";
 	private static final String paramenterSourceId = "sourceId";
 	private static final String paramenterSourceType = "sourceType";
@@ -188,7 +185,6 @@ public class DirectorySourceController extends BaseControl {
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
 			Long loginUserId = LoginUserContextHolder.getUserId();
-			
 			// TODO: 没有实现这个方法
 			Boolean success = directorySourceService.moveDirectorySources(loginUserId, loginAppId, directoryId, ids);
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
