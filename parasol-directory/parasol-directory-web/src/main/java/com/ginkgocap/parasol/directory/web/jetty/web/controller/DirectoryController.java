@@ -143,7 +143,7 @@ public class DirectoryController extends BaseControl {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	@RequestMapping(path = { "/directory/directory/updateDirectory" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/directory/directory/updateDirectory" }, method = { RequestMethod.POST })
 	public MappingJacksonValue updateDirectoryRoot(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectoryController.paramenterDirectoryId, required = true) Long directoryId,
@@ -178,8 +178,8 @@ public class DirectoryController extends BaseControl {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	@RequestMapping(path = { "/directory/directory/moveDirectory" }, method = { RequestMethod.GET })
-	public MappingJacksonValue moveDirectoryRoot(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
+	@RequestMapping(path = { "/directory/directory/moveDirectory" }, method = { RequestMethod.POST })
+	public MappingJacksonValue moveDirectory(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
 			@RequestParam(name = DirectoryController.paramenterDirectoryId, required = true) Long directoryId,
 			@RequestParam(name = DirectoryController.paramenterToDirectoryId, required = true) Long toDirectoryId) throws DirectoryServiceException {
