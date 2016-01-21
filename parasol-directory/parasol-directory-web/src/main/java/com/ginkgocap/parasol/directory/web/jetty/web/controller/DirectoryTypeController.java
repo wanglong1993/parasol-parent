@@ -16,8 +16,10 @@
 
 package com.ginkgocap.parasol.directory.web.jetty.web.controller;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -50,13 +52,18 @@ public class DirectoryTypeController extends BaseControl {
 	private static final String paramenterFields = "fields";
 	private static final String paramenterDebug = "debug";
 	private static final String paramenterAppId = "appKey";
+	private static final String paramenterName = "name";
+
 
 	@Autowired
 	private DirectoryTypeService directoryTypeService;
 
 	/**
-	 * 查询目录的类型
-	 * 
+	 * 查询目录的类型</br>
+	 * <code>
+	 * export access_token=6b48bab7-e545-4ef0-ac25-af02bfe92a0b</br>
+	 * curl -i http://api.test.gintong.com/directory/type/getTypeList?access_token=${access_token}</br>
+	 * </code>
 	 * @param request
 	 * @return
 	 * @throws CodeServiceException
@@ -76,6 +83,47 @@ public class DirectoryTypeController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (DirectoryTypeServiceException e) {
+			e.printStackTrace(System.err);
+		}
+		return null;
+	}
+
+	
+	//@format:
+	/**
+	 * 查询目录的类型
+	 * </br>
+	 * <code>
+	 * export access_token=6b48bab7-e545-4ef0-ac25-af02bfe92a0b</br>
+	 * curl -i http://api.test.gintong.com/directory/type/createTypeList?access_token=${access_token} -d"name=人脉"</br>
+	 * curl -i http://api.test.gintong.com/directory/type/createTypeList?access_token=${access_token} -d"name=组织"</br>
+	 * curl -i http://api.test.gintong.com/directory/type/createTypeList?access_token=${access_token} -d"name=需求"</br>
+	 * curl -i http://api.test.gintong.com/directory/type/createTypeList?access_token=${access_token} -d"name=知识"</br>
+	 * curl -i http://api.test.gintong.com/directory/type/createTypeList?access_token=${access_token} -d"name=会议"</br>
+	 * </code>
+	 * @param request
+	 * @return
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = "/directory/type/createTypeList", method = { RequestMethod.POST })
+	public MappingJacksonValue createFunctionClassList(@RequestParam(name = DirectoryTypeController.paramenterName, defaultValue = "") String name,
+			@RequestParam(name = DirectoryTypeController.paramenterDebug, defaultValue = "") String debug) {
+		Long loginAppId = LoginUserContextHolder.getAppKey();
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+	
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			// 1.查询后台服务
+			DirectoryType directoryType = new DirectoryType();
+			directoryType.setAppId(loginAppId);
+			directoryType.setName(name);
+			Long id = directoryTypeService.createDirectoryType(loginAppId, directoryType);
+			Map<String, Long> reusltMap = new HashMap<String, Long>();
+			reusltMap.put("id", id);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(reusltMap);
 			return mappingJacksonValue;
 		} catch (DirectoryTypeServiceException e) {
 			e.printStackTrace(System.err);
