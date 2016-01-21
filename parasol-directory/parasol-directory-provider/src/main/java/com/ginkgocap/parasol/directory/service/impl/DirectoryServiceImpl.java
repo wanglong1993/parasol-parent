@@ -253,7 +253,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			if (ObjectUtils.equals(targetDirectory.getUserId(), to.getUserId()) && ObjectUtils.equals(targetDirectory.getAppId(), to.getAppId()) && ObjectUtils.equals(targetDirectory.getTypeId(), to.getTypeId())) {
 				targetDirectory.setPid(toDirectoryId);
 				String numbreCode = getParentNumberCode(to);
-				targetDirectory.setNumberCode(numbreCode+"-" + targetDirectory); //更新索要
+				targetDirectory.setNumberCode(numbreCode+"-" + numbreCode); //更新索要
 				return this.updateEntity(targetDirectory);
 			} else {
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own directory");// 移动的不是自己的目录
