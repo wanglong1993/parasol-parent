@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 @Configuration
 public class WebConfig {
-
 	@Bean
 	public MappingJackson2HttpMessageConverter customJackson2HttpMessageConverter() {
 		ObjectMapper objectMapper = new ObjectMapper();
