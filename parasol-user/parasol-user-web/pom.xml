@@ -229,6 +229,9 @@
 				<user.dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</user.dubbo.registry.address>
 				<user.dubbo.protocol.name>dubbo</user.dubbo.protocol.name>
 				<user.dubbo.protocol.port>20885</user.dubbo.protocol.port>
+				<user.web.url>http://localhost:8089</user.web.url>
+				<upload.web.url>http://192.168.130.100:8091/file/upload</upload.web.url>
+				<file.web.url>http://file.gintong.com/</file.web.url>
 			</properties>
 		</profile>
 		<profile>
@@ -247,6 +250,9 @@
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.223:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<user.web.url>http://api.test.gintong.com</user.web.url>
+				<upload.web.url>http://192.168.130.100:8091/file/upload</upload.web.url>
+				<file.web.url>http://file.gintong.com/</file.web.url>
 			</properties>
 		</profile>		
 	</profiles>

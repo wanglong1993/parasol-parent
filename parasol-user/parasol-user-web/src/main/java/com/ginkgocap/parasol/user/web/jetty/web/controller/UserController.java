@@ -1054,7 +1054,7 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/validateEmail" }, method = { RequestMethod.GET })
 	public MappingJacksonValue validateEmail(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "eamil",required = true) String email
+			,@RequestParam(name = "email",required = true) String email
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserBasic userBasic=null;
