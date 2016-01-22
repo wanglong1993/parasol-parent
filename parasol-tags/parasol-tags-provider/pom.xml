@@ -101,7 +101,7 @@
 								<artifactItem>
 									<groupId>com.ginkgocap.parasol</groupId>
 									<artifactId>parasol-common-provider</artifactId>
-									<version>1.0.0</version>
+									<version>1.0.2-SNAPSHOT</version>
 									<outputDirectory>${project.build.directory}/dubbo</outputDirectory>
 									<includes>META-INF/assembly/**</includes>
 								</artifactItem>
