@@ -232,7 +232,7 @@
 			<id>dev</id>
 			<properties>
 				<!-- database -->
-				<jdbc.url>jdbc:mysql://192.168.101.131:3306/parasol_user?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
+				<jdbc.url>jdbc:mysql://192.168.101.131:3306/parasol_user?autoReconnect=true&amp;amp;autoReconnectForPools=true&amp;amp;createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
 				<jdbc.username>zhangwei</jdbc.username>
 				<jdbc.password>zhangwei</jdbc.password>
 				<!-- memcached -->
