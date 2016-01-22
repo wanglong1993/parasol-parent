@@ -49,14 +49,12 @@ import com.ginkgocap.parasol.tags.service.TagSourceService;
 public class TagSourceController extends BaseControl {
 	private static Logger logger = Logger.getLogger(TagSourceController.class);
 
-	private static final String paramenterFields = "fields";
-	private static final String paramenterDebug = "debug";
-	private static final String paramenterAppId = "appKey";
-	private static final String paramenterUserId = "userId";
-	private static final String paramenterTagId = "tagId";
-	private static final String paramenterSourceId = "sourceId";
-	private static final String paramenterSourceType = "sourceType";
-	private static final String paramenterTagSourceId = "id";
+	private static final String parameterFields = "fields";
+	private static final String parameterDebug = "debug";
+	private static final String parameterTagId = "tagId";
+	private static final String parameterSourceId = "sourceId";
+	private static final String parameterSourceType = "sourceType";
+	private static final String parameterTagSourceId = "id";
 
 	@Autowired
 	private TagSourceService tagsSourceService;
@@ -70,10 +68,10 @@ public class TagSourceController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/source/getSourceList", method = { RequestMethod.GET })
-	public MappingJacksonValue getSourceList(@RequestParam(name = TagSourceController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
-			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) Long sourceType) {
+	public MappingJacksonValue getSourceList(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
+			@RequestParam(name = TagSourceController.parameterSourceType, required = true) Long sourceType) {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
@@ -107,10 +105,10 @@ public class TagSourceController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/source/createTagSource", method = { RequestMethod.POST })
-	public MappingJacksonValue createTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagSourceController.paramenterTagId, required = true) Long tagsId,
-			@RequestParam(name = TagSourceController.paramenterSourceId, required = true) Long sourceId,
-			@RequestParam(name = TagSourceController.paramenterSourceType, required = true) int sourceType) throws TagSourceServiceException {
+	public MappingJacksonValue createTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagsId,
+			@RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
+			@RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType) throws TagSourceServiceException {
 		//@formatter:on
 		Long loginAppId = LoginUserContextHolder.getAppKey();
 		Long loginUserId = LoginUserContextHolder.getUserId();
@@ -146,8 +144,8 @@ public class TagSourceController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/source/deleteTagSource", method = { RequestMethod.GET, RequestMethod.DELETE})
-	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagSourceController.paramenterTagSourceId, required = true) Long id) throws TagSourceServiceException {
+	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagSourceController.parameterTagSourceId, required = true) Long id) throws TagSourceServiceException {
 		//@formatter:on
 		Long loginAppId = LoginUserContextHolder.getAppKey();
 		Long loginUserId = LoginUserContextHolder.getUserId();
