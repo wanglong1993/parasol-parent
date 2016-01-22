@@ -1075,6 +1075,11 @@ public class UserController extends BaseControl {
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
+					if(userBasic.getAuth().intValue()==1){
+						resultMap.put("message", "email has been checked.");
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
 					userBasic.setAuth(new Byte("1"));
 					if(userBasicService.updateUserBasic(userBasic)){
 						resultMap.put("message", "email validate success.");
@@ -1090,6 +1095,11 @@ public class UserController extends BaseControl {
 					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
 					if(userOrganBasic==null){
 						resultMap.put("message", "email is not exists in UserOrganBasic.");
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+					if(userOrganBasic.getAuth().intValue()==1){
+						resultMap.put("message", "email has been checked.");
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
