@@ -75,7 +75,7 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 		if(StringUtils.isBlank(tokenValue))return null;
 		String tokenId=extractTokenKey(tokenValue);
 		Long id;
-		OauthRefreshToken oauthRefreshToken;
+		OauthRefreshToken oauthRefreshToken = null;
 		try {
 			id = (Long)getMapId(OauthRefreshToken_List_By_tokenId,tokenId);
 			if(id==null || id<=0l) return null;
@@ -86,7 +86,11 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 		} catch (BaseServiceException e1) {
 			e1.printStackTrace();
 			return null;
+		}catch (IllegalArgumentException e) {
+			logger.warn("Failed to deserialize refresh token for token " + tokenValue, e);
+			removeRefreshToken(oauthRefreshToken);
 		}
+		return oauthRefreshToken;
 	}
 
 	@Override
@@ -94,17 +98,23 @@ public class OauthRefreshTokenServiceImpl extends BaseService<OauthRefreshToken>
 		if(ObjectUtils.isEmpty(token))return null;
 		String tokenId=extractTokenKey(token.getValue());
 		Long id;
-		OauthRefreshToken oauthRefreshToken;
+		OauthRefreshToken oauthRefreshToken = null;
+		OAuth2Authentication authentication = null;
 		try {
 			id = (Long)getMapId(OauthRefreshToken_List_By_tokenId,tokenId);
 			if(id==null || id<=0l) return null;
 			oauthRefreshToken=getEntity(id);
 			if(ObjectUtils.isEmpty(oauthRefreshToken))return null;
-			return SerializationUtils.deserialize(oauthRefreshToken.getAuthentication());
+			authentication= SerializationUtils.deserialize(oauthRefreshToken.getAuthentication());
+			return authentication;
 		} catch (BaseServiceException e1) {
 			e1.printStackTrace();
 			return null;
+		}catch (IllegalArgumentException e) {
+			logger.warn("Failed to deserialize access token for " + tokenId, e);
+			removeRefreshToken(oauthRefreshToken);
 		}
+		return authentication;
 	}
 
 	@Override

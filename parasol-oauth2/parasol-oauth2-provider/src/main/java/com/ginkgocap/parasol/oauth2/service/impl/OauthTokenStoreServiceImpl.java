@@ -128,7 +128,68 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
             if (logger.isDebugEnabled()) {  
             	logger.info("Failed to find access token for token " + token);  
             }  
+        }catch (IllegalArgumentException e) {
+        	logger.warn("Failed to deserialize authentication for " + token, e);
+			removeAccessToken(oauthAccessToken);
+		}
+        return authentication;  
+	}
+	
+	public OAuth2Authentication getAuthentication(String tokenId) {
+		if(StringUtils.isBlank(tokenId))return null;
+		Long id;
+		OauthAccessToken oauthAccessToken;
+		try {
+			id = (Long)getMapId(OauthAccessToken_List_By_tokenId,tokenId);
+			oauthAccessToken=getEntity(id);
+		} catch (BaseServiceException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+		OAuth2Authentication authentication = null;  
+		OAuth2Request storedRequest = null;
+		OAuth2AccessToken oAuth2AccessToken=null;
+		boolean isChange=false;
+        try {  
+            authentication = SerializationUtils.deserialize(oauthAccessToken.getAuthentication());  
+            OauthClientDetails oauthClientDetails =(OauthClientDetails) oauthClientDetailsService.loadClientByClientId(authentication.getOAuth2Request().getClientId());
+            Set<String> resourceIds= oauthClientDetails.getResourceIds();
+            Set<String> scopes= oauthClientDetails.getScope();
+            OAuth2Request oauth2Request=authentication.getOAuth2Request();
+            if(!scopes.equals(oauth2Request.getScope()) && !resourceIds.equals(oauth2Request.getResourceIds())){
+            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),scopes,resourceIds,oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
+            	isChange=true;
+            }
+            if(!isChange){
+	            if(!scopes.equals(oauth2Request.getScope())){
+	            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),scopes,oauth2Request.getResourceIds(),oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
+	            	isChange=true;
+	            }
+            }
+            if(!isChange){
+	            if(!resourceIds.equals(oauth2Request.getResourceIds())){
+	            	storedRequest = new OAuth2Request(oauth2Request.getRequestParameters(),oauth2Request.getClientId(),oauth2Request.getAuthorities(),oauth2Request.isApproved(),oauth2Request.getScope(),resourceIds,oauth2Request.getRedirectUri(),oauth2Request.getResponseTypes(),oauth2Request.getExtensions());
+	            	isChange=true;
+	            }
+            }
+            if(isChange){
+            	authentication =new OAuth2Authentication(storedRequest,authentication.getUserAuthentication());
+            	removeAccessToken(oauthAccessToken);
+            	storeAccessToken(oauthAccessToken,authentication);
+            	OAuth2RefreshToken oAuth2RefreshToken=oauthRefreshTokenService.getRefreshToken(oauthAccessToken.getRefreshToken_());
+            	removeRefreshToken(oAuth2RefreshToken);
+            	storeRefreshToken(oAuth2RefreshToken, authentication);
+            }
         }  
+        catch (EmptyResultDataAccessException e) {  
+            if (logger.isDebugEnabled()) {  
+            	logger.info("Failed to find access token for token " + tokenId);  
+            }  
+        }catch (IllegalArgumentException e) {
+        	logger.warn("Failed to deserialize authentication for " + tokenId, e);
+        	oAuth2AccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
+			removeAccessToken(oAuth2AccessToken);
+		}
         return authentication;  
 	}
 
@@ -141,6 +202,9 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	        if (token.getRefreshToken() != null) {  
 	            refreshToken = token.getRefreshToken().getValue();  
 	        }
+			if (readAccessToken(token.getValue())!=null) {
+				removeAccessToken(token);
+			}
 	        if(token instanceof OauthAccessToken){
 	        	token2=((OauthAccessToken)token);
 		        oauthAccessToken.setTokenId(token2.getTokenId());
@@ -174,18 +238,23 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 		if(StringUtils.isBlank(tokenValue))return null;
 		String tokenId=extractTokenKey(tokenValue);
 		Long id;
-		OauthAccessToken oauthAccessToken;
+		OauthAccessToken oauthAccessToken = null;
+		OAuth2AccessToken  oAuth2AccessToken=null;
 		try {
 			id = (Long)getMapId(OauthAccessToken_List_By_tokenId,tokenId);
 			if(id==null || id<=0l) return null;
 			oauthAccessToken=getEntity(id);
 			if(ObjectUtils.isEmpty(oauthAccessToken))return null;
-			OAuth2AccessToken  oAuth2AccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
+			oAuth2AccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
 			return oAuth2AccessToken;
 		} catch (BaseServiceException e1) {
 			e1.printStackTrace();
 			return null;
+		}catch (IllegalArgumentException e) {
+			logger.warn("Failed to deserialize access token for " + tokenValue, e);
+			removeAccessToken(oAuth2AccessToken);
 		}
+		return oAuth2AccessToken;
 	}
 
 	@Override
@@ -210,7 +279,6 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			e.printStackTrace();
 		}	
 	}
-
 	@Override
 	public void storeRefreshToken(OAuth2RefreshToken refreshToken,OAuth2Authentication authentication) {
 		oauthRefreshTokenService.storeRefreshToken(refreshToken, authentication);
@@ -249,16 +317,27 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 		if(ObjectUtils.isEmpty(authentication))return null;
 		String authenticationId = authenticationKeyGenerator.extractKey(authentication);
 		OauthAccessToken oauthAccessToken=null;
+		OAuth2AccessToken oAuth2AccessToken=null;
 		try {
 			Long id = (Long)getMapId(OauthAccessToken_List_By_Authentication_Id,authenticationId);
 			if(id==null || id <=0l) return null;
 			oauthAccessToken=getEntity(id);
 			if(ObjectUtils.isEmpty(oauthAccessToken))return null;
+			oAuth2AccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
+			if (oauthAccessToken != null && !authenticationId.equals(authenticationKeyGenerator.extractKey(readAuthentication(oAuth2AccessToken.getValue())))) {
+				removeAccessToken(oAuth2AccessToken);
+				// Keep the store consistent (maybe the same user is represented by this authentication but the details have
+				// changed)
+				storeAccessToken(oauthAccessToken, authentication);
+			}
 			return SerializationUtils.deserialize(oauthAccessToken.getToken());
 		} catch (BaseServiceException e) {
 			e.printStackTrace();
 			return  null;
+		}catch (IllegalArgumentException e) {
+			logger.error("Could not extract access token for authentication " + authentication, e);
 		}
+		return oauthAccessToken;
 	}
 
 	@Override
