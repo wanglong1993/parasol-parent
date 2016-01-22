@@ -179,7 +179,7 @@ public class UserController extends BaseControl {
 				if((type==1 && userType.equals("0"))){
 					userBasic= new UserBasic();
 					userBasic.setName(name);
-					userBasic.setMobile(passport);
+//					userBasic.setMobile(passport);
 					userBasic.setPicId(picId);
 					userBasic.setStatus(new Byte("1"));
 					userBasic.setSex(new Byte("1"));
