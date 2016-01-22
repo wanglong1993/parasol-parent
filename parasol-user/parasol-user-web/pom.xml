@@ -241,6 +241,9 @@
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://zk.gintong.local:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<user.web.url>${user.web.url}</user.web.url>
+				<upload.web.url>${upload.web.url}</upload.web.url>
+				<file.web.url>${file.web.url}</file.web.url>
 			</properties>
 		</profile>
 		<profile>
