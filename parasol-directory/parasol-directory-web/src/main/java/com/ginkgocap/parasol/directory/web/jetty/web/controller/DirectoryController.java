@@ -26,9 +26,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,9 +36,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.directory.exception.DirectoryServiceException;
 import com.ginkgocap.parasol.directory.model.Directory;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
-import com.ginkgocap.parasol.oauth2.model.SecurityUserDetails;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
-import com.ginkgocap.parasol.user.model.UserLoginRegister;
 
 /**
  * 
@@ -54,15 +49,13 @@ import com.ginkgocap.parasol.user.model.UserLoginRegister;
 public class DirectoryController extends BaseControl {
 	private static Logger logger = Logger.getLogger(DirectoryController.class);
 
-	private static final String paramenterFields = "fields";
-	private static final String paramenterDebug = "debug";
-	private static final String paramenterAppId = "appKey"; // 应用的Key
-	private static final String paramenterUserId = "userId"; // 访问的用户参数
-	private static final String paramenterRootType = "rootType"; // 查询的应用分类
-	private static final String paramenterName = "name"; // 目录名称
-	private static final String paramenterDirectoryId = "directoryId"; // 目录ID
-	private static final String paramenterToDirectoryId = "toDirectoryId"; // 移动目录的生活，移动那个目录下
-	private static final String paramenterParentId = "pId"; // 父目录ID
+	private static final String parameterFields = "fields";
+	private static final String parameterDebug = "debug";
+	private static final String parameterRootType = "rootType"; // 查询的应用分类
+	private static final String parameterName = "name"; // 目录名称
+	private static final String parameterDirectoryId = "directoryId"; // 目录ID
+	private static final String parameterToDirectoryId = "toDirectoryId"; // 移动目录的生活，移动那个目录下
+	private static final String parameterParentId = "pId"; // 父目录ID
 
 
 	@Autowired
@@ -77,10 +70,10 @@ public class DirectoryController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = { "/directory/directory/createRootDirectory" }, method = { RequestMethod.POST })
-	public MappingJacksonValue createDirectoryRoot(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.paramenterName, required = true) String name,
-			@RequestParam(name = DirectoryController.paramenterRootType, required = true) long rootType) throws DirectoryServiceException {
+	public MappingJacksonValue createDirectoryRoot(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectoryController.parameterName, required = true) String name,
+			@RequestParam(name = DirectoryController.parameterRootType, required = true) long rootType) throws DirectoryServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			
@@ -114,10 +107,10 @@ public class DirectoryController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = { "/directory/directory/createSubDirectory" }, method = {RequestMethod.POST })
-	public MappingJacksonValue createSubDirectory(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.paramenterName, required = true) String name,
-			@RequestParam(name = DirectoryController.paramenterParentId, required = true) long parentId) throws DirectoryServiceException {
+	public MappingJacksonValue createSubDirectory(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectoryController.parameterName, required = true) String name,
+			@RequestParam(name = DirectoryController.parameterParentId, required = true) long parentId) throws DirectoryServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			
@@ -153,8 +146,8 @@ public class DirectoryController extends BaseControl {
 	 * @throws DirectoryServiceException
 	 */
 	@RequestMapping(path = { "/directory/directory/deleteDirectory" }, method = { RequestMethod.GET, RequestMethod.DELETE })
-	public MappingJacksonValue deleteDirectoryRoot(@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.paramenterDirectoryId, required = true) Long directoryId) throws DirectoryServiceException {
+	public MappingJacksonValue deleteDirectoryRoot(@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId) throws DirectoryServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
@@ -182,10 +175,10 @@ public class DirectoryController extends BaseControl {
 	 * @throws DirectoryServiceException
 	 */
 	@RequestMapping(path = { "/directory/directory/updateDirectory" }, method = { RequestMethod.POST })
-	public MappingJacksonValue updateDirectoryRoot(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.paramenterDirectoryId, required = true) Long directoryId,
-			@RequestParam(name = DirectoryController.paramenterName, required = true) String name) throws DirectoryServiceException {
+	public MappingJacksonValue updateDirectoryRoot(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
+			@RequestParam(name = DirectoryController.parameterName, required = true) String name) throws DirectoryServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
@@ -217,10 +210,10 @@ public class DirectoryController extends BaseControl {
 	 * @throws DirectoryServiceException
 	 */
 	@RequestMapping(path = { "/directory/directory/moveDirectory" }, method = { RequestMethod.POST })
-	public MappingJacksonValue moveDirectory(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.paramenterDirectoryId, required = true) Long directoryId,
-			@RequestParam(name = DirectoryController.paramenterToDirectoryId, required = true) Long toDirectoryId) throws DirectoryServiceException {
+	public MappingJacksonValue moveDirectory(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
+			@RequestParam(name = DirectoryController.parameterToDirectoryId, required = true) Long toDirectoryId) throws DirectoryServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
@@ -245,9 +238,9 @@ public class DirectoryController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = { "/directory/directory/getRootList" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getRootList(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.paramenterRootType, required = true) Long rootType) throws DirectoryServiceException {
+	public MappingJacksonValue getRootList(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectoryController.parameterRootType, required = true) Long rootType) throws DirectoryServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
@@ -277,9 +270,9 @@ public class DirectoryController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = { "/directory/directory/getSubList" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getSubList(@RequestParam(name = DirectoryController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.paramenterParentId, required = true) Long pid) throws DirectoryServiceException {
+	public MappingJacksonValue getSubList(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectoryController.parameterParentId, required = true) Long pid) throws DirectoryServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
