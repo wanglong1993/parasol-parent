@@ -16,12 +16,9 @@
 
 package com.ginkgocap.parasol.metadata.web.jetty.web.controller;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -35,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.dubbo.rpc.RpcException;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
@@ -43,7 +39,6 @@ import com.ginkgocap.parasol.metadata.exception.CodeServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
 import com.ginkgocap.parasol.metadata.service.CodeRegionService;
 import com.ginkgocap.parasol.metadata.type.CodeRegionType;
-import com.ginkgocap.parasol.metadata.web.jetty.web.ResponseError;
 
 /**
  * 
@@ -56,8 +51,11 @@ import com.ginkgocap.parasol.metadata.web.jetty.web.ResponseError;
 public class MetadataRegionCtroller extends BaseControl {
 	private static Logger logger = Logger.getLogger(MetadataRegionCtroller.class);
 
-	private static final String paramenterFields = "fields";
-	private static final String paramenterDebug = "debug";
+	private static final String parameterFields = "fields";
+	private static final String parameterDebug = "debug";
+	private static final String parameterProvinceId="provinceId"; //省份ID
+	private static final String parameterCityId ="cityId"; //区县ID
+	private static final String parameterPid ="pId"; //父Id
 
 	@Autowired
 	private CodeRegionService codeRegionService;
@@ -71,8 +69,8 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getProvinces", method = { RequestMethod.GET })
-	public MappingJacksonValue getProvinces(@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
+	public MappingJacksonValue getProvinces(@RequestParam(name = MetadataRegionCtroller.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataRegionCtroller.parameterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -99,9 +97,9 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getCitys", method = { RequestMethod.GET })
-	public MappingJacksonValue getCitys(@RequestParam(name = "pid", required = true) Long pid,
-			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
+	public MappingJacksonValue getCitys(@RequestParam(name = MetadataRegionCtroller.parameterProvinceId, required = true) Long pid,
+			@RequestParam(name = MetadataRegionCtroller.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataRegionCtroller.parameterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			List<CodeRegion> codeRegions = null;
@@ -129,9 +127,9 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getDistrictCounty", method = { RequestMethod.GET })
-	public MappingJacksonValue getDistrictCounty(@RequestParam(name = "pid", required = true) Long pid,
-			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
+	public MappingJacksonValue getDistrictCounty(@RequestParam(name =MetadataRegionCtroller.parameterCityId, required = true) Long pid,
+			@RequestParam(name = MetadataRegionCtroller.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataRegionCtroller.parameterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			List<CodeRegion> codeRegions = null;
@@ -159,9 +157,9 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getHongKongMacao", method = { RequestMethod.GET })
-	public MappingJacksonValue getHongKongMacao(@RequestParam(name = "pid", required = false) Long pid,
-			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
+	public MappingJacksonValue getHongKongMacao(@RequestParam(name = MetadataRegionCtroller.parameterPid, required = false) Long pid,
+			@RequestParam(name = MetadataRegionCtroller.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataRegionCtroller.parameterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 1.查询港澳台
@@ -190,9 +188,9 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getTaiWan", method = { RequestMethod.GET })
-	public MappingJacksonValue getTaiWan(@RequestParam(name = "pid", required = false) Long pid,
-			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
+	public MappingJacksonValue getTaiWan(@RequestParam(name = MetadataRegionCtroller.parameterPid, required = false) Long pid,
+			@RequestParam(name = MetadataRegionCtroller.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataRegionCtroller.parameterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 1. 查询台湾
@@ -221,9 +219,9 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getMalaysia", method = { RequestMethod.GET })
-	public MappingJacksonValue getMalaysia(@RequestParam(name = "pid", required = false) Long pid,
-			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
+	public MappingJacksonValue getMalaysia(@RequestParam(name = MetadataRegionCtroller.parameterPid, required = false) Long pid,
+			@RequestParam(name = MetadataRegionCtroller.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataRegionCtroller.parameterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 1. 查询马来西亚
@@ -253,9 +251,9 @@ public class MetadataRegionCtroller extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/region/getForignCountry", method = { RequestMethod.GET })
-	public MappingJacksonValue getForignCountry(@RequestParam(name = "pid", required = false) Long pid,
-			@RequestParam(name = MetadataRegionCtroller.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataRegionCtroller.paramenterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
+	public MappingJacksonValue getForignCountry(@RequestParam(name = MetadataRegionCtroller.parameterPid, required = false) Long pid,
+			@RequestParam(name = MetadataRegionCtroller.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataRegionCtroller.parameterDebug, defaultValue = "") String debug) throws CodeRegionServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 1. 查询海外
