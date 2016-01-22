@@ -49,10 +49,9 @@ import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 public class DirectoryTypeController extends BaseControl {
 	private static Logger logger = Logger.getLogger(DirectoryTypeController.class);
 
-	private static final String paramenterFields = "fields";
-	private static final String paramenterDebug = "debug";
-	private static final String paramenterAppId = "appKey";
-	private static final String paramenterName = "name";
+	private static final String parameterFields = "fields";
+	private static final String parameterDebug = "debug";
+	private static final String parameterName = "name";
 
 
 	@Autowired
@@ -69,8 +68,8 @@ public class DirectoryTypeController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/type/getTypeList", method = { RequestMethod.GET })
-	public MappingJacksonValue getFunctionClassList(@RequestParam(name = DirectoryTypeController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryTypeController.paramenterDebug, defaultValue = "") String debug) {
+	public MappingJacksonValue getFunctionClassList(@RequestParam(name = DirectoryTypeController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = DirectoryTypeController.parameterDebug, defaultValue = "") String debug) {
 		Long loginAppId = LoginUserContextHolder.getAppKey();
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
@@ -108,8 +107,8 @@ public class DirectoryTypeController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/type/createTypeList", method = { RequestMethod.POST })
-	public MappingJacksonValue createFunctionClassList(@RequestParam(name = DirectoryTypeController.paramenterName, defaultValue = "") String name,
-			@RequestParam(name = DirectoryTypeController.paramenterDebug, defaultValue = "") String debug) {
+	public MappingJacksonValue createFunctionClassList(@RequestParam(name = DirectoryTypeController.parameterName, defaultValue = "") String name,
+			@RequestParam(name = DirectoryTypeController.parameterDebug, defaultValue = "") String debug) {
 		Long loginAppId = LoginUserContextHolder.getAppKey();
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
