@@ -1,14 +1,11 @@
 package com.ginkgocap.parasol.tags.service.impl;
 
-import java.io.Serializable;
 import java.text.MessageFormat;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.ginkgocap.parasol.tags.exception.ServiceException;
 import com.ginkgocap.parasol.tags.exception.TagServiceException;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
 import com.ginkgocap.parasol.tags.model.Tag;
@@ -33,6 +30,9 @@ public abstract class ServiceError {
 	public final static int ERROR_OBJECT_EXIST = 109; // 重复对象存在
 	public final static int ERROR_SQL = 200; // 数据库错误
 	public final static int ERROR_TOO_MANY = 110; // 不能创建太多的对象_
+	public final static int ERROR_TAG_NAME_IS_BLANK = 111; //不能是空串
+	public final static int ERROR_TAG_NAME_TOO_LENGTH = 112; //Tag名字太长
+
 
 	public final static MessageFormat propertyParametrMessage = new MessageFormat("Required {0} property {1} is not present"); // "Required String property name is not present"
 
