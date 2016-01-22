@@ -1058,16 +1058,19 @@ public class UserController extends BaseControl {
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserBasic userBasic=null;
+		UserExt userExt=null;
 		UserOrganBasic userOrganBasic=null;
+		UserOrganExt userOrganExt=null;
 		UserLoginRegister userLoginRegister=null;
+		Long id=0l;
 		try {
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
-			if(userLoginRegister==null){
-				resultMap.put("message", "email is not exists in UserLogniRegister.");
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
 			if(userLoginRegisterService.getEmail(email)){
+				userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
+				if(userLoginRegister==null){
+					resultMap.put("message", "email is not exists in UserLogniRegister.");
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
 				if(userLoginRegister.getUsetType().intValue()==0){
 					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
 					if(userBasic==null){
@@ -1076,7 +1079,7 @@ public class UserController extends BaseControl {
 						return new MappingJacksonValue(resultMap);
 					}
 					if(userBasic.getAuth().intValue()==1){
-						resultMap.put("message", "email has been checked.");
+						resultMap.put("message", "email has been checked,don't repeat validation.");
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
@@ -1099,7 +1102,7 @@ public class UserController extends BaseControl {
 						return new MappingJacksonValue(resultMap);
 					}
 					if(userOrganBasic.getAuth().intValue()==1){
-						resultMap.put("message", "email has been checked.");
+						resultMap.put("message", "email has been checked,don't repeat validation.");
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
@@ -1114,7 +1117,31 @@ public class UserController extends BaseControl {
 						return new MappingJacksonValue(resultMap);
 					}
 				}
-				
+			}else{
+				userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
+				if(userLoginRegister==null){
+					resultMap.put("message", "email is not exists in UserLogniRegister and has expired.");
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				id=userLoginRegister.getId();
+				if(userLoginRegister.getUsetType().intValue()==0){
+					userBasic=userBasicService.getUserBasic(id);
+					userExt=userExtService.getUserExt(id);
+					userLoginRegisterService.realDeleteUserLoginRegister(id);
+					if(!ObjectUtils.isEmpty(userBasic))	userBasicService.realDeleteUserBasic(id);
+					if(!ObjectUtils.isEmpty(userExt))	userExtService.realDeleteUserExt(id);
+				}
+				if(userLoginRegister.getUsetType().intValue()==1){
+					userOrganBasic=userOrganBasicService.getUserOrganBasic(id);
+					userOrganExt=userOrganExtService.getUserOrganExt(id);
+					userLoginRegisterService.realDeleteUserLoginRegister(id);
+					if(!ObjectUtils.isEmpty(userOrganBasic))userOrganBasicService.realDeleteUserOrganBasic(id);
+					if(!ObjectUtils.isEmpty(userOrganExt))userOrganExtService.realDeleteUserOrganExt(id);
+				}
+				resultMap.put("message", "email has expired.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
 			}
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
