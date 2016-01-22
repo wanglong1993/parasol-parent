@@ -48,13 +48,11 @@ import com.ginkgocap.parasol.tags.service.TagService;
  */
 @RestController
 public class TagController extends BaseControl {
-	private static final String paramenterFields = "fields";
-	private static final String paramenterDebug = "debug";
-	private static final String paramenterAppId = "appKey";
-	private static final String paramenterUserId = "userId";
-	private static final String paramenterTagId = "tagId";
-	private static final String paramenterTagType = "tagType";
-	private static final String paramenterTagName = "tagName";
+	private static final String parameterFields = "fields";
+	private static final String parameterDebug = "debug";
+	private static final String parameterTagId = "tagId";
+	private static final String parameterTagType = "tagType";
+	private static final String parameterTagName = "tagName";
 
 	@Autowired
 	private TagService tagService;
@@ -70,9 +68,9 @@ public class TagController extends BaseControl {
 	 */
 							
 	@RequestMapping(path = "/tags/tags/getTagList", method = { RequestMethod.GET })
-	public MappingJacksonValue getSourceList(@RequestParam(name = TagController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = TagController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.paramenterTagType, required = false,defaultValue="0") Long tagType) throws TagServiceException {
+	public MappingJacksonValue getSourceList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType) throws TagServiceException {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
@@ -107,9 +105,9 @@ public class TagController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/createTag", method = { RequestMethod.POST })
-	public MappingJacksonValue createTagSource(@RequestParam(name = TagController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.paramenterTagType, required = true) int tagType,
-			@RequestParam(name = TagController.paramenterTagName, required = true) String tagName)
+	public MappingJacksonValue createTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagController.parameterTagType, required = true) int tagType,
+			@RequestParam(name = TagController.parameterTagName, required = true) String tagName)
 			throws TagServiceException {
 		//@formatter:on
 		Long loginAppId = LoginUserContextHolder.getAppKey();
@@ -146,8 +144,8 @@ public class TagController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/deleteTag", method = { RequestMethod.GET , RequestMethod.DELETE})
-	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.paramenterTagId, required = true) Long id) throws TagSourceServiceException, TagServiceException {
+	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagController.parameterTagId, required = true) Long id) throws TagSourceServiceException, TagServiceException {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
