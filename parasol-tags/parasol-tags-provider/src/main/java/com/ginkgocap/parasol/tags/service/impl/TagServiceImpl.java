@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	private static final String LIST_TAG_ID_USERID_APPID_TAGTYPE = "List_Tag_Id_UserId_AppId_TagType";
 
 	private static final int MAX_TAG = 300; // 最多创建的标签数量
+	private static final int MAX_LEN_TAG = 30; // Tag的长度30个字符
 
 	@Autowired
 	private TagSourceService tagSourceService;
@@ -49,6 +51,17 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 			throw new TagServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own tag!");
 		}
 
+		// Tag 不能是空的
+		if (StringUtils.isBlank(tag.getTagName())) {
+			throw new TagServiceException(ServiceError.ERROR_TAG_NAME_IS_BLANK, "tagName must have value ");
+		}
+
+		// 检查长度
+		if (StringUtils.length(tag.getTagName()) > MAX_LEN_TAG) {
+			throw new TagServiceException(ServiceError.ERROR_TAG_NAME_TOO_LENGTH, "tagName too length， max is " + MAX_LEN_TAG);
+		}
+
+		tag.setTagName(tag.getTagName().replace(" ", "")); //replace tab blank
 		int count = countTagsByUserIdAppidTagType(userId, tag.getAppId(), tag.getTagType());
 		if (count >= MAX_TAG) {
 			throw new TagServiceException(ServiceError.ERROR_TOO_MANY, "Can't create too many tag， Max is " + MAX_TAG);
@@ -136,7 +149,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		// ServiceError.assertUserIdIsNull(userId);
 		try {
 			Tag tag = this.getEntity(id);
-			if (tag !=null && ObjectUtils.equals(tag.getUserId(),userId)) {
+			if (tag != null && ObjectUtils.equals(tag.getUserId(), userId)) {
 				return tag;
 			} else {
 				if (tag != null) {
@@ -149,6 +162,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 			throw new TagServiceException(e);
 		}
 	}
+
 	@Override
 	public List<Tag> getTags(Long userId, List<Long> ids) throws TagServiceException {
 		List<Tag> result = new ArrayList<Tag>();
@@ -157,17 +171,19 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 				List<Tag> tags = this.getEntityByIds(ids);
 				if (CollectionUtils.isNotEmpty(tags)) {
 					for (Tag tag : tags) {
-						if (tag !=null && ObjectUtils.equals(tag.getUserId(),userId)) {
+						if (tag != null && ObjectUtils.equals(tag.getUserId(), userId)) {
 							result.add(tag);
 						}
 					}
 				}
 			} catch (BaseServiceException e) {
 				e.printStackTrace(System.err);
-				throw new TagServiceException(e);			}
+				throw new TagServiceException(e);
+			}
 		}
 		return result;
 	}
+
 	@Override
 	public List<Tag> getTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException {
 		ServiceError.assertUserIdIsNull(userId); // 检查用户ID
@@ -193,7 +209,5 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 			throw new TagServiceException(e);
 		}
 	}
-
-
 
 }
