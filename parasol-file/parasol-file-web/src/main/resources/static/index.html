@@ -1,16 +1,38 @@
 <html>
 <body>
-	<form method="POST" enctype="multipart/form-data"
-		action="/file/upload?access_token=6b48bab7-e545-4ef0-ac25-af02bfe92a0b">
+	<style>
+		#accessToken
+		{
+		width:400px;
+		}
+	</style>
+	<form id="fileUpload" method="POST" enctype="multipart/form-data"
+		action="/file/upload">
 		File to upload: <input type="file" name="file">
-			<br /> 
-			<input type="text" name="fileExtName"><br /> <br />
-			<input type="text" name="appKey" value="1">
-			<input type="text" name="userId" value="1">
+			<br /> <br/>
+			taskId : 
 			<input type="text" name="taskId" value="1213143">
-			<br/>
+			<br /> <br/>
+			fileType : 
+			<input type="text" name="fileType" value="1">
+			1:用户头像、2：知识模块、3：人脉模块、4：需求模块、5：组织客户 、6：会议模块 、7：其他（可扩展）
+			<br /> <br/>
+			moduleType : 
+			<input type="text" name="moduleType" value="1">
+			1-图片，2-视频，3-音频, 4-文档, 5-附件
+			<br/><br/>
+			access_token : 
+			<input id="accessToken" type="text" name="access_token" value="">
+			<br/><br/>
 			 <input type="submit"
 			value="Upload"> Press here to upload the file!
 	</form>
 </body>
+<script>
+	var url = document.getElementById("fileUpload").action;
+	document.getElementById("fileUpload").addEventListener("click", function(){
+		var token = document.getElementById("accessToken");
+		this.action = url+"?"+token.name+"="+token.value;
+	});
+</script>
 </html>

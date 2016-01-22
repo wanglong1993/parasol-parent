@@ -235,7 +235,7 @@
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://zk.gintong.local:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<fastdfs.tracker>dfs.gintong.local</fastdfs.tracker>
+				<fastdfs.tracker>dfs.gintong.local:22122</fastdfs.tracker>
 			</properties>
 		</profile>
 		<profile>
