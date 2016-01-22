@@ -48,16 +48,16 @@ import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 @RestController
 public class DirectorySourceController extends BaseControl {
 	private static Logger logger = Logger.getLogger(DirectorySourceController.class);
-	private static final String paramenterFields = "fields";
-	private static final String paramenterDebug = "debug";
-	private static final String paramenterDirectoryId = "directoryId";
-	private static final String paramenterSourceId = "sourceId";
-	private static final String paramenterSourceType = "sourceType";
-	private static final String paramenterSourceUrl = "sourceUrl";
-	private static final String paramenterSourceTitle = "sourceTitle";
-	private static final String paramenterSourceData = "sourceData";
-	private static final String paramenterDirectorySourceIds="ids";
-	private static final String paramenterDirectorySourceId="id";
+	private static final String parameterFields = "fields";
+	private static final String parameterDebug = "debug";
+	private static final String parameterDirectoryId = "directoryId";
+	private static final String parameterSourceId = "sourceId";
+	private static final String parameterSourceType = "sourceType";
+	private static final String parameterSourceUrl = "sourceUrl";
+	private static final String parameterSourceTitle = "sourceTitle";
+	private static final String parameterSourceData = "sourceData";
+	private static final String parameterDirectorySourceIds="ids";
+	private static final String parameterDirectorySourceId="id";
 
 
 	@Autowired
@@ -71,9 +71,9 @@ public class DirectorySourceController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/source/getSourceList", method = { RequestMethod.GET })
-	public MappingJacksonValue getSourceList(@RequestParam(name = DirectorySourceController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) {
+	public MappingJacksonValue getSourceList(@RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectorySourceController.parameterDirectoryId, required = true) Long directoryId) {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
@@ -104,13 +104,13 @@ public class DirectorySourceController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/source/createSource", method = { RequestMethod.POST })
-	public MappingJacksonValue createDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId,
-			@RequestParam(name = DirectorySourceController.paramenterSourceId, required = true) Long sourceId,
-			@RequestParam(name = DirectorySourceController.paramenterSourceType, required = true) int sourceType,
-			@RequestParam(name = DirectorySourceController.paramenterSourceUrl, defaultValue = "", required = false) String sourceUrl,
-			@RequestParam(name = DirectorySourceController.paramenterSourceTitle, required = true) String sourceTitle,
-			@RequestParam(name = DirectorySourceController.paramenterSourceData, defaultValue = "", required = false) String sourceData) throws DirectorySourceServiceException {
+	public MappingJacksonValue createDirectorySource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectorySourceController.parameterDirectoryId, required = true) Long directoryId,
+			@RequestParam(name = DirectorySourceController.parameterSourceId, required = true) Long sourceId,
+			@RequestParam(name = DirectorySourceController.parameterSourceType, required = true) int sourceType,
+			@RequestParam(name = DirectorySourceController.parameterSourceUrl, defaultValue = "", required = false) String sourceUrl,
+			@RequestParam(name = DirectorySourceController.parameterSourceTitle, required = true) String sourceTitle,
+			@RequestParam(name = DirectorySourceController.parameterSourceData, defaultValue = "", required = false) String sourceData) throws DirectorySourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
@@ -148,8 +148,8 @@ public class DirectorySourceController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/source/deleteSource", method = { RequestMethod.GET })
-	public MappingJacksonValue deleteDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceId, required = true) Long id) throws DirectorySourceServiceException {
+	public MappingJacksonValue deleteDirectorySource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectorySourceController.parameterDirectorySourceId, required = true) Long id) throws DirectorySourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
@@ -178,9 +178,9 @@ public class DirectorySourceController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/source/moveSource", method = { RequestMethod.POST })
-	public MappingJacksonValue moveDirectorySource(@RequestParam(name = DirectorySourceController.paramenterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectorySourceController.paramenterDirectorySourceIds, required = true) Long[] ids,
-			@RequestParam(name = DirectorySourceController.paramenterDirectoryId, required = true) Long directoryId) throws DirectorySourceServiceException {
+	public MappingJacksonValue moveDirectorySource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = DirectorySourceController.parameterDirectorySourceIds, required = true) Long[] ids,
+			@RequestParam(name = DirectorySourceController.parameterDirectoryId, required = true) Long directoryId) throws DirectorySourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Long loginAppId = LoginUserContextHolder.getAppKey();
