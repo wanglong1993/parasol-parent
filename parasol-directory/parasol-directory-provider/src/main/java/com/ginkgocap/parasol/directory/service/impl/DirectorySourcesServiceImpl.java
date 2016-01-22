@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -28,7 +29,7 @@ import com.ginkgocap.parasol.directory.service.DirectorySourceService;
  */
 @Service("directorySourceService")
 public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> implements DirectorySourceService {
-
+	private static int LEN_SOURCE_TITLE = 140;
 	private static Logger logger = Logger.getLogger(DirectorySourcesServiceImpl.class);
 	private static String LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID = "List_DirectorySources_Id_userId_appId_sourceType_sourceId";
 	private static String LIST_DIRECTORYSOURCE_ID_DIRECTORYID = "List_DirectorySource_Id_DirectoryId";
@@ -70,7 +71,14 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 			source.setCreateAt(System.currentTimeMillis());
 			// TODO : 过滤敏感词?
 			logger.info("please implements 过滤敏感词?");
-			source.setSourceTitle(source.getSourceTitle());
+			source.setSourceTitle(StringUtils.trim(source.getSourceTitle()));
+			if (source.getSourceTitle() != null && source.getSourceTitle().length() > LEN_SOURCE_TITLE) {
+				throw new DirectorySourceServiceException(ServiceError.ERROR_NAME_LIMIT, source.getSourceTitle() + "  length can not be more than " + LEN_SOURCE_TITLE);
+			}
+			source.setSourceData(StringUtils.trim(source.getSourceData()));
+			if (source.getSourceData() != null && source.getSourceData().length() > LEN_SOURCE_TITLE) {
+				throw new DirectorySourceServiceException(ServiceError.ERROR_NAME_LIMIT, source.getSourceData() + "  length can not be more than " + LEN_SOURCE_TITLE);
+			}
 			return (Long) this.saveEntity(source);
 		} catch (DirectoryServiceException e) {
 			e.printStackTrace(System.err);
@@ -182,6 +190,14 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 
 		DirectorySource old = this.getDirectorySourceById(appId, source.getId());
 		ServiceError.assertModifyFields(old, source, new String[] { "appId", "userId", "sourceId", "sourceType", "directoryId" });
+		source.setSourceTitle(StringUtils.trim(source.getSourceTitle()));
+		if (source.getSourceTitle() != null && source.getSourceTitle().length() > LEN_SOURCE_TITLE) {
+			throw new DirectorySourceServiceException(ServiceError.ERROR_NAME_LIMIT, source.getSourceTitle() + "  length can not be more than " + LEN_SOURCE_TITLE);
+		}
+		source.setSourceData(StringUtils.trim(source.getSourceData()));
+		if (source.getSourceData() != null && source.getSourceData().length() > LEN_SOURCE_TITLE) {
+			throw new DirectorySourceServiceException(ServiceError.ERROR_NAME_LIMIT, source.getSourceData() + "  length can not be more than " + LEN_SOURCE_TITLE);
+		}
 		try {
 			return this.updateEntity(source);
 		} catch (BaseServiceException e) {
