@@ -50,6 +50,7 @@ public class MetadataCodeController extends BaseControl {
 
 	private static final String paramenterFields = "fields";
 	private static final String paramenterDebug = "debug";
+	private static final String parameterPid="pId";
 
 	@Autowired
 	private CodeService codeService;
@@ -89,7 +90,7 @@ public class MetadataCodeController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/code/getSubFuctionClassList", method = { RequestMethod.GET })
-	public MappingJacksonValue getSubFuctionClassList(@RequestParam(name = "pid", required = true) Long pid,
+	public MappingJacksonValue getSubFuctionClassList(@RequestParam(name =MetadataCodeController.parameterPid, required = true) Long pid,
 			@RequestParam(name = MetadataCodeController.paramenterFields, defaultValue = "") String fileds,
 			@RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) throws CodeServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
