@@ -48,8 +48,8 @@ import com.ginkgocap.parasol.metadata.service.CodeService;
 public class MetadataCodeController extends BaseControl {
 	private static Logger logger = Logger.getLogger(MetadataCodeController.class);
 
-	private static final String paramenterFields = "fields";
-	private static final String paramenterDebug = "debug";
+	private static final String parameterFields = "fields";
+	private static final String parameterDebug = "debug";
 	private static final String parameterPid="pId";
 
 	@Autowired
@@ -63,8 +63,8 @@ public class MetadataCodeController extends BaseControl {
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/metadata/code/getFunctionClassList", method = { RequestMethod.GET })
-	public MappingJacksonValue getFunctionClassList(@RequestParam(name = MetadataCodeController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) throws CodeServiceException {
+	public MappingJacksonValue getFunctionClassList(@RequestParam(name = MetadataCodeController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataCodeController.parameterDebug, defaultValue = "") String debug) throws CodeServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -91,8 +91,8 @@ public class MetadataCodeController extends BaseControl {
 	 */
 	@RequestMapping(path = "/metadata/code/getSubFuctionClassList", method = { RequestMethod.GET })
 	public MappingJacksonValue getSubFuctionClassList(@RequestParam(name =MetadataCodeController.parameterPid, required = true) Long pid,
-			@RequestParam(name = MetadataCodeController.paramenterFields, defaultValue = "") String fileds,
-			@RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug) throws CodeServiceException {
+			@RequestParam(name = MetadataCodeController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = MetadataCodeController.parameterDebug, defaultValue = "") String debug) throws CodeServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			List<Code> codes = codeService.getCodesByParentId(pid, false);
@@ -115,7 +115,7 @@ public class MetadataCodeController extends BaseControl {
 	 */
 	@RequestMapping(path = "/metadata/code/createCodeForRoot", method = { RequestMethod.GET })
 	public MappingJacksonValue createCodeForRoot(@RequestParam(name = "name", required = true) String name, @RequestParam(name = "remark", defaultValue = "") String remark,
-			@RequestParam(name = "orderNo", defaultValue = "0") int orderNo, @RequestParam(name = MetadataCodeController.paramenterDebug, defaultValue = "") String debug)
+			@RequestParam(name = "orderNo", defaultValue = "0") int orderNo, @RequestParam(name = MetadataCodeController.parameterDebug, defaultValue = "") String debug)
 			throws CodeServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
