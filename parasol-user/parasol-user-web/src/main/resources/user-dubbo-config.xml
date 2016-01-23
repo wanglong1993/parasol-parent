@@ -31,8 +31,11 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
-    <dubbo:application name="userdubboprovider" />
-    <dubbo:protocol name="dubbo" port="20884" />
-    <dubbo:registry address="zookeeper://192.168.101.223:2181?client=zkclient" protocol="dubbo"/>
-    <dubbo:consumer timeout="10000" check="false" />
+
+
+
+   <dubbo:application name="${dubbo.application.name}" />
+   <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
+   <dubbo:consumer timeout="10000" check="false" />
+
 </beans>
