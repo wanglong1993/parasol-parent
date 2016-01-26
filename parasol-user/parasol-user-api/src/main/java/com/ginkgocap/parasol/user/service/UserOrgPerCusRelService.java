@@ -2,6 +2,7 @@ package com.ginkgocap.parasol.user.service;
 
 import java.util.List;
 
+import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
 import com.ginkgocap.parasol.user.exception.UserOrgPerCusRelServiceException;
 import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
 
@@ -65,7 +66,14 @@ public interface UserOrgPerCusRelService {
 	 * @return Boolean
 	 * @throws UserOrgPerCusRelServiceException
 	 */
-	public Boolean deleteFriendly(Long friendId) throws UserOrgPerCusRelServiceException;	
+	public Boolean deleteFriendly(Long userId,Long friendId) throws UserOrgPerCusRelServiceException;	
+	
+	/**
+	 * 通过主键删除
+	 * @param id
+	 * @throws UserOrgPerCusRelServiceException
+	 */
+	public boolean realDeleteUserOrgPerCusRel(Long id)throws UserOrgPerCusRelServiceException;
 	
 
 }

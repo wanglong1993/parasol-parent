@@ -12,10 +12,14 @@ import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
 import com.ginkgocap.parasol.user.exception.UserOrgPerCusRelServiceException;
+import com.ginkgocap.parasol.user.model.UserBasic;
+import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
+import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
+import com.ginkgocap.parasol.user.service.UserOrganBasicService;
 @Service("userOrgPerCusRelService")
 public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> implements UserOrgPerCusRelService {
 	private static int error_friendId_is_null=1001;
@@ -29,6 +33,8 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 	@Resource
 	private UserBasicService userBasicService;
 	@Resource
+	private UserOrganBasicService userOrganBasicService;
+	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
 	//dao const
 	private static final String UserOrgPerCusRel_UserAndOrg_Friendly_UserId = "UserOrgPerCusRel_UserAndOrg_Friendly_UserId"; 
@@ -37,17 +43,28 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 	private static final String UserOrgPerCusRel_Map_FriendId = "UserOrgPerCusRel_Map_FriendId"; 
 	private static Logger logger = Logger.getLogger(UserOrgPerCusRelServiceImpl.class);
 	
-	public Long createUserOrgPerCusRel(UserOrgPerCusRel UserOrgPerCusRel) throws UserOrgPerCusRelServiceException {
+	public Long createUserOrgPerCusRel(UserOrgPerCusRel userOrgPerCusRel) throws UserOrgPerCusRelServiceException {
 		try {
-			if (UserOrgPerCusRel.getUserId()==null ||UserOrgPerCusRel.getUserId()<=0l) throw new UserOrgPerCusRelServiceException(error_userId_is_null,"userId is null or empty.");
-			if(UserOrgPerCusRel.getFriendId()==null ||UserOrgPerCusRel.getFriendId()<=0l)throw new UserOrgPerCusRelServiceException(error_friendId_is_null, "friendId is null or empty.");
-			int rt=UserOrgPerCusRel.getReleationType().intValue();
+			if (userOrgPerCusRel.getUserId()==null ||userOrgPerCusRel.getUserId()<=0l) throw new UserOrgPerCusRelServiceException(error_userId_is_null,"userId is null or empty.");
+			if(userOrgPerCusRel.getFriendId()==null ||userOrgPerCusRel.getFriendId()<=0l)throw new UserOrgPerCusRelServiceException(error_friendId_is_null, "friendId is null or empty.");
+			int rt=userOrgPerCusRel.getReleationType().intValue();
 			if(rt!=1 && rt!=2  && rt!=3 && rt!=4 && rt!=5 && rt!=6 && rt!=7 && rt!=8)throw new UserOrgPerCusRelServiceException(error_releationType_is_error, "releationType is null or empty.");
-			if(UserOrgPerCusRel.getCtime()==null || UserOrgPerCusRel.getCtime()<=0l) UserOrgPerCusRel.setCtime(System.currentTimeMillis());
-			if(UserOrgPerCusRel.getUtime()==null || UserOrgPerCusRel.getUtime()<=0l) UserOrgPerCusRel.setUtime(System.currentTimeMillis());
-			//如果备注名为空将其设置为用户名字
-			if(StringUtils.isEmpty(UserOrgPerCusRel.getName())) UserOrgPerCusRel.setName(userBasicService.getUserBasic(UserOrgPerCusRel.getUserId()).getName());
-			return (Long) saveEntity(UserOrgPerCusRel);
+			if(userOrgPerCusRel.getCtime()==null || userOrgPerCusRel.getCtime()<=0l) userOrgPerCusRel.setCtime(System.currentTimeMillis());
+			if(userOrgPerCusRel.getUtime()==null || userOrgPerCusRel.getUtime()<=0l) userOrgPerCusRel.setUtime(System.currentTimeMillis());
+//			如果备注名为空将其设置为用户名字
+			if(StringUtils.isEmpty(userOrgPerCusRel.getName())){
+				UserLoginRegister userLoginRegister=userLoginRegisterService.getUserLoginRegister(userOrgPerCusRel.getFriendId());
+				if(userLoginRegister!=null){
+					if(userLoginRegister.getUsetType().intValue()==0){
+						UserBasic userBasic=userBasicService.getUserBasic(userOrgPerCusRel.getFriendId());
+						if(userBasic!=null)userOrgPerCusRel.setName(userBasic.getName());
+					}else if(userLoginRegister.getUsetType().intValue()==1){
+						UserOrganBasic userOrganBasic=userOrganBasicService.getUserOrganBasic(userOrgPerCusRel.getFriendId());
+						if(userOrganBasic!=null)userOrgPerCusRel.setName(userOrganBasic.getName());
+					}
+				}
+			}
+			return (Long) saveEntity(userOrgPerCusRel);
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -114,9 +131,9 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 	}
 
 	@Override
-	public Boolean deleteFriendly(Long friendId)throws UserOrgPerCusRelServiceException {
+	public Boolean deleteFriendly(Long userId,Long friendId)throws UserOrgPerCusRelServiceException {
 		try {
-			Long id =(Long) getMapId(UserOrgPerCusRel_Map_FriendId, friendId);
+			Long id =(Long) getMapId(UserOrgPerCusRel_Map_FriendId, new Object[]{friendId,userId});
 			deleteEntity(id);
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
@@ -137,6 +154,19 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 			Long id =(Long) getMapId(UserOrgPerCusRel_Map_FriendId, new Object[]{friendId,userId});
 			return getEntity(id);
 		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserOrgPerCusRelServiceException(e);
+		}
+	}
+
+	@Override
+	public boolean realDeleteUserOrgPerCusRel(Long id)throws UserOrgPerCusRelServiceException {
+		try {
+			if(id==null || id<=0l) return false;
+			return deleteEntity(id);
+		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
