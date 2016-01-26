@@ -217,7 +217,7 @@
 			<properties>
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
-				<dubbo.registry.address>zookeeper://192.168.101.223:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 			</properties>
 		</profile>		
