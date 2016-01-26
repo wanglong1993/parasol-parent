@@ -624,11 +624,11 @@ public class UserController extends BaseControl {
 				}
 				//更新好友关系和创建对方的好友关系
 				userFriendly=new UserFriendly();
-				userFriendly.setUserId(friendId);
-				userFriendly.setFriendId(userId);
+				userFriendly.setUserId(userId);
+				userFriendly.setFriendId(friendId);
 				userFriendly.setStatus(new Byte(status));
 				userFriendly.setAppId(appId);
-				bl=userFriendlyService.updateStatus(userId, friendId, new Byte(status));
+				bl=userFriendlyService.updateStatus(friendId, userId, new Byte(status));
 				id=userFriendlyService.createUserFriendly(userFriendly,false);
 				//添加个人好友
 				if(userLoginRegisterFriend.getUsetType().intValue()==0){
@@ -1172,6 +1172,26 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
+			if(newpassword==null){
+				resultMap.put("message", "newpassword is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(oldpassword==null){
+				resultMap.put("message", "oldpassword is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(newpassword.length()<6){
+				resultMap.put("message", "newpassword length must be greater than or equal to 6.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(oldpassword.length()<6){
+				resultMap.put("message", "oldpassword length must be greater than or equal to 6.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}			
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(ObjectUtils.isEmpty(userLoginRegister)){
 				resultMap.put("message", "passport is not exists.");
