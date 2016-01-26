@@ -21,7 +21,7 @@ import com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService;
 public class CustomLogoutSuccessHandler extends AbstractAuthenticationTargetUrlRequestHandler implements LogoutSuccessHandler {
 	private static final String BEARER_AUTHENTICATION = "Bearer ";
 	private static final String HEADER_AUTHORIZATION = "authorization";
-	@Autowired(required=false)
+	@Autowired(required = false)
 	private OauthTokenStoreService tokenStore;
 
 	@Override
@@ -31,14 +31,21 @@ public class CustomLogoutSuccessHandler extends AbstractAuthenticationTargetUrlR
 			if (existingAccessToken != null) {
 				tokenStore.removeAccessToken(existingAccessToken);
 			}
+		} else {
+			String token = request.getHeader(HEADER_AUTHORIZATION);
+			if (token != null && token.startsWith(BEARER_AUTHENTICATION)) {
+				OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(token.split(" ")[0]);
+				if (oAuth2AccessToken != null) {
+					tokenStore.removeAccessToken(oAuth2AccessToken);
+				}
+			}else {
+				token = request.getParameter("access_token");
+				OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(token);
+				if (oAuth2AccessToken != null) {
+					tokenStore.removeAccessToken(oAuth2AccessToken);
+				}
+			}
 		}
-//		String token = request.getHeader(HEADER_AUTHORIZATION);
-//		if (token != null && token.startsWith(BEARER_AUTHENTICATION)) {
-//			OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(token.split(" ")[0]);
-//			if (oAuth2AccessToken != null) {
-//				tokenStore.removeAccessToken(oAuth2AccessToken);
-//			}
-//		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
