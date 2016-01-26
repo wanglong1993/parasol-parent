@@ -26,19 +26,19 @@ public class CustomLogoutSuccessHandler extends AbstractAuthenticationTargetUrlR
 
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-//		if (authentication != null && authentication instanceof OAuth2Authentication) {
-//			OAuth2AccessToken existingAccessToken = tokenStore.getAccessToken((OAuth2Authentication) authentication);
-//			if (existingAccessToken != null) {
-//				tokenStore.removeAccessToken(existingAccessToken);
-//			}
-//		}
-		String token = request.getHeader(HEADER_AUTHORIZATION);
-		if (token != null && token.startsWith(BEARER_AUTHENTICATION)) {
-			OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(token.split(" ")[0]);
-			if (oAuth2AccessToken != null) {
-				tokenStore.removeAccessToken(oAuth2AccessToken);
+		if (authentication != null && authentication instanceof OAuth2Authentication) {
+			OAuth2AccessToken existingAccessToken = tokenStore.getAccessToken((OAuth2Authentication) authentication);
+			if (existingAccessToken != null) {
+				tokenStore.removeAccessToken(existingAccessToken);
 			}
 		}
+//		String token = request.getHeader(HEADER_AUTHORIZATION);
+//		if (token != null && token.startsWith(BEARER_AUTHENTICATION)) {
+//			OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(token.split(" ")[0]);
+//			if (oAuth2AccessToken != null) {
+//				tokenStore.removeAccessToken(oAuth2AccessToken);
+//			}
+//		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
