@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ginkgocap.parasol.message.service.MessageRelationService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserDefined;
@@ -69,6 +70,8 @@ public class UserController extends BaseControl {
 	private UserFriendlyService userFriendlyService;
 	@Autowired
 	private UserOrgPerCusRelService userOrgPerCusRelService;
+	@Autowired
+	private MessageRelationService messageRelationService;
 	@Value("${user.web.url}")  
     private String userWebUrl;  
 
@@ -534,14 +537,17 @@ public class UserController extends BaseControl {
 			if(!status.equals("0")){
 				resultMap.put("message", "status must be 0.");
 				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
 			}
 			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
 				resultMap.put("message", "userId is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
 			}
 			if(userLoginRegisterService.getUserLoginRegister(friendId)==null){
 				resultMap.put("message", "friendId is not exists in UserLoginRegister.");
 				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
 			}
 			userFriendly=new UserFriendly();
 			userFriendly.setUserId(userId);
@@ -549,6 +555,17 @@ public class UserController extends BaseControl {
 			userFriendly.setStatus(new Byte(status));
 			userFriendly.setContent(content);
 			userFriendly.setAppId(appId);
+			UserFriendly uf=userFriendlyService.getFriendly(userId ,friendId);
+			if(uf!=null && uf.getStatus().intValue()==0){
+				resultMap.put("message", "has been add this friendly,please waiting for him to agree");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(uf!=null && uf.getStatus().intValue()==1){
+				resultMap.put("message", "he's already a good friend of yours,can't repeat add him.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
 			userFriendlyService.createUserFriendly(userFriendly,true);
 			resultMap.put("message", "apply to add friendly successed.");
 			resultMap.put("status",1);
@@ -570,6 +587,7 @@ public class UserController extends BaseControl {
 	public MappingJacksonValue auditByAddFriendly(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "friendId",required = true) Long friendId
 			,@RequestParam(name = "status",required = true) String  status
+			,@RequestParam(name = "relationId",required = true) Long  relationId
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserFriendly userFriendly=null;
@@ -592,19 +610,28 @@ public class UserController extends BaseControl {
 					resultMap.put("status",0);
 					return new MappingJacksonValue(resultMap);
 				}
+				if(relationId==null){
+					resultMap.put("message", "relationId is null or empty.");
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
 				if(!status.equals("1")){
 					resultMap.put("message", "status must be 1.");
 					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
 				}
+				
 				userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 				if(userLoginRegister==null){
 					resultMap.put("message", "userId is not exists in UserLoginRegister.");
 					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
 				}
 				userLoginRegisterFriend=userLoginRegisterService.getUserLoginRegister(friendId);
 				if(userLoginRegisterFriend==null){
 					resultMap.put("message", "friendId is not exists in UserLoginRegister.");
 					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
 				}
 				//检查个人好友是否存在
 				if(userLoginRegisterFriend.getUsetType().intValue()==0){
@@ -612,6 +639,7 @@ public class UserController extends BaseControl {
 					if(userBasic==null){
 						resultMap.put("message", "friendId is not exists in UserBasic.");
 						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
 					}
 				}
 				//检查组织好友是否存在
@@ -620,6 +648,7 @@ public class UserController extends BaseControl {
 					if(userOrganBasic==null){
 						resultMap.put("message", "friendId is not exists in UserOrganBasic.");
 						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
 					}
 				}
 				//更新好友关系和创建对方的好友关系
@@ -629,7 +658,15 @@ public class UserController extends BaseControl {
 				userFriendly.setStatus(new Byte(status));
 				userFriendly.setAppId(appId);
 				bl=userFriendlyService.updateStatus(friendId, userId, new Byte(status));
-				id=userFriendlyService.createUserFriendly(userFriendly,false);
+				UserFriendly uf=userFriendlyService.getFriendly(friendId,userId);
+				if(uf!=null){
+					if(uf.getStatus().intValue()==1){
+						resultMap.put("message", userId +" is already a good friend of yours,can't repeat add him.");
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+				}
+				if(uf==null)id=userFriendlyService.createUserFriendly(userFriendly,false);
 				//添加个人好友
 				if(userLoginRegisterFriend.getUsetType().intValue()==0){
 					userOrgPerCusRel=new UserOrgPerCusRel();
@@ -641,23 +678,41 @@ public class UserController extends BaseControl {
 					//添加对方的个人好友
 					if(userLoginRegister.getUsetType().intValue()==0){
 						userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+						if(userBasic==null){
+							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+							resultMap.put("message", "userId:"+userLoginRegister.getId()+ " is not exists in UserBasic.");
+							resultMap.put("status",0);
+							return new MappingJacksonValue(resultMap);
+						}
 						userOrgPerCusRel=new UserOrgPerCusRel();
 						userOrgPerCusRel.setUserId(friendId);
 						userOrgPerCusRel.setFriendId(userId);
 						userOrgPerCusRel.setReleationType(new Byte("1"));
-						if(userBasic!=null)userOrgPerCusRel.setName(userBasic.getName());
+						userOrgPerCusRel.setName(userBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
 					//添加对方的组织好友
 					if(userLoginRegister.getUsetType().intValue()==1){
 						userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+						if(userOrganBasic==null){
+							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+							resultMap.put("message", "userId:"+userLoginRegister.getId()+ " is not exists in UserOrganBasic.");
+							resultMap.put("status",0);
+							return new MappingJacksonValue(resultMap);
+						}
 						userOrgPerCusRel=new UserOrgPerCusRel();
 						userOrgPerCusRel.setUserId(friendId);
 						userOrgPerCusRel.setFriendId(userId);
 						userOrgPerCusRel.setReleationType(new Byte("2"));
-						if(userOrganBasic!=null)userOrgPerCusRel.setName(userOrganBasic.getName());
+						userOrgPerCusRel.setName(userOrganBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
+					//更新消息状态
+					messageRelationService.updateMessageRelationStatus(relationId, new Integer(status).intValue());
 					resultMap.put("message", "add friendId successed.");
 					resultMap.put("status",1);
 				}
@@ -666,27 +721,47 @@ public class UserController extends BaseControl {
 					userOrgPerCusRel=new UserOrgPerCusRel();
 					userOrgPerCusRel.setUserId(userId);
 					userOrgPerCusRel.setFriendId(friendId);
-					if(userOrganBasic!=null)userOrgPerCusRel.setName(userOrganBasic.getName());
+					userOrgPerCusRel.setName(userOrganBasic.getName());
 					userOrgPerCusRel.setReleationType(new Byte("2"));
 					userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					//添加对方的个人好友
 					if(userLoginRegister.getUsetType().intValue()==0){
 						userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+						if(userBasic==null){
+							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+							resultMap.put("message", "userId:"+userLoginRegister.getId()+ " is not exists in UserBasic.");
+							resultMap.put("status",0);
+							return new MappingJacksonValue(resultMap);
+						}
 						userOrgPerCusRel=new UserOrgPerCusRel();
 						userOrgPerCusRel.setUserId(friendId);
 						userOrgPerCusRel.setFriendId(userId);
-						if(userBasic!=null)userOrgPerCusRel.setName(userBasic.getName());
+						userOrgPerCusRel.setName(userBasic.getName());
+						userOrgPerCusRel.setReleationType(new Byte("1"));
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
 					//添加对方的组织好友
 					if(userLoginRegister.getUsetType().intValue()==1){
 						userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+						if(userOrganBasic==null){
+							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+							resultMap.put("message", "userId:"+userLoginRegister.getId()+ " is not exists in UserOrganBasic.");
+							resultMap.put("status",0);
+							return new MappingJacksonValue(resultMap);
+						}
 						userOrgPerCusRel=new UserOrgPerCusRel();
 						userOrgPerCusRel.setUserId(friendId);
 						userOrgPerCusRel.setFriendId(userId);
-						if(userOrganBasic!=null)userOrgPerCusRel.setName(userOrganBasic.getName());
+						userOrgPerCusRel.setName(userOrganBasic.getName());
+						userOrgPerCusRel.setReleationType(new Byte("2"));
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					}
+					//更新消息状态
+					messageRelationService.updateMessageRelationStatus(relationId, new Integer(status).intValue());
 					resultMap.put("message", "add friendId successed.");
 					resultMap.put("status",1);
 				}
@@ -695,9 +770,10 @@ public class UserController extends BaseControl {
 		}catch (Exception e ){
 			//失败回滚
 			if(bl)userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+			messageRelationService.updateMessageRelationStatus(relationId,0);
 			if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
-			if(userOrgPerCusRelId>0l)userOrgPerCusRelService.deleteFriendly(friendId);
-			if(userOrgPerCusRelFriendlyId>0l)userOrgPerCusRelService.deleteFriendly(userId);
+			if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+			if(userOrgPerCusRelFriendlyId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelFriendlyId);
 			logger.info("添加好友"+friendId+"失败");
 			throw e;
 		}
@@ -763,8 +839,8 @@ public class UserController extends BaseControl {
 			userFriendlyTarget=userFriendlyService.getFriendly(friendId, userId);
 			userOrgPerCusRel=userOrgPerCusRelService.getUserOrgPerCusRel(userId, friendId);
 			userOrgPerCusRelTarget=userOrgPerCusRelService.getUserOrgPerCusRel(friendId, userId);
-			bl1=userOrgPerCusRelService.deleteFriendly(userId);
-			bl2=userOrgPerCusRelService.deleteFriendly(friendId);
+			bl1=userOrgPerCusRelService.deleteFriendly(userId,friendId);
+			bl2=userOrgPerCusRelService.deleteFriendly(friendId,userId);
 			bl3=userFriendlyService.deleteFriendly(userId, friendId);
 			resultMap.put("message","delete friendly successed.");
 			resultMap.put("status",1);
