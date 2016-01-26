@@ -159,7 +159,7 @@
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-message-api</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 
 		<!-- apache common -->
@@ -224,7 +224,7 @@
 			<properties>
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
-				<dubbo.registry.address>zookeeper://192.168.101.223:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 			</properties>
 		</profile>		

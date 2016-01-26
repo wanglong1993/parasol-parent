@@ -27,7 +27,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,6 +39,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.message.exception.MessageEntityServiceException;
 import com.ginkgocap.parasol.message.model.MessageEntity;
 import com.ginkgocap.parasol.message.service.MessageEntityService;
+import com.ginkgocap.parasol.message.vo.MessageVO;
 import com.ginkgocap.parasol.message.web.jetty.web.ResponseError;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 
@@ -54,7 +54,6 @@ import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
  */
 @RestController
 public class MessageController extends BaseControl {
-	private static Logger logger = Logger.getLogger(MessageController.class);
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
@@ -170,7 +169,7 @@ public class MessageController extends BaseControl {
 		Long loginUserId = LoginUserContextHolder.getUserId();
 		// 0.校验输入参数（框架搞定，如果业务业务搞定）
 		// 1.查询后台服务
-		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(loginUserId, type, loginAppId);
+		List<MessageVO> entities = messageEntityService.getMessagesByUserIdAndType(loginUserId, type, loginAppId);
 		// 2.转成框架数据
 		mappingJacksonValue = new MappingJacksonValue(entities);
 		// 3.创建页面显示数据项的过滤器
@@ -208,7 +207,7 @@ public class MessageController extends BaseControl {
 			filter.add("appid"); // '应用ID',
 		}
 
-		filterProvider.addFilter(MessageEntity.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		filterProvider.addFilter(MessageVO.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
 
