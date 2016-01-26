@@ -11,15 +11,15 @@
 	<name>parasol-parent</name>
 	<url>http://192.168.101.101:3000/</url>
 	<modules>
-	<module>parasol-metadata</module>
-	<module>parasol-directory</module>
-	<module>parasol-tags</module>
-    	<module>parasol-sms</module>
-	<module>parasol-common</module>
-    	<module>parasol-message</module>
-	<module>parasol-user</module>
-    	<module>parasol-sensitive</module>
-    	<module>parasol-file</module>
+		<module>parasol-metadata</module>
+		<module>parasol-directory</module>
+		<module>parasol-tags</module>
+		<module>parasol-sms</module>
+		<module>parasol-common</module>
+		<module>parasol-message</module>
+		<module>parasol-user</module>
+	   	<module>parasol-sensitive</module>
+	   	<module>parasol-file</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -476,8 +476,6 @@
 	<properties>
 		<spring.version>4.2.1.RELEASE</spring.version>
 		<hibernate.version>5.0.1.Final</hibernate.version>
-		<!-- phoenix-util -->
-		<util.version>8.0.0-SNAPSHOT</util.version>
 		<!-- database -->
 		<mysql.version>5.1.36</mysql.version>
 		<maven.test.skip>false</maven.test.skip>

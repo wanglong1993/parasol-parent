@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.message.service.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import com.ginkgocap.parasol.message.model.MessageEntity;
 import com.ginkgocap.parasol.message.model.MessageRelation;
 import com.ginkgocap.parasol.message.service.MessageEntityService;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
+import com.ginkgocap.parasol.message.vo.MessageVO;
 
 @Service("messageEntityService")
 public class MessageEntityServiceImpl extends BaseService<MessageEntity> implements MessageEntityService{
@@ -145,7 +148,7 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 	
 	
 	@Override
-	public List<MessageEntity> getMessagesByUserIdAndType(long userId, int type, long appId) throws MessageEntityServiceException {
+	public List<MessageVO> getMessagesByUserIdAndType(long userId, int type, long appId) throws MessageEntityServiceException {
 		if(userId == 0) {
 			throw new MessageEntityServiceException(error_userid_null,"userid can not null!");
 		}
@@ -161,7 +164,7 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 		}
 		// 新建map，用于存放消息关系
 		Map<Long, MessageRelation> mapRel = new HashMap<Long, MessageRelation>();
-		
+
 		// 消息实体id列表
 		List<Long> ids = new ArrayList<Long>();
 		// 
@@ -177,12 +180,24 @@ public class MessageEntityServiceImpl extends BaseService<MessageEntity> impleme
 			logger.error("进入通过用户名称，消息类型获取消息列表出错：参数userId：{}, type:{}, exception:{}", userId,type,e.getMessage());
 			throw new MessageEntityServiceException(e);
 		}
-		for(MessageEntity entity : entities) {
-			mapRel.get(entity.getId());
-			entity.setIsRead(mapRel.get(entity.getId()).getIsRead());
+		
+		// VO列表
+		List<MessageVO> vos = new ArrayList<MessageVO>();
+		
+		try {
+			for(MessageEntity entity : entities) {
+				MessageVO vo = new MessageVO();
+				BeanUtils.copyProperties(vo, entity);
+				MessageRelation relation = mapRel.get(entity.getId());
+				BeanUtils.copyProperties(vo, relation);
+				vos.add(vo);
+			}
+		} catch (Exception e) {
+			logger.error("生成VO失败：参数userId：{}, type:{}, exception:{}", userId,type,e.getMessage());
+			throw new MessageEntityServiceException(e);
 		}
 		
-		return entities;
+		return vos;
 	}
 	
 	@Override

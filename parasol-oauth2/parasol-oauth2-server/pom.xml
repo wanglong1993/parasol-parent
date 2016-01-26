@@ -5,7 +5,7 @@
 
 	<groupId>com.ginkgocap.parasol</groupId>
 	<artifactId>parasol-oauth2-server</artifactId>
-	<version>1.0.2-SNAPSHOT<</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>parasol-oauth2-server</name>
 	<packaging>war</packaging>
 

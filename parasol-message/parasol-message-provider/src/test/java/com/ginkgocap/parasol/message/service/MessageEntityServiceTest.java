@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.ginkgocap.parasol.message.exception.MessageEntityServiceException;
 import com.ginkgocap.parasol.message.model.MessageEntity;
+import com.ginkgocap.parasol.message.vo.MessageVO;
 
 public class MessageEntityServiceTest extends TestBase{
 	
@@ -53,13 +54,13 @@ public class MessageEntityServiceTest extends TestBase{
 	
 	@Test
 	public void TestGetMessagesByUserId() throws MessageEntityServiceException {
-		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1, 0, 111111);
+		List<MessageVO> entities = messageEntityService.getMessagesByUserIdAndType(1, 0, 111111);
 		System.out.println("entities="+entities);
 	}
 	
 	@Test
 	public void TestGetMessagesByUserIdAndType() throws MessageEntityServiceException {
-		List<MessageEntity> entities = messageEntityService.getMessagesByUserIdAndType(1l, 0,111111);
+		List<MessageVO> entities = messageEntityService.getMessagesByUserIdAndType(1l, 0,111111);
 		System.out.println("entities"+entities);
 	}
 }

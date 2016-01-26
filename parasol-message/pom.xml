@@ -15,7 +15,4 @@
 		<module>parasol-message-api</module>
 		<module>parasol-message-provider</module>
 	</modules>
-	<properties>
-		<message.version>1.0.0</message.version>
-	</properties>
 </project>
