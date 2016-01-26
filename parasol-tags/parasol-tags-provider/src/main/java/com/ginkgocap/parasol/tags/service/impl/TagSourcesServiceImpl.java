@@ -101,6 +101,9 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 				} else {
 					throw new TagSourceServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own TagSource");
 				}
+			} else {
+				throw new TagSourceServiceException(ServiceError.ERROR_NOT_FOUND, "TagSource is not exist");
+
 			}
 
 			return this.deleteEntity(tagSourceId);
