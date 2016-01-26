@@ -35,7 +35,7 @@ public class MessageRelation implements Serializable{
 	private long entityId;
 	// 接受者id
 	private long receiverId;
-	// 消息状态：是否处理
+	// 消息状态：是否处理  添加好友：0：未处理；1，确认；2：拒绝
 	private int status;
 	// 消息是否已读
 	private int isRead;

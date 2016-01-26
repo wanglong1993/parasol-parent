@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ginkgocap.parasol.message.exception.MessageEntityServiceException;
 import com.ginkgocap.parasol.message.model.MessageEntity;
+import com.ginkgocap.parasol.message.vo.MessageVO;
 
 
 /**
@@ -45,7 +46,7 @@ public interface MessageEntityService {
 	 * @param type
 	 * @return entity列表
 	 */
-	public List<MessageEntity> getMessagesByUserIdAndType(long userId, int type, long appId) throws MessageEntityServiceException;
+	public List<MessageVO> getMessagesByUserIdAndType(long userId, int type, long appId) throws MessageEntityServiceException;
 	
 	/**
 	 * 通过消息实体列表获取消息

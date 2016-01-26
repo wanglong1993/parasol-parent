@@ -110,5 +110,19 @@ public class MessageRelationServiceImpl extends BaseService<MessageRelation> imp
 		return flag;
 	}
 
+	@Override
+	public void updateMessageRelationStatus(long relationId, int status) {
+		logger.info("进入更新消息状态：参数relationId：{}, status:{}", relationId, status);
+		// 通过id列表批量删除消息关系
+		try {
+			MessageRelation relation = getEntity(relationId);
+			relation.setStatus(status);
+			relation.setIsRead(1);
+			saveEntity(relation);
+		} catch (BaseServiceException e) {
+			logger.info("更新消息状态失败：参数relationId：{}, status:{}", relationId, status);
+		}
+	}
 
+	
 }

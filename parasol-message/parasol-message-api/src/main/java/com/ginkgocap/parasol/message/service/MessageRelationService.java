@@ -66,4 +66,12 @@ public interface MessageRelationService {
 	 */
 	public boolean delBatchMessageRelation(List<Long> entityIds, long userId);
 	
+	/**
+	 * 更新消息状态
+	 * @param entityId
+	 * @param userId
+	 * @return
+	 */
+	public void updateMessageRelationStatus(long relationId, int status);
+	
 }
