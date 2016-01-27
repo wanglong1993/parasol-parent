@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.user.web.jetty.web.controller;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +12,21 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.InputStreamBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -1102,8 +1119,8 @@ public class UserController extends BaseControl {
 			}
 			byte[] bt = Base64.decode(password);
 			String salt=userLoginRegister.getSalt();
-			password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
-			if(!userLoginRegister.getPassword().equals(password)){
+			String newpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
+			if(!userLoginRegister.getPassword().equals(newpassword)){
 				resultMap.put("message", "incorrect password .");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
@@ -1133,15 +1150,82 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 			}
+			JSONObject json=getAccessToken(request,passport,password);
+			if(json==null){
+				resultMap.put( "message", "get access token failed");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
 			resultMap.put("id", userLoginRegister.getId());
 			resultMap.put("passport", userLoginRegister.getPassport());
 			resultMap.put("userType", userLoginRegister.getUsetType());
+			resultMap.put("access_token", json.has("access_token")?json.get("access_token"):"");
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("登录失败:"+passport);
 			throw e;
 		}
+	}
+	
+	@RequestMapping(path = { "/user/user/getAccessToken" }, method = { RequestMethod.POST})
+	public JSONObject getAccessToken(HttpServletRequest request,
+			@RequestParam(name = "username",required = true) String username
+			,@RequestParam(name = "password",required = true) String password
+			)throws Exception {
+		CloseableHttpClient httpClient = null;  
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+    	HttpEntity entity =null;
+    	JSONObject json = null;
+    	try{
+	        try{
+	        	RequestConfig defaultRequestConfig = RequestConfig.custom()
+	        			  .setSocketTimeout(5000)
+	        			  .setConnectTimeout(5000)
+	        			  .setConnectionRequestTimeout(5000)
+	        			  .setStaleConnectionCheckEnabled(true)
+	        			  .build();
+	        	httpClient = HttpClients.custom()
+	        			.setDefaultRequestConfig(defaultRequestConfig)
+	        			.build();
+	            HttpPost httpPost = new HttpPost("http://localhost:8085/oauth/token");
+	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
+	            .addPart("username",  new StringBody(username, ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("password", new StringBody(password, ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("scope", new StringBody("getIdentifyingCode", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("grant_type", new StringBody("password", ContentType.create("text/plain", Consts.UTF_8)))
+	            .build();  
+	            httpPost.setEntity(reqEntity);
+	            httpPost.setHeader("Authorization", getAuthorizationHeaderValue("1","2db7c5148a86b59ea285529a41ef84cb"));
+	            CloseableHttpResponse response = httpClient.execute(httpPost);  
+	            try {  
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						resultMap.put("status", response.getStatusLine().getStatusCode());
+						entity = response.getEntity();
+						String respJson = EntityUtils.toString(entity);
+						json = JSONObject.fromObject(respJson);
+						logger.info("json:"+respJson);
+					}
+	                EntityUtils.consume(entity);
+	                return json;
+	            } finally {  
+	                response.close();  
+	            }  
+	        }finally{  
+	            httpClient.close();  
+	        }
+    	}catch(Exception  e){
+    		throw e;
+    	}
+	        
+	}
+	public String getAuthorizationHeaderValue(String username,String password) {
+	    String result = null;
+	    if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
+	      String value = username + ":" + password;
+	      result = "Basic " + new String(Base64.encode(value.getBytes())) ;
+	    }
+	    return result;
 	}
 	/**
 	 * 验证passport是否已经存在
