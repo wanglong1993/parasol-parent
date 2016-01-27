@@ -103,7 +103,13 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
 			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId ) throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
+		Map<String, Object> result = new HashMap<String, Object>();
 		try {
+			if(file.getSize() == 0) {
+				result.put("error", "上传文件无效，请重新上传！");
+				return new MappingJacksonValue(result);
+			}
+
 			Long loginAppId = LoginUserContextHolder.getAppKey();
 			Long loginUserId = LoginUserContextHolder.getUserId();
 			byte[] file_buff = file.getBytes();
