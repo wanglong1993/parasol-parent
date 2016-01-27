@@ -280,13 +280,19 @@ public class FileController extends BaseControl {
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			FileIndex index = fileIndexService.getFileIndexById(indexId);
-			if(index == null) return mappingJacksonValue;
+			Map<String, Object> result = new HashMap<String, Object>();
+			
+			if(index == null) {
+				result.put("error", "文件索引id不存在，请检查参数！");
+				return new MappingJacksonValue(result);
+			} 
 			// fastDFS中删除上传的文件
 			deleteFileByFileId(index.getServerHost(),index.getFilePath(),index.getModuleType());
 			// 1.查询后台服务
 			boolean flag = fileIndexService.deleteFileIndexById(indexId);
+			result.put("result", flag);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(flag);
+			mappingJacksonValue = new MappingJacksonValue(result);
 			// 3.创建页面显示数据项的过滤器
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
