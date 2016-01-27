@@ -134,14 +134,14 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 	public Boolean deleteFriendly(Long userId,Long friendId)throws UserOrgPerCusRelServiceException {
 		try {
 			Long id =(Long) getMapId(UserOrgPerCusRel_Map_FriendId, new Object[]{friendId,userId});
-			deleteEntity(id);
+			if(id==null) return true;
+			return deleteEntity(id)==true?true:false;
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
 			throw new UserOrgPerCusRelServiceException(e);
 		}
-		return null;
 	}
 
 	@Override
@@ -152,7 +152,9 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 			if(userLoginRegisterService.getUserLoginRegister(userId)==null)throw new UserFriendlyServiceException(error_uesrId_is_not_exists,"userId is not exists in UserLogniRegister");
 			if(userLoginRegisterService.getUserLoginRegister(friendId)==null)throw new UserFriendlyServiceException(error_FriendId_is_not_exists,"friendId is not exists in UserLogniRegister");
 			Long id =(Long) getMapId(UserOrgPerCusRel_Map_FriendId, new Object[]{friendId,userId});
-			return getEntity(id);
+			if(id==null)return null;
+			UserOrgPerCusRel userOrgPerCusRel=getEntity(id);
+			return userOrgPerCusRel;
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

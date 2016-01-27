@@ -100,16 +100,19 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 			List<Long> list =new ArrayList<Long>();
 			Long id =(Long) getMapId(UserFriendly_Map_FriendId, new Object[]{friendId,userId});
 			Long id2 =(Long) getMapId(UserFriendly_Map_FriendId, new Object[]{userId,friendId});
-			list.add(id);
-			list.add(id2);
-			deleteEntityByIds(list);
+			if(id!=null)list.add(id);
+			if(id2!=null)list.add(id2);
+			if(list.size()>0){
+				return deleteEntityByIds(list)==true?true:false;
+			}else{
+				return true;
+			}
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
 			}
 			throw new UserFriendlyServiceException(e);
 		}
-		return null;
 	}
 	@Override
 	public boolean realDeleteUserFriendly(Long id)throws UserFriendlyServiceException {
