@@ -190,7 +190,11 @@ public class FileController extends BaseControl {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			FileIndex index = fileIndexService.getFileIndexById(indexId);
-			
+			Map<String, Object> result = new HashMap<String, Object>();
+			if(index == null) {
+				result.put("error", "文件索引id不存在，请检查参数！");
+				return new MappingJacksonValue(result);
+			} 
 			getScissorImage(index.getServerHost(),index.getFilePath(),xEnd-xStart,yEnd-yStart,xStart,yStart);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(index);
@@ -236,6 +240,7 @@ public class FileController extends BaseControl {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
 			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
+			
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(files);
 			// 3.创建页面显示数据项的过滤器
