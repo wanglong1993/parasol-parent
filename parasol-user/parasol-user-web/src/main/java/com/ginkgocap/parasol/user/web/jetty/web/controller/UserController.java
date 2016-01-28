@@ -1176,6 +1176,7 @@ public class UserController extends BaseControl {
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("登录失败:"+passport);
+			logger.info("认证url:"+oauthWebUrl);
 			logger.info(e.getMessage());
 			throw e;
 		}
