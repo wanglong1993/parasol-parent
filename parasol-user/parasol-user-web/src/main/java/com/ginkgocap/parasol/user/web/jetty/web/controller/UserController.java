@@ -1235,6 +1235,7 @@ public class UserController extends BaseControl {
 	            httpClient.close();  
 	        }
     	}catch(Exception  e){
+    		logger.info(e.getMessage());
     		throw e;
     	}
 	        
