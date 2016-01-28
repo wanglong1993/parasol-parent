@@ -1172,6 +1172,10 @@ public class UserController extends BaseControl {
 			resultMap.put("passport", userLoginRegister.getPassport());
 			resultMap.put("userType", userLoginRegister.getUsetType());
 			resultMap.put("access_token", json.has("access_token")?json.get("access_token"):"");
+			resultMap.put("token_type", json.has("token_type")?json.get("token_type"):"");
+			resultMap.put("refresh_token", json.has("refresh_token")?json.get("refresh_token"):"");
+			resultMap.put("expires_in", json.has("expires_in")?json.get("expires_in"):"");
+			resultMap.put("scope", json.has("scope")?json.get("scope"):"");
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
