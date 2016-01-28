@@ -1205,8 +1205,8 @@ public class UserController extends BaseControl {
 	        	httpClient = HttpClients.custom()
 	        			.setDefaultRequestConfig(defaultRequestConfig)
 	        			.build();
-//	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
-//        	    .build();
+	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+        	    .build();
 	            HttpPost httpPost = new HttpPost(oauthWebUrl);
 	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
 	            .addPart("username",  new StringBody(username, ContentType.create("text/plain", Consts.UTF_8)))
@@ -1215,7 +1215,7 @@ public class UserController extends BaseControl {
 	            .addPart("grant_type", new StringBody(grant_type, ContentType.create("text/plain", Consts.UTF_8)))
 	            .build();  
 	            httpPost.setEntity(reqEntity);
-//	            httpPost.setConfig(requestConfig);
+	            httpPost.setConfig(requestConfig);
 	            httpPost.setHeader("Authorization", getAuthorizationHeaderValue(client_id,client_secret));
 	            CloseableHttpResponse response = httpClient.execute(httpPost);  
 	            try {  
