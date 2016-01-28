@@ -143,9 +143,9 @@ public class MessageController extends BaseControl {
 		MessageEntity entities = messageEntityService.getMessageEntityById(id);
 		// 2.转成框架数据
 		mappingJacksonValue = new MappingJacksonValue(entities);
-		// 3.创建页面显示数据项的过滤器
-		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-		mappingJacksonValue.setFilters(filterProvider);
+//		// 3.创建页面显示数据项的过滤器
+//		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+//		mappingJacksonValue.setFilters(filterProvider);
 		// 4.返回结果
 		return mappingJacksonValue;
 	}
