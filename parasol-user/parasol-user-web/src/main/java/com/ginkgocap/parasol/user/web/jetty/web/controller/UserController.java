@@ -91,6 +91,13 @@ public class UserController extends BaseControl {
 	private MessageRelationService messageRelationService;
 	@Value("${user.web.url}")  
     private String userWebUrl;  
+	@Value("${oauth.web.url}")  
+    private String oauthWebUrl;  
+	@Value("${client_id}")  
+    private String client_id;  
+	@Value("${client_secret}")  
+    private String client_secret; 
+    private static final String GRANT_TYPE="password"; 
 
 	/**
 	 * 用户注册
@@ -1150,9 +1157,14 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 			}
-			JSONObject json=getAccessToken(request,passport,password);
+			JSONObject json=getAccessToken(request,passport,password,client_id,client_secret,GRANT_TYPE);
 			if(json==null){
-				resultMap.put( "message", "get access token failed");
+				resultMap.put( "message", "get access token is null.");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(!json.has("access_token")){
+				resultMap.put( "message", "get access token failed.");
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -1172,6 +1184,9 @@ public class UserController extends BaseControl {
 	public JSONObject getAccessToken(HttpServletRequest request,
 			@RequestParam(name = "username",required = true) String username
 			,@RequestParam(name = "password",required = true) String password
+			,@RequestParam(name = "client_id",required = true) String client_id
+			,@RequestParam(name = "client_secret",required = true) String client_secret
+			,@RequestParam(name = "grant_type",required = true) String grant_type
 			)throws Exception {
 		CloseableHttpClient httpClient = null;  
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -1188,15 +1203,18 @@ public class UserController extends BaseControl {
 	        	httpClient = HttpClients.custom()
 	        			.setDefaultRequestConfig(defaultRequestConfig)
 	        			.build();
-	            HttpPost httpPost = new HttpPost("http://localhost:8085/oauth/token");
+	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+        	    .build();
+	            HttpPost httpPost = new HttpPost(oauthWebUrl);
 	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
 	            .addPart("username",  new StringBody(username, ContentType.create("text/plain", Consts.UTF_8)))
 	            .addPart("password", new StringBody(password, ContentType.create("text/plain", Consts.UTF_8)))
 	            .addPart("scope", new StringBody("getIdentifyingCode", ContentType.create("text/plain", Consts.UTF_8)))
-	            .addPart("grant_type", new StringBody("password", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("grant_type", new StringBody(grant_type, ContentType.create("text/plain", Consts.UTF_8)))
 	            .build();  
 	            httpPost.setEntity(reqEntity);
-	            httpPost.setHeader("Authorization", getAuthorizationHeaderValue("1","2db7c5148a86b59ea285529a41ef84cb"));
+	            httpPost.setConfig(requestConfig);
+	            httpPost.setHeader("Authorization", getAuthorizationHeaderValue(client_id,client_secret));
 	            CloseableHttpResponse response = httpClient.execute(httpPost);  
 	            try {  
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
