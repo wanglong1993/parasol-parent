@@ -1,8 +1,6 @@
 package com.ginkgocap.parasol.user.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -41,12 +39,12 @@ public class UserOrganExtServiceImpl extends BaseService<UserOrganExt> implement
 		if(userLoginRegisterService.getUserLoginRegister(userOrganExt.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister.");
 		if(type!=0)
 		if(getUserOrganExt(userOrganExt.getUserId())==null)throw new UserOrganExtServiceException("userId not exists in UserOrganExt");
-		if(StringUtils.isEmpty(userOrganExt.getName()))throw new UserOrganExtServiceException("The value of  name is null or empty.");
+//		if(StringUtils.isEmpty(userOrganExt.getName()))throw new UserOrganExtServiceException("The value of  name is null or empty.");
 		if(StringUtils.isEmpty(userOrganExt.getIp()))throw new UserOrganExtServiceException("The value of ip is null or empty.");
 		if(userOrganExt.getCtime()==null) userOrganExt.setCtime(System.currentTimeMillis());
 		if(userOrganExt.getUtime()==null) userOrganExt.setUtime(System.currentTimeMillis());
-		userOrganExt.setNameFirst(StringUtils.substring(PinyinUtils.stringToHeads(userOrganExt.getName()), 0, 1));
-		userOrganExt.setNameIndexAll(PinyinUtils.stringToQuanPin(userOrganExt.getName()));
+		if(!StringUtils.isEmpty(userOrganExt.getName()))userOrganExt.setNameFirst(StringUtils.substring(PinyinUtils.stringToHeads(userOrganExt.getName()), 0, 1));
+		if(!StringUtils.isEmpty(userOrganExt.getName()))userOrganExt.setNameIndexAll(PinyinUtils.stringToQuanPin(userOrganExt.getName()));
 		return userOrganExt;
 	}
 	

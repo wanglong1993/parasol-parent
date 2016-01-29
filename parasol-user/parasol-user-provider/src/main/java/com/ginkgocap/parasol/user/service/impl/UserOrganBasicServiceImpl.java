@@ -42,11 +42,11 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 		if(userLoginRegisterService.getUserLoginRegister(userOrganBasic.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister.");
 		if(type!=0)
 		if(getUserOrganBasic(userOrganBasic.getUserId())==null)throw new UserOrganBasicServiceException("userId not exists in userOrganBasic");
-		if(StringUtils.isEmpty(userOrganBasic.getName()))throw new UserOrganBasicServiceException("The value of  name is null or empty.");
+//		if(StringUtils.isEmpty(userOrganBasic.getName()))throw new UserOrganBasicServiceException("The value of  name is null or empty.");
 		if(userOrganBasic.getStatus().intValue() != 0 && userOrganBasic.getStatus().intValue() != 1 && userOrganBasic.getStatus().intValue() != -1 && userOrganBasic.getStatus() !=2)throw new UserOrganBasicServiceException("The value of status is null or empty.");
 		if(userOrganBasic.getCtime()==null) userOrganBasic.setCtime(System.currentTimeMillis());
 		if(userOrganBasic.getUtime()==null) userOrganBasic.setUtime(System.currentTimeMillis());
-		userOrganBasic.setNameIndex(PinyinUtils.stringToHeads(userOrganBasic.getName()));
+		if(!StringUtils.isEmpty(userOrganBasic.getName()))userOrganBasic.setNameIndex(PinyinUtils.stringToHeads(userOrganBasic.getName()));
 		return userOrganBasic;
 	}
 	

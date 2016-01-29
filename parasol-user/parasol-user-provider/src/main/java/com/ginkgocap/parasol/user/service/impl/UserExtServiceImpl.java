@@ -42,13 +42,13 @@ public class UserExtServiceImpl extends BaseService<UserExt> implements UserExtS
 		if(userLoginRegisterService.getUserLoginRegister(userExt.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister");
 		if(type!=0)
 		if(getUserExt(userExt.getUserId())==null)throw new UserExtServiceException("userId not exists in UserExt");
-		if(StringUtils.isEmpty(userExt.getName()))throw new UserExtServiceException("The value of  name is null or empty.");
+//		if(StringUtils.isEmpty(userExt.getName()))throw new UserExtServiceException("The value of  name is null or empty.");
 		if(StringUtils.isEmpty(userExt.getIp()))throw new UserExtServiceException("The value of ip is null or empty.");
 		if(userExt.getCtime()==null) userExt.setCtime(System.currentTimeMillis());
 		if(userExt.getUtime()==null) userExt.setUtime(System.currentTimeMillis());
 		if(type==1)userExt.setUtime(System.currentTimeMillis());
-		userExt.setNameFirst(StringUtils.substring(PinyinUtils.stringToHeads(userExt.getName()), 0, 1));
-		userExt.setNameIndexAll(PinyinUtils.stringToQuanPin(userExt.getName()));
+		if(!StringUtils.isEmpty(userExt.getName()))userExt.setNameFirst(StringUtils.substring(PinyinUtils.stringToHeads(userExt.getName()), 0, 1));
+		if(!StringUtils.isEmpty(userExt.getName()))userExt.setNameIndexAll(PinyinUtils.stringToQuanPin(userExt.getName()));
 		return userExt;
 	}
 	
