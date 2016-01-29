@@ -17,6 +17,7 @@
 package com.ginkgocap.parasol.message.web.jetty.web.controller;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -129,6 +131,8 @@ public class MessageController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws MessageEntityServiceException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 * @throws DirectoryServiceException
 	 * @throws CodeServiceException
 	 */
@@ -136,16 +140,18 @@ public class MessageController extends BaseControl {
 	public MappingJacksonValue getEntityById(@RequestParam(name = MessageController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = MessageController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = MessageController.parameterEntityId, required = true) long id
-			) throws MessageEntityServiceException {
+			) throws MessageEntityServiceException, IllegalAccessException, InvocationTargetException {
 		MappingJacksonValue mappingJacksonValue = null;
 		// 0.校验输入参数（框架搞定，如果业务业务搞定）
 		// 1.查询后台服务
 		MessageEntity entities = messageEntityService.getMessageEntityById(id);
+		MessageVO vo = new MessageVO();
+		BeanUtils.copyProperties(vo, entities);
 		// 2.转成框架数据
-		mappingJacksonValue = new MappingJacksonValue(entities);
-//		// 3.创建页面显示数据项的过滤器
-//		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-//		mappingJacksonValue.setFilters(filterProvider);
+		mappingJacksonValue = new MappingJacksonValue(vo);
+		// 3.创建页面显示数据项的过滤器
+		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+		mappingJacksonValue.setFilters(filterProvider);
 		// 4.返回结果
 		return mappingJacksonValue;
 	}
