@@ -181,6 +181,16 @@ public class UserController extends BaseControl {
 						return new MappingJacksonValue(resultMap);
 					}
 				}
+				if(StringUtils.isEmpty(password)){
+					resultMap.put( "message", "passowrd cannot be null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(password.length()<6){
+					resultMap.put( "message", "password length must be greater than or equal to 6.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
 				userLoginRegister= new UserLoginRegister();
 				userLoginRegister.setPassport(passport);
 				byte[] bt = Base64.decode(password);
