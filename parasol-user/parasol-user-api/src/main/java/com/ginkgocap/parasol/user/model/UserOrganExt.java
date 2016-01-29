@@ -135,7 +135,7 @@ public class UserOrganExt implements java.io.Serializable {
 		this.brief = brief;
 	}
 
-	@Column(name = "shortName", nullable = false, length = 50)
+	@Column(name = "shortName",  length = 50)
 	public String getShortName() {
 		return this.shortName;
 	}
@@ -180,7 +180,7 @@ public class UserOrganExt implements java.io.Serializable {
 		this.orgType = orgType;
 	}
 
-	@Column(name = "nameFirst", nullable = false, length = 1)
+	@Column(name = "nameFirst",  length = 1)
 	public String getNameFirst() {
 		return this.nameFirst;
 	}
@@ -189,7 +189,7 @@ public class UserOrganExt implements java.io.Serializable {
 		this.nameFirst = nameFirst;
 	}
 
-	@Column(name = "nameIndexAll", nullable = false, length = 50)
+	@Column(name = "nameIndexAll",  length = 50)
 	public String getNameIndexAll() {
 		return this.nameIndexAll;
 	}
@@ -198,7 +198,7 @@ public class UserOrganExt implements java.io.Serializable {
 		this.nameIndexAll = nameIndexAll;
 	}
 
-	@Column(name = "company_contacts_mobile", nullable = false, length = 15)
+	@Column(name = "company_contacts_mobile",  length = 15)
 	public String getCompanyContactsMobile() {
 		return companyContactsMobile;
 	}
@@ -207,7 +207,7 @@ public class UserOrganExt implements java.io.Serializable {
 		this.companyContactsMobile = companyContactsMobile;
 	}
 
-	@Column(name = "company_contacts", nullable = false, length = 20)
+	@Column(name = "company_contacts",  length = 20)
 	public String getCompanyContacts() {
 		return companyContacts;
 	}
@@ -216,7 +216,7 @@ public class UserOrganExt implements java.io.Serializable {
 		this.companyContacts = companyContacts;
 	}
 	
-	@Column(name = "idcard_front_pic_id", nullable = false, length = 20)
+	@Column(name = "idcard_front_pic_id", length = 20)
 	public Long getIdcardFrontPicId() {
 		return idcardFrontPicId;
 	}
@@ -225,7 +225,7 @@ public class UserOrganExt implements java.io.Serializable {
 		this.idcardFrontPicId = idcardFrontPicId;
 	}
 
-	@Column(name = "idcard_back_pic_id", nullable = false, length = 20)
+	@Column(name = "idcard_back_pic_id", length = 20)
 	public Long getIdcardBackPicId() {
 		return idcardBackPicId;
 	}

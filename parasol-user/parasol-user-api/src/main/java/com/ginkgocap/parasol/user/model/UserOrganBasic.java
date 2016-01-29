@@ -71,7 +71,7 @@ public class UserOrganBasic implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "name", nullable = false, length = 100)
+	@Column(name = "name",  length = 100)
 	public String getName() {
 		return this.name;
 	}
@@ -80,7 +80,7 @@ public class UserOrganBasic implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "pic_id", nullable = false, length = 200)
+	@Column(name = "pic_id",  length = 200)
 	public Long getPicId() {
 		return this.picId;
 	}
@@ -107,7 +107,7 @@ public class UserOrganBasic implements java.io.Serializable {
 		this.auth = auth;
 	}
 
-	@Column(name = "nameIndex", nullable = false, length = 20)
+	@Column(name = "nameIndex",  length = 20)
 	public String getNameIndex() {
 		return this.nameIndex;
 	}

@@ -157,7 +157,7 @@ public class UserExt implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@Column(name = "nameFirst", nullable = false, length = 1)
+	@Column(name = "nameFirst",  length = 1)
 	public String getNameFirst() {
 		return this.nameFirst;
 	}
@@ -166,7 +166,7 @@ public class UserExt implements java.io.Serializable {
 		this.nameFirst = nameFirst;
 	}
 
-	@Column(name = "nameIndexAll", nullable = false, length = 50)
+	@Column(name = "nameIndexAll",  length = 50)
 	public String getNameIndexAll() {
 		return this.nameIndexAll;
 	}

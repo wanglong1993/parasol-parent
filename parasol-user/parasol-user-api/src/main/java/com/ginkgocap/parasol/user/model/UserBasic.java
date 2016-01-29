@@ -75,7 +75,7 @@ public class UserBasic implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "name", nullable = false, length = 100)
+	@Column(name = "name",  length = 100)
 	public String getName() {
 		return this.name;
 	}
@@ -140,7 +140,7 @@ public class UserBasic implements java.io.Serializable {
 		this.status = status;
 	}
 
-	@Column(name = "nameIndex", nullable = false, length = 20)
+	@Column(name = "nameIndex", length = 20)
 	public String getNameIndex() {
 		return this.nameIndex;
 	}
