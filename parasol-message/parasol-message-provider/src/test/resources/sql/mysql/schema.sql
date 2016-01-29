@@ -17,7 +17,8 @@ create table tb_message_entity
    sourceType           varchar(10)                        null,
    sourceTitle          varchar(255)                   null,
    appId                bigint(20)                    null,
-   PRIMARY KEY (`id`)
+   PRIMARY KEY (`id`),
+   UNIQUE INDEX `createrId_type_appId` (`createrId`, `type`,`appId`) 
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 
@@ -36,6 +37,7 @@ create table tb_message_relation
    dealTime             bigint(20)                     null,
    type                 tinyint                        null,
    appId				bigint(20)					   null,
-   PRIMARY KEY (`id`)
+   PRIMARY KEY (`id`),
+   UNIQUE INDEX `receiverId_appId_type` (`receiverId`,`appId`, `type`) 
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
