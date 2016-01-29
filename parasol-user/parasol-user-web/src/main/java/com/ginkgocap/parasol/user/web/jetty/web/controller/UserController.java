@@ -130,17 +130,17 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
 			,@RequestParam(name = "userType",required = true) String userType
-			,@RequestParam(name = "firstIndustryIds", required = true) Long[] firstIndustryIds
-			,@RequestParam(name = "name",required = true) String name
-			,@RequestParam(name = "shortName",required = true) String shortName
+			,@RequestParam(name = "firstIndustryIds", required = false) Long[] firstIndustryIds
+			,@RequestParam(name = "name",required = false) String name
+			,@RequestParam(name = "shortName",required = false) String shortName
 			,@RequestParam(name = "picId",required = false) Long picId
-			,@RequestParam(name = "businessLicencePicId",required = true) Long businessLicencePicId
+			,@RequestParam(name = "businessLicencePicId",required = false) Long businessLicencePicId
 			,@RequestParam(name = "stockCode",required = false) String stockCode
-			,@RequestParam(name = "orgType",required = true) String orgType
-			,@RequestParam(name = "companyContactsMobile",required = true) String companyContactsMobile
-			,@RequestParam(name = "companyContacts",required = true) String companyContacts
-			,@RequestParam(name = "idcardFrontPicId",required = true) Long idcardFrontPicId
-			,@RequestParam(name = "idcardBackPicId",required = true) Long idcardBackPicId
+			,@RequestParam(name = "orgType",required = false) String orgType
+			,@RequestParam(name = "companyContactsMobile",required = false) String companyContactsMobile
+			,@RequestParam(name = "companyContacts",required = false) String companyContacts
+			,@RequestParam(name = "idcardFrontPicId",required = false) Long idcardFrontPicId
+			,@RequestParam(name = "idcardBackPicId",required = false) Long idcardBackPicId
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
@@ -158,12 +158,6 @@ public class UserController extends BaseControl {
 		Long id=0l;
 		Long appId =0l;
 		try {
-//				Long appId = LoginUserContextHolder.getAppKey();
-//				if(appId==null){
-//					resultMap.put( "message", "appId is null or empty.");
-//					resultMap.put( "status", 0);
-//					return new MappingJacksonValue(resultMap);
-//				}
 				boolean exists=userLoginRegisterService.passportIsExist(passport);
 				if(exists){
 					if(type==1)resultMap.put( "message", "email already exists.");
@@ -206,7 +200,6 @@ public class UserController extends BaseControl {
 				if((type==1 && userType.equals("0"))){
 					userBasic= new UserBasic();
 					userBasic.setName(name);
-//					userBasic.setMobile(passport);
 					userBasic.setPicId(picId);
 					userBasic.setStatus(new Byte("1"));
 					userBasic.setSex(new Byte("1"));
@@ -254,13 +247,15 @@ public class UserController extends BaseControl {
 					userExt.setUserId(id);
 					userExtId=userExtService.createUserExt(userExt);
 					list =new ArrayList<UserInterestIndustry>();
-					for (Long firstIndustryId : firstIndustryIds) {
-						userInterestIndustry= new UserInterestIndustry();
-						userInterestIndustry.setUserId(id);
-						userInterestIndustry.setFirstIndustryId(firstIndustryId);
-						userInterestIndustry.setIp(ip);
-						list.add(userInterestIndustry);
-						list=userInterestIndustryService.createUserInterestIndustryByList(list, id);
+					if(firstIndustryIds!=null && firstIndustryIds.length>0){
+						for (Long firstIndustryId : firstIndustryIds) {
+							userInterestIndustry= new UserInterestIndustry();
+							userInterestIndustry.setUserId(id);
+							userInterestIndustry.setFirstIndustryId(firstIndustryId);
+							userInterestIndustry.setIp(ip);
+							list.add(userInterestIndustry);
+							list=userInterestIndustryService.createUserInterestIndustryByList(list, id);
+						}
 					}
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
@@ -433,7 +428,7 @@ public class UserController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/user/user/getUserIdAndAppId" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getUserBase(HttpServletRequest request,HttpServletResponse response
+	public MappingJacksonValue getUserIdAndAppId(HttpServletRequest request,HttpServletResponse response
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Long userId=null;
