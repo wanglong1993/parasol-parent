@@ -209,18 +209,49 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
-				<log4j.level>debug</log4j.level>
-				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
-				<log4j.path>d:/log</log4j.path>
-				<!-- dubbo注册中心的地址 -->
-				<email.dubbo.application.name>emaildubboprovider</email.dubbo.application.name>
-				<email.dubbo.protocol.name>dubbo</email.dubbo.protocol.name>
-				<email.dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</email.dubbo.registry.address>
-				<email.dubbo.protocol.port>20886</email.dubbo.protocol.port>
-				<email.gintongweb.host>192.168.120.136:2222</email.gintongweb.host>
+				<dubbo.application.name>emaildubboprovider</dubbo.application.name>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.port>20886</dubbo.protocol.port>
+				<gintongweb.host>192.168.120.139:2222</gintongweb.host>
+				<redis.host>192.168.101.131</redis.host>
+				<redis.port>6379</redis.port>
+				<log4j.path>/webserver/dubbo/parasol-user-provider-${project.version}</log4j.path>
 			</properties>
 		</profile>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<dubbo.application.name>emaildubboprovider</dubbo.application.name>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.port>20886</dubbo.protocol.port>
+				<gintongweb.host>192.168.120.139:2222</gintongweb.host>
+				<redis.host>192.168.101.131</redis.host>
+				<redis.port>6379</redis.port>
+				<log4j.path>/webserver/dubbo/parasol-user-provider-${project.version}</log4j.path>
+			</properties>
+		</profile>
+		<profile>
+			<id>online</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<!-- dubbo注册中心的地址 -->
+				<dubbo.application.name>emaildubboprovider</dubbo.application.name>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.port>20886</dubbo.protocol.port>
+				<gintongweb.host>192.168.120.139:2222</gintongweb.host>
+				<redis.host>192.168.101.131</redis.host>
+				<redis.port>6379</redis.port>
+				<log4j.path>/webserver/dubbo/parasol-email-provider-${project.version}</log4j.path>
+			</properties>
+		</profile>					
 		<profile>
 			<id>delivery</id>
 			<activation>
