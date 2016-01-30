@@ -1455,6 +1455,74 @@ public class UserController extends BaseControl {
 	}
 
 	/**
+	 * 重置密码
+	 * 
+	 * @param password 密码
+	 * @param confirmPassword 确认密码
+	 * @param code 验证码
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/resetPassword" }, method = { RequestMethod.POST })
+	public MappingJacksonValue resetPassword(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "password",required = true) String password
+			,@RequestParam(name = "confirmPassword",required = true) String confirmPassword
+			,@RequestParam(name = "code",required = true) String code
+			,@RequestParam(name = "passport",required = true) String passport
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		Long userId=null;
+		try {
+			if(StringUtils.isEmpty(password)){
+				resultMap.put("message", "password is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(StringUtils.isEmpty(confirmPassword)){
+				resultMap.put("message", "confirmPassword is null or empty.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(password.length()<6){
+				resultMap.put("message", "password length must be greater than or equal to 6.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(confirmPassword.length()<6){
+				resultMap.put("message", "confirmPassword length must be greater than or equal to 6.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(!password.equals(confirmPassword)){
+				resultMap.put("message", "password and confirmPassword do not match,please type the same password in both text boxes.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			if(ObjectUtils.isEmpty(userLoginRegister)){
+				resultMap.put("message", "passport is not exists.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
+				resultMap.put( "message", "code is not right");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			byte[] bt = Base64.decode(password);
+			String salt=userLoginRegister.getSalt();
+			String resetpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
+			userLoginRegisterService.updatePassword(userLoginRegister.getId(), resetpassword);
+			resultMap.put("message", "reset password successed.");
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("修改密码失败:"+userId);
+			throw e;
+		}
+	}
+	
+	/**
 	 * 注册获取手机验证码
 	 * 
 	 * @param request
