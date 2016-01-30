@@ -1505,8 +1505,8 @@ public class UserController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/findPasswordCode" }, method = { RequestMethod.GET})
-	public MappingJacksonValue findPasswordCode(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/user/user/getBackPasswordCode" }, method = { RequestMethod.GET})
+	public MappingJacksonValue getBackPasswordCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
