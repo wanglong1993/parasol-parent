@@ -1497,6 +1497,50 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
+
+	/**
+	 * 手机找回密码获取验证码
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/findPasswordCode" }, method = { RequestMethod.GET})
+	public MappingJacksonValue findPasswordCode(HttpServletRequest request,HttpServletResponse response
+		,@RequestParam(name = "passport",required = true) String passport
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+				if(StringUtils.isEmpty(passport)){
+					resultMap.put( "message", "passport is null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(!isMobileNo(passport)){
+					resultMap.put( "message", "passport is not right phone number.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(!userLoginRegisterService.passportIsExist(passport)){
+					resultMap.put( "message", "mobile not exists.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				String code=userLoginRegisterService.sendIdentifyingCode(passport);
+				if(StringUtils.isEmpty(code)){
+					resultMap.put( "message", "failed to get the verfication code.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);	
+				}else{
+					resultMap.put( "code", code);
+					resultMap.put( "status", 1);
+				}
+				logger.info(new StringBuffer().append("手机号:").append(passport).append(",的短信验证码为:").append(code).append(",有效期为30分钟!").toString());
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			throw e;
+		}
+	}
 	/**
 	 * 根据地区省ID获取用户列表
 	 * 
