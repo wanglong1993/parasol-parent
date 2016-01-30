@@ -1495,6 +1495,11 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
+			if(!isMobileNo(passport) && !isEmail(passport)){
+				resultMap.put( "message", "passport is not right phone number or email.");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(ObjectUtils.isEmpty(userLoginRegister)){
 				resultMap.put("message", "passport is not exists.");
@@ -1544,6 +1549,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(userLoginRegisterService.passportIsExist(passport)){
+					userLoginRegisterService.realDeleteUserLoginRegister(userLoginRegisterService.getUserLoginRegister(passport).getId());
 					resultMap.put( "message", "passport already exists.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
