@@ -205,7 +205,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	        if (token.getRefreshToken() != null) {  
 	            refreshToken = token.getRefreshToken().getValue();  
 	        }
-	        synchronized (this) {
+	        
 				if (readAccessToken(token.getValue())!=null) {
 					removeAccessToken(token);
 				}
@@ -230,12 +230,13 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			        oauthAccessToken.setCreateTime(new Date());
 		        }
 		        try {
-					saveEntity(oauthAccessToken);
+		        	synchronized (this) {
+		        		saveEntity(oauthAccessToken);
+		        	}
 				} catch (BaseServiceException e) {
 					e.printStackTrace();
 					return;
 				}
-	        }
 		}else return ;
 	}
 
