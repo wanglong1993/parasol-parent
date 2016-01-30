@@ -33,8 +33,9 @@ public class EmailServiceImpl implements EmailService {
 		        Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mailTo));
 		        if(value!=null)return true;
 		        if(sendEmailNoThread(email)){
-		        	if(setCache(mailTo,"1"))return true; 
-		        	else return false;
+//		        	if(setCache(mailTo,"1"))return true; 
+//		        	else return false;
+		        	return true; 
 		        }
 		        return false;
 	        }else return false;

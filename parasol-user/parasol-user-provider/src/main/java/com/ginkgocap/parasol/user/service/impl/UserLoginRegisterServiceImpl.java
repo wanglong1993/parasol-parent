@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.user.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -279,6 +280,19 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		Matcher m = p.matcher(mobile);  
 		return m.matches();  
 	}
+	
+    /**
+     * 验证是否是正常的邮箱
+     * @param email
+     * @return
+     */
+    private boolean isEmail(String email){     
+        String str="^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
+           Pattern p = Pattern.compile(str);     
+           Matcher m = p.matcher(email);     
+           logger.info(m.matches()+"---");     
+           return m.matches();     
+    }
 	/**
 	 * 根据手机号设置缓存,时间为30分钟
 	 * @param mobile
@@ -310,18 +324,27 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	}
 
 	@Override
-	public String sendIdentifyingCode(String mobile)throws UserLoginRegisterServiceException {
+	public String sendIdentifyingCode(String passport)throws UserLoginRegisterServiceException {
 		try {
-			if(isMobileNo(mobile)){ 
-				Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mobile));
+			if(isMobileNo(passport) || isEmail(passport) ){ 
+				Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, passport));
 				String identifyingCode=null;
 				if(value!=null)identifyingCode=value.toString();
 				if(StringUtils.isEmpty(identifyingCode)){
 					identifyingCode=generationIdentifyingCode();
-					if(setCache(mobile,identifyingCode)){
-						int back=shortMessageService.sendMessage(mobile, new StringBuffer().append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(mobile), 1);
-						if(back==1)return identifyingCode;
-						else return "";
+					if(setCache(passport,identifyingCode)){
+						if(isMobileNo(passport)){
+							int back=shortMessageService.sendMessage(passport, new StringBuffer().append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(passport), 1);
+							if(back==1)return identifyingCode;
+							else return "";
+						}
+						if(isEmail(passport)){
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("acceptor",passport);
+							map.put("code",identifyingCode);
+							if(sendEmail(passport, 0, map))return identifyingCode;
+							else return "";
+						}
 					}
 				}else{
 					return identifyingCode;
@@ -336,8 +359,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		return "";
 	}
 	@Override
-	public String getIdentifyingCode(String mobile)throws UserLoginRegisterServiceException {
-		Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mobile));
+	public String getIdentifyingCode(String passport)throws UserLoginRegisterServiceException {
+		Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, passport));
 		return value!=null?value.toString():null;
 	}
 	@Override
@@ -345,7 +368,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			boolean bl=false;
 			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
-			if(type!=1 && type!=2 && type !=3 && type !=4) throw new UserLoginRegisterServiceException("type must be 1 or 2 or 3 or 4.");
+			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
+			if(type==0) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-code-emai.ftl");
 			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-activate-emai-old.ftl");
 			if(type==2) bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
 			if(type==3) bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
