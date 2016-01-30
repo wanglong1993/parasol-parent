@@ -31,11 +31,11 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
     
-    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.UserDetailService" ref="userDetailService" version="2.0.0" />
-    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthClientDetailsService" ref="oauthClientDetailsService" version="2.0.0" />
-    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthApprovalsService" ref="oauthApprovalsService" version="2.0.0" />
-    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService" ref="oauthTokenStoreService" version="2.0.0" />
-    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService" ref="oauthRefreshTokenService" version="2.0.0" />
-    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthCodeService" ref="oauthCodeService" version="2.0.0" />
+    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.UserDetailService" ref="userDetailService" version="2.0.0"  timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthClientDetailsService" ref="oauthClientDetailsService" version="2.0.0" timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthApprovalsService" ref="oauthApprovalsService" version="2.0.0" timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthTokenStoreService" ref="oauthTokenStoreService" version="2.0.0" timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthRefreshTokenService" ref="oauthRefreshTokenService" version="2.0.0" timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.oauth2.service.OauthCodeService" ref="oauthCodeService" version="2.0.0" timeout="3000000" />
     
 </beans>

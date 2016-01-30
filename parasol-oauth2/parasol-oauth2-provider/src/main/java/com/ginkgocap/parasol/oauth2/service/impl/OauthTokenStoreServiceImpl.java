@@ -86,6 +86,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 		try {
 			id = (Long)getMapId(OauthAccessToken_List_By_tokenId,tokenId);
 			oauthAccessToken=getEntity(id);
+			if(ObjectUtils.isEmpty(oauthAccessToken)) return null; 
 		} catch (BaseServiceException e1) {
 			e1.printStackTrace();
 			return null;
@@ -93,9 +94,11 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 		OAuth2Authentication authentication = null;  
 		OAuth2Request storedRequest = null;
 		boolean isChange=false;
-        try {  
+        try {
             authentication = SerializationUtils.deserialize(oauthAccessToken.getAuthentication());  
+            if(ObjectUtils.isEmpty(authentication))return null;
             OauthClientDetails oauthClientDetails =(OauthClientDetails) oauthClientDetailsService.loadClientByClientId(authentication.getOAuth2Request().getClientId());
+            if(ObjectUtils.isEmpty(oauthClientDetails))return null;
             Set<String> resourceIds= oauthClientDetails.getResourceIds();
             Set<String> scopes= oauthClientDetails.getScope();
             OAuth2Request oauth2Request=authentication.getOAuth2Request();
@@ -202,34 +205,37 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	        if (token.getRefreshToken() != null) {  
 	            refreshToken = token.getRefreshToken().getValue();  
 	        }
-			if (readAccessToken(token.getValue())!=null) {
-				removeAccessToken(token);
-			}
-	        if(token instanceof OauthAccessToken){
-	        	token2=((OauthAccessToken)token);
-		        oauthAccessToken.setTokenId(token2.getTokenId());
-		        oauthAccessToken.setToken(token2.getToken());
-		        oauthAccessToken.setRefreshToken_(token2.getRefreshToken_());
-		        oauthAccessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(authentication));
-		        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
-		        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
-		        oauthAccessToken.setUserName(authentication.getName());
-		        oauthAccessToken.setCreateTime(new Date());
-	        }else{
-		        oauthAccessToken.setTokenId(extractTokenKey(token.getValue()));
-		        oauthAccessToken.setToken(SerializationUtils.serialize(token));
-		        oauthAccessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(authentication));
-		        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
-		        oauthAccessToken.setRefreshToken_(extractTokenKey(refreshToken));
-		        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
-		        oauthAccessToken.setUserName(authentication.getName());
-		        oauthAccessToken.setCreateTime(new Date());
+	        synchronized (this) {
+				if (readAccessToken(token.getValue())!=null) {
+					removeAccessToken(token);
+				}
+		        if(token instanceof OauthAccessToken){
+		        	token2=((OauthAccessToken)token);
+			        oauthAccessToken.setTokenId(token2.getTokenId());
+			        oauthAccessToken.setToken(token2.getToken());
+			        oauthAccessToken.setRefreshToken_(token2.getRefreshToken_());
+			        oauthAccessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(authentication));
+			        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
+			        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
+			        oauthAccessToken.setUserName(authentication.getName());
+			        oauthAccessToken.setCreateTime(new Date());
+		        }else{
+			        oauthAccessToken.setTokenId(extractTokenKey(token.getValue()));
+			        oauthAccessToken.setToken(SerializationUtils.serialize(token));
+			        oauthAccessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(authentication));
+			        oauthAccessToken.setAuthentication(SerializationUtils.serialize(authentication));
+			        oauthAccessToken.setRefreshToken_(extractTokenKey(refreshToken));
+			        oauthAccessToken.setClientId(authentication.getOAuth2Request().getClientId());
+			        oauthAccessToken.setUserName(authentication.getName());
+			        oauthAccessToken.setCreateTime(new Date());
+		        }
+		        try {
+					saveEntity(oauthAccessToken);
+				} catch (BaseServiceException e) {
+					e.printStackTrace();
+					return;
+				}
 	        }
-	        try {
-				saveEntity(oauthAccessToken);
-			} catch (BaseServiceException e) {
-				e.printStackTrace();
-			}
 		}else return ;
 	}
 
@@ -324,7 +330,9 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			oauthAccessToken=getEntity(id);
 			if(ObjectUtils.isEmpty(oauthAccessToken))return null;
 			oAuth2AccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
-			if (oauthAccessToken != null && !authenticationId.equals(authenticationKeyGenerator.extractKey(readAuthentication(oAuth2AccessToken.getValue())))) {
+			OAuth2Authentication oAuth2Authentication=readAuthentication(oAuth2AccessToken.getValue());
+			if(ObjectUtils.isEmpty(oAuth2Authentication))return null;
+			if (oauthAccessToken != null && !authenticationId.equals(authenticationKeyGenerator.extractKey(oAuth2Authentication))) {
 				removeAccessToken(oAuth2AccessToken);
 				// Keep the store consistent (maybe the same user is represented by this authentication but the details have
 				// changed)
