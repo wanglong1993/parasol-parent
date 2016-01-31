@@ -225,21 +225,8 @@ public class UserController extends BaseControl {
 					userExt.setIp(ip);
 					userExt.setUserId(id);
 					userExtId=userExtService.createUserExt(userExt);
-//			        Map<String, Object> map = new HashMap<String, Object>();
-//			        map.put("email", userWebUrl+"/user/user/validateEmail?eamil="+passport);
-//			        map.put("acceptor",passport);
-//			        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
-//					if(userLoginRegisterService.sendEmail(passport, type, map)){
-//						resultMap.put( "message", "send mail success");
-//						resultMap.put( "status", 1);
-//					}else{
-//						//异常失败回滚
-//						if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
-//						if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
-//						if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
-//						resultMap.put( "message", "send email failed.");
-//						resultMap.put( "status", 0);
-//					}
+					resultMap.put( "id", id);
+					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
 				}
 				//个人用手机注册
@@ -296,22 +283,8 @@ public class UserController extends BaseControl {
 					userOrganExt.setIp(ip);
 					userOrganExt.setUserId(id);
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
-//					//邮箱验证地址
-//					Map<String, Object> map = new HashMap<String, Object>();
-//					map.put("email",  userWebUrl+"/user/user/validateEmail?eamil="+passport);
-//					map.put("acceptor",passport);
-//					map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
-//					if(userLoginRegisterService.sendEmail(passport, type, map)){
-//						resultMap.put( "message", "send mail success");
-//						resultMap.put( "status", 1);
-//					}else{
-//						//异常失败回滚
-//						if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
-//						if(userOrganExtId!=null && userOrganExtId>0l)userOrganExtService.realDeleteUserOrganExt(userOrganExtId);
-//						if(userOrganBasicId!=null && userOrganBasicId>0l)userOrganBasicService.realDeleteUserOrganBasic(userOrganBasicId);
-//						resultMap.put( "message", "send email failed.");
-//						resultMap.put( "status", 1);
-//					}
+					resultMap.put( "id", id);
+					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
 				}
 				resultMap.put("message", "paramter type or userType error.");
@@ -1297,11 +1270,8 @@ public class UserController extends BaseControl {
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserBasic userBasic=null;
-//		UserExt userExt=null;
 		UserOrganBasic userOrganBasic=null;
-//		UserOrganExt userOrganExt=null;
 		UserLoginRegister userLoginRegister=null;
-//		Long id=0l;
 		try {
 			if(code.equals(userLoginRegisterService.getIdentifyingCode(email))){
 				userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
@@ -1317,21 +1287,6 @@ public class UserController extends BaseControl {
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
-//					if(userBasic.getAuth().intValue()==1){
-//						resultMap.put("message", "email has been checked,don't repeat validation.");
-//						resultMap.put("status",0);
-//						return new MappingJacksonValue(resultMap);
-//					}
-//					userBasic.setAuth(new Byte("1"));
-//					if(userBasicService.updateUserBasic(userBasic)){
-//						resultMap.put("message", "email validate success.");
-//						resultMap.put("status",1);
-//						return new MappingJacksonValue(resultMap);
-//					}else{
-//						resultMap.put("message", "email validate failed.");
-//						resultMap.put("status",0);
-//						return new MappingJacksonValue(resultMap);
-//					}
 				}
 				if(userLoginRegister.getUsetType().intValue()==1){
 					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
@@ -1340,21 +1295,6 @@ public class UserController extends BaseControl {
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
-//					if(userOrganBasic.getAuth().intValue()==1){
-//						resultMap.put("message", "email has been checked,don't repeat validation.");
-//						resultMap.put("status",0);
-//						return new MappingJacksonValue(resultMap);
-//					}
-//					userOrganBasic.setAuth(new Byte("1"));
-//					if(userOrganBasicService.updateUserOrganBasic(userOrganBasic)){
-//						resultMap.put("message", "email validate success.");
-//						resultMap.put("status",1);
-//						return new MappingJacksonValue(resultMap);
-//					}else{
-//						resultMap.put("message", "email validate failed.");
-//						resultMap.put("status",0);
-//						return new MappingJacksonValue(resultMap);
-//					}
 				}
 			}else{
 				userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
@@ -1363,21 +1303,6 @@ public class UserController extends BaseControl {
 					resultMap.put("status",0);
 					return new MappingJacksonValue(resultMap);
 				}
-//				id=userLoginRegister.getId();
-//				if(userLoginRegister.getUsetType().intValue()==0){
-//					userBasic=userBasicService.getUserBasic(id);
-//					userExt=userExtService.getUserExt(id);
-//					userLoginRegisterService.realDeleteUserLoginRegister(id);
-//					if(!ObjectUtils.isEmpty(userBasic))	userBasicService.realDeleteUserBasic(id);
-//					if(!ObjectUtils.isEmpty(userExt))	userExtService.realDeleteUserExt(id);
-//				}
-//				if(userLoginRegister.getUsetType().intValue()==1){
-//					userOrganBasic=userOrganBasicService.getUserOrganBasic(id);
-//					userOrganExt=userOrganExtService.getUserOrganExt(id);
-//					userLoginRegisterService.realDeleteUserLoginRegister(id);
-//					if(!ObjectUtils.isEmpty(userOrganBasic))userOrganBasicService.realDeleteUserOrganBasic(id);
-//					if(!ObjectUtils.isEmpty(userOrganExt))userOrganExtService.realDeleteUserOrganExt(id);
-//				}
 				resultMap.put("message", "email has expired.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
@@ -1523,9 +1448,13 @@ public class UserController extends BaseControl {
 			byte[] bt = Base64.decode(password);
 			String salt=userLoginRegister.getSalt();
 			String resetpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
-			userLoginRegisterService.updatePassword(userLoginRegister.getId(), resetpassword);
-			resultMap.put("message", "reset password successed.");
-			resultMap.put("status",1);
+			if(userLoginRegisterService.updatePassword(userLoginRegister.getId(), resetpassword)){
+				resultMap.put("message", "reset password successed.");
+				resultMap.put("status",1);
+			}else{
+				resultMap.put("message", "reset password failed.");
+				resultMap.put("status",0);
+			}
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("修改密码失败:"+userId);
@@ -1558,7 +1487,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(userLoginRegisterService.passportIsExist(passport)){
-//					userLoginRegisterService.realDeleteUserLoginRegister(userLoginRegisterService.getUserLoginRegister(passport).getId());
+					userLoginRegisterService.realDeleteUserLoginRegister(userLoginRegisterService.getUserLoginRegister(passport).getId());
 					resultMap.put( "message", "passport already exists.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
