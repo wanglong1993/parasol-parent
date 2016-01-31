@@ -98,7 +98,7 @@ public class UserController extends BaseControl {
 	@Value("${client_secret}")  
     private String client_secret; 
     private static final String GRANT_TYPE="password"; 
-	@Resource
+//	@Resource
 //	private Cache cache;
 
 	/**
