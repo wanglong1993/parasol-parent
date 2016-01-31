@@ -333,18 +333,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 				if(StringUtils.isEmpty(identifyingCode)){
 					identifyingCode=generationIdentifyingCode();
 					if(setCache(passport,identifyingCode)){
-						if(isMobileNo(passport)){
-							int back=shortMessageService.sendMessage(passport, new StringBuffer().append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(passport), 1);
-							if(back==1)return identifyingCode;
-							else return "";
-						}
-						if(isEmail(passport)){
-							Map<String, Object> map = new HashMap<String, Object>();
-							map.put("acceptor",passport);
-							map.put("code",identifyingCode);
-							if(sendEmail(passport, 0, map))return identifyingCode;
-							else return "";
-						}
+						int back=shortMessageService.sendMessage(passport, new StringBuffer().append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(passport), 1);
+						if(back==1)return identifyingCode;
+						else return "";
 					}
 				}else{
 					return identifyingCode;
@@ -370,9 +361,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
 			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
 			if(type==0) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-code-emai.ftl");
-			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-activate-emai-old.ftl");
-			if(type==2) bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
-			if(type==3) bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
+//			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-activate-emai-old.ftl");
+			if(type==2)bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
+			if(type==3)bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
 //			if(type==4) bl= emailService.sendEmailSync(mailTo, null, editPasswordTitle, null, map, "findpwd-email_back.ftl");
 			return bl;
 		}catch (Exception e) {

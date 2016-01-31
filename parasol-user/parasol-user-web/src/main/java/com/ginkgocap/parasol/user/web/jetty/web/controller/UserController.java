@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,7 +124,7 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/register" }, method = { RequestMethod.POST })
 	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "type",required = true) int type
-			,@RequestParam(name = "code",required = false) String code
+			,@RequestParam(name = "code",required = true) String code
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
 			,@RequestParam(name = "userType",required = true) String userType
@@ -169,6 +170,11 @@ public class UserController extends BaseControl {
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
 					}
+				}
+				if(StringUtils.isEmpty(code)){
+					resultMap.put( "message", "code cannot be null or empty.");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
 				}
 				//个人用户手机和邮箱注册
 				if((type==2 || type==1) && userType.equals("0")){
@@ -1279,7 +1285,7 @@ public class UserController extends BaseControl {
 		}
 	}
 	/**
-	 * 邮箱注册验证地址,找回密码验证地址
+	 * 邮箱找回密码验证地址
 	 * 
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
@@ -1287,16 +1293,17 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/validateEmail" }, method = { RequestMethod.GET })
 	public MappingJacksonValue validateEmail(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "email",required = true) String email
+			,@RequestParam(name = "code",required = true) String code
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserBasic userBasic=null;
-		UserExt userExt=null;
+//		UserExt userExt=null;
 		UserOrganBasic userOrganBasic=null;
-		UserOrganExt userOrganExt=null;
+//		UserOrganExt userOrganExt=null;
 		UserLoginRegister userLoginRegister=null;
-		Long id=0l;
+//		Long id=0l;
 		try {
-			if(userLoginRegisterService.getEmail(email)){
+			if(code.equals(userLoginRegisterService.getIdentifyingCode(email))){
 				userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
 				if(userLoginRegister==null){
 					resultMap.put("message", "email is not exists in UserLogniRegister.");
@@ -1310,21 +1317,21 @@ public class UserController extends BaseControl {
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
-					if(userBasic.getAuth().intValue()==1){
-						resultMap.put("message", "email has been checked,don't repeat validation.");
-						resultMap.put("status",0);
-						return new MappingJacksonValue(resultMap);
-					}
-					userBasic.setAuth(new Byte("1"));
-					if(userBasicService.updateUserBasic(userBasic)){
-						resultMap.put("message", "email validate success.");
-						resultMap.put("status",1);
-						return new MappingJacksonValue(resultMap);
-					}else{
-						resultMap.put("message", "email validate failed.");
-						resultMap.put("status",0);
-						return new MappingJacksonValue(resultMap);
-					}
+//					if(userBasic.getAuth().intValue()==1){
+//						resultMap.put("message", "email has been checked,don't repeat validation.");
+//						resultMap.put("status",0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+//					userBasic.setAuth(new Byte("1"));
+//					if(userBasicService.updateUserBasic(userBasic)){
+//						resultMap.put("message", "email validate success.");
+//						resultMap.put("status",1);
+//						return new MappingJacksonValue(resultMap);
+//					}else{
+//						resultMap.put("message", "email validate failed.");
+//						resultMap.put("status",0);
+//						return new MappingJacksonValue(resultMap);
+//					}
 				}
 				if(userLoginRegister.getUsetType().intValue()==1){
 					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
@@ -1333,21 +1340,21 @@ public class UserController extends BaseControl {
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
-					if(userOrganBasic.getAuth().intValue()==1){
-						resultMap.put("message", "email has been checked,don't repeat validation.");
-						resultMap.put("status",0);
-						return new MappingJacksonValue(resultMap);
-					}
-					userOrganBasic.setAuth(new Byte("1"));
-					if(userOrganBasicService.updateUserOrganBasic(userOrganBasic)){
-						resultMap.put("message", "email validate success.");
-						resultMap.put("status",1);
-						return new MappingJacksonValue(resultMap);
-					}else{
-						resultMap.put("message", "email validate failed.");
-						resultMap.put("status",0);
-						return new MappingJacksonValue(resultMap);
-					}
+//					if(userOrganBasic.getAuth().intValue()==1){
+//						resultMap.put("message", "email has been checked,don't repeat validation.");
+//						resultMap.put("status",0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+//					userOrganBasic.setAuth(new Byte("1"));
+//					if(userOrganBasicService.updateUserOrganBasic(userOrganBasic)){
+//						resultMap.put("message", "email validate success.");
+//						resultMap.put("status",1);
+//						return new MappingJacksonValue(resultMap);
+//					}else{
+//						resultMap.put("message", "email validate failed.");
+//						resultMap.put("status",0);
+//						return new MappingJacksonValue(resultMap);
+//					}
 				}
 			}else{
 				userLoginRegister=userLoginRegisterService.getUserLoginRegister(email);
@@ -1356,25 +1363,27 @@ public class UserController extends BaseControl {
 					resultMap.put("status",0);
 					return new MappingJacksonValue(resultMap);
 				}
-				id=userLoginRegister.getId();
-				if(userLoginRegister.getUsetType().intValue()==0){
-					userBasic=userBasicService.getUserBasic(id);
-					userExt=userExtService.getUserExt(id);
-					userLoginRegisterService.realDeleteUserLoginRegister(id);
-					if(!ObjectUtils.isEmpty(userBasic))	userBasicService.realDeleteUserBasic(id);
-					if(!ObjectUtils.isEmpty(userExt))	userExtService.realDeleteUserExt(id);
-				}
-				if(userLoginRegister.getUsetType().intValue()==1){
-					userOrganBasic=userOrganBasicService.getUserOrganBasic(id);
-					userOrganExt=userOrganExtService.getUserOrganExt(id);
-					userLoginRegisterService.realDeleteUserLoginRegister(id);
-					if(!ObjectUtils.isEmpty(userOrganBasic))userOrganBasicService.realDeleteUserOrganBasic(id);
-					if(!ObjectUtils.isEmpty(userOrganExt))userOrganExtService.realDeleteUserOrganExt(id);
-				}
+//				id=userLoginRegister.getId();
+//				if(userLoginRegister.getUsetType().intValue()==0){
+//					userBasic=userBasicService.getUserBasic(id);
+//					userExt=userExtService.getUserExt(id);
+//					userLoginRegisterService.realDeleteUserLoginRegister(id);
+//					if(!ObjectUtils.isEmpty(userBasic))	userBasicService.realDeleteUserBasic(id);
+//					if(!ObjectUtils.isEmpty(userExt))	userExtService.realDeleteUserExt(id);
+//				}
+//				if(userLoginRegister.getUsetType().intValue()==1){
+//					userOrganBasic=userOrganBasicService.getUserOrganBasic(id);
+//					userOrganExt=userOrganExtService.getUserOrganExt(id);
+//					userLoginRegisterService.realDeleteUserLoginRegister(id);
+//					if(!ObjectUtils.isEmpty(userOrganBasic))userOrganBasicService.realDeleteUserOrganBasic(id);
+//					if(!ObjectUtils.isEmpty(userOrganExt))userOrganExtService.realDeleteUserOrganExt(id);
+//				}
 				resultMap.put("message", "email has expired.");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
+			resultMap.put("message", "email validate success.");
+			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			throw e;
@@ -1525,7 +1534,7 @@ public class UserController extends BaseControl {
 	}
 	
 	/**
-	 * 注册获取手机和邮箱验证码
+	 * 获取手机注册和邮箱注册验证码
 	 * 
 	 * @param request
 	 * @return
@@ -1536,8 +1545,8 @@ public class UserController extends BaseControl {
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		String code=null;
 		try {
-				String code=null;
 				if(StringUtils.isEmpty(passport)){
 					resultMap.put( "message", "passport is null or empty.");
 					resultMap.put( "status", 0);
@@ -1554,16 +1563,34 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-				code=userLoginRegisterService.sendIdentifyingCode(passport);
-				if(StringUtils.isEmpty(code)){
-					resultMap.put( "message", "failed to get the verfication code.");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);	
-				}else{
-					resultMap.put( "code", code);
-					resultMap.put( "status", 1);
+				if(isMobileNo(passport)){
+					code=userLoginRegisterService.sendIdentifyingCode(passport);
+					if(StringUtils.isEmpty(code)){
+						resultMap.put( "message", "failed to get the verfication code.");
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);	
+					}else{
+						resultMap.put( "code", code);
+						resultMap.put( "status", 1);
+					}
 				}
-				logger.info(new StringBuffer().append("手机号:").append(passport).append(",的短信验证码为:").append(code).append(",有效期为30分钟!").toString());
+				if(isEmail(passport)){
+					code=generationIdentifyingCode();
+					Map<String, Object> map = new HashMap<String, Object>();
+			        map.put("acceptor",passport);
+			        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
+			        map.put("code", code);
+			        map.put("type","0");
+					if(userLoginRegisterService.sendEmail(passport, 0, map)){
+						resultMap.put( "code", code);
+						resultMap.put( "status", 1);
+					}else{
+						resultMap.put( "message", "sendmail failed, get the verfication code failed.");
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);	
+					}
+				}
+				logger.info(new StringBuffer().append("通行证:").append(passport).append(",的验证码为:").append(code).append(",有效期为30分钟!").toString());
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			throw e;
@@ -1582,14 +1609,15 @@ public class UserController extends BaseControl {
 		,@RequestParam(name = "passport",required = true) String passport
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		String code=null;
 		try {
 				if(StringUtils.isEmpty(passport)){
 					resultMap.put( "message", "passport is null or empty.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-				if(!isMobileNo(passport)){
-					resultMap.put( "message", "passport is not right phone number.");
+				if(!isMobileNo(passport) && !isEmail(passport)){
+					resultMap.put( "message", "passport is not right phone number or email.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -1598,16 +1626,35 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-				String code=userLoginRegisterService.sendIdentifyingCode(passport);
-				if(StringUtils.isEmpty(code)){
-					resultMap.put( "message", "failed to get the verfication code.");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);	
-				}else{
-					resultMap.put( "code", code);
-					resultMap.put( "status", 1);
+				if(isMobileNo(passport)){
+					code=userLoginRegisterService.sendIdentifyingCode(passport);
+					if(StringUtils.isEmpty(code)){
+						resultMap.put( "message", "failed to get the verfication code.");
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);	
+					}else{
+						resultMap.put( "code", code);
+						resultMap.put( "status", 1);
+					}
 				}
-				logger.info(new StringBuffer().append("手机号:").append(passport).append(",的短信验证码为:").append(code).append(",有效期为30分钟!").toString());
+				if(isEmail(passport)){
+					code=generationIdentifyingCode();
+					Map<String, Object> map = new HashMap<String, Object>();
+			        map.put("email", userWebUrl+"/user/user/validateEmail?eamil="+passport+"&code="+code);
+			        map.put("acceptor",passport);
+			        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
+			        map.put("code", code);
+			        map.put("type","2");
+					if(userLoginRegisterService.sendEmail(passport, 2, map)){
+						resultMap.put( "code", code);
+						resultMap.put( "status", 1);
+					}else{
+						resultMap.put( "message", "sendmail failed, get the verfication code failed.");
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);	
+					}
+				}
+				logger.info(new StringBuffer().append("通行证:").append(passport).append(",找回密码验证码为:").append(code).append(",有效期为30分钟!").toString());
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			throw e;
@@ -1761,7 +1808,20 @@ public class UserController extends BaseControl {
            Matcher m = p.matcher(email);     
            logger.info(m.matches()+"---");     
            return m.matches();     
-    }	
+    }
+	/**
+	 * 生成验证码
+	 * @return String
+	 */
+	private  String generationIdentifyingCode(){
+		Random random = new Random();
+		StringBuffer sfb=new StringBuffer();
+		for (int i = 0; i < 6; i++) {
+			String rand = String.valueOf(random.nextInt(10));
+			sfb.append(rand);
+		}
+		return sfb.toString();
+	}
 	/**
 	 * 获取真实IP的方法
 	 * @param request
