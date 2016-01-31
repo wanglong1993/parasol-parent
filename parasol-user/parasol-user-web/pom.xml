@@ -176,11 +176,11 @@
 			<artifactId>parasol-file-api</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-cache</artifactId>
 			<version>1.0.0</version>
-		</dependency>
+		</dependency> -->
 		<!-- apache common -->
 		<dependency>
 			<groupId>commons-lang</groupId>
