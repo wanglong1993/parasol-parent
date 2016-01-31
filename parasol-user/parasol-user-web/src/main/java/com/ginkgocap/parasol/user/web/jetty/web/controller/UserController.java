@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ginkgocap.parasol.cache.Cache;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.UserBasic;
@@ -96,6 +98,8 @@ public class UserController extends BaseControl {
 	@Value("${client_secret}")  
     private String client_secret; 
     private static final String GRANT_TYPE="password"; 
+	@Resource
+	private Cache cache;
 
 	/**
 	 * 用户注册
@@ -225,6 +229,7 @@ public class UserController extends BaseControl {
 					userExt.setIp(ip);
 					userExt.setUserId(id);
 					userExtId=userExtService.createUserExt(userExt);
+					cache.remove(passport);
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -257,6 +262,7 @@ public class UserController extends BaseControl {
 							list=userInterestIndustryService.createUserInterestIndustryByList(list, id);
 						}
 					}
+					cache.remove(passport);
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -283,6 +289,7 @@ public class UserController extends BaseControl {
 					userOrganExt.setIp(ip);
 					userOrganExt.setUserId(id);
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
+					cache.remove(passport);
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -1449,6 +1456,7 @@ public class UserController extends BaseControl {
 			String salt=userLoginRegister.getSalt();
 			String resetpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			if(userLoginRegisterService.updatePassword(userLoginRegister.getId(), resetpassword)){
+				cache.remove(passport);
 				resultMap.put("message", "reset password successed.");
 				resultMap.put("status",1);
 			}else{
@@ -1504,19 +1512,25 @@ public class UserController extends BaseControl {
 					}
 				}
 				if(isEmail(passport)){
-					code=generationIdentifyingCode();
-					Map<String, Object> map = new HashMap<String, Object>();
-			        map.put("acceptor",passport);
-			        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
-			        map.put("code", code);
-			        map.put("type","0");
-					if(userLoginRegisterService.sendEmail(passport, 0, map)){
+					code=userLoginRegisterService.getIdentifyingCode(passport);
+					if(StringUtils.isEmpty(code)){
+						code=generationIdentifyingCode();
+						Map<String, Object> map = new HashMap<String, Object>();
+				        map.put("acceptor",passport);
+				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
+				        map.put("code", code);
+				        map.put("type","0");
+						if(userLoginRegisterService.sendEmail(passport, 0, map)){
+							resultMap.put( "code", code);
+							resultMap.put( "status", 1);
+						}else{
+							resultMap.put( "message", "sendmail failed, get the verfication code failed.");
+							resultMap.put( "status", 0);
+							return new MappingJacksonValue(resultMap);	
+						}
+					}else{
 						resultMap.put( "code", code);
 						resultMap.put( "status", 1);
-					}else{
-						resultMap.put( "message", "sendmail failed, get the verfication code failed.");
-						resultMap.put( "status", 0);
-						return new MappingJacksonValue(resultMap);	
 					}
 				}
 				logger.info(new StringBuffer().append("通行证:").append(passport).append(",的验证码为:").append(code).append(",有效期为30分钟!").toString());
@@ -1567,20 +1581,26 @@ public class UserController extends BaseControl {
 					}
 				}
 				if(isEmail(passport)){
-					code=generationIdentifyingCode();
-					Map<String, Object> map = new HashMap<String, Object>();
-			        map.put("email", userWebUrl+"/user/user/validateEmail?eamil="+passport+"&code="+code);
-			        map.put("acceptor",passport);
-			        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
-			        map.put("code", code);
-			        map.put("type","2");
-					if(userLoginRegisterService.sendEmail(passport, 2, map)){
+					code=userLoginRegisterService.getIdentifyingCode(passport);
+					if(StringUtils.isEmpty(code)){
+						code=generationIdentifyingCode();
+						Map<String, Object> map = new HashMap<String, Object>();
+				        map.put("email", userWebUrl+"/user/user/validateEmail?eamil="+passport+"&code="+code);
+				        map.put("acceptor",passport);
+				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
+				        map.put("code", code);
+				        map.put("type","2");
+						if(userLoginRegisterService.sendEmail(passport, 2, map)){
+							resultMap.put( "code", code);
+							resultMap.put( "status", 1);
+						}else{
+							resultMap.put( "message", "sendmail failed, get the verfication code failed.");
+							resultMap.put( "status", 0);
+							return new MappingJacksonValue(resultMap);	
+						}
+					}else{
 						resultMap.put( "code", code);
 						resultMap.put( "status", 1);
-					}else{
-						resultMap.put( "message", "sendmail failed, get the verfication code failed.");
-						resultMap.put( "status", 0);
-						return new MappingJacksonValue(resultMap);	
 					}
 				}
 				logger.info(new StringBuffer().append("通行证:").append(passport).append(",找回密码验证码为:").append(code).append(",有效期为30分钟!").toString());
