@@ -149,6 +149,13 @@ public interface UserLoginRegisterService {
 	 */
 	public String getIdentifyingCode(String mobile)throws UserLoginRegisterServiceException;
 	/**
+	 * 删除验证码
+	 * @param  mobile
+	 * @return Boolean
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public boolean deleteIdentifyingCode(String passport)throws UserLoginRegisterServiceException;
+	/**
 	 * 是否手机号
 	 * @param  mobile
 	 * @return Boolean

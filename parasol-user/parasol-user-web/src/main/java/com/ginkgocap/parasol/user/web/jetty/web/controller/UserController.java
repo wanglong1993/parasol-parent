@@ -8,7 +8,6 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-//import com.ginkgocap.parasol.cache.Cache;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.UserBasic;
@@ -98,8 +96,6 @@ public class UserController extends BaseControl {
 	@Value("${client_secret}")  
     private String client_secret; 
     private static final String GRANT_TYPE="password"; 
-//	@Resource
-//	private Cache cache;
 
 	/**
 	 * 用户注册
@@ -228,7 +224,7 @@ public class UserController extends BaseControl {
 					userExt.setIp(ip);
 					userExt.setUserId(id);
 					userExtId=userExtService.createUserExt(userExt);
-//					cache.remove(passport);
+					userLoginRegisterService.deleteIdentifyingCode(passport);
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -261,7 +257,7 @@ public class UserController extends BaseControl {
 							list=userInterestIndustryService.createUserInterestIndustryByList(list, id);
 						}
 					}
-//					cache.remove(passport);
+					userLoginRegisterService.deleteIdentifyingCode(passport);
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -288,7 +284,7 @@ public class UserController extends BaseControl {
 					userOrganExt.setIp(ip);
 					userOrganExt.setUserId(id);
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
-//					cache.remove(passport);
+					userLoginRegisterService.deleteIdentifyingCode(passport);
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -1455,7 +1451,7 @@ public class UserController extends BaseControl {
 			String salt=userLoginRegister.getSalt();
 			String resetpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			if(userLoginRegisterService.updatePassword(userLoginRegister.getId(), resetpassword)){
-//				cache.remove(passport);
+				userLoginRegisterService.deleteIdentifyingCode(passport);
 				resultMap.put("message", "reset password successed.");
 				resultMap.put("status",1);
 			}else{
@@ -1564,7 +1560,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(!userLoginRegisterService.passportIsExist(passport)){
-					resultMap.put( "message", "mobile not exists.");
+					resultMap.put( "message", "passport not exists.");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}

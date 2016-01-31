@@ -397,4 +397,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		 if(value!=null)return true;
 		 return false;
 	}
+	@Override
+	public boolean deleteIdentifyingCode(String passport)throws UserLoginRegisterServiceException {
+		return cache.remove(passport);
+	}
 }
