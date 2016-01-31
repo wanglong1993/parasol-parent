@@ -1580,7 +1580,7 @@ public class UserController extends BaseControl {
 					if(StringUtils.isEmpty(code)){
 						code=generationIdentifyingCode();
 						Map<String, Object> map = new HashMap<String, Object>();
-				        map.put("email", userWebUrl+"/user/user/validateEmail?eamil="+passport+"&code="+code);
+				        map.put("email", userWebUrl+"/user/user/validateEmail?email="+passport+"&code="+code);
 				        map.put("acceptor",passport);
 				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 				        map.put("code", code);
