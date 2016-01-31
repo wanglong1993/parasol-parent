@@ -103,7 +103,7 @@ public class UserOrgPerCusRelServiceTest  extends TestBase  implements Test{
 	public void testDeleteFriendly(){
 		try {
 			Long friendId=userLoginRegisterService.getId("13677687625");
-			Boolean bl =userOrgPerCusRelService.deleteFriendly(friendId);
+			Boolean bl =userOrgPerCusRelService.deleteFriendly(friendId,friendId);
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
 			e.printStackTrace();
