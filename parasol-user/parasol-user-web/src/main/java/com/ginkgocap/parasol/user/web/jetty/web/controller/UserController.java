@@ -1499,7 +1499,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(userLoginRegisterService.passportIsExist(passport)){
-					userLoginRegisterService.realDeleteUserLoginRegister(userLoginRegisterService.getUserLoginRegister(passport).getId());
+//					userLoginRegisterService.realDeleteUserLoginRegister(userLoginRegisterService.getUserLoginRegister(passport).getId());
 					resultMap.put( "message", Prompt.passport_already_exists);
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
