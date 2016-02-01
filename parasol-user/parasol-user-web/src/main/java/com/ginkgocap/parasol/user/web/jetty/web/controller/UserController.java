@@ -18,6 +18,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -92,6 +93,8 @@ public class UserController extends BaseControl {
     private String userWebUrl;  
 	@Value("${oauth.web.url}")  
     private String oauthWebUrl;  
+	@Value("${oauth.web.logout}")  
+	private String oauthWebLogout;  
 	@Value("${client_id}")  
     private String client_id;  
 	@Value("${client_secret}")  
@@ -1174,24 +1177,27 @@ public class UserController extends BaseControl {
 	/**
 	 * 用户登出
 	 * 
-	 * @param passport 为邮箱或者手机号
-	 * @param password 用户密码
+	 * @param access_token 用户认证access_token
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/logout" }, method = { RequestMethod.POST})
+	@RequestMapping(path = { "/user/user/logout" }, method = { RequestMethod.GET})
 	public MappingJacksonValue logout(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "access_token",required = true) String access_token
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			if(StringUtils.isEmpty(access_token)){
-				resultMap.put("message", Prompt.incorrect_password);
+				resultMap.put("message", Prompt.access_token_is_null_or_empty);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			
-			JSONObject json=logoff(request,access_token);
-			resultMap.put("status",1);
+			String json=logoff(request,access_token);
+			if(StringUtils.isEmpty(json)){
+				resultMap.put("status",1);
+			}else{
+				resultMap.put("message", Prompt.logout_failed);
+				resultMap.put("status",0);
+			}
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("注销url:"+oauthWebUrl);
@@ -1256,14 +1262,14 @@ public class UserController extends BaseControl {
     	}
 	        
 	}
-	@RequestMapping(path = { "/user/user/logoff" }, method = { RequestMethod.POST})
-	public JSONObject logoff(HttpServletRequest request,
+	@RequestMapping(path = { "/user/user/logoff" }, method = { RequestMethod.GET})
+	public String logoff(HttpServletRequest request,
 			@RequestParam(name = "access_token",required = true) String access_token
 			)throws Exception {
 		CloseableHttpClient httpClient = null;  
 		Map<String, Object> resultMap = new HashMap<String, Object>();
     	HttpEntity entity =null;
-    	JSONObject json = null;
+    	String json = null;
     	try{
 	        try{
 	        	RequestConfig defaultRequestConfig = RequestConfig.custom()
@@ -1277,20 +1283,15 @@ public class UserController extends BaseControl {
 	        			.build();
 	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
         	    .build();
-	            HttpPost httpPost = new HttpPost(oauthWebUrl);
-	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
-	            .addPart("access_token",  new StringBody(access_token, ContentType.create("text/plain", Consts.UTF_8)))
-	            .build();  
-	            httpPost.setEntity(reqEntity);
-	            httpPost.setConfig(requestConfig);
-	            CloseableHttpResponse response = httpClient.execute(httpPost);  
+	            HttpGet httpGet = new HttpGet(oauthWebLogout+"?access_token="+access_token);
+	            httpGet.setConfig(requestConfig);
+	            CloseableHttpResponse response = httpClient.execute(httpGet);  
 	            try {  
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 						resultMap.put("status", response.getStatusLine().getStatusCode());
 						entity = response.getEntity();
-						String respJson = EntityUtils.toString(entity);
-						json = JSONObject.fromObject(respJson);
-						logger.info("json:"+respJson);
+						json  = EntityUtils.toString(entity);
+						return json;
 					}
 	                return json;
 	            } finally {  

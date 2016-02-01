@@ -58,6 +58,8 @@ public final class Prompt {
 	public static final  String count_must_be_than_zero="每页的数量不能小于0";
 	public static final  String not_found_userId_list="没有找到用户列表信息";
 	public static final  String thirdIndustryId_is_null_or_empty="第三级行业id不能为空";
+	public static final  String access_token_is_null_or_empty="access_token不能为空";
+	public static final  String logout_failed="注销失败";
 	
 	
 
