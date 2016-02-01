@@ -1113,7 +1113,7 @@ public class UserController extends BaseControl {
 		UserOrganBasic userOrganBasic=null;
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
-			if(ObjectUtils.isEmpty(userLoginRegister)){
+			if(userLoginRegister==null){
 				resultMap.put( "message", Prompt.passport_is_not_exists_in_UserLoginRegister);
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
