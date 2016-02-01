@@ -1171,6 +1171,34 @@ public class UserController extends BaseControl {
 		}
 	}
 	
+	/**
+	 * 用户登出
+	 * 
+	 * @param passport 为邮箱或者手机号
+	 * @param password 用户密码
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/logout" }, method = { RequestMethod.POST})
+	public MappingJacksonValue logout(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "access_token",required = true) String access_token
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			if(StringUtils.isEmpty(access_token)){
+				resultMap.put("message", Prompt.incorrect_password);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			
+			JSONObject json=logoff(request,access_token);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("注销url:"+oauthWebUrl);
+			logger.info(e.getMessage());
+			throw e;
+		}
+	}	
 	@RequestMapping(path = { "/user/user/getAccessToken" }, method = { RequestMethod.POST})
 	public JSONObject getAccessToken(HttpServletRequest request,
 			@RequestParam(name = "username",required = true) String username
@@ -1215,7 +1243,6 @@ public class UserController extends BaseControl {
 						json = JSONObject.fromObject(respJson);
 						logger.info("json:"+respJson);
 					}
-	                EntityUtils.consume(entity);
 	                return json;
 	            } finally {  
 	                response.close();  
@@ -1229,6 +1256,55 @@ public class UserController extends BaseControl {
     	}
 	        
 	}
+	@RequestMapping(path = { "/user/user/logoff" }, method = { RequestMethod.POST})
+	public JSONObject logoff(HttpServletRequest request,
+			@RequestParam(name = "access_token",required = true) String access_token
+			)throws Exception {
+		CloseableHttpClient httpClient = null;  
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+    	HttpEntity entity =null;
+    	JSONObject json = null;
+    	try{
+	        try{
+	        	RequestConfig defaultRequestConfig = RequestConfig.custom()
+	        			  .setSocketTimeout(5000)
+	        			  .setConnectTimeout(5000)
+	        			  .setConnectionRequestTimeout(5000)
+	        			  .setStaleConnectionCheckEnabled(true)
+	        			  .build();
+	        	httpClient = HttpClients.custom()
+	        			.setDefaultRequestConfig(defaultRequestConfig)
+	        			.build();
+	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+        	    .build();
+	            HttpPost httpPost = new HttpPost(oauthWebUrl);
+	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
+	            .addPart("access_token",  new StringBody(access_token, ContentType.create("text/plain", Consts.UTF_8)))
+	            .build();  
+	            httpPost.setEntity(reqEntity);
+	            httpPost.setConfig(requestConfig);
+	            CloseableHttpResponse response = httpClient.execute(httpPost);  
+	            try {  
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						resultMap.put("status", response.getStatusLine().getStatusCode());
+						entity = response.getEntity();
+						String respJson = EntityUtils.toString(entity);
+						json = JSONObject.fromObject(respJson);
+						logger.info("json:"+respJson);
+					}
+	                return json;
+	            } finally {  
+	                response.close();  
+	            }  
+	        }finally{  
+	            httpClient.close();  
+	        }
+    	}catch(Exception  e){
+    		logger.info(e.getMessage());
+    		throw e;
+    	}
+	        
+	}	
 	public String getAuthorizationHeaderValue(String username,String password) {
 	    String result = null;
 	    if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
