@@ -120,6 +120,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
             }
             if(isChange){
             	authentication =new OAuth2Authentication(storedRequest,authentication.getUserAuthentication());
+            	logger.debug("removeAccessToken:"+2);
             	removeAccessToken(oauthAccessToken);
             	storeAccessToken(oauthAccessToken,authentication);
             	OAuth2RefreshToken oAuth2RefreshToken=oauthRefreshTokenService.getRefreshToken(oauthAccessToken.getRefreshToken_());
@@ -133,6 +134,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
             }  
         }catch (IllegalArgumentException e) {
         	logger.warn("Failed to deserialize authentication for " + token, e);
+        	logger.debug("removeAccessToken:"+1);
 			removeAccessToken(oauthAccessToken);
 		}
         return authentication;  
@@ -177,6 +179,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
             }
             if(isChange){
             	authentication =new OAuth2Authentication(storedRequest,authentication.getUserAuthentication());
+            	logger.debug("removeAccessToken:"+3);
             	removeAccessToken(oauthAccessToken);
             	storeAccessToken(oauthAccessToken,authentication);
             	OAuth2RefreshToken oAuth2RefreshToken=oauthRefreshTokenService.getRefreshToken(oauthAccessToken.getRefreshToken_());
@@ -191,6 +194,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
         }catch (IllegalArgumentException e) {
         	logger.warn("Failed to deserialize authentication for " + tokenId, e);
         	oAuth2AccessToken=SerializationUtils.deserialize(oauthAccessToken.getToken());
+        	logger.debug("removeAccessToken:"+4);
 			removeAccessToken(oAuth2AccessToken);
 		}
         return authentication;  
@@ -265,6 +269,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			return null;
 		}catch (IllegalArgumentException e) {
 			logger.warn("Failed to deserialize access token for " + tokenValue, e);
+			logger.debug("removeAccessToken:"+5);
 			removeAccessToken(oAuth2AccessToken);
 		}
 		return oAuth2AccessToken;
@@ -340,6 +345,7 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			OAuth2Authentication oAuth2Authentication=readAuthentication(oAuth2AccessToken.getValue());
 			if(ObjectUtils.isEmpty(oAuth2Authentication))return null;
 			if (oauthAccessToken != null && !authenticationId.equals(authenticationKeyGenerator.extractKey(oAuth2Authentication))) {
+				logger.debug("removeAccessToken:"+6);
 				removeAccessToken(oAuth2AccessToken);
 				// Keep the store consistent (maybe the same user is represented by this authentication but the details have
 				// changed)
