@@ -326,19 +326,19 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	public String sendIdentifyingCode(String passport)throws UserLoginRegisterServiceException {
 		try {
 			if(isMobileNo(passport) || isEmail(passport) ){ 
-				Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, passport));
+//				Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, passport));
 				String identifyingCode=null;
-				if(value!=null)identifyingCode=value.toString();
-				if(StringUtils.isEmpty(identifyingCode)){
+//				if(value!=null)identifyingCode=value.toString();
+//				if(StringUtils.isEmpty(identifyingCode)){
 					identifyingCode=generationIdentifyingCode();
 					if(setCache(passport,identifyingCode)){
 						int back=shortMessageService.sendMessage(passport, new StringBuffer().append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(passport), 1);
 						if(back==1)return identifyingCode;
 						else return "";
 					}
-				}else{
-					return identifyingCode;
-				}
+//				}else{
+//					return identifyingCode;
+//				}
 			}else return "";
 		}catch (Exception e){
 			if (logger.isDebugEnabled()) {
