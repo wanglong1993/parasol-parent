@@ -99,6 +99,8 @@ public class UserController extends BaseControl {
     private String client_id;  
 	@Value("${client_secret}")  
     private String client_secret; 
+	@Value("${email.validate.url}")  
+    private String emailValidateUrl; 	
     private static final String GRANT_TYPE="password"; 
 
 	/**
@@ -1667,7 +1669,7 @@ public class UserController extends BaseControl {
 					if(StringUtils.isEmpty(code)){
 						code=generationIdentifyingCode();
 						Map<String, Object> map = new HashMap<String, Object>();
-				        map.put("email", userWebUrl+"/user/user/validateEmail?email="+passport+"&code="+code);
+				        map.put("email", emailValidateUrl+"?email="+passport+"&code="+code);
 				        map.put("acceptor",passport);
 				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 				        map.put("code", code);
