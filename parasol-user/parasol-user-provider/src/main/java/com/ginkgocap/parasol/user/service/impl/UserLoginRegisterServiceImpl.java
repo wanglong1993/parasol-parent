@@ -300,10 +300,10 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private  boolean setCache(String mobile,String identifyingCode){
 		boolean bl =false;
 		String key=cache.getCacheHelper().buildKey(CacheModule.REGISTER, mobile);
-		Object object =cache.get(key);
-		String value=null;
-		if(object!=null)value=object.toString();
-		if(StringUtils.isEmpty(value))
+//		Object object =cache.get(key);
+//		String value=null;
+//		if(object!=null)value=object.toString();
+//		if(StringUtils.isEmpty(value))
 		bl = cache.set(key, 1 * 60 * 30, identifyingCode);
 		return bl;
 	}

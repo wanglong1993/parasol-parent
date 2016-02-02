@@ -86,10 +86,10 @@ public class EmailServiceImpl implements EmailService {
 	private  boolean setCache(String email,String flag){
 		boolean bl =false;
 		String key=cache.getCacheHelper().buildKey(CacheModule.REGISTER, email);
-		Object object =cache.get(key);
-		String value=null;
-		if(object!=null)value=object.toString();
-		if(StringUtils.isEmpty(value))
+//		Object object =cache.get(key);
+//		String value=null;
+//		if(object!=null)value=object.toString();
+//		if(StringUtils.isEmpty(value))
 		bl = cache.set(key, 1 * 60 * 30, flag);
 		return bl;
 	}
