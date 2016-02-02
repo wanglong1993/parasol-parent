@@ -21,61 +21,61 @@
               <keyPattern value="[0-9A-Za-z]$" datasource="default" />
           </region>
 		<!-- Object config -->
- 		<region name="com.ginkgocap.parasol.oauth2.model.OauthClientDetails"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" >
+ 		<region name="com.ginkgocap.parasol.oauth2.model.OauthClientDetails"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
- 		<region name="com.ginkgocap.parasol.oauth2.model.OauthApprovals"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" >
+ 		<region name="com.ginkgocap.parasol.oauth2.model.OauthApprovals"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
- 		<region name="com.ginkgocap.parasol.oauth2.model.OauthAccessToken"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" >
+ 		<region name="com.ginkgocap.parasol.oauth2.model.OauthAccessToken"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
- 		<region name="com.ginkgocap.parasol.oauth2.model.OauthRefreshToken"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" >
+ 		<region name="com.ginkgocap.parasol.oauth2.model.OauthRefreshToken"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
- 		<region name="com.ginkgocap.parasol.oauth2.model.OauthCode"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" >
+ 		<region name="com.ginkgocap.parasol.oauth2.model.OauthCode"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
                                      
         <!-- List cache config -->
-        <region name="OauthApprovals_List_Id"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" limitLen="100000">
+        <region name="OauthApprovals_List_Id"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
-        <region name="OauthClientDetails_Map_clientId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" limitLen="100000">
+        <region name="OauthClientDetails_Map_clientId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
-        <region name="OauthClientDetails_List_Id"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" limitLen="100000">
+        <region name="OauthClientDetails_List_Id"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
-        <region name="OauthAccessToken_List_By_tokenId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" limitLen="100000">
+        <region name="OauthAccessToken_List_By_tokenId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
-        <region name="OauthRefreshToken_List_By_tokenId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" limitLen="100000">
+        <region name="OauthRefreshToken_List_By_tokenId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
-        <region name="OauthAccessToken_List_By_Authentication_Id"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" limitLen="100000">
+        <region name="OauthAccessToken_List_By_Authentication_Id"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
-        <region name="OauthAccessToken_List_By_UserName_clientId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" limitLen="100000">
+        <region name="OauthAccessToken_List_By_UserName_clientId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
-        <region name="OauthAccessToken_List_By_ClientId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" limitLen="100000">
+        <region name="OauthAccessToken_List_By_ClientId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
-        <region name="OauthCode_List_By_Code"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="true" limitLen="100000">
+        <region name="OauthCode_List_By_Code"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
