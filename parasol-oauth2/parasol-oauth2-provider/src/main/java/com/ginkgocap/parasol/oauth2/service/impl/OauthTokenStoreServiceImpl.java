@@ -210,10 +210,10 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 	            refreshToken = token.getRefreshToken().getValue();  
 	        }
 	        
-		        boolean isExist = false;
+//		        boolean isExist = false;
 				if (readAccessToken(token.getValue()) != null) {
-					//removeAccessToken(token);
-					isExist = true;
+					removeAccessToken(token);
+//					isExist = true;
 				}
 		        if(token instanceof OauthAccessToken){
 		        	token2=((OauthAccessToken)token);
@@ -236,11 +236,11 @@ public class OauthTokenStoreServiceImpl extends BaseService<OauthAccessToken> im
 			        oauthAccessToken.setCreateTime(new Date());
 		        }
 		        try {
-		        	if (isExist) {
-						//synchronized (this) {
-							updateEntity(oauthAccessToken);
+//		        	if (isExist) {
+						synchronized (this) {
+//							updateEntity(oauthAccessToken);
 						//}
-						} else {
+//						} else {
 							saveEntity(oauthAccessToken);
 						}
 				} catch (BaseServiceException e) {
