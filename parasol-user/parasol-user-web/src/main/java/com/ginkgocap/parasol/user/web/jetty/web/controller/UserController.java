@@ -1595,8 +1595,8 @@ public class UserController extends BaseControl {
 					}
 				}
 				if(isEmail(passport)){
-					code=userLoginRegisterService.getIdentifyingCode(passport);
-					if(StringUtils.isEmpty(code)){
+//					code=userLoginRegisterService.getIdentifyingCode(passport);
+//					if(StringUtils.isEmpty(code)){
 						code=generationIdentifyingCode();
 						Map<String, Object> map = new HashMap<String, Object>();
 				        map.put("acceptor",passport);
@@ -1611,10 +1611,10 @@ public class UserController extends BaseControl {
 							resultMap.put( "status", 0);
 							return new MappingJacksonValue(resultMap);	
 						}
-					}else{
-						resultMap.put( "code", code);
-						resultMap.put( "status", 1);
-					}
+//					}else{
+//						resultMap.put( "code", code);
+//						resultMap.put( "status", 1);
+//					}
 				}
 				logger.info(new StringBuffer().append("通行证:").append(passport).append(",的验证码为:").append(code).append(",有效期为30分钟!").toString());
 			return new MappingJacksonValue(resultMap);
@@ -1665,8 +1665,8 @@ public class UserController extends BaseControl {
 					}
 				}
 				if(isEmail(passport)){
-					code=userLoginRegisterService.getIdentifyingCode(passport);
-					if(StringUtils.isEmpty(code)){
+//					code=userLoginRegisterService.getIdentifyingCode(passport);
+//					if(StringUtils.isEmpty(code)){
 						code=generationIdentifyingCode();
 						Map<String, Object> map = new HashMap<String, Object>();
 				        map.put("email", emailValidateUrl+"?email="+passport+"&code="+code);
@@ -1682,10 +1682,10 @@ public class UserController extends BaseControl {
 							resultMap.put( "status", 0);
 							return new MappingJacksonValue(resultMap);	
 						}
-					}else{
-						resultMap.put( "code", code);
-						resultMap.put( "status", 1);
-					}
+//					}else{
+//						resultMap.put( "code", code);
+//						resultMap.put( "status", 1);
+//					}
 				}
 				logger.info(new StringBuffer().append("通行证:").append(passport).append(",找回密码验证码为:").append(code).append(",有效期为30分钟!").toString());
 			return new MappingJacksonValue(resultMap);

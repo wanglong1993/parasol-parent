@@ -30,8 +30,8 @@ public class EmailServiceImpl implements EmailService {
 			String mailContext = TemplateUtils.mergeTemplateContent(template, map);
 	        Email email = new Email(mailTo, mailFrom, mailTitle, mailContext, attachment);
 	        if(isEmail(mailTo)){
-		        Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mailTo));
-		        if(value!=null)return true;
+//		        Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mailTo));
+//		        if(value!=null)return true;
 		        if(sendEmailNoThread(email)){
 		        	if(setCache(mailTo,map.get("code").toString()))return true; 
 		        	else return false;
