@@ -29,6 +29,8 @@ public class EmailServiceImpl implements EmailService {
 		try {
 			String mailContext = TemplateUtils.mergeTemplateContent(template, map);
 			String fromName="金桐网";
+			logger.debug("fromName:"+fromName);
+			logger.info("fromName:"+fromName);
 	        Email email = new Email(mailTo, mailFrom,fromName, mailTitle, mailContext, attachment);
 	        if(isEmail(mailTo)){
 //		        Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mailTo));
