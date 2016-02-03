@@ -19,6 +19,18 @@
           <map name="UserLoginRegister_Map_Passport"
                  sqlitem="select id from tb_user_login_register where passport=? "
                  sqlType="hsql" keyProperty="passport" valueProperty="id"  update="true"/>
+        <!-- 通过mobile查找用户id是否存在 --> 
+          <map name="UserLoginRegister_Map_Mobile"
+                 sqlitem="select id from tb_user_login_register where mobile=? "
+                 sqlType="hsql" keyProperty="mobile" valueProperty="id"  update="true"/>
+        <!-- 通过email查找用户id是否存在 --> 
+          <map name="UserLoginRegister_Map_Email"
+                 sqlitem="select id from tb_user_login_register where email=? "
+                 sqlType="hsql" keyProperty="email" valueProperty="id"  update="true"/>
+        <!-- 通过user_name查找用户id是否存在 --> 
+          <map name="UserLoginRegister_Map_User_Name"
+                 sqlitem="select id from tb_user_login_register where user_name=? "
+                 sqlType="hsql" keyProperty="userName" valueProperty="id"  update="true"/>
                                                
 		</object>
 		

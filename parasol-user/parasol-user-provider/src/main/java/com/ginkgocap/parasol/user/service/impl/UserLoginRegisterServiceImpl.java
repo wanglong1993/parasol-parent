@@ -42,6 +42,9 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private Cache cache;
 	
 	private static final String USER_LOGIN_REGISTER_MAP_PASSPORT = "UserLoginRegister_Map_Passport"; 
+	private static final String USER_LOGIN_REGISTER_MAP_MOBILE = "UserLoginRegister_Map_Mobile"; 
+	private static final String USER_LOGIN_REGISTER_MAP_EMAIL = "UserLoginRegister_Map_Email"; 
+	private static final String USER_LOGIN_REGISTER_MAP_USER_NAME = "UserLoginRegister_Map_User_Name"; 
 	private static Logger logger = Logger.getLogger(UserLoginRegisterServiceImpl.class);
 	
 	private static synchronized SecureRandomNumberGenerator getSecureRandomNumberGeneratorInstance(){
@@ -82,6 +85,15 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			UserLoginRegister userLoginRegister=null;
 			//根据passport查找id
 			Long id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
+			if(id==null || id<0l){
+				if(isMobileNo(passport))id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_MOBILE,passport);
+			}
+			if(id==null || id<0l){
+				if(isEmail(passport))id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_EMAIL,passport);
+			}
+			if(id==null || id<0l){
+				if(!isMobileNo(passport) && !isEmail(passport))id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_USER_NAME,passport);
+			}
 			//根据id查找实体
 			if(id!=null && id>0l){	
 				userLoginRegister=getEntity(id);
@@ -131,6 +143,15 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			if(StringUtils.isEmpty(passport)) throw new UserLoginRegisterServiceException("passport is null or empty.");
 			Long userId =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
+			if(userId==null || userId<0l){
+				if(isMobileNo(passport))userId =(Long)getMapId(USER_LOGIN_REGISTER_MAP_MOBILE,passport);
+			}
+			if(userId==null || userId<0l){
+				if(isEmail(passport))userId =(Long)getMapId(USER_LOGIN_REGISTER_MAP_EMAIL,passport);
+			}
+			if(userId==null || userId<0l){
+				if(!isMobileNo(passport) && !isEmail(passport))userId =(Long)getMapId(USER_LOGIN_REGISTER_MAP_USER_NAME,passport);
+			}
 			return userId==null?false:true;
 					
 		} catch (BaseServiceException e) {

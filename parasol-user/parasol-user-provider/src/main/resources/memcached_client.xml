@@ -58,6 +58,18 @@
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
         </region>
+        <region name="UserLoginRegister_Map_Mobile"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region> 
+        <region name="UserLoginRegister_Map_Email"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region>
+        <region name="UserLoginRegister_Map_User_Name"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region>                         
         <region name="UserOrgPerCusRel_Map_FriendId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
