@@ -325,7 +325,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	@Override
 	public String sendIdentifyingCode(String passport)throws UserLoginRegisterServiceException {
 		try {
-			if(isMobileNo(passport) || isEmail(passport) ){ 
+			if(isMobileNo(passport)){ 
 //				Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, passport));
 				String identifyingCode=null;
 //				if(value!=null)identifyingCode=value.toString();
