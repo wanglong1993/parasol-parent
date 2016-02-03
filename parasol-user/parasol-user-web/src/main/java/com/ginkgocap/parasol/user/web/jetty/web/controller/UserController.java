@@ -1133,22 +1133,22 @@ public class UserController extends BaseControl {
 			}
 			
 			if(isEmail(passport)){
-				if(userLoginRegister.getUsetType().intValue()==0){
-					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
-					if(userBasic==null){
-						resultMap.put( "message", Prompt.userId_is_not_exist_in_UserBasic);
-						resultMap.put( "status", 0);
-						return new MappingJacksonValue(resultMap);
-					}
-				}
-				if(userLoginRegister.getUsetType().intValue()==1){
-					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
-					if(userOrganBasic==null){
-						resultMap.put( "message", Prompt.userId_is_not_exist_in_UserOrganBasic);
-						resultMap.put( "status", 0);
-						return new MappingJacksonValue(resultMap);
-					}
-				}
+//				if(userLoginRegister.getUsetType().intValue()==0){
+//					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+//					if(userBasic==null){
+//						resultMap.put( "message", Prompt.userId_is_not_exist_in_UserBasic);
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+//				}
+//				if(userLoginRegister.getUsetType().intValue()==1){
+//					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+//					if(userOrganBasic==null){
+//						resultMap.put( "message", Prompt.userId_is_not_exist_in_UserOrganBasic);
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+//				}
 			}
 			JSONObject json=getAccessToken(request,passport,password,client_id,client_secret,GRANT_TYPE);
 			if(json==null){
