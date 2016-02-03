@@ -28,8 +28,8 @@ public class EmailServiceImpl implements EmailService {
     public boolean sendEmailSync(String mailTo, String mailFrom, String mailTitle,String attachment,Map<String, Object> map,String template) throws EmailServiceException {
 		try {
 			String mailContext = TemplateUtils.mergeTemplateContent(template, map);
-			if(StringUtils.isEmpty(mailFrom))mailFrom="金桐网";
-	        Email email = new Email(mailTo, mailFrom, mailTitle, mailContext, attachment);
+			String fromName="金桐网";
+	        Email email = new Email(mailTo, mailFrom,fromName, mailTitle, mailContext, attachment);
 	        if(isEmail(mailTo)){
 //		        Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, mailTo));
 //		        if(value!=null)return true;
