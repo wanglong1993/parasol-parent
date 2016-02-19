@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="GB2312"?>
+<dal>
+	<default>
+		<dbStrategy name=""
+			clazz="com.lenovo.vctl.dal.dao.route.strategy.DefaultStrategy">
+			<pattern value="[0-9]$" group="g2" />
+		</dbStrategy>
+		<listenerClass className="" />
+		<idCenterDS ds="idCenterDS" />   <!-- 缺省IdCenter使用的数据源配置 -->
+	</default>
+	<route>
+		<!-- 在一个侦听器中实现before after -->
+		<object name="com.ginkgocap.parasol.favorite.model.Favorite" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="pid">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+           
+           <!-- 通过父目录ID找字目录 --> 
+           <list name="List_Favorite_Id_Pid"
+                  sqlitem="select id from tb_favorite where pid=? order by orderNo"
+                  sqlType="hsql" keyProperty="pid" valueProperty="id"/>
+
+           <!-- 查询一个用户应用分类下指定的目录列表 --> 
+           <list name="List_Favorite_Id_AppId_UserId_TypeId_Pid"
+                  sqlitem="select id from tb_favorite where appId=? and userId=? and typeId=? and pid=? order by orderNo"
+                  sqlType="hsql" keyProperty="appId,userId,typeId,pid" valueProperty="id"/>
+                  
+		</object>
+		
+		<object name="com.ginkgocap.parasol.favorite.model.FavoriteType" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+           <!-- 通过AppId找应用的分类ID（组织，用户、知识等） --> 
+           <list name="List_FavoriteType_Id_AppId"
+                  sqlitem="select id from tb_favorite_type where appId=?"
+                  sqlType="hsql" keyProperty="appId" valueProperty="id"  update="true"/>
+
+           <!-- 通过AppId找应用的AppId 和 Name 查询 Id --> 
+		   <map name="Map_FavoriteType_Id_AppId_Name"
+                 sqlitem="select id from tb_favorite_type where appId=? and name=?"
+                 keyProperty="appId,name" valueProperty="id" />
+		</object>
+		
+		<object name="com.ginkgocap.parasol.favorite.model.FavoriteSource" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="userId">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+           <!-- 通过目录ID查询 --> 
+           <list name="List_FavoriteSource_Id_FavoriteId"
+                  sqlitem="select id from tb_favorite_source where favoriteId=?"
+                  sqlType="hsql" keyProperty="favoriteId" valueProperty="id"  update="true"/>
+           <!-- 查找用户有多少相同的资源（UserId,appId,sourcetype,sourceId)。 --> 
+           <list name="List_FavoriteSources_Id_userId_appId_sourceType_sourceId"
+                  sqlitem="select id from tb_favorite_source where userId=? and appId=? and sourceType=? and sourceId=?"
+                  sqlType="hsql" keyProperty="userId,appId,sourceType,sourceId" valueProperty="id"  update="true"/>                 
+           <!-- 查找目录下一个资源的ID --> 
+		   <map name="Map_FavoriteSource_Id_UserId_FavoriteId_AppId_SourceType_SourceId"
+                 sqlitem="select id from tb_favorite_source where userId = ? and favoriteId=? and appId=? and sourceType=? and sourceId=?"
+                 keyProperty="userId,favoriteId,appId,sourceType,sourceId" valueProperty="id" />
+		</object>
+	</route>
+</dal>
+
