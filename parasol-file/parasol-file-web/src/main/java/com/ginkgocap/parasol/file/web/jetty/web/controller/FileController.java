@@ -144,6 +144,7 @@ public class FileController extends BaseControl {
 			// 3.创建页面显示数据项的过滤器
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
+			storageClient=null;
 			return mappingJacksonValue;
 		} catch (RpcException e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
@@ -370,10 +371,7 @@ public class FileController extends BaseControl {
 		String mfileId = fileId.replace("."+fileExtName, suffix+"."+fileExtName);
 		// 根据文件id删除文件
 		storageClient.delete_file(group, mfileId);
-		String[] fields = storageClient.upload_file(group, fileId, suffix, sImage, fileExtName, null);
-		for (String field : fields) {
-			System.out.println("field="+field);
-		}
+		storageClient.upload_file(group, fileId, suffix, sImage, fileExtName, null);
 		return;
 	}
 	
