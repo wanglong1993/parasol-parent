@@ -591,7 +591,9 @@ public class FileController extends BaseControl {
 			for(Index in : indexes) {
 				
 	            // 以流的形式下载文件。
-	            InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/"+in.getFile_path()));
+//	            InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/"+in.getFile_path()));
+				// 测试环境文件索引和实际文件不对应,先写死，测试程序
+				InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/web/0051191508"));
 	            byte[] buffer = new byte[fis.available()];
 	            if(buffer.length == 0) continue;
 	            StorageClient storageClient = getStorageClient();
