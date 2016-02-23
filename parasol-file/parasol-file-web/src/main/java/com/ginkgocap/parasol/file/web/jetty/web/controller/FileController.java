@@ -16,7 +16,11 @@
 
 package com.ginkgocap.parasol.file.web.jetty.web.controller;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +39,7 @@ import org.csource.fastdfs.TrackerClient;
 import org.csource.fastdfs.TrackerServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,8 +50,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.dubbo.rpc.RpcException;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.ginkgocap.parasol.file.dataimporter.service.FileService;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
+import com.ginkgocap.parasol.file.model.Index;
 import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
@@ -81,6 +88,8 @@ public class FileController extends BaseControl {
 	@Resource
 	private FileIndexService fileIndexService;
 
+	@Autowired
+	private FileService fileService;
 	
 	/**
 	 * 
@@ -487,7 +496,138 @@ public class FileController extends BaseControl {
 		filterProvider.addFilter(FileIndex.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
+	
+	/**
+	 * 
+	 * @param fileds
+	 * @param debug
+	 * @param file
+	 * @param fileType
+	 * @param moduleType
+	 * @param appId
+	 * @param userId
+	 * @param taskId
+	 * @return
+	 * @throws FileIndexServiceException
+	 * @throws IOException
+	 * @throws MyException
+	 */
+	@RequestMapping(path = { "/online/getPicOnline" }, method = { RequestMethod.POST })
+	public MappingJacksonValue getPicOnline(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
+			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
+			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
+			@RequestParam(name = "appId", required = true) Long appId,
+			@RequestParam(name = "userId", required = true) Long userId,
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId ) throws FileIndexServiceException, IOException, MyException {
+		MappingJacksonValue mappingJacksonValue = null;
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			if(file.getSize() == 0) {
+				result.put("error", "上传文件无效，请重新上传！");
+				return new MappingJacksonValue(result);
+			}
 
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+			byte[] file_buff = file.getBytes();
+			StorageClient storageClient = getStorageClient();
+			String fileName = file.getOriginalFilename();
+			int f = fileName.lastIndexOf(".");
+			String fileExtName = "";
+			if (f>-1) fileExtName = fileName.substring(f+1);
+			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
+			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
+			String thumbnailsPath = "";
+			
+			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
+			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
+				generateAvatar(fields[0], fields[1], fileExtName, null);
+				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
+			}
+			FileIndex index = new FileIndex();
+			index.setAppId(loginAppId);
+			index.setCreaterId(loginUserId);
+			index.setServerHost(fields[0]);
+			index.setFilePath(fields[1]);
+			index.setFileSize(file.getSize());
+			index.setFileTitle(file.getOriginalFilename());
+			index.setFileType(fileType);
+			index.setModuleType(moduleType);
+			index.setTaskId(taskId);
+			index.setThumbnailsPath(thumbnailsPath);
+			index = fileIndexService.insertFileIndex(index);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(index);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			storageClient=null;
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;
+		}
+	}
+	
+	@RequestMapping(path = { "/online/initFiles" }, method = { RequestMethod.GET })
+	public MappingJacksonValue fileInit() throws FileIndexServiceException, IOException, MyException {
+		MappingJacksonValue mappingJacksonValue = null;
+			// 获取旧的文件索引
+			List<Index> indexes = fileService.getAllFileIndexes(0, 100);
+			for(Index in : indexes) {
+				
+	            // 以流的形式下载文件。
+	            InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/"+in.getFile_path()));
+	            byte[] buffer = new byte[fis.available()];
+	            if(buffer.length == 0) continue;
+	            StorageClient storageClient = getStorageClient();
+				String fileName = in.getFile_title();
+				int f = fileName.lastIndexOf(".");
+				String fileExtName = "";
+				if (f>-1) fileExtName = fileName.substring(f+1);
+				String fields[] = storageClient.upload_file(buffer, fileExtName, null);
+				
+				logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
+				String thumbnailsPath = "";
+				Integer fileType = in.getFileType();
+				Integer moduleType = in.getModule_type();
+				
+				// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
+				if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
+					generateAvatar(fields[0], fields[1], fileExtName, null);
+					thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
+				}
+				FileIndex index = new FileIndex();
+				index.setAppId(1);
+				index.setCreaterId(in.getAuthor_id());
+				index.setServerHost(fields[0]);
+				index.setFilePath(fields[1]);
+				index.setFileSize(in.getFile_size());
+				index.setFileTitle(in.getFile_title());
+				index.setFileType(fileType);
+				index.setModuleType(in.getModule_type());
+				index.setTaskId(in.getTask_id());
+				index.setThumbnailsPath(thumbnailsPath);
+				index = fileIndexService.insertFileIndex(index);
+				storageClient=null;
+			}
+		return mappingJacksonValue;
+	}	
+	
 	@Override
 	protected <T> void processBusinessException(ResponseError error, Exception ex) {
 		// TODO Auto-generated method stub
