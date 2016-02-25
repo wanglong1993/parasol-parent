@@ -16,12 +16,10 @@
 
 package com.ginkgocap.parasol.file.web.jetty.web.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,9 +49,10 @@ import com.alibaba.dubbo.rpc.RpcException;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.file.dataimporter.service.FileService;
+import com.ginkgocap.parasol.file.dataimporter.service.PicUserService;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
-import com.ginkgocap.parasol.file.model.Index;
+import com.ginkgocap.parasol.file.model.PicUser;
 import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
@@ -91,6 +90,8 @@ public class FileController extends BaseControl {
 	@Autowired
 	private FileService fileService;
 	
+	@Autowired
+	private PicUserService picUserService;
 	/**
 	 * 
 	 * @param fileds
@@ -587,48 +588,127 @@ public class FileController extends BaseControl {
 	public MappingJacksonValue fileInit() throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
 			// 获取旧的文件索引
-			List<Index> indexes = fileService.getAllFileIndexes(0, 100);
-			for(Index in : indexes) {
-				
+//			List<Index> indexes = fileService.getAllFileIndexes(0, 100);
+			List<PicUser> users = picUserService.getAllFileIndexes();
+			importDefaultPic();
+//			if(1==1) return null;
+			for(PicUser in : users) {
+				// 考虑到旧的数据不够完整，在NFS中很多文件并不存在
+				try {
 	            // 以流的形式下载文件。
 //	            InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/"+in.getFile_path()));
-				// 测试环境文件索引和实际文件不对应,先写死，测试程序
-				InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/web/0051191508"));
-	            byte[] buffer = new byte[fis.available()];
+				// 测试环境文件索引和实际文件不对应,先写死，测试程序 /webserver/upload/web/0051191508
+//					InputStream fis = new BufferedInputStream(new FileInputStream("e:\\Chrysanthemum.jpg"));
+					FileInputStream fis = new FileInputStream("/webserver/upload/"+in.getPic_path());
+				    byte[] buffer = null;
+				    if (fis != null) {
+				    	int len = fis.available();
+				    	buffer = new byte[len];
+				    	fis.read(buffer);
+				    }
+		            if(buffer.length == 0) continue;
+		            StorageClient storageClient = getStorageClient();
+					String fileName = in.getPic_path();
+//					String fileName = "头像";
+					int f = fileName.lastIndexOf(".");
+					String fileExtName = "";
+					if (f>-1) fileExtName = fileName.substring(f+1).trim();
+					String fields[] = storageClient.upload_file(buffer, fileExtName, null);
+					
+					logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
+					String thumbnailsPath = "";
+					Integer fileType = 1;
+					Integer moduleType = 1;
+					// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
+//					if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
+//						generateAvatar(fields[0], fields[1], fileExtName, null);
+//						thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
+//					}
+					FileIndex index = new FileIndex();
+					index.setId(Long.valueOf(in.getId()));
+					index.setAppId(1);
+					index.setCreaterId(in.getId());
+					index.setServerHost(fields[0]);
+					index.setFilePath(fields[1]);
+					index.setFileSize(0);
+					index.setFileTitle(in.getPic_path());
+					index.setFileType(fileType);
+					// 标记导入文件状态为9
+					index.setStatus(9);
+					index.setModuleType(1);
+					index.setModuleType(1);
+					index.setTaskId("");
+					// 原头像已经缩略过，不需要缩略
+					index.setThumbnailsPath("");
+					index = fileIndexService.insertFileIndex(index);
+					storageClient=null;
+				}catch (Exception e) {
+					continue;
+				}
+			}
+		return mappingJacksonValue;
+	}	
+	
+	/**
+	 * 导入默认头像
+	 * 单独处理默认头像
+	 */
+	private void importDefaultPic(){
+		List<PicUser> users = picUserService.getDefaultUserPics();
+		for(PicUser in : users) {
+			// 考虑到旧的数据不够完整，在NFS中很多文件并不存在
+			try {
+            // 以流的形式下载文件。
+//            InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/"+in.getFile_path()));
+			// 测试环境文件索引和实际文件不对应,先写死，测试程序 /webserver/upload/web/0051191508
+//				InputStream fis = new BufferedInputStream(new FileInputStream("e:\\Chrysanthemum.jpg"));
+				FileInputStream fis = new FileInputStream("/webserver/upload/"+in.getPic_path());
+			    byte[] buffer = null;
+			    if (fis != null) {
+			    	int len = fis.available();
+			    	buffer = new byte[len];
+			    	fis.read(buffer);
+			    }
 	            if(buffer.length == 0) continue;
 	            StorageClient storageClient = getStorageClient();
-				String fileName = in.getFile_title();
+//				String fileName = in.getFile_title();
+				String fileName = in.getPic_path();
 				int f = fileName.lastIndexOf(".");
 				String fileExtName = "";
-				if (f>-1) fileExtName = fileName.substring(f+1);
+				if (f>-1) fileExtName = fileName.substring(f+1).trim();
 				String fields[] = storageClient.upload_file(buffer, fileExtName, null);
 				
 				logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
 				String thumbnailsPath = "";
-				Integer fileType = in.getFileType();
-				Integer moduleType = in.getModule_type();
+				Integer fileType = 1;
+				Integer moduleType = 1;
 				
 				// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-				if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-					generateAvatar(fields[0], fields[1], fileExtName, null);
-					thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
-				}
+//				if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
+//					generateAvatar(fields[0], fields[1], fileExtName, null);
+//					thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
+//				}
 				FileIndex index = new FileIndex();
+//				index.setId(Long.valueOf(in.getId()));
 				index.setAppId(1);
-				index.setCreaterId(in.getAuthor_id());
+				index.setCreaterId(0);
 				index.setServerHost(fields[0]);
 				index.setFilePath(fields[1]);
-				index.setFileSize(in.getFile_size());
-				index.setFileTitle(in.getFile_title());
+				index.setFileSize(0);
+				index.setFileTitle(in.getPic_path());
 				index.setFileType(fileType);
-				index.setModuleType(in.getModule_type());
-				index.setTaskId(in.getTask_id());
+				// 标记导入文件状态为9
+				index.setStatus(9);
+				index.setModuleType(1);
+				index.setModuleType(1);
+				index.setTaskId("");
 				index.setThumbnailsPath(thumbnailsPath);
 				index = fileIndexService.insertFileIndex(index);
-				storageClient=null;
+			}catch (Exception e) {
+				continue;
 			}
-		return mappingJacksonValue;
-	}	
+		}
+	}
 	
 	@Override
 	protected <T> void processBusinessException(ResponseError error, Exception ex) {

@@ -51,7 +51,7 @@
 			<value>com.mysql.jdbc.Driver</value>
 		</property>
 		<property name="jdbcUrl">
-			<value>jdbc:mysql://192.168.101.131:3306/phoenix_file?createDatabaseIfNotExist=true&amp;useUnicode=true</value>
+			<value>jdbc:mysql://192.168.101.131:3306/phoenix_user?createDatabaseIfNotExist=true&amp;useUnicode=true</value>
 		</property>
 		<property name="user">
 			<value>zhangwei</value>
