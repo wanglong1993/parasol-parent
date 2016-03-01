@@ -590,6 +590,7 @@ public class FileController extends BaseControl {
 			// 获取旧的文件索引
 //			List<Index> indexes = fileService.getAllFileIndexes(0, 100);
 			List<PicUser> users = picUserService.getAllFileIndexes();
+			int count = 0;
 			importDefaultPic();
 //			if(1==1) return null;
 			for(PicUser in : users) {
@@ -641,6 +642,11 @@ public class FileController extends BaseControl {
 					// 原头像已经缩略过，不需要缩略
 					index.setThumbnailsPath("");
 					index = fileIndexService.insertFileIndex(index);
+					count++;
+					// 
+					if(count%50 == 0) {
+						Thread.sleep(500000);
+					}
 					storageClient=null;
 				}catch (Exception e) {
 					continue;
