@@ -625,7 +625,7 @@ public class FileController extends BaseControl {
 //						thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
 //					}
 					FileIndex index = new FileIndex();
-					index.setId(Long.valueOf(in.getId()));
+//					index.setId(Long.valueOf(in.getId()));
 					index.setAppId(1);
 					index.setCreaterId(in.getId());
 					index.setServerHost(fields[0]);
