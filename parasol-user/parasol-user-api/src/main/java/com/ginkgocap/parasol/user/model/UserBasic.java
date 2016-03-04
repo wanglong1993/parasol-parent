@@ -128,7 +128,7 @@ public class UserBasic implements java.io.Serializable {
 	}
 
 
-	@Column(name = "passport", unique = true, length = 20)
+	@Column(name = "passport", unique = true, length = 50)
 	public String getPassport() {
 		return this.passport;
 	}
