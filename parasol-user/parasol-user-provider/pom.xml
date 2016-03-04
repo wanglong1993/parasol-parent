@@ -36,8 +36,7 @@
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-user-api</artifactId>
-			<!-- <version>1.0.2-SNAPSHOT</version> -->
-			<version>1.0.2-20160304.023230-9</version>
+			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
