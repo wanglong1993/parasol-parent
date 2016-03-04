@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * 个人用户基本资料
@@ -42,9 +43,9 @@ public class UserBasic implements java.io.Serializable {
 	 */
 	private Byte auth;	
 	/**
-	 * 手机号.
+	 * 手机号或邮箱.
 	 */
-	private String mobile;
+	private String passport;
 	/**
 	 * 1：正常；0：锁定；-1：注销 ；2： 删除.
 	 */
@@ -61,6 +62,11 @@ public class UserBasic implements java.io.Serializable {
 	 * 修改时间.
 	 */
 	private Long utime;
+	/**
+	 * 
+	 */
+	private String picPath;
+	
 	public UserBasic() {
 	}
 
@@ -110,14 +116,25 @@ public class UserBasic implements java.io.Serializable {
 	public void setPicId(Long picId) {
 		this.picId = picId;
 	}
-
-	@Column(name = "mobile", unique = true, length = 20)
-	public String getMobile() {
-		return this.mobile;
+	
+    @Transient
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
+
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
+	}
+
+
+	@Column(name = "passport", unique = true, length = 20)
+	public String getPassport() {
+		return this.passport;
+	}
+
+	public void setPassport(String passport) {
+		this.passport = passport;
 	}
 	
 	@Column(name = "auth", nullable = false)

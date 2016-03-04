@@ -11,6 +11,9 @@ import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
+import com.ginkgocap.parasol.file.model.FileIndex;
+import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.user.exception.UserBasicServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserBasic;
@@ -21,6 +24,7 @@ import com.ginkgocap.parasol.util.PinyinUtils;
 public class UserBasicServiceImpl extends BaseService<UserBasic> implements UserBasicService  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
+	private FileIndexService fileIndexService;
 	private static Logger logger = Logger.getLogger(UserBasicServiceImpl.class);
 	/**
 	 * 检查数据
@@ -76,6 +80,18 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 		try {
 			if(userId==null || userId<=0l)throw new UserBasicServiceException("userId is null or empty");
 			UserBasic userBasic =getEntity(userId);
+			if(!ObjectUtils.isEmpty(userBasic)){
+				try {
+					if(!ObjectUtils.isEmpty(userBasic.getPicId())){
+						FileIndex fileIndex=fileIndexService.getFileIndexById(userBasic.getPicId());
+						if(!ObjectUtils.isEmpty(fileIndex)){
+							userBasic.setPicPath(fileIndex.getFilePath());
+						}
+					}
+				} catch (FileIndexServiceException e) {
+					e.printStackTrace();
+				}
+			}
 			return userBasic;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {

@@ -11,6 +11,8 @@ import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
+import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.exception.UserOrganBasicServiceException;
@@ -81,7 +83,19 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 		try {
 			if(userId==null || userId<=0l)throw new UserOrganBasicServiceException("userId is null or empty.");
 			UserOrganBasic userOrganBasic=getEntity(userId);
-			if(userOrganBasic==null)return null;;
+			if(userOrganBasic==null)return null;
+			if(!ObjectUtils.isEmpty(userOrganBasic)){
+				try {
+					if(!ObjectUtils.isEmpty(userOrganBasic.getPicId())){
+						FileIndex fileIndex=fileIndexService.getFileIndexById(userOrganBasic.getPicId());
+						if(!ObjectUtils.isEmpty(fileIndex)){
+							userOrganBasic.setPicPath(fileIndex.getFilePath());
+						}
+					}
+				} catch (FileIndexServiceException e) {
+					e.printStackTrace();
+				}
+			}
 			return userOrganBasic;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
