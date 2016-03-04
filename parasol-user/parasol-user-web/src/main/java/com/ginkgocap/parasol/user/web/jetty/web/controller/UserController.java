@@ -239,7 +239,7 @@ public class UserController extends BaseControl {
 				if(type==2 && userType.equals("0")){
 					userBasic= new UserBasic();
 					userBasic.setName(name);
-					userBasic.setMobile(passport);
+					userBasic.setPassport(passport);
 					userBasic.setPicId(picId);
 					userBasic.setStatus(new Byte("1"));
 					userBasic.setSex(new Byte("1"));
@@ -1060,7 +1060,7 @@ public class UserController extends BaseControl {
 				userLoginRegister.setMobile(phone);
 				userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
 				userBasic.setPicId(picId);
-				userBasic.setMobile(phone);
+				userBasic.setPassport(phone);
 				userBasic.setName(name);
 				userBasic.setSex(new Byte("1"));
 				userBasicService.updateUserBasic(userBasic);
