@@ -217,7 +217,7 @@ public class UserThirdController extends BaseControl {
 					
 					//设置userBasic开始
 					userBasic.setName(name);
-					userBasic.setMobile(passport);
+					userBasic.setPassport(passport);
 					userBasic.setSex(new Byte(sex));
 					userBasic.setStatus(new Byte("1"));
 					userBasic.setAuth(new Byte("1"));
