@@ -24,6 +24,7 @@ import com.ginkgocap.parasol.util.PinyinUtils;
 public class UserBasicServiceImpl extends BaseService<UserBasic> implements UserBasicService  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
+	@Resource
 	private FileIndexService fileIndexService;
 	private static Logger logger = Logger.getLogger(UserBasicServiceImpl.class);
 	/**
