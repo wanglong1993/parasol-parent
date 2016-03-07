@@ -27,6 +27,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.usertype.UserVersionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -48,6 +49,7 @@ import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.model.UserOrganExt;
+import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserDefinedService;
 import com.ginkgocap.parasol.user.service.UserExtService;
@@ -101,6 +103,8 @@ public class UserController extends BaseControl {
     private String client_secret; 
 	@Value("${email.validate.url}")  
     private String emailValidateUrl; 	
+	@Value("${dfs.gintong.com}")  
+	private String dfsGintongCom; 	
     private static final String GRANT_TYPE="password"; 
 
 	/**
@@ -364,6 +368,11 @@ public class UserController extends BaseControl {
 				resultMap.put("userLoginRegister", userLoginRegister);
 				List<Long> ids=userDefinedService.getIdList(userLoginRegister.getId());
 				if(ids!=null && ids.size()!=0)list=userDefinedService.getIdList(ids);
+				if(!ObjectUtils.isEmpty(userBasic)){
+					if(StringUtils.isEmpty(userBasic.getPicPath())){
+						userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
+					}
+				}
 				resultMap.put("userBasic", userBasic);
 				resultMap.put("userExt", userExt);
 				resultMap.put("userDefinedList", list);
