@@ -369,7 +369,7 @@ public class UserController extends BaseControl {
 				List<Long> ids=userDefinedService.getIdList(userLoginRegister.getId());
 				if(ids!=null && ids.size()!=0)list=userDefinedService.getIdList(ids);
 				if(!ObjectUtils.isEmpty(userBasic)){
-					if(StringUtils.isEmpty(userBasic.getPicPath())){
+					if(!StringUtils.isEmpty(userBasic.getPicPath())){
 						userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
 					}
 				}
