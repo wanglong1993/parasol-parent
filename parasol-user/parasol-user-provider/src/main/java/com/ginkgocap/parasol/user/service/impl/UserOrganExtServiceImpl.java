@@ -84,17 +84,17 @@ public class UserOrganExtServiceImpl extends BaseService<UserOrganExt> implement
 			FileIndex fileIndex=null;
 			if(!ObjectUtils.isEmpty(fileIndexId)){
 				fileIndex=getFileIndex(fileIndexId);
-				if(fileIndex!=null)userOrganExt.setBusinessLicencePicPath(fileIndex.getServerHost()+fileIndex.getFilePath());
+				if(fileIndex!=null)userOrganExt.setBusinessLicencePicPath(fileIndex.getServerHost()+"/"+fileIndex.getFilePath());
 			}
 			fileIndexId=userOrganExt.getIdcardFrontPicId();
 			if(!ObjectUtils.isEmpty(fileIndexId)){
 				fileIndex=getFileIndex(fileIndexId);
-				if(fileIndex!=null)userOrganExt.setIdcardFrontPicPath(fileIndex.getServerHost()+fileIndex.getFilePath());
+				if(fileIndex!=null)userOrganExt.setIdcardFrontPicPath(fileIndex.getServerHost()+"/"+fileIndex.getFilePath());
 			}
 			fileIndexId=userOrganExt.getIdcardBackPicId();
 			if(!ObjectUtils.isEmpty(fileIndexId)){
 				fileIndex=getFileIndex(fileIndexId);
-				if(fileIndex!=null)userOrganExt.setIdcardBackPicPath(fileIndex.getServerHost()+fileIndex.getFilePath());
+				if(fileIndex!=null)userOrganExt.setIdcardBackPicPath(fileIndex.getServerHost()+"/"+fileIndex.getFilePath());
 			}
 			return userOrganExt;
 		} catch (BaseServiceException e) {

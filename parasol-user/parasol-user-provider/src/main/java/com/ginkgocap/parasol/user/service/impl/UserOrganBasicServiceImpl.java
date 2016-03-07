@@ -89,7 +89,7 @@ public class UserOrganBasicServiceImpl extends BaseService<UserOrganBasic> imple
 					if(!ObjectUtils.isEmpty(userOrganBasic.getPicId())){
 						FileIndex fileIndex=fileIndexService.getFileIndexById(userOrganBasic.getPicId());
 						if(!ObjectUtils.isEmpty(fileIndex)){
-							userOrganBasic.setPicPath(fileIndex.getServerHost()+fileIndex.getFilePath());
+							userOrganBasic.setPicPath(fileIndex.getServerHost()+"/"+fileIndex.getFilePath());
 						}
 					}
 				} catch (FileIndexServiceException e) {
