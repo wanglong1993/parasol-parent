@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ginkgocap.parasol.file.dataimporter.dao.PicPersonDao">
+
+	<select id="getAllPersonPics"  parameterType="java.lang.Long" resultType="com.ginkgocap.parasol.file.model.PicPerson" >
+		SELECT DISTINCT picPath 
+		FROM phoenix_person.tb_person_simple	 
+		WHERE personType = 2 AND picPath NOT LIKE '%default%' AND picPath != '' AND picPath NOT LIKE '%http://%' AND picPath NOT LIKE '%?%';
+	</select>
+</mapper>
+
