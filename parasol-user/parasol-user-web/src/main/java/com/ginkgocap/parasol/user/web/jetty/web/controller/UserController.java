@@ -356,6 +356,22 @@ public class UserController extends BaseControl {
 				userOrganExt=userOrganExtService.getUserOrganExt(userLoginRegister.getId());
 				List<Long> ids=userDefinedService.getIdList(userLoginRegister.getId());
 				if(ids!=null && ids.size()!=0)list=userDefinedService.getIdList(ids);
+				if(!ObjectUtils.isEmpty(userOrganBasic)){
+					if(!StringUtils.isEmpty(userOrganBasic.getPicPath())){
+						userOrganBasic.setPicPath(dfsGintongCom+userOrganBasic.getPicPath());
+					}
+				}
+				if(!ObjectUtils.isEmpty(userOrganExt)){
+					if(!StringUtils.isEmpty(userOrganExt.getBusinessLicencePicPath())){
+						userOrganExt.setBusinessLicencePicPath(dfsGintongCom+userOrganExt.getBusinessLicencePicPath());
+					}
+					if(!StringUtils.isEmpty(userOrganExt.getIdcardFrontPicPath())){
+						userOrganExt.setIdcardFrontPicPath(dfsGintongCom+userOrganExt.getIdcardFrontPicPath());
+					}
+					if(!StringUtils.isEmpty(userOrganExt.getIdcardBackPicPath())){
+						userOrganExt.setIdcardBackPicPath(dfsGintongCom+userOrganExt.getIdcardBackPicPath());
+					}
+				}
 				resultMap.put("userLoginRegister", userLoginRegister);
 				resultMap.put("userOrganBasic", userOrganBasic);
 				resultMap.put("userOrganExt", userOrganExt);

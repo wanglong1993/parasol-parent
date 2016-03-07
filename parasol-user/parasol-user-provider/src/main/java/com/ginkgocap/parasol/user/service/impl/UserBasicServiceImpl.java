@@ -86,7 +86,7 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 					if(!ObjectUtils.isEmpty(userBasic.getPicId())){
 						FileIndex fileIndex=fileIndexService.getFileIndexById(userBasic.getPicId());
 						if(!ObjectUtils.isEmpty(fileIndex)){
-							userBasic.setPicPath(fileIndex.getFilePath());
+							userBasic.setPicPath(fileIndex.getServerHost()+fileIndex.getFilePath());
 						}
 					}
 				} catch (FileIndexServiceException e) {
