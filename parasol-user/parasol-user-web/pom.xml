@@ -260,6 +260,7 @@
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
 				<dfs.gintong.com>http://192.168.101.148/</dfs.gintong.com>
+				<imservice.url>http://192.168.101.41:4446</imservice.url>
 				<client_id>7647448850</client_id>
 				<client_secret>88aec17e1857ca1341ee6b16b0b75aef</client_secret>
 			</properties>
@@ -278,6 +279,7 @@
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
 				<dfs.gintong.com>http://dfs.gintong.com/</dfs.gintong.com>
+				<imservice.url>http://jtim.gintong.com:4446</imservice.url>
 				<client_id>1</client_id>
 				<client_secret>2db7c5148a86b59ea285529a41ef84cb</client_secret>
 			</properties>
