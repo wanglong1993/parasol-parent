@@ -22,9 +22,9 @@
 		<jetty.version>8.1.15.v20140411</jetty.version>
 		<jetty-jsp.version>2.2.0.v201112011158</jetty-jsp.version>
 		<!-- 测试版本：开发、测试、仿真环境 -->
-	  	<huanxin.version>1.1.1-SNAPSHOT</huanxin.version> 
+	  	<!-- <huanxin.version>1.1.1-SNAPSHOT</huanxin.version>  -->
 		<!-- 线上版本：线上环境 -->
-		<!--<huanxin.version>1.1.1</huanxin.version>--> 			
+		<huanxin.version>1.1.1</huanxin.version> 			
 		<main.basedir>${basedir}/../..</main.basedir>
 	</properties>
 	<repositories>
