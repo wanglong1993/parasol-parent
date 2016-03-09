@@ -27,7 +27,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.usertype.UserVersionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -49,7 +48,6 @@ import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.model.UserOrganExt;
-import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserDefinedService;
 import com.ginkgocap.parasol.user.service.UserExtService;
@@ -61,7 +59,9 @@ import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
 import com.ginkgocap.parasol.user.service.UserOrganBasicService;
 import com.ginkgocap.parasol.user.service.UserOrganExtService;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
+import com.ginkgocap.parasol.user.web.jetty.web.utils.HuanxinUtils;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Prompt;
+import com.ginkgocap.parasol.user.web.jetty.web.utils.ThreadPoolUtils;
 
 /**
  * 用户登录注册
@@ -106,6 +106,7 @@ public class UserController extends BaseControl {
 	@Value("${dfs.gintong.com}")  
 	private String dfsGintongCom; 	
     private static final String GRANT_TYPE="password"; 
+    private static final String CLASS_NAME = UserController.class.getName();
 
 	/**
 	 * 用户注册
@@ -235,6 +236,18 @@ public class UserController extends BaseControl {
 					userExt.setUserId(id);
 					userExtId=userExtService.createUserExt(userExt);
 					userLoginRegisterService.deleteIdentifyingCode(passport);
+					/**
+					 * 添加集成环信注册用户
+					 */
+					if (id > 1) {
+						final String huanxinParam = String.valueOf(id);
+						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
+							@Override
+							public void run() {
+								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
+							}
+						});
+					}
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -267,6 +280,18 @@ public class UserController extends BaseControl {
 							list=userInterestIndustryService.createUserInterestIndustryByList(list, id);
 						}
 					}
+					/**
+					 * 添加集成环信注册用户
+					 */
+					if (id > 1) {
+						final String huanxinParam = String.valueOf(id);
+						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
+							@Override
+							public void run() {
+								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
+							}
+						});
+					}
 					userLoginRegisterService.deleteIdentifyingCode(passport);
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
@@ -295,6 +320,18 @@ public class UserController extends BaseControl {
 					userOrganExt.setUserId(id);
 					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
 					userLoginRegisterService.deleteIdentifyingCode(passport);
+					/**
+					 * 添加集成环信注册用户
+					 */
+					if (id > 1) {
+						final String huanxinParam = String.valueOf(id);
+						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
+							@Override
+							public void run() {
+								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
+							}
+						});
+					}
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
