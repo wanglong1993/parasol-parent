@@ -220,6 +220,7 @@
 				<includes>
 					<include>**/application.yml</include>
 					<include>**/application.properties</include>
+					<include>**/imService.properties</include>
 					<include>**/*.xml</include>
 				</includes>
 			</resource>
