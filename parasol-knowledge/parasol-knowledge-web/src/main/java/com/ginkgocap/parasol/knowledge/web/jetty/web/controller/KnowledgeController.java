@@ -1,757 +1,334 @@
-/*
- * Copyright 2012-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.ginkgocap.parasol.knowledge.web.jetty.web.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ginkgocap.parasol.knowledge.web.jetty.web.ResponseError;
+import com.ginkgocap.ywxt.knowledge.controller.BaseController;
+import com.ginkgocap.ywxt.knowledge.model.DataCollection;
+import com.ginkgocap.ywxt.knowledge.service.IKnowledgeService;
+import com.ginkgocap.ywxt.knowledge.utils.PackingDataUtil;
+import com.ginkgocap.ywxt.user.model.User;
+import com.ginkgocap.ywxt.util.HttpClientHelper;
+import com.gintong.frame.util.dto.CommonResultCode;
+import com.gintong.frame.util.dto.InterfaceResult;
 
-/**
- * 
-* @Title: FileController.java
-* @Package com.ginkgocap.parasol.file.web.jetty.web.controller
-* @Description: TODO(文件上传控制器)
-* @author fuliwen@gintong.com  
-* @date 2015年12月9日 上午8:55:41
-* @version V1.0
- */
-@RestController
-public class KnowledgeController extends BaseControl {
+@Controller
+@RequestMapping("/knowledge")
+public class KnowldegeController extends BaseControl {
+	
+	private Logger logger = LoggerFactory.getLogger(KnowldegeController.class);
+	
+	@Autowired
+	private IKnowledgeService knowledgeService;
+	
+	/**
+	 * 插入数据
+	 * @author 周仕奇
+	 * @date 2016年1月15日 下午4:51:59
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "",method = RequestMethod.POST)
+	@ResponseBody
+	public InterfaceResult<DataCollection> insert(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		User user = this.getUser(request);
+		
+		if(user == null)
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+		
+		JSONObject requestJson = this.getRequestJson(request);
+		
+		DataCollection dataCollection = (DataCollection) JSONObject.toBean(requestJson, DataCollection.class);
+		
+		InterfaceResult<DataCollection> affterSaveDataCollection = null;
+		
+		try {
+			affterSaveDataCollection = this.knowledgeService.insert(dataCollection, user);
+		} catch (Exception e) {
+			logger.error("知识插入失败！失败原因："+affterSaveDataCollection.getNotification().getNotifInfo());
+			return affterSaveDataCollection;
+		}
+		
+		return InterfaceResult.getSuccessInterfaceResultInstance(null);
+	}
+	
+	/**
+	 * 更新数据
+	 * @author 周仕奇
+	 * @date 2016年1月15日 下午4:52:17
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "",method = RequestMethod.PUT)
+	@ResponseBody
+	public InterfaceResult<DataCollection> update(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		User user = this.getUser(request);
+		
+		if(user == null)
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+		
+		JSONObject requestJson = this.getRequestJson(request);
+		
+		DataCollection dataCollection = (DataCollection) JSONObject.toBean(requestJson, DataCollection.class);
+		
+		InterfaceResult<DataCollection> affterSaveDataCollection = null;
+		
+		try {
+			affterSaveDataCollection = this.knowledgeService.update(dataCollection, user);
+		} catch (Exception e) {
+			logger.error("知识更新失败！失败原因："+affterSaveDataCollection.getNotification().getNotifInfo());
+			return affterSaveDataCollection;
+		}
+		
+		return InterfaceResult.getSuccessInterfaceResultInstance(null);
+	}
+	
+	/**
+	 * 删除数据
+	 * @author 周仕奇
+	 * @date 2016年1月15日 下午4:52:33
+	 * @param id 知识主键
+	 * @param columnId 栏目主键
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/{id}/{columnId}", method = RequestMethod.DELETE)
+	@ResponseBody
+	public InterfaceResult<DataCollection> delete(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable Long id,@PathVariable Long columnId) throws IOException {
+		
+		User user = this.getUser(request);
+		
+		if(user == null)
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+		if(id <= 0 || columnId <= 0){
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION);
+		}
+		
+		InterfaceResult<DataCollection> affterDeleteDataCollection = null;
+		try {
+			affterDeleteDataCollection = this.knowledgeService.deleteByKnowledgeId(id, columnId, user);
+		} catch (Exception e) {
+			logger.error("知识删除失败！失败原因："+affterDeleteDataCollection.getNotification().getNotifInfo());
+			return affterDeleteDataCollection;
+		}
+		
+		return InterfaceResult.getSuccessInterfaceResultInstance(null);
+	}
+	
+	/**
+	 * 提取知识详细信息，一般用在详细查看界面、编辑界面
+	 * @author 周仕奇
+	 * @date 2016年1月15日 下午4:53:25
+	 * @param id 知识主键
+	 * @param columnId 栏目主键
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/{id}/{columnId}", method = RequestMethod.GET)
+	@ResponseBody
+	public InterfaceResult<DataCollection> getByIdAndColumnId(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable Long id,@PathVariable Long columnId) throws IOException {
+		
+		//判断参数合法性
+		if(id <= 0 || columnId <= 0) {
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION);
+		}
+		
+		User user = this.getUser(request);
+		
+		//如果是游客登录，则给予金桐脑权限
+		if (null == user) {
+			user = new User();
+			user.setId(0);// 金桐脑
+		}
+		
+		InterfaceResult<DataCollection> affterDeleteDataCollection = null;
+		try {
+			affterDeleteDataCollection = this.knowledgeService.getDetailById(id, columnId, user);
+		} catch (Exception e) {
+			logger.error("知识提取失败！失败原因："+affterDeleteDataCollection.getNotification().getNotifInfo());
+			return affterDeleteDataCollection;
+		}
+		
+		//数据为空则直接返回异常给前端
+		if(affterDeleteDataCollection == null) {
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.DATA_DELETE_EXCEPTION);
+		}
+		
+		
+		
+		return affterDeleteDataCollection;
+	}
+	
+	/**
+	 * 提取所有知识数据
+	 * @author 周仕奇
+	 * @date 2016年1月15日 下午4:54:27
+	 * @param start 分页起始
+	 * @param size 分页大小
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/all/{start}/{size}", method = RequestMethod.GET)
+	@ResponseBody
+	public InterfaceResult<List<DataCollection>> getAll(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable int start,@PathVariable int size) throws IOException {
+		
+		User user = this.getUser(request);
+		
+		if(user == null)
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+		
+		InterfaceResult<List<DataCollection>> getDataCollection = null;
+		try {
+			getDataCollection = this.knowledgeService.getBaseAll(start, size);
+		} catch (Exception e) {
+			logger.error("知识提取失败！失败原因："+getDataCollection.getNotification().getNotifInfo());
+			return getDataCollection;
+		}
+		
+		return getDataCollection;
+	}
+	
+	/**
+	 * 根据栏目提取知识数据
+	 * @author 周仕奇
+	 * @date 2016年1月15日 下午4:54:27
+	 * @param start 分页起始
+	 * @param size 分页大小
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/all/{columnId}/{start}/{size}", method = RequestMethod.GET)
+	@ResponseBody
+	public InterfaceResult<List<DataCollection>> getAllByColumnId(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable long columnId,@PathVariable int start,@PathVariable int size) throws IOException {
+		
+		User user = this.getUser(request);
+		
+		if(user == null)
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+		
+		InterfaceResult<List<DataCollection>> getDataCollection = null;
+		try {
+			getDataCollection = this.knowledgeService.getBaseByCreateUserId(user, start, size);
+		} catch (Exception e) {
+			logger.error("知识提取失败！失败原因：{}",getDataCollection.getNotification().getNotifInfo());
+			return getDataCollection;
+		}
+		
+		return getDataCollection;
+	}
+	
+	/**
+	 * 提取当前用户的所有知识数据
+	 * @author 周仕奇
+	 * @date 2016年1月15日 下午4:54:27
+	 * @param start 分页起始
+	 * @param size 分页大小
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/user/{start}/{size}", method = RequestMethod.GET)
+	@ResponseBody
+	public InterfaceResult<List<DataCollection>> getByCreateUserId(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable int start,@PathVariable int size) throws IOException {
+		
+		User user = this.getUser(request);
+		
+		if(user == null)
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+		
+		InterfaceResult<List<DataCollection>> getDataCollection = null;
+		try {
+			getDataCollection = this.knowledgeService.getBaseByCreateUserId(user, start, size);
+		} catch (Exception e) {
+			logger.error("知识提取失败！失败原因："+getDataCollection.getNotification().getNotifInfo());
+			return getDataCollection;
+		}
+		
+		return getDataCollection;
+	}
+	
+	/**
+	 * 根据栏目提取当前用户的知识数据
+	 * @author 周仕奇
+	 * @date 2016年1月15日 下午4:54:27
+	 * @param start 分页起始
+	 * @param size 分页大小
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/user/{columnId}/{start}/{size}", method = RequestMethod.GET)
+	@ResponseBody
+	public InterfaceResult<List<DataCollection>> getByCreateUserIdAndColumnId(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable long columnId,@PathVariable int start,@PathVariable int size) throws IOException {
+		
+		User user = this.getUser(request);
+		
+		if(user == null)
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+		
+		InterfaceResult<List<DataCollection>> getDataCollection = null;
+		try {
+			getDataCollection = this.knowledgeService.getBaseByCreateUserIdAndColumnId(user, columnId, start, size);
+		} catch (Exception e) {
+			logger.error("知识提取失败！失败原因："+getDataCollection.getNotification().getNotifInfo());
+			return getDataCollection;
+		}
+		
+		return getDataCollection;
+	}
+	
+	/**
+	 * 首页获取大数据知识热门推荐和发现热门知识
+	 * @author 周仕奇
+	 * @date 2016年1月18日 上午10:46:43
+	 * @param type 1,推荐 2,发现
+	 * @param start
+	 * @param size
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/all/{type}/{start}/{size}", method = RequestMethod.GET)
+	@ResponseBody
+	public InterfaceResult<Map<String, Object>> getRecommendedKnowledge(HttpServletRequest request, HttpServletResponse response, 
+			@PathVariable String type,@PathVariable int start, @PathVariable int size) throws Exception {
+		String url = (String) request.getSession().getServletContext().getAttribute("newQueryHost");
+		List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+		pairs.add(new BasicNameValuePair("page", String.valueOf(start)));
+		pairs.add(new BasicNameValuePair("rows", String.valueOf(size)));
+		pairs.add(new BasicNameValuePair("type", type));// 1,推荐 2,发现
+		Map<String, Object> model = new HashMap<String, Object>();
+		try {
+			String responseJson = HttpClientHelper.post(url + "/API/hotKno.do", pairs);
+			model.put("list", PackingDataUtil.getRecommendResult(responseJson));
+		} catch (Exception e) {
+			logger.error("连接大数据出错！");
+			e.printStackTrace();
+		}
+		return InterfaceResult.getSuccessInterfaceResultInstance(model);
+	}
 
 	@Override
-	protected <T> void processBusinessException(ResponseError error, Exception ex) {
+	protected <T> void processBusinessException(ResponseError error,
+			Exception ex) {
 		// TODO Auto-generated method stub
 		
 	}
-//	
-//	private Logger logger = LoggerFactory.getLogger(getClass());
-//
-//	private static final String parameterFields = "fields";
-//	private static final String parameterDebug = "debug";
-//	private static final String parameterFile = "file"; // 上传文件
-//	private static final String parameterIndexId = "indexId"; // 索引文件id
-//	private static final String parameterFileType = "fileType"; // 文件类型
-//	private static final String parameterTaskId = "taskId"; // taskId
-//	private static final String parameterModuleType = "moduleType"; // 业务模块
-//	private static final String parameterXEnd = "xEnd"; // x结束坐标
-//	private static final String parameterYEnd = "yEnd"; // y结束坐标
-//	private static final String parameterXStart = "xStart"; // x开始坐标
-//	private static final String parameterYStart = "yStart"; // y开始坐标
-//
-//	@Resource
-//	private FileIndexService fileIndexService;
-//
-//	@Autowired
-//	private PicPersonService picPersonService;
-//	
-//	@Autowired
-//	private PicUserService picUserService;
-//	/**
-//	 * 
-//	 * @param fileds
-//	 * @param debug
-//	 * @param appId
-//	 * @param file
-//	 * @param userId
-//	 * @param name
-//	 * @return
-//	 * @throws FileIndexServiceException 
-//	 * @throws IOException 
-//	 * @throws MyException 
-//	 */
-//	@RequestMapping(path = { "/file/upload" }, method = { RequestMethod.POST })
-//	public MappingJacksonValue fileUpload(@RequestParam(name = KnowledgeController.parameterFields, defaultValue = "") String fileds,
-//			@RequestParam(name = KnowledgeController.parameterDebug, defaultValue = "") String debug,
-//			@RequestParam(name = KnowledgeController.parameterFile, required = true) MultipartFile file,
-//			@RequestParam(name = KnowledgeController.parameterFileType, defaultValue = "1") Integer fileType,
-//			@RequestParam(name = KnowledgeController.parameterModuleType, defaultValue = "1") Integer moduleType,
-//			@RequestParam(name = KnowledgeController.parameterTaskId, required = true) String taskId ) throws FileIndexServiceException, IOException, MyException {
-//		MappingJacksonValue mappingJacksonValue = null;
-//		Map<String, Object> result = new HashMap<String, Object>();
-//		try {
-//			if(file.getSize() == 0) {
-//				result.put("error", "上传文件无效，请重新上传！");
-//				return new MappingJacksonValue(result);
-//			}
-//
-//			Long loginAppId = LoginUserContextHolder.getAppKey();
-//			Long loginUserId = LoginUserContextHolder.getUserId();
-//			byte[] file_buff = file.getBytes();
-//			StorageClient storageClient = getStorageClient();
-//			String fileName = file.getOriginalFilename();
-//			int f = fileName.lastIndexOf(".");
-//			String fileExtName = "";
-//			if (f>-1) fileExtName = fileName.substring(f+1);
-//			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
-//			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
-//			String thumbnailsPath = "";
-//			
-//			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-//			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-//				generateAvatar(fields[0], fields[1], fileExtName, null);
-//				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
-//			}
-//			FileIndex index = new FileIndex();
-//			index.setAppId(loginAppId);
-//			index.setCreaterId(loginUserId);
-//			index.setServerHost(fields[0]);
-//			index.setFilePath(fields[1]);
-//			index.setFileSize(file.getSize());
-//			index.setFileTitle(file.getOriginalFilename());
-//			index.setFileType(fileType);
-//			index.setModuleType(moduleType);
-//			index.setTaskId(taskId);
-//			index.setThumbnailsPath(thumbnailsPath);
-//			index = fileIndexService.insertFileIndex(index);
-//			// 2.转成框架数据
-//			mappingJacksonValue = new MappingJacksonValue(index);
-//			// 3.创建页面显示数据项的过滤器
-//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-//			mappingJacksonValue.setFilters(filterProvider);
-//			storageClient=null;
-//			return mappingJacksonValue;
-//		} catch (RpcException e) {
-//			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-//			ResponseError error = processResponseError(e);
-//			if (error != null) {
-//				resultMap.put("error", error);
-//			}
-//			if (ObjectUtils.equals(debug, "all")) {
-//				// if (e.getErrorCode() > 0 ) {
-//				resultMap.put("__debug__", e.getMessage());
-//				// }
-//			}
-//			mappingJacksonValue = new MappingJacksonValue(resultMap);
-//			e.printStackTrace(System.err);
-//			return mappingJacksonValue;
-//		}
-//	}
-//
-//	/**
-//	 * 通过坐标截图，生成头像，生成140*140,90*90,60*60px缩略图
-//	 * @param fileds
-//	 * @param debug
-//	 * @param appId
-//	 * @param userId
-//	 * @param indexId
-//	 * @param xEnd
-//	 * @param yEnd
-//	 * @param xStart
-//	 * @param yStart
-//	 * @return fileIndex索引文件
-//	 * @throws FileIndexServiceException 
-//	 * @throws MyException 
-//	 * @throws IOException 
-//	 */
-//	@RequestMapping(path = { "/file/scissorImage" }, method = { RequestMethod.GET })
-//	public MappingJacksonValue scissorImage(@RequestParam(name = KnowledgeController.parameterFields, defaultValue = "") String fileds,
-//			@RequestParam(name = KnowledgeController.parameterDebug, defaultValue = "") String debug,
-//			@RequestParam(name = KnowledgeController.parameterIndexId, required = true) Long indexId,
-//			@RequestParam(name = KnowledgeController.parameterXEnd, required = true) Integer xEnd,
-//			@RequestParam(name = KnowledgeController.parameterYEnd, required = true) Integer yEnd,
-//			@RequestParam(name = KnowledgeController.parameterXStart, required = true) Integer xStart,
-//			@RequestParam(name = KnowledgeController.parameterYStart, required = true) Integer yStart
-//			) throws FileIndexServiceException, IOException, MyException {
-//		MappingJacksonValue mappingJacksonValue = null;
-//		try {
-//			FileIndex index = fileIndexService.getFileIndexById(indexId);
-//			Map<String, Object> result = new HashMap<String, Object>();
-//			if(index == null) {
-//				result.put("error", "文件索引id不存在，请检查参数！");
-//				return new MappingJacksonValue(result);
-//			} 
-//			getScissorImage(index.getServerHost(),index.getFilePath(),xEnd-xStart,yEnd-yStart,xStart,yStart);
-//			// 2.转成框架数据
-//			mappingJacksonValue = new MappingJacksonValue(index);
-//			// 3.创建页面显示数据项的过滤器
-//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-//			mappingJacksonValue.setFilters(filterProvider);
-//			return mappingJacksonValue;
-//		} catch (RpcException e) {
-//			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-//			ResponseError error = processResponseError(e);
-//			if (error != null) {
-//				resultMap.put("error", error);
-//			}
-//			if (ObjectUtils.equals(debug, "all")) {
-//				// if (e.getErrorCode() > 0 ) {
-//				resultMap.put("__debug__", e.getMessage());
-//				// }
-//			}
-//			mappingJacksonValue = new MappingJacksonValue(resultMap);
-//			e.printStackTrace(System.err);
-//			return mappingJacksonValue;
-//		}
-//	}	
-//	
-//	/**
-//	 * 文件下载
-//	 * @param fileds
-//	 * @param debug
-//	 * @param appId
-//	 * @param userId
-//	 * @param taskId
-//	 * @return	文件索引列表
-//	 * @throws FileIndexServiceException 
-//	 * @throws Exception
-//	 */
-//	@RequestMapping(path = { "/file/getFileIndexesByTaskId" }, method = { RequestMethod.GET })
-//	public MappingJacksonValue getFileIndexesByTaskId(@RequestParam(name = KnowledgeController.parameterFields, defaultValue = "") String fileds,
-//			@RequestParam(name = KnowledgeController.parameterDebug, defaultValue = "") String debug,
-//			@RequestParam(name = KnowledgeController.parameterTaskId, required = true) String taskId
-//			) throws FileIndexServiceException {
-//		MappingJacksonValue mappingJacksonValue = null;
-//		try {
-//			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-//			// 1.查询后台服务
-//			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
-//			
-//			// 2.转成框架数据
-//			mappingJacksonValue = new MappingJacksonValue(files);
-//			// 3.创建页面显示数据项的过滤器
-//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-//			mappingJacksonValue.setFilters(filterProvider);
-//			// 4.返回结果
-//			return mappingJacksonValue;
-//		} catch (RpcException e) {
-//			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-//			ResponseError error = processResponseError(e);
-//			if (error != null) {
-//				resultMap.put("error", error);
-//			}
-//			if (ObjectUtils.equals(debug, "all")) {
-//				// if (e.getErrorCode() > 0 ) {
-//				resultMap.put("__debug__", e.getMessage());
-//				// }
-//			}
-//			mappingJacksonValue = new MappingJacksonValue(resultMap);
-//			e.printStackTrace(System.err);
-//			return mappingJacksonValue;
-//		} 
-//	}
-//	
-//	/**
-//	 * 文件下载
-//	 * @param fileds
-//	 * @param debug
-//	 * @param appId
-//	 * @param userId
-//	 * @param taskId
-//	 * @return	文件索引列表
-//	 * @throws FileIndexServiceException 
-//	 * @throws Exception
-//	 */
-//	@RequestMapping(path = { "/file/deleteById" }, method = { RequestMethod.GET })
-//	public MappingJacksonValue deleteFileById(@RequestParam(name = KnowledgeController.parameterFields, defaultValue = "") String fileds,
-//			@RequestParam(name = KnowledgeController.parameterDebug, defaultValue = "") String debug,
-//			@RequestParam(name = KnowledgeController.parameterIndexId, required = true) long indexId
-//			) throws FileIndexServiceException {
-//		MappingJacksonValue mappingJacksonValue = null;
-//		try {
-//			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-//			FileIndex index = fileIndexService.getFileIndexById(indexId);
-//			Map<String, Object> result = new HashMap<String, Object>();
-//			
-//			if(index == null) {
-//				result.put("error", "文件索引id不存在，请检查参数！");
-//				return new MappingJacksonValue(result);
-//			} 
-//			// fastDFS中删除上传的文件
-//			deleteFileByFileId(index.getServerHost(),index.getFilePath(),index.getModuleType());
-//			// 1.查询后台服务
-//			boolean flag = fileIndexService.deleteFileIndexById(indexId);
-//			result.put("result", flag);
-//			// 2.转成框架数据
-//			mappingJacksonValue = new MappingJacksonValue(result);
-//			// 3.创建页面显示数据项的过滤器
-//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-//			mappingJacksonValue.setFilters(filterProvider);
-//			// 4.返回结果
-//			return mappingJacksonValue;
-//		} catch (RpcException e) {
-//			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-//			ResponseError error = processResponseError(e);
-//			if (error != null) {
-//				resultMap.put("error", error);
-//			}
-//			if (ObjectUtils.equals(debug, "all")) {
-//				// if (e.getErrorCode() > 0 ) {
-//				resultMap.put("__debug__", e.getMessage());
-//				// }
-//			}
-//			mappingJacksonValue = new MappingJacksonValue(resultMap);
-//			e.printStackTrace(System.err);
-//			return mappingJacksonValue;	
-//		}
-//	}
-//	
-//	private void deleteFileByFileId(String group, String fileId, int moduleType) {
-//		try {
-//			StorageClient storageClient = getStorageClient();
-//			storageClient.delete_file(group, fileId);
-//			// 文件为头像时，删除从文件140*140,90*90,60*60缩略图
-//			if(moduleType == 1) {
-//				int f = fileId.lastIndexOf(".");
-//				String fileExtName = "";
-//				if (f>-1) {
-//					fileExtName = fileId.substring(f+1);
-//				} else {
-//					return ;
-//				}
-//				String file140 = fileId.replace("."+fileExtName, "_140_140."+fileExtName);
-//				storageClient.delete_file(group, file140);
-//				String file90 = fileId.replace("."+fileExtName, "_90_90."+fileExtName);
-//				storageClient.delete_file(group, file90);
-//				String file60 = fileId.replace("."+fileExtName, "_60_60."+fileExtName);
-//				storageClient.delete_file(group, file60);
-//			}
-//		} catch (Exception e) {
-//			
-//		}
-//	}
-//	
-//	/**
-//	 * 根据图片group、fileId、宽度及高度生成缩略图
-//	 * @param group
-//	 * @param fileId
-//	 * @param width
-//	 * @param height
-//	 * @return	缩略图fileId
-//	 * @throws IOException
-//	 * @throws MyException
-//	 */
-//	private void getPicThumbnail(String group, String fileId, int width, int height, String fileExtName, byte[] mImage) throws IOException, MyException {
-//		
-//		StorageClient storageClient = getStorageClient();
-//		// 如果mImage为空，则通过fileId下载文件，生成字节数组
-//		if (mImage==null || mImage.length==0) {
-//			// 获取源图字节流
-//			mImage = storageClient.download_file(group, fileId);
-//		}
-//		// 获取缩略图字节流
-//		byte[] sImage = ImageProcessUtil.scaleImage(mImage, width, height, fileExtName);
-//		
-//		String suffix = new StringBuilder("_").append(width).append("_").append(height).toString();
-//		String mfileId = fileId.replace("."+fileExtName, suffix+"."+fileExtName);
-//		// 根据文件id删除文件
-//		storageClient.delete_file(group, mfileId);
-//		storageClient.upload_file(group, fileId, suffix, sImage, fileExtName, null);
-//		return;
-//	}
-//	
-//	/**
-//	 * 生成小头像，fastdfs从文件,三种格式140*140、90*90、60*60
-//	 * @param group
-//	 * @param fileId
-//	 * @param fileExtName
-//	 * @return	140*140图片地址作为缩略图
-//	 * @throws IOException
-//	 * @throws MyException
-//	 */
-//	private void generateAvatar(final String group, final String fileId, final String fileExtName, final byte[] mImage) throws IOException, MyException {
-//		Thread thread = new Thread(
-//					new Runnable(){
-//						@Override
-//						public void run() {
-//							try {
-//								// 生成140*140头像图片
-//								getPicThumbnail(group, fileId, 140, 140, fileExtName, mImage);
-//								// 生成90*90头像图片
-//								getPicThumbnail(group, fileId, 90, 90, fileExtName, mImage);
-//								// 生成90*90头像图片
-//								getPicThumbnail(group, fileId, 60, 60, fileExtName, mImage);
-//							} catch (IOException e) {
-//								logger.error("group:{}, fileId:{},fileExtName:{}", group,fileId, fileExtName);
-//								e.printStackTrace();
-//							} catch (MyException e) {
-//								logger.error("group:{}, fileId:{},fileExtName:{}", group,fileId, fileExtName);
-//								e.printStackTrace();
-//							}
-//						}
-//						
-//					}
-//				);
-//		thread.start();
-//	}
-//	
-//	/**
-//	 * 获取StorageClient
-//	 * @return
-//	 * @throws IOException
-//	 */
-//	private StorageClient getStorageClient() throws IOException {
-//		TrackerClient tracker = new TrackerClient(); 
-//		TrackerServer trackerServer;
-//		trackerServer = tracker.getConnection();
-//		StorageServer storageServer = null;
-//		StorageClient storageClient = new StorageClient(trackerServer, storageServer);
-//		return storageClient;
-//	}
-//	
-//	/**
-//	 * 根据x、y坐标及width和height切图
-//	 * @param group
-//	 * @param fileId
-//	 * @param width
-//	 * @param height
-//	 * @param x
-//	 * @param y
-//	 * @return	切图后的fileId
-//	 * @throws IOException
-//	 * @throws MyException
-//	 */
-//	private void getScissorImage(String group, String fileId, int width, int height, int x, int y) throws IOException, MyException {
-//		StorageClient storageClient = getStorageClient();
-//		// 获取源图字节流
-//		byte[] mImage = storageClient.download_file(group, fileId);
-//		int f = fileId.lastIndexOf(".");
-//		String fileExtName = "";
-//		if (f>-1) {
-//			fileExtName = fileId.substring(f+1);
-//		} else {
-//			return ;
-//		}
-//		// 根据源图截图
-//		byte[] sImage = ImageProcessUtil.scissorImage(x, width, y, height, mImage, fileExtName);
-//		
-//		generateAvatar(group, fileId, fileExtName, sImage);
-//
-//	}
-//	
-//	/**
-//	 * 指定显示那些字段
-//	 * 
-//	 * @param fileds
-//	 * @return
-//	 */
-//	private SimpleFilterProvider builderSimpleFilterProvider(String fileds) {
-//		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-//		// 请求指定字段
-//		String[] filedNames = StringUtils.split(fileds, ",");
-//		Set<String> filter = new HashSet<String>();
-//		if (filedNames != null && filedNames.length > 0) {
-//			for (int i = 0; i < filedNames.length; i++) {
-//				String filedName = filedNames[i];
-//				if (!StringUtils.isEmpty(filedName)) {
-//					filter.add(filedName);
-//				}
-//			}
-//		} else {
-//			filter.add("id"); // id',
-//			filter.add("filePath"); // '文件路径',
-//			filter.add("serverHost"); // '分布式文件所在group',
-//			filter.add("fileTitle"); // '文件名称',
-//			filter.add("taskId"); // '上传时taskId',
-//			filter.add("moduleType"); // '上传模块类型',
-//			filter.add("fileType"); // '文件类型',
-//			filter.add("thumbnailsPath"); // '图片缩略图地址',
-//			filter.add("appId"); // '应用ID',
-//		}
-//
-//		filterProvider.addFilter(FileIndex.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
-//		return filterProvider;
-//	}
-//	
-//	/**
-//	 * 
-//	 * @param fileds
-//	 * @param debug
-//	 * @param file
-//	 * @param fileType
-//	 * @param moduleType
-//	 * @param appId
-//	 * @param userId
-//	 * @param taskId
-//	 * @return
-//	 * @throws FileIndexServiceException
-//	 * @throws IOException
-//	 * @throws MyException
-//	 */
-//	@RequestMapping(path = { "/online/getPicOnline" }, method = { RequestMethod.POST })
-//	public MappingJacksonValue getPicOnline(@RequestParam(name = KnowledgeController.parameterFields, defaultValue = "") String fileds,
-//			@RequestParam(name = KnowledgeController.parameterDebug, defaultValue = "") String debug,
-//			@RequestParam(name = KnowledgeController.parameterFile, required = true) MultipartFile file,
-//			@RequestParam(name = KnowledgeController.parameterFileType, defaultValue = "1") Integer fileType,
-//			@RequestParam(name = KnowledgeController.parameterModuleType, defaultValue = "1") Integer moduleType,
-//			@RequestParam(name = "appId", required = true) Long appId,
-//			@RequestParam(name = "userId", required = true) Long userId,
-//			@RequestParam(name = KnowledgeController.parameterTaskId, required = true) String taskId ) throws FileIndexServiceException, IOException, MyException {
-//		MappingJacksonValue mappingJacksonValue = null;
-//		Map<String, Object> result = new HashMap<String, Object>();
-//		
-//		try {
-//			if(file.getSize() == 0) {
-//				result.put("error", "上传文件无效，请重新上传！");
-//				return new MappingJacksonValue(result);
-//			}
-//
-//			Long loginAppId = LoginUserContextHolder.getAppKey();
-//			Long loginUserId = LoginUserContextHolder.getUserId();
-//			byte[] file_buff = file.getBytes();
-//			StorageClient storageClient = getStorageClient();
-//			String fileName = file.getOriginalFilename();
-//			int f = fileName.lastIndexOf(".");
-//			String fileExtName = "";
-//			if (f>-1) fileExtName = fileName.substring(f+1);
-//			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
-//			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
-//			String thumbnailsPath = "";
-//			
-//			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-//			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-//				generateAvatar(fields[0], fields[1], fileExtName, null);
-//				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
-//			}
-//			FileIndex index = new FileIndex();
-//			index.setAppId(loginAppId);
-//			index.setCreaterId(loginUserId);
-//			index.setServerHost(fields[0]);
-//			index.setFilePath(fields[1]);
-//			index.setFileSize(file.getSize());
-//			index.setFileTitle(file.getOriginalFilename());
-//			index.setFileType(fileType);
-//			index.setModuleType(moduleType);
-//			index.setTaskId(taskId);
-//			index.setThumbnailsPath(thumbnailsPath);
-//			index = fileIndexService.insertFileIndex(index);
-//			// 2.转成框架数据
-//			mappingJacksonValue = new MappingJacksonValue(index);
-//			// 3.创建页面显示数据项的过滤器
-//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-//			mappingJacksonValue.setFilters(filterProvider);
-//			storageClient=null;
-//			return mappingJacksonValue;
-//		} catch (RpcException e) {
-//			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-//			ResponseError error = processResponseError(e);
-//			if (error != null) {
-//				resultMap.put("error", error);
-//			}
-//			if (ObjectUtils.equals(debug, "all")) {
-//				// if (e.getErrorCode() > 0 ) {
-//				resultMap.put("__debug__", e.getMessage());
-//				// }
-//			}
-//			mappingJacksonValue = new MappingJacksonValue(resultMap);
-//			e.printStackTrace(System.err);
-//			return mappingJacksonValue;
-//		}
-//	}
-//	
-//	@RequestMapping(path = { "/online/initFiles" }, method = { RequestMethod.GET })
-//	public MappingJacksonValue fileInit() throws FileIndexServiceException, IOException, MyException {
-//		MappingJacksonValue mappingJacksonValue = null;
-//			// 获取旧的文件索引
-////			List<Index> indexes = fileService.getAllFileIndexes(0, 100);
-//			List<PicUser> users = picUserService.getAllFileIndexes();
-////			int count = 0;
-//			importDefaultPic();
-////			if(1==1) return null;
-//			for(PicUser in : users) {
-//				// 考虑到旧的数据不够完整，在NFS中很多文件并不存在
-//				try {
-//	            // 以流的形式下载文件。
-////	            InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/"+in.getFile_path()));
-//				// 测试环境文件索引和实际文件不对应,先写死，测试程序 /webserver/upload/web/0051191508
-////					InputStream fis = new BufferedInputStream(new FileInputStream("e:\\Chrysanthemum.jpg"));
-////					FileInputStream fis = new FileInputStream("/webserver/upload/"+in.getPic_path());
-//					FileInputStream fis = new FileInputStream("e:\\Chrysanthemum.jpg");
-//				    byte[] buffer = null;
-//				    if (fis != null) {
-//				    	int len = fis.available();
-//				    	buffer = new byte[len];
-//				    	fis.read(buffer);
-//				    }
-//		            if(buffer.length == 0) continue;
-//		            StorageClient storageClient = getStorageClient();
-//					String fileName = in.getPic_path();
-////					String fileName = "头像";
-//					int f = fileName.lastIndexOf(".");
-//					String fileExtName = "";
-//					if (f>-1) fileExtName = fileName.substring(f+1).trim();
-//					System.out.println("fileExtName="+fileExtName);
-//					String fields[] = storageClient.upload_file(buffer, fileExtName, null);
-//					
-//					logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
-//					String thumbnailsPath = "";
-//					Integer fileType = 1;
-//					Integer moduleType = 1;
-//					// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-////					if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-////						generateAvatar(fields[0], fields[1], fileExtName, null);
-////						thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
-////					}
-//					FileIndex index = new FileIndex();
-////					index.setId(Long.valueOf(in.getId()));
-//					index.setAppId(1);
-//					index.setCreaterId(in.getId());
-//					index.setServerHost(fields[0]);
-//					index.setFilePath(fields[1]);
-//					index.setFileSize(0);
-//					index.setFileTitle(in.getPic_path());
-//					index.setFileType(fileType);
-//					// 标记导入文件状态为9
-//					index.setStatus(9);
-//					index.setModuleType(1);
-//					index.setModuleType(1);
-//					index.setTaskId("");
-//					// 原头像已经缩略过，不需要缩略
-//					index.setThumbnailsPath("");
-//					index = fileIndexService.insertFileIndex(index);
-//					storageClient=null;
-//				}catch (Exception e) {
-//					continue;
-//				}
-//			}
-//		return mappingJacksonValue;
-//	}	
-//	
-//	@RequestMapping(path = { "/online/personInitFiles" }, method = { RequestMethod.GET })
-//	public MappingJacksonValue personFileInit() throws FileIndexServiceException, IOException, MyException {
-//		MappingJacksonValue mappingJacksonValue = null;
-//			// 获取旧的文件索引
-//			List<PicPerson> users = picPersonService.getAllFileIndexes();
-////			int count = 0;
-////			importDefaultPic();
-////			if(1==1) return null;
-//			for(PicPerson in : users) {
-//				// 考虑到旧的数据不够完整，在NFS中很多文件并不存在
-//				try {
-//	            // 以流的形式下载文件。
-////	            InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/"+in.getFile_path()));
-//				// 测试环境文件索引和实际文件不对应,先写死，测试程序 /webserver/upload/web/0051191508
-////					InputStream fis = new BufferedInputStream(new FileInputStream("e:\\Chrysanthemum.jpg"));
-////					FileInputStream fis = new FileInputStream("/webserver/upload/"+in.getPic_path());
-//					FileInputStream fis = new FileInputStream("e:\\Chrysanthemum.jpg");
-//				    byte[] buffer = null;
-//				    if (fis != null) {
-//				    	int len = fis.available();
-//				    	buffer = new byte[len];
-//				    	fis.read(buffer);
-//				    }
-//		            if(buffer.length == 0) continue;
-//		            StorageClient storageClient = getStorageClient();
-//					String fileName = in.getPicPath();
-////					String fileName = "头像";
-//					int f = fileName.lastIndexOf(".");
-//					String fileExtName = "jpg";
-//					if (f>-1) fileExtName = fileName.substring(f+1).trim();
-//					System.out.println("fileExtName="+fileExtName);
-//					String fields[] = storageClient.upload_file(buffer, fileExtName, null);
-//					
-//					logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
-//					String thumbnailsPath = "";
-//					Integer fileType = 1;
-//					Integer moduleType = 1;
-//					// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-////					if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-////						generateAvatar(fields[0], fields[1], fileExtName, null);
-////						thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
-////					}
-//					FileIndex index = new FileIndex();
-////					index.setId(Long.valueOf(in.getId()));
-//					index.setAppId(1);
-//					index.setCreaterId(0l);
-//					index.setServerHost(fields[0]);
-//					index.setFilePath(fields[1]);
-//					index.setFileSize(0);
-//					index.setFileTitle(in.getPicPath());
-//					index.setFileType(fileType);
-//					// 标记导入人脉头像状态为8
-//					index.setStatus(8);
-//					// 根据老文档类型，人脉模块设置为9
-//					index.setModuleType(9);
-//					index.setTaskId("");
-//					// 原头像已经缩略过，不需要缩略
-//					index.setThumbnailsPath("");
-//					index = fileIndexService.insertFileIndex(index);
-//					storageClient=null;
-//				}catch (Exception e) {
-//					continue;
-//				}
-//			}
-//		return mappingJacksonValue;
-//	}		
-//	
-//	/**
-//	 * 导入默认头像
-//	 * 单独处理默认头像
-//	 */
-//	private void importDefaultPic(){
-//		List<PicUser> users = picUserService.getDefaultUserPics();
-//		for(PicUser in : users) {
-//			// 考虑到旧的数据不够完整，在NFS中很多文件并不存在
-//			try {
-//            // 以流的形式下载文件。
-////            InputStream fis = new BufferedInputStream(new FileInputStream("/webserver/upload/"+in.getFile_path()));
-//			// 测试环境文件索引和实际文件不对应,先写死，测试程序 /webserver/upload/web/0051191508
-////				InputStream fis = new BufferedInputStream(new FileInputStream("e:\\Chrysanthemum.jpg"));
-//				FileInputStream fis = new FileInputStream("/webserver/upload/"+in.getPic_path());
-//			    byte[] buffer = null;
-//			    if (fis != null) {
-//			    	int len = fis.available();
-//			    	buffer = new byte[len];
-//			    	fis.read(buffer);
-//			    }
-//	            if(buffer.length == 0) continue;
-//	            StorageClient storageClient = getStorageClient();
-////				String fileName = in.getFile_title();
-//				String fileName = in.getPic_path();
-//				int f = fileName.lastIndexOf(".");
-//				String fileExtName = "";
-//				if (f>-1) fileExtName = fileName.substring(f+1).trim();
-//				String fields[] = storageClient.upload_file(buffer, fileExtName, null);
-//				
-//				logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
-//				String thumbnailsPath = "";
-//				Integer fileType = 1;
-//				Integer moduleType = 1;
-//				
-//				// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-////				if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-////					generateAvatar(fields[0], fields[1], fileExtName, null);
-////					thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
-////				}
-//				FileIndex index = new FileIndex();
-////				index.setId(Long.valueOf(in.getId()));
-//				index.setAppId(1);
-//				index.setCreaterId(0);
-//				index.setServerHost(fields[0]);
-//				index.setFilePath(fields[1]);
-//				index.setFileSize(0);
-//				index.setFileTitle(in.getPic_path());
-//				index.setFileType(fileType);
-//				// 标记导入文件状态为9
-//				index.setStatus(9);
-//				index.setModuleType(1);
-//				index.setModuleType(1);
-//				index.setTaskId("");
-//				index.setThumbnailsPath(thumbnailsPath);
-//				index = fileIndexService.insertFileIndex(index);
-//			}catch (Exception e) {
-//				continue;
-//			}
-//		}
-//	}
-//	
-//	@Override
-//	protected <T> void processBusinessException(ResponseError error, Exception ex) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
+	
 }
