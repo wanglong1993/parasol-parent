@@ -8,10 +8,10 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.3.0.RELEASE</version>
 	</parent>
-	<artifactId>parasol-file-web</artifactId>
+	<artifactId>parasol-knowledge-web</artifactId>
 	<groupId>com.ginkgocap.parasol</groupId>
-	<name>parasol file web</name>
-	<description>parasol file web project</description>
+	<name>parasol knowledge web</name>
+	<description>parasol knowledge web project</description>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://projects.spring.io/spring-boot/</url>
 	<organization>
@@ -222,7 +222,7 @@
 		<!-- business -->
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
-			<artifactId>parasol-file-api</artifactId>
+			<artifactId>parasol-knowledge-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 
