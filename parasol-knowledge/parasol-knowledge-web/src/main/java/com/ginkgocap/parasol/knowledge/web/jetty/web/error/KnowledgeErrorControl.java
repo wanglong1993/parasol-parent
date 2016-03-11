@@ -29,8 +29,8 @@ import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMeth
 import com.ginkgocap.parasol.knowledge.web.jetty.web.ResponseError;
 
 @ControllerAdvice
-public class SensitiveErrorControl {
-	public static Logger logger = Logger.getLogger(SensitiveErrorControl.class);
+public class KnowledgeErrorControl {
+	public static Logger logger = Logger.getLogger(KnowledgeErrorControl.class);
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	@ResponseBody

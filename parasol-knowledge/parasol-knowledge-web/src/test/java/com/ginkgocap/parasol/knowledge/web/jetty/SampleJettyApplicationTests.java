@@ -28,7 +28,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.ginkgocap.parasol.knowledge.web.jetty.ParasolFileApplication;
+import com.ginkgocap.parasol.knowledge.web.jetty.ParasolKnowledgeApplication;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
  * @author Dave Syer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ParasolFileApplication.class)
+@SpringApplicationConfiguration(classes = ParasolKnowledgeApplication.class)
 @WebAppConfiguration
 @IntegrationTest("server.port:0")
 @DirtiesContext

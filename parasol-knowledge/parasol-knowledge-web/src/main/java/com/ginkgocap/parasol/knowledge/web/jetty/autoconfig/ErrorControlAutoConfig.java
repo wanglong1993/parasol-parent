@@ -1,12 +1,12 @@
 package com.ginkgocap.parasol.knowledge.web.jetty.autoconfig;
 
-import com.ginkgocap.parasol.knowledge.web.jetty.web.error.SensitiveErrorControl;
+import com.ginkgocap.parasol.knowledge.web.jetty.web.error.KnowledgeErrorControl;
 
 //@Configuration
 public class ErrorControlAutoConfig {
 	
 	//@Bean
-	public SensitiveErrorControl createMetadataErrorControl() {
-		return new SensitiveErrorControl();
+	public KnowledgeErrorControl createMetadataErrorControl() {
+		return new KnowledgeErrorControl();
 	}
 }

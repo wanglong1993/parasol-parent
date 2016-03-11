@@ -71,49 +71,4 @@ public class WebConfig {
 		// super.addDefaultHttpMessageConverters(converters);
 	}
 	
-	@Bean
-	public FastdfsClientInit initFastdfsClient() {
-		return new FastdfsClientInit();
-	}
-	
-	public static class FastdfsClientInit implements EnvironmentAware {
-		private RelaxedPropertyResolver propertyResolver;
-		
-		@Override
-		public void setEnvironment(Environment environment) {
-			this.propertyResolver = new RelaxedPropertyResolver(environment, "fastdfs.");
-
-			int connect_timeout = Integer.valueOf(propertyResolver.getProperty("connect_timeout"));
-			if (connect_timeout<0) connect_timeout = ClientGlobal.DEFAULT_CONNECT_TIMEOUT;
-			ClientGlobal.g_connect_timeout = connect_timeout * 1000;
-
-			int network_timeout = Integer.valueOf(propertyResolver.getProperty("network_timeout"));
-			if (network_timeout<0) network_timeout = ClientGlobal.DEFAULT_NETWORK_TIMEOUT;
-			ClientGlobal.g_network_timeout = network_timeout * 1000;
-			
-			ClientGlobal.g_charset = propertyResolver.getProperty("charset");	
-			ClientGlobal.g_tracker_http_port = 80;
-			ClientGlobal.g_anti_steal_token = false;
-			
-			String servers = propertyResolver.getProperty("tracker_server");
-			
-			String[] szTrackerServers = StringUtils.split(servers,",");
-			
-	  		String[] parts;
-	  		InetSocketAddress[] tracker_servers = new InetSocketAddress[szTrackerServers.length];
-	  		for (int i=0; i<szTrackerServers.length; i++)
-	  		{
-	  			parts = szTrackerServers[i].split("\\:", 2);
-	  			
-	  			tracker_servers[i] = new InetSocketAddress(parts[0].trim(), Integer.parseInt(parts[1].trim()));
-	  		}
-	  		ClientGlobal.g_tracker_group = new TrackerGroup(tracker_servers);
-	  		
-	  		if (ClientGlobal.g_anti_steal_token)
-	  		{
-	  			ClientGlobal.g_secret_key = propertyResolver.getProperty("http.secret_key");
-	  		}
-		}
-		
-	}
 }

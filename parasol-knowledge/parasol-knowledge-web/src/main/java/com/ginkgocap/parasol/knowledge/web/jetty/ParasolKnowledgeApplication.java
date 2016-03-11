@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-public class ParasolFileApplication{
+public class ParasolKnowledgeApplication{
 
 	public static void main(String[] args) throws Exception {
 		
