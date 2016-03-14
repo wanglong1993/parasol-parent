@@ -243,6 +243,30 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>test</id>
+			<properties>
+				<!-- database -->
+				<jdbc.url>jdbc:mysql://192.168.101.42:3306/parasol_person?autoReconnect=true&amp;amp;autoReconnectForPools=true&amp;amp;createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
+				<jdbc.username>ph_kfpt</jdbc.username>
+				<jdbc.password>Cual17jc5qd4</jdbc.password>
+				<!-- memcached -->
+				<memcached.list_1.ip>192.168.101.187</memcached.list_1.ip>
+				<memcached.list_1.port>11211</memcached.list_1.port>
+				<memcached.object_1.ip>192.168.101.187</memcached.object_1.ip>
+				<memcached.object_1.port>11211</memcached.object_1.port>
+				<!-- redis -->
+				<user.cache.expiredTime>1800</user.cache.expiredTime>
+				<redis.host>192.168.101.131</redis.host>
+				<redis.port>6379</redis.port>
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.protocol.port>8827</dubbo.protocol.port>
+				<log4j.path>/webserver/dubbo/parasol-person-provider-${project.version}</log4j.path>
+			</properties>
+		</profile>
+		<profile>
 			<id>delivery</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
