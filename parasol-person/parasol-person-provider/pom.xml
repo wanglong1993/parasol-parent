@@ -259,7 +259,7 @@
 				<redis.host>192.168.101.131</redis.host>
 				<redis.port>6379</redis.port>
 				<!-- dubbo -->
-				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.application.name>parasolpersondubboprovider</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>8827</dubbo.protocol.port>

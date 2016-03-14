@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.user.service.impl;
+package com.ginkgocap.parasol.person.service.impl;
 
 import java.util.Collections;
 import java.util.List;
