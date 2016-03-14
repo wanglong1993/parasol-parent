@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.knowledge.dao.IColumnCustomDao;
-import com.ginkgocap.ywxt.knowledge.model.ColumnCustom;
+import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
 import com.ginkgocap.ywxt.user.model.User;
 
 @Repository("columnCustomDao")

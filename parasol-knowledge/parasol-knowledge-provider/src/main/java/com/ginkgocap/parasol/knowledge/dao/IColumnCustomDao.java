@@ -3,7 +3,7 @@ package com.ginkgocap.parasol.knowledge.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.ginkgocap.ywxt.knowledge.model.ColumnCustom;
+import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
 import com.ginkgocap.ywxt.user.model.User;
 
 /**

@@ -18,9 +18,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeMongoDao;
-import com.ginkgocap.ywxt.knowledge.model.ColumnSys;
-import com.ginkgocap.ywxt.knowledge.model.KnowledgeMongo;
-import com.ginkgocap.ywxt.knowledge.utils.DateUtil;
+import com.ginkgocap.parasol.knowledge.model.ColumnSys;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
+import com.ginkgocap.parasol.knowledge.utils.DateUtil;
 import com.ginkgocap.ywxt.user.model.User;
 import com.mongodb.WriteResult;
 

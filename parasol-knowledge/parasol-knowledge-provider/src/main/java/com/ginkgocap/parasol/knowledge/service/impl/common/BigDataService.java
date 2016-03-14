@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ginkgocap.ywxt.knowledge.model.KnowledgeMongo;
-import com.ginkgocap.ywxt.knowledge.service.common.IBigDataService;
-import com.ginkgocap.ywxt.knowledge.utils.PackingDataUtil;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
+import com.ginkgocap.parasol.knowledge.service.common.IBigDataService;
+import com.ginkgocap.parasol.knowledge.utils.PackingDataUtil;
 import com.ginkgocap.ywxt.user.model.User;
 import com.gintong.rocketmq.api.DefaultMessageService;
 import com.gintong.rocketmq.api.enums.TopicType;

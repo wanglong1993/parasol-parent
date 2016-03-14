@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.ginkgocap.ywxt.knowledge.model.common.Ids;
-import com.ginkgocap.ywxt.knowledge.service.common.IKnowledgeCommonService;
+import com.ginkgocap.parasol.knowledge.model.common.Ids;
+import com.ginkgocap.parasol.knowledge.service.common.IKnowledgeCommonService;
 
 @Service("knowledgeCommonService")
 public class KnowledgeCommonService implements IKnowledgeCommonService {

@@ -1,6 +1,6 @@
 package com.ginkgocap.ywxt.knowledge.testData;
 
-import com.ginkgocap.ywxt.knowledge.model.KnowledgeBase;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeBase;
 
 public class TestData {
 	

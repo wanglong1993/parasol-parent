@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.junit.Test;
 
 import com.ginkgocap.ywxt.knowledge.base.TestBase;
-import com.ginkgocap.ywxt.knowledge.service.IKnowledgeService;
+import com.ginkgocap.parasol.knowledge.service.IKnowledgeService;
 
 
 public class KnowledgeServiceTest extends TestBase {

@@ -23,10 +23,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ginkgocap.parasol.knowledge.web.jetty.web.ResponseError;
-import com.ginkgocap.ywxt.knowledge.controller.BaseController;
-import com.ginkgocap.ywxt.knowledge.model.DataCollection;
-import com.ginkgocap.ywxt.knowledge.service.IKnowledgeService;
-import com.ginkgocap.ywxt.knowledge.utils.PackingDataUtil;
+import com.ginkgocap.parasol.knowledge.model.DataCollection;
+import com.ginkgocap.parasol.knowledge.service.IKnowledgeService;
+import com.ginkgocap.parasol.knowledge.utils.PackingDataUtil;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.HttpClientHelper;
 import com.gintong.frame.util.dto.CommonResultCode;
@@ -34,9 +33,9 @@ import com.gintong.frame.util.dto.InterfaceResult;
 
 @Controller
 @RequestMapping("/knowledge")
-public class KnowldegeController extends BaseControl {
+public class KnowledgeController extends BaseControl {
 	
-	private Logger logger = LoggerFactory.getLogger(KnowldegeController.class);
+	private Logger logger = LoggerFactory.getLogger(KnowledgeController.class);
 	
 	@Autowired
 	private IKnowledgeService knowledgeService;
@@ -171,7 +170,7 @@ public class KnowldegeController extends BaseControl {
 		
 		//数据为空则直接返回异常给前端
 		if(affterDeleteDataCollection == null) {
-			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.DATA_DELETE_EXCEPTION);
+			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
 		}
 		
 		

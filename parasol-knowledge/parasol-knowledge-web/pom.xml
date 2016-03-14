@@ -12,7 +12,7 @@
 	<groupId>com.ginkgocap.parasol</groupId>
 	<name>parasol knowledge web</name>
 	<description>parasol knowledge web project</description>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<url>http://projects.spring.io/spring-boot/</url>
 	<organization>
 		<name>Pivotal Software, Inc.</name>
@@ -180,8 +180,7 @@
 		<dependency>
 	        <groupId>mysql</groupId>
 	        <artifactId>mysql-connector-java</artifactId>
-	        <version>5.1.36</version>
-		</dependency>
+	    </dependency>
 		<!-- dubbo -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -223,7 +222,8 @@
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-knowledge-api</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- apache common -->

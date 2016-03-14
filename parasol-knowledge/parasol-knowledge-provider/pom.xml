@@ -65,8 +65,8 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.ginkgocap.ywxt</groupId>
-			<artifactId>phoenix-knowledge-api</artifactId>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-knowledge-api</artifactId>
 			<scope>compile</scope>
 		</dependency>
 

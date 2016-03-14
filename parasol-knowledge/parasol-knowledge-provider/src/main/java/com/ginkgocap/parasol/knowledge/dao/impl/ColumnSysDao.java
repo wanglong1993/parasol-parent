@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.knowledge.dao.IColumnSysDao;
-import com.ginkgocap.ywxt.knowledge.model.ColumnSys;
+import com.ginkgocap.parasol.knowledge.model.ColumnSys;
 
 @Repository("columnSysDao")
 public class ColumnSysDao extends BaseService<ColumnSys> implements IColumnSysDao {

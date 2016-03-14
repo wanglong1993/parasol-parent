@@ -2,7 +2,7 @@ package com.ginkgocap.parasol.knowledge.dao;
 
 import java.util.List;
 
-import com.ginkgocap.ywxt.knowledge.model.ColumnSys;
+import com.ginkgocap.parasol.knowledge.model.ColumnSys;
 
 /**
  * @Title: 知识系统栏目表

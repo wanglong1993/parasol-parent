@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.knowledge.dao.IColumnCustomDao;
 import com.ginkgocap.parasol.knowledge.dao.IColumnSysDao;
-import com.ginkgocap.ywxt.knowledge.model.ColumnCustom;
-import com.ginkgocap.ywxt.knowledge.model.ColumnSys;
-import com.ginkgocap.ywxt.knowledge.service.IColumnCustomService;
+import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
+import com.ginkgocap.parasol.knowledge.model.ColumnSys;
+import com.ginkgocap.parasol.knowledge.service.IColumnCustomService;
 
 @Service("columnCustomService")
 public class ColumnCustomServiceImpl implements IColumnCustomService {

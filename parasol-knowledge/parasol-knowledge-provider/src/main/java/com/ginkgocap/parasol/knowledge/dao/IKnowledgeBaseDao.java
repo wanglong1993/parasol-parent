@@ -3,7 +3,7 @@ package com.ginkgocap.parasol.knowledge.dao;
 import java.util.Date;
 import java.util.List;
 
-import com.ginkgocap.ywxt.knowledge.model.KnowledgeBase;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeBase;
 import com.ginkgocap.ywxt.user.model.User;
 
 /**

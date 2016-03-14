@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeReferenceDao;
-import com.ginkgocap.ywxt.knowledge.model.KnowledgeReference;
-import com.ginkgocap.ywxt.knowledge.utils.DateUtil;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeReference;
+import com.ginkgocap.parasol.knowledge.utils.DateUtil;
 import com.ginkgocap.ywxt.user.model.User;
 
 @Repository("KnowledgeReferenceDao")

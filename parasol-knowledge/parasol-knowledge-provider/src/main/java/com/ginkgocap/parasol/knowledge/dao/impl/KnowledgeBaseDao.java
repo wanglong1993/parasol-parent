@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeBaseDao;
-import com.ginkgocap.ywxt.knowledge.model.KnowledgeBase;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeBase;
 import com.ginkgocap.ywxt.user.model.User;
 
 @Repository("knowledgeBaseDao")

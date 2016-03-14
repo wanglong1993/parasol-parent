@@ -2,7 +2,7 @@ package com.ginkgocap.parasol.knowledge.dao;
 
 import java.util.List;
 
-import com.ginkgocap.ywxt.knowledge.model.KnowledgeReference;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeReference;
 import com.ginkgocap.ywxt.user.model.User;
 
 /**
