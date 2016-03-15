@@ -4,6 +4,7 @@ package com.ginkgocap.parasol.person.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Transient;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -286,6 +287,7 @@ public class PersonBasic implements java.io.Serializable {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
+	@Transient
 	public String getPicPath() {
 		return picPath;
 	}
