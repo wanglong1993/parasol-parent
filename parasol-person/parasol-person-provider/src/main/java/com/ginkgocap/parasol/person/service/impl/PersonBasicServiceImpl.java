@@ -40,8 +40,10 @@ public class PersonBasicServiceImpl extends BaseService<PersonBasic> implements 
 		if(type!=0)
 		if(getPersonBasic(personBasic.getId())==null)throw new PersonBasicServiceException("userId not exists in personBasic");
 		if(StringUtils.isEmpty(personBasic.getName()))throw new PersonBasicServiceException("The name can't be null or empty.");
-		if(personBasic.getCtime()==null) personBasic.setCtime(System.currentTimeMillis());
-		if(personBasic.getUtime()==null) personBasic.setUtime(System.currentTimeMillis());
+		if(type==0){
+			if(ObjectUtils.isEmpty(personBasic.getCtime())) personBasic.setCtime(System.currentTimeMillis());
+			if(ObjectUtils.isEmpty(personBasic.getUtime())) personBasic.setUtime(System.currentTimeMillis());
+		}
 		if(type==1)personBasic.setUtime(System.currentTimeMillis());
 		if(!StringUtils.isEmpty(personBasic.getName()))personBasic.setPinyin(PinyinUtils.stringToHeads(personBasic.getName()));
 		return personBasic;

@@ -47,9 +47,21 @@ public class PersonBasicServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testUpdatePersonBasic(){
 		try {
-			Long id=userLoginRegisterService.getId("13677687623");
+			Long id=userLoginRegisterService.getId("13677687632");
 			boolean bl =personBasicService.updatePersonBasic(setPersonBasic(id));
 			Assert.assertTrue(bl);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 根据id获取人脉基本信息
+	 */
+	@org.junit.Test
+	public void testGetPersonBasic(){
+		try {
+			PersonBasic list = personBasicService.getPersonBasic(3953254564364289l);
+			Assert.assertTrue(list==null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -75,6 +87,7 @@ public class PersonBasicServiceTest  extends TestBase implements Test  {
 	public PersonBasic setPersonBasic(Long userId){
 		try {
 			PersonBasic personBasic = new PersonBasic();
+			personBasic.setId(3953254564364289l);
 			personBasic.setUserId(userId);
 			personBasic.setPersonId(11l);
 			personBasic.setPersonType(new Byte("1"));
