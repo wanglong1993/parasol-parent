@@ -41,7 +41,7 @@ public class KnowledgeBase implements Serializable {
 	private long columnId;
 	
 	/**描述*/
-	//private String content;
+	private String content;
 	
 	/**描述简略，一般存储描述的前50个字*/
 	private String contentDesc;
@@ -124,14 +124,14 @@ public class KnowledgeBase implements Serializable {
 		this.columnId = columnId;
 	}
 
-	/*@Column(name = "content")
+	@Column(name = "content")
 	public String getContent() {
 		return content;
 	}
 
 	public void setContent(String content) {
 		this.content = content;
-	}*/
+	}
 
 	@Column(name = "content_desc")
 	public String getContentDesc() {
