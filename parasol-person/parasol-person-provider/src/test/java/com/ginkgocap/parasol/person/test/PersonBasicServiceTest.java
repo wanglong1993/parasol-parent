@@ -47,8 +47,8 @@ public class PersonBasicServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testUpdatePersonBasic(){
 		try {
-			Long id=userLoginRegisterService.getId("13677687632");
-			boolean bl =personBasicService.updatePersonBasic(setPersonBasic(id));
+			PersonBasic personBasic = personBasicService.getPersonBasic(3953254564364289l);
+			boolean bl =personBasicService.updatePersonBasic(personBasic);
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,7 +87,6 @@ public class PersonBasicServiceTest  extends TestBase implements Test  {
 	public PersonBasic setPersonBasic(Long userId){
 		try {
 			PersonBasic personBasic = new PersonBasic();
-			personBasic.setId(3953254564364289l);
 			personBasic.setUserId(userId);
 			personBasic.setPersonId(11l);
 			personBasic.setPersonType(new Byte("1"));
