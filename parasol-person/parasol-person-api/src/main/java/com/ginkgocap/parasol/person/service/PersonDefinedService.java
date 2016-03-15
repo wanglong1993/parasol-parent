@@ -19,6 +19,14 @@ public interface PersonDefinedService {
 	 * @throws PersonDefinedServiceException
 	 */
 	public List<PersonDefined> createPersonDefinedByList(List<PersonDefined> list,Long id) throws PersonDefinedServiceException; 
+	/**
+	 * 修改人脉自定义
+	 * @param list 
+	 * @param id
+	 * @return List
+	 * @throws PersonDefinedServiceException
+	 */
+	public List<PersonDefined> updatePersonDefinedByList(List<PersonDefined> list,Long id) throws PersonDefinedServiceException; 
 	
 	/**
 	 * 根据id获取人脉自定义ID列表

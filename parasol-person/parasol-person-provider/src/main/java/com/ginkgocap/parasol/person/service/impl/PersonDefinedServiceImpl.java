@@ -52,6 +52,22 @@ public class PersonDefinedServiceImpl extends BaseService<PersonDefined> impleme
 		}
 	}
 	@Override
+	public List<PersonDefined> updatePersonDefinedByList(List<PersonDefined> list,Long personId) throws PersonDefinedServiceException {
+		try {
+			checkValidity(list);
+			//删除以前的
+			deleteEntityByIds(getIdList(personId));
+			List<PersonDefined> userDefineds=saveEntitys(list);
+			if(userDefineds==null || userDefineds.size()==0) throw new PersonDefinedServiceException("updatePersonDefinedByList failed.");
+			return userDefineds;
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new PersonDefinedServiceException(e);
+		}
+	}
+	@Override
 	public List<Long> getIdList(Long personId) throws PersonDefinedServiceException {
 		try {
 			if((personId==null || personId<=0l)) return ListUtils.EMPTY_LIST;

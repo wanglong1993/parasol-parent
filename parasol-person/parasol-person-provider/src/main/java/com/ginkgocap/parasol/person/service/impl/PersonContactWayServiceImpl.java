@@ -33,8 +33,10 @@ public class PersonContactWayServiceImpl extends BaseService<PersonContactWay> i
 		if(personContactWay.getPersonId()<=0l) throw new PersonContactWayServiceException("The value of personId is null or empty.");
 		if(type!=0)
 		if(getPersonContactWay(personContactWay.getPersonId())==null)throw new PersonContactWayServiceException("userId not exists in personContactWay");
+		if(type==0){
 		if(personContactWay.getCtime()==null) personContactWay.setCtime(System.currentTimeMillis());
 		if(personContactWay.getUtime()==null) personContactWay.setUtime(System.currentTimeMillis());
+		}
 		if(type==1)personContactWay.setUtime(System.currentTimeMillis());
 		return personContactWay;
 	}
