@@ -37,17 +37,6 @@
 			<version>1.0.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.ginkgocap.ywxt</groupId>
-			<artifactId>phoenix-entire-api</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>hibernate-jpa-2.0-api</artifactId>
-					<groupId>org.hibernate.javax.persistence</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
 		<!-- JPA分布式存储 begin -->
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
