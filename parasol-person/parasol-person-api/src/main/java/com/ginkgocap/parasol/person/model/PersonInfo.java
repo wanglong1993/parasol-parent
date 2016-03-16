@@ -71,7 +71,6 @@ public class PersonInfo implements java.io.Serializable {
 		this.personId = personId;
 	}
 
-	@Temporal(TemporalType.DATE)
 	@Column(name = "birthday", length = 10)
 	public Long getBirthday() {
 		return this.birthday;
