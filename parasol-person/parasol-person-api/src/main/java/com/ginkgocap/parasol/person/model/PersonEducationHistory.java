@@ -39,7 +39,7 @@ public class PersonEducationHistory implements java.io.Serializable {
 	/**
 	 * 学历  0小学 1初中 2高中 3中专 4专科 5本科 6硕士 7博士.
 	 */
-	private char degree;
+	private Byte degree;
 	/**
 	 * 开始时间.
 	 */
@@ -112,11 +112,11 @@ public class PersonEducationHistory implements java.io.Serializable {
 	}
 
 	@Column(name = "degree", length = 1)
-	public char getDegree() {
+	public Byte getDegree() {
 		return this.degree;
 	}
 
-	public void setDegree(char degree) {
+	public void setDegree(Byte degree) {
 		this.degree = degree;
 	}
 

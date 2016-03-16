@@ -52,6 +52,22 @@ public class PersonWorkHistoryServiceImpl extends BaseService<PersonWorkHistory>
 		}
 	}
 	@Override
+	public List<PersonWorkHistory> updatePersonWorkHistoryByList(List<PersonWorkHistory> list,Long personId) throws PersonWorkHistoryServiceException {
+		try {
+			checkValidity(list);
+			//删除以前的
+			deleteEntityByIds(getIdList(personId));
+			List<PersonWorkHistory> userDefineds=saveEntitys(list);
+			if(userDefineds==null || userDefineds.size()==0) throw new PersonWorkHistoryServiceException("updatePersonWorkHistoryByList failed.");
+			return userDefineds;
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new PersonWorkHistoryServiceException(e);
+		}
+	}
+	@Override
 	public List<Long> getIdList(Long personId) throws PersonWorkHistoryServiceException {
 		try {
 			if((personId==null || personId<=0l)) return ListUtils.EMPTY_LIST;

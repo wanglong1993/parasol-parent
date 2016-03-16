@@ -19,6 +19,14 @@ public interface PersonWorkHistoryService {
 	 * @throws PersonWorkHistoryServiceException
 	 */
 	public List<PersonWorkHistory> createPersonWorkHistoryByList(List<PersonWorkHistory> list,Long id) throws PersonWorkHistoryServiceException; 
+	/**
+	 * 修改人脉工作经历
+	 * @param list 
+	 * @param id
+	 * @return List
+	 * @throws PersonWorkHistoryServiceException
+	 */
+	public List<PersonWorkHistory> updatePersonWorkHistoryByList(List<PersonWorkHistory> list,Long id) throws PersonWorkHistoryServiceException; 
 	
 	/**
 	 * 根据id获取人脉工作经历ID列表

@@ -52,6 +52,22 @@ public class PersonEducationHistoryServiceImpl extends BaseService<PersonEducati
 		}
 	}
 	@Override
+	public List<PersonEducationHistory> updatePersonEducationHistoryByList(List<PersonEducationHistory> list,Long personId) throws PersonEducationHistoryServiceException {
+		try {
+			checkValidity(list);
+			//删除以前的
+			deleteEntityByIds(getIdList(personId));
+			List<PersonEducationHistory> userDefineds=saveEntitys(list);
+			if(userDefineds==null || userDefineds.size()==0) throw new PersonEducationHistoryServiceException("updatePersonEducationHistoryByList failed.");
+			return userDefineds;
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new PersonEducationHistoryServiceException(e);
+		}
+	}
+	@Override
 	public List<Long> getIdList(Long personId) throws PersonEducationHistoryServiceException {
 		try {
 			if((personId==null || personId<=0l)) return ListUtils.EMPTY_LIST;

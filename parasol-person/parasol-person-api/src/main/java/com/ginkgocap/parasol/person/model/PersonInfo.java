@@ -27,7 +27,7 @@ public class PersonInfo implements java.io.Serializable {
 	/**
 	 * 若为组织则为全称，不可更改；若为个人则为昵称，可修改。.
 	 */
-	private Date birthday;
+	private Long birthday;
 	/**
 	 * 省份id.
 	 */
@@ -73,11 +73,11 @@ public class PersonInfo implements java.io.Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "birthday", length = 10)
-	public Date getBirthday() {
+	public Long getBirthday() {
 		return this.birthday;
 	}
 
-	public void setBirthday(Date birthday) {
+	public void setBirthday(Long birthday) {
 		this.birthday = birthday;
 	}
 

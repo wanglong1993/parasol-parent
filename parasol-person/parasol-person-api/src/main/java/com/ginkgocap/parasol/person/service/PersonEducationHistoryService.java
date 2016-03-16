@@ -19,6 +19,14 @@ public interface PersonEducationHistoryService {
 	 * @throws PersonEducationHistoryServiceException
 	 */
 	public List<PersonEducationHistory> createPersonEducationHistoryByList(List<PersonEducationHistory> list,Long id) throws PersonEducationHistoryServiceException; 
+	/**
+	 * 修改人脉教育经历
+	 * @param list 
+	 * @param id
+	 * @return List
+	 * @throws PersonEducationHistoryServiceException
+	 */
+	public List<PersonEducationHistory> updatePersonEducationHistoryByList(List<PersonEducationHistory> list,Long id) throws PersonEducationHistoryServiceException; 
 	
 	/**
 	 * 根据id获取人脉教育经历ID列表

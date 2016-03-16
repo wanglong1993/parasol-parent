@@ -58,8 +58,9 @@ public class PersonDefinedServiceTest  extends TestBase implements Test  {
 		try {
 			List<Long> ids = personDefinedService.getIdList(3953254564364289l);
 			List<PersonDefined> list  =personDefinedService.getIdList(ids);
+			list=personDefinedService.updatePersonDefinedByList(list, 3953254564364289l);
 //			personDefinedService.
-//			Assert.assertTrue(bl);
+			Assert.assertTrue(list!=null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
