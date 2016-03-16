@@ -57,7 +57,7 @@ public class PersonWorkHistoryServiceTest  extends TestBase implements Test  {
 		try {
 			List<Long> ids = personWorkHistoryService.getIdList(3953254564364289l);
 			List<PersonWorkHistory> list  =personWorkHistoryService.getIdList(ids);
-			list=personWorkHistoryService.createPersonWorkHistoryByList(list, 3953254564364289l);
+			list=personWorkHistoryService.updatePersonWorkHistoryByList(list, 3953254564364289l);
 //			personWorkHistoryService.
 			Assert.assertTrue(list!=null);
 		} catch (Exception e) {

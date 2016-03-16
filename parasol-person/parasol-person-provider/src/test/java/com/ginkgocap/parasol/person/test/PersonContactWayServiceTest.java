@@ -34,7 +34,7 @@ public class PersonContactWayServiceTest  extends TestBase implements Test  {
 		
 	}
 	/**
-	 * 创建人脉基本信息
+	 * 创建人脉联系方式信息
 	 */
 	@org.junit.Test
 	public void testCreatePersonContactWay(){
@@ -49,7 +49,7 @@ public class PersonContactWayServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
-	 * 修改人脉基本信息
+	 * 修改人脉联系方式信息
 	 */
 	@org.junit.Test
 	public void testUpdatePersonContactWay(){
@@ -62,7 +62,7 @@ public class PersonContactWayServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
-	 * 根据id获取人脉基本信息
+	 * 根据id获取人脉联系方式信息
 	 */
 	@org.junit.Test
 	public void testGetPersonContactWay(){
@@ -74,7 +74,7 @@ public class PersonContactWayServiceTest  extends TestBase implements Test  {
 		}
 	}	
 	/**
-	 * 根据userId列表获取人脉基本信息列表
+	 * 根据userId列表获取人脉联系方式信息列表
 	 */
 	@org.junit.Test
 	public void testGetPersonContactWayList(){
@@ -88,7 +88,7 @@ public class PersonContactWayServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
-	 * 初始化人脉基本信息对象
+	 * 初始化人脉联系方式信息对象
 	 * @return userLoginRegister
 	 */
 	public PersonContactWay setPersonContactWay(Long personId){

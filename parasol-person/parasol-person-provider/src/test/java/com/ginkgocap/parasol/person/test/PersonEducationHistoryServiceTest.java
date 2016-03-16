@@ -31,7 +31,7 @@ public class PersonEducationHistoryServiceTest  extends TestBase implements Test
 		
 	}
 	/**
-	 * 添加人脉自定义
+	 * 添加人脉教育经历
 	 */
 	@org.junit.Test
 	public void testCreatePersonEducationHistory(){
@@ -50,14 +50,14 @@ public class PersonEducationHistoryServiceTest  extends TestBase implements Test
 		}
 	}
 	/**
-	 * 修改人脉自定义信息
+	 * 修改人脉教育经历信息
 	 */
 	@org.junit.Test
 	public void testUpdatePersonEducationHistory(){
 		try {
 			List<Long> ids = personEducationHistoryService.getIdList(3953254564364289l);
 			List<PersonEducationHistory> list  =personEducationHistoryService.getIdList(ids);
-			list=personEducationHistoryService.createPersonEducationHistoryByList(list, 3953254564364289l);
+			list=personEducationHistoryService.updatePersonEducationHistoryByList(list, 3953254564364289l);
 //			personEducationHistoryService.
 			Assert.assertTrue(list!=null);
 		} catch (Exception e) {
@@ -65,7 +65,7 @@ public class PersonEducationHistoryServiceTest  extends TestBase implements Test
 		}
 	}	
 	/**
-	 * 根据人脉Id获取自定义的id
+	 * 根据人脉Id获取教育经历的id
 	 */
 	@org.junit.Test
 	public void testGetIdList(){
@@ -77,7 +77,7 @@ public class PersonEducationHistoryServiceTest  extends TestBase implements Test
 		}
 	}
 	/**
-	 * 根据id列表批量删除人脉自定义行业
+	 * 根据id列表批量删除人脉教育经历行业
 	 */
 	@org.junit.Test
 	public void testRealDeletePersonEducationHistoryList(){
@@ -89,7 +89,7 @@ public class PersonEducationHistoryServiceTest  extends TestBase implements Test
 		}
 	}	
 	/**
-	 * 初始化人脉自定义对象列表.
+	 * 初始化人脉教育经历对象列表.
 	 * @param userId
 	 * @param count
 	 * @return PersonEducationHistory
@@ -103,7 +103,7 @@ public class PersonEducationHistoryServiceTest  extends TestBase implements Test
 		return list;
 	}
 	/**
-	 * 初始化人脉自定义对象.
+	 * 初始化人脉教育经历对象.
 	 * @param personId
 	 * @return PersonEducationHistory
 	 */

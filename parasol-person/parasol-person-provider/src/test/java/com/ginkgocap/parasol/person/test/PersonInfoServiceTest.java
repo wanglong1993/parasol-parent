@@ -30,7 +30,7 @@ public class PersonInfoServiceTest  extends TestBase implements Test  {
 		
 	}
 	/**
-	 * 创建人脉基本信息
+	 * 创建人脉个人信息
 	 */
 	@org.junit.Test
 	public void testCreatePersonInfo(){
@@ -42,7 +42,7 @@ public class PersonInfoServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
-	 * 修改人脉基本信息
+	 * 修改人脉个人信息
 	 */
 	@org.junit.Test
 	public void testUpdatePersonInfo(){
@@ -55,7 +55,7 @@ public class PersonInfoServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
-	 * 根据id获取人脉基本信息
+	 * 根据id获取人脉个人信息
 	 */
 	@org.junit.Test
 	public void testGetPersonInfo(){
@@ -67,7 +67,7 @@ public class PersonInfoServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
-	 * 根据userId列表获取人脉基本信息列表
+	 * 根据userId列表获取人脉个人信息列表
 	 */
 	@org.junit.Test
 	public void testGetPersonInfoList(){
@@ -81,7 +81,7 @@ public class PersonInfoServiceTest  extends TestBase implements Test  {
 		}
 	}
 	/**
-	 * 初始化人脉基本信息对象
+	 * 初始化人脉个人信息对象
 	 * @return userLoginRegister
 	 */
 	public PersonInfo setPersonInfo(Long personId){
