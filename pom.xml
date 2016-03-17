@@ -23,6 +23,8 @@
 	   	<module>parasol-knowledge</module>
 	   	<module>parasol-person</module>
 	   	<module>parasol-column</module>
+ 	   	<module>parasol-associate</module>
+
 	</modules>
 	<repositories>
 		<repository>
