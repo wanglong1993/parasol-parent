@@ -21,7 +21,6 @@ import com.ginkgocap.parasol.knowledge.dao.IKnowledgeMongoDao;
 import com.ginkgocap.parasol.knowledge.model.ColumnSys;
 import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
 import com.ginkgocap.parasol.knowledge.utils.DateUtil;
-import com.ginkgocap.ywxt.user.model.User;
 import com.mongodb.WriteResult;
 
 @Repository("knowledgeMongoDao")
@@ -31,7 +30,7 @@ public class KnowledgeMongoDao implements IKnowledgeMongoDao {
 	private MongoTemplate mongoTemplate;
 	
 	@Override
-	public KnowledgeMongo insert(KnowledgeMongo knowledgeMongo, User user,String... collectionName) throws Exception {
+	public KnowledgeMongo insert(KnowledgeMongo knowledgeMongo, Long userId,String... collectionName) throws Exception {
 		
 		if(knowledgeMongo == null || knowledgeMongo.getId() <= 0)
 			return null;
@@ -39,10 +38,10 @@ public class KnowledgeMongoDao implements IKnowledgeMongoDao {
 		String currentDate = DateUtil.formatWithYYYYMMDDHHMMSS(new Date());
 		
 		if(knowledgeMongo.getCreateUserId() <= 0)
-			knowledgeMongo.setCreateUserId(user.getId());
+			knowledgeMongo.setCreateUserId(userId);
 		if(StringUtils.isBlank(knowledgeMongo.getCreateDate()))
 			knowledgeMongo.setCreateDate(currentDate);
-		knowledgeMongo.setModifyUserId(user.getId());
+		knowledgeMongo.setModifyUserId(userId);
 		knowledgeMongo.setModifyDate(currentDate);
 		
 		String currCollectionName = getCollectionName(knowledgeMongo.getColumnId(),collectionName);
@@ -53,14 +52,14 @@ public class KnowledgeMongoDao implements IKnowledgeMongoDao {
 	}
 	
 	@Override
-	public List<KnowledgeMongo> insertList(List<KnowledgeMongo> knowledgeMongoList, User user,String... collectionName) throws Exception {
+	public List<KnowledgeMongo> insertList(List<KnowledgeMongo> knowledgeMongoList, Long userId,String... collectionName) throws Exception {
 		
 		List<KnowledgeMongo> returnList = new ArrayList();
 		
 		if(knowledgeMongoList != null && !knowledgeMongoList.isEmpty()) {
 			Iterator<KnowledgeMongo> it = knowledgeMongoList.iterator();
 			while(it.hasNext()) {
-				returnList.add(this.insert(it.next(), user, collectionName));
+				returnList.add(this.insert(it.next(), userId, collectionName));
 			}
 		}
 		
@@ -68,7 +67,7 @@ public class KnowledgeMongoDao implements IKnowledgeMongoDao {
 	}
 
 	@Override
-	public KnowledgeMongo update(KnowledgeMongo knowledgeMongo, User user,String... collectionName)
+	public KnowledgeMongo update(KnowledgeMongo knowledgeMongo, Long userId,String... collectionName)
 			throws Exception {
 
 		if(knowledgeMongo == null)
@@ -77,12 +76,12 @@ public class KnowledgeMongoDao implements IKnowledgeMongoDao {
 		long knowledgeId = knowledgeMongo.getId();
 		
 		if(knowledgeId <= 0) {
-			return this.insert(knowledgeMongo, user);
+			return this.insert(knowledgeMongo, userId);
 		}
 		
 		String currentDate = DateUtil.formatWithYYYYMMDDHHMMSS(new Date());
 
-		knowledgeMongo.setModifyUserId(user.getId());
+		knowledgeMongo.setModifyUserId(userId);
 		knowledgeMongo.setModifyDate(currentDate);
 		
 		Criteria criteria = Criteria.where("_id").is(knowledgeId);
@@ -90,14 +89,14 @@ public class KnowledgeMongoDao implements IKnowledgeMongoDao {
 		
 		String currCollectionName = getCollectionName(knowledgeMongo.getColumnId(),collectionName);
 		
-		WriteResult result = mongoTemplate.updateFirst(query, getUpdate(knowledgeMongo,user), currCollectionName);
+		WriteResult result = mongoTemplate.updateFirst(query, getUpdate(knowledgeMongo,userId), currCollectionName);
 		
 		return this.getByIdAndColumnId(knowledgeId,knowledgeMongo.getColumnId(),currCollectionName);
 	}
 
 	@Override
 	public KnowledgeMongo insertAfterDelete(KnowledgeMongo knowledgeMongo,
-			long knowledgeId, User user,String... collectionName) throws Exception {
+			long knowledgeId, Long userId,String... collectionName) throws Exception {
 		
 		String currCollectionName = getCollectionName(knowledgeMongo.getColumnId(),collectionName);
 		
@@ -110,12 +109,12 @@ public class KnowledgeMongoDao implements IKnowledgeMongoDao {
 		
 		try {
 			
-			this.insert(knowledgeMongo, user,currCollectionName);
+			this.insert(knowledgeMongo, userId,currCollectionName);
 			
 		} catch (Exception e) {
 			
 			if(oldValue != null)
-				this.insert(oldValue, user,currCollectionName);
+				this.insert(oldValue, userId,currCollectionName);
 			
 			throw e;
 		}
@@ -214,7 +213,7 @@ public class KnowledgeMongoDao implements IKnowledgeMongoDao {
 		return ArrayUtils.isEmpty(collectionName) && StringUtils.isEmpty(collectionName[0]) ? getCollectionName(columnId) : collectionName[0];
 	}
 	
-	private Update getUpdate(KnowledgeMongo knowledgeMongo, User user) {
+	private Update getUpdate(KnowledgeMongo knowledgeMongo, Long userId) {
 		
 		//构建更新字段，目前默认是全字段更新
 		Update update = new Update();

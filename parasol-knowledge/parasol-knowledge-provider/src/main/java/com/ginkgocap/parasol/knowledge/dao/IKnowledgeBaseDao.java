@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.ginkgocap.parasol.knowledge.model.KnowledgeBase;
-import com.ginkgocap.ywxt.user.model.User;
 
 /**
  * @Title: 知识基础信息表
@@ -24,7 +23,7 @@ public interface IKnowledgeBaseDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeBase insert(KnowledgeBase knowledgeBase,User user) throws Exception;
+	public KnowledgeBase insert(KnowledgeBase knowledgeBase,Long userId) throws Exception;
 	
 	/**
 	 * 批量插入
@@ -35,7 +34,7 @@ public interface IKnowledgeBaseDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<KnowledgeBase> insertList(List<KnowledgeBase> knowledgeBaseList,User user) throws Exception;
+	public List<KnowledgeBase> insertList(List<KnowledgeBase> knowledgeBaseList,Long userId) throws Exception;
 	
 	/**
 	 * 更新
@@ -46,7 +45,7 @@ public interface IKnowledgeBaseDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeBase update(KnowledgeBase knowledgeBase,User user) throws Exception;
+	public KnowledgeBase update(KnowledgeBase knowledgeBase,Long userId) throws Exception;
 	
 	/**
 	 * 先删除后插入（删除时根据主键删除）
@@ -57,7 +56,7 @@ public interface IKnowledgeBaseDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeBase insertAfterDelete(KnowledgeBase knowledgeBase,User user) throws Exception;
+	public KnowledgeBase insertAfterDelete(KnowledgeBase knowledgeBase,Long userId) throws Exception;
 	
 	/**
 	 * 根据主键删除

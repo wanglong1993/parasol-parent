@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ginkgocap.ywxt.asso.service.annotation.AssoDeleteAnnotation;
-import com.ginkgocap.ywxt.asso.service.annotation.AssoGetAnnotation;
-import com.ginkgocap.ywxt.asso.service.annotation.AssoSaveAnnotation;
-import com.ginkgocap.ywxt.asso.service.annotation.AssoUpdateAnnotation;
+//import com.ginkgocap.ywxt.asso.service.annotation.AssoDeleteAnnotation;
+//import com.ginkgocap.ywxt.asso.service.annotation.AssoGetAnnotation;
+//import com.ginkgocap.ywxt.asso.service.annotation.AssoSaveAnnotation;
+//import com.ginkgocap.ywxt.asso.service.annotation.AssoUpdateAnnotation;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeBaseDao;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeMongoDao;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeReferenceDao;
@@ -23,9 +23,8 @@ import com.ginkgocap.parasol.knowledge.service.IKnowledgeService;
 import com.ginkgocap.parasol.knowledge.service.common.IBigDataService;
 import com.ginkgocap.parasol.knowledge.service.common.IKnowledgeCommonService;
 import com.ginkgocap.parasol.knowledge.utils.PackingDataUtil;
-import com.ginkgocap.ywxt.user.model.User;
-import com.ginkgocap.ywxt.user.service.DiaryService;
-import com.ginkgocap.ywxt.user.service.UserFeedService;
+//import com.ginkgocap.parasol.knowledge.service.DiaryService;
+//import com.ginkgocap.parasol.knowledge.service.UserFeedService;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
 
@@ -50,15 +49,15 @@ public class KnowledgeService implements IKnowledgeService {
 	@Autowired
 	private IBigDataService bigDataService;
 	/**动态推送服务*/
-	@Autowired
-	private UserFeedService userFeedService;
+	//@Autowired
+	//private UserFeedService userFeedService;
 	/**心情日记*/
-	@Autowired
-	private DiaryService diaryService;
+	//@Autowired
+	//private DiaryService diaryService;
 	
-	@AssoSaveAnnotation
+	//@AssoSaveAnnotation
 	@Override
-	public InterfaceResult<DataCollection> insert(DataCollection dataCollection, User user) throws Exception {
+	public InterfaceResult<DataCollection> insert(DataCollection dataCollection, Long userId) throws Exception {
 		
 		KnowledgeMongo knowledgeMongo = (KnowledgeMongo) dataCollection.getKnowledge();
 		KnowledgeReference knowledgeReference = dataCollection.getReference();
@@ -95,7 +94,7 @@ public class KnowledgeService implements IKnowledgeService {
 		
 		//大数据MQ推送
 		try {
-			bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, afterSaveKnowledgeMongo, user);
+			bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, afterSaveKnowledgeMongo, userId);
 		} catch (Exception e) {
 			this.insertRollBack(knowledgeId, columnId, user, true, true, true, false, false);
 			logger.error("知识MQ推送失败！失败原因：\n"+e.getCause().toString());
@@ -104,7 +103,7 @@ public class KnowledgeService implements IKnowledgeService {
 		
 		//动态推送（仅推送观点）
 		try {
-			userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledgeMongo, user, diaryService));
+			userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledgeMongo, userId, diaryService));
 		} catch (Exception e) {
 			this.insertRollBack(knowledgeId, columnId, user, true, true, true, true, false);
 			logger.error("动态推送失败！失败原因：\n"+e.getCause().toString());
@@ -114,9 +113,9 @@ public class KnowledgeService implements IKnowledgeService {
 		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(afterSaveKnowledgeMongo,afterSaveKnowledgeReference));
 	}
 
-	@AssoUpdateAnnotation
+	//@AssoUpdateAnnotation
 	@Override
-	public InterfaceResult<DataCollection> update(DataCollection dataCollection, User user) throws Exception {
+	public InterfaceResult<DataCollection> update(DataCollection dataCollection, Long userId) throws Exception {
 
 		KnowledgeMongo knowledgeMongo = (KnowledgeMongo) dataCollection.getKnowledge();
 		KnowledgeReference knowledgeReference = dataCollection.getReference();
@@ -174,9 +173,9 @@ public class KnowledgeService implements IKnowledgeService {
 		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(afterSaveKnowledgeMongo,afterSaveKnowledgeReference));
 	}
 
-	@AssoDeleteAnnotation
+	//@AssoDeleteAnnotation
 	@Override
-	public InterfaceResult<DataCollection> deleteByKnowledgeId(long knowledgeId, long columnId, User user) throws Exception {
+	public InterfaceResult<DataCollection> deleteByKnowledgeId(long knowledgeId, long columnId, Long userId) throws Exception {
 		
 		KnowledgeMongo oldKnowledgeMongo = this.knowledgeMongoDao.getByIdAndColumnId(knowledgeId, columnId);
 		
@@ -224,9 +223,9 @@ public class KnowledgeService implements IKnowledgeService {
 		return InterfaceResult.getSuccessInterfaceResultInstance(null);
 	}
 
-	@AssoDeleteAnnotation
+	//@AssoDeleteAnnotation
 	@Override
-	public InterfaceResult<DataCollection> deleteByKnowledgeIds(List<Long> knowledgeIds, long columnId, User user) throws Exception {
+	public InterfaceResult<DataCollection> deleteByKnowledgeIds(List<Long> knowledgeIds, long columnId, Long userId) throws Exception {
 		
 		List<KnowledgeMongo> oldKnowledgeMongoList = this.knowledgeMongoDao.getByIdsAndColumnId(knowledgeIds, columnId);
 		
@@ -275,9 +274,9 @@ public class KnowledgeService implements IKnowledgeService {
 		return InterfaceResult.getSuccessInterfaceResultInstance(null);
 	}
 
-	@AssoGetAnnotation
+	//@AssoGetAnnotation
 	@Override
-	public InterfaceResult<DataCollection> getDetailById(long knowledgeId,long columnId,User user) throws Exception {
+	public InterfaceResult<DataCollection> getDetailById(long knowledgeId,long columnId,Long userId) throws Exception {
 		
 		KnowledgeMongo knowledgeMongo = this.knowledgeMongoDao.getByIdAndColumnId(knowledgeId, columnId);
 		
@@ -288,7 +287,7 @@ public class KnowledgeService implements IKnowledgeService {
 	}
 
 	@Override
-	public InterfaceResult<DataCollection> getBaseById(long knowledgeId,User user) throws Exception {
+	public InterfaceResult<DataCollection> getBaseById(long knowledgeId,Long userId) throws Exception {
 		
 		KnowledgeBase knowledgeBase = this.knowledgeBaseDao.getById(knowledgeId);
 		
@@ -298,7 +297,7 @@ public class KnowledgeService implements IKnowledgeService {
 	}
 
 	@Override
-	public InterfaceResult<List<DataCollection>> getBaseByIds(List<Long> knowledgeIds,User user) throws Exception {
+	public InterfaceResult<List<DataCollection>> getBaseByIds(List<Long> knowledgeIds,Long userId) throws Exception {
 		
 		List<KnowledgeBase> knowledgeBaseList = this.knowledgeBaseDao.getByIds(knowledgeIds);
 		
@@ -314,24 +313,24 @@ public class KnowledgeService implements IKnowledgeService {
 	}
 
 	@Override
-	public InterfaceResult<List<DataCollection>> getBaseByCreateUserId(User user,int start,int size) throws Exception {
+	public InterfaceResult<List<DataCollection>> getBaseByCreateUserId(Long userId,int start,int size) throws Exception {
 		
 		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserId(user.getId(), start, size)));
 	}
 
 	@Override
-	public InterfaceResult<List<DataCollection>> getBaseByCreateUserIdAndColumnId(User user,long columnId,int start,int size) throws Exception {
+	public InterfaceResult<List<DataCollection>> getBaseByCreateUserIdAndColumnId(Long userId,long columnId,int start,int size) throws Exception {
 		
 		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserIdAndColumnId(user.getId(), columnId, start, size)));
 	}
 
 	@Override
-	public InterfaceResult<List<DataCollection>> getBaseByCreateUserIdAndType(User user,String type,int start,int size) throws Exception {
+	public InterfaceResult<List<DataCollection>> getBaseByCreateUserIdAndType(Long userId,String type,int start,int size) throws Exception {
 		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserIdAndType(user.getId(), type, start, size)));
 	}
 
 	@Override
-	public InterfaceResult<List<DataCollection>> getBaseByCreateUserIdAndColumnIdAndType(User user,long columnId,String type,int start,int size) throws Exception {
+	public InterfaceResult<List<DataCollection>> getBaseByCreateUserIdAndColumnIdAndType(Long userId,long columnId,String type,int start,int size) throws Exception {
 		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserIdAndTypeAndColumnId(user.getId(), type, columnId, start, size)));
 	}
 	
@@ -356,12 +355,13 @@ public class KnowledgeService implements IKnowledgeService {
 	 * @date 2016年1月15日 上午11:30:18
 	 * @throws Exception
 	 */
-	private void insertRollBack(long knowledgeId, long columnId, User user,boolean isMongo,boolean isBase,boolean isReference,boolean isBigData,boolean isUserFeed) throws Exception {
+	private void insertRollBack(long knowledgeId, long columnId, Long userId,boolean isMongo,boolean isBase,boolean isReference,boolean isBigData,boolean isUserFeed) throws Exception {
 		if(isMongo) this.knowledgeMongoDao.deleteByIdAndColumnId(knowledgeId, columnId);
 		if(isBase) this.knowledgeBaseDao.deleteById(knowledgeId);
 		if(isReference) this.knowledgeReferenceDao.deleteByKnowledgeId(knowledgeId);
-		if(isBigData) this.bigDataService.deleteMessage(knowledgeId, columnId, user);
-		if(isUserFeed) this.userFeedService.deleteDynamicKnowledge(knowledgeId);
+		if(isBigData) this.bigDataService.deleteMessage(knowledgeId, columnId, userId);
+        //TODO: check if need or not
+		//if(isUserFeed) this.userFeedService.deleteDynamicKnowledge(knowledgeId);
 	}
 	
 	/**
@@ -371,13 +371,14 @@ public class KnowledgeService implements IKnowledgeService {
 	 * @throws Exception
 	 */
 	private void updateRollBack(long knowledgeId, long columnId,
-			KnowledgeMongo oldKnowledgeMongo,KnowledgeBase oldKnowledgeBase,KnowledgeReference oldKnowledgeReference, User user,
+			KnowledgeMongo oldKnowledgeMongo,KnowledgeBase oldKnowledgeBase,KnowledgeReference oldKnowledgeReference, Long userId,
 			boolean isMongo,boolean isBase,boolean isReference,boolean isBigData,boolean isUserFeed) throws Exception {
-		if(isMongo) this.knowledgeMongoDao.insertAfterDelete(oldKnowledgeMongo, knowledgeId, user);
-		if(isBase) this.knowledgeBaseDao.insertAfterDelete(oldKnowledgeBase, user);
-		if(isReference) this.knowledgeReferenceDao.insertAfterDelete(oldKnowledgeReference, knowledgeId, user);
-		if(isBigData) this.bigDataService.sendMessage(IBigDataService.KNOWLEDGE_UPDATE, oldKnowledgeMongo, user);
-		if(isUserFeed) this.userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(oldKnowledgeMongo, user, diaryService));
+		if(isMongo) this.knowledgeMongoDao.insertAfterDelete(oldKnowledgeMongo, knowledgeId, userId);
+		if(isBase) this.knowledgeBaseDao.insertAfterDelete(oldKnowledgeBase, userId);
+		if(isReference) this.knowledgeReferenceDao.insertAfterDelete(oldKnowledgeReference, knowledgeId, userId);
+		if(isBigData) this.bigDataService.sendMessage(IBigDataService.KNOWLEDGE_UPDATE, oldKnowledgeMongo, userId);
+        //TODO: check if need or not
+		//if(isUserFeed) this.userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(oldKnowledgeMongo, user, diaryService));
 	}
 	
 	/**
@@ -387,13 +388,14 @@ public class KnowledgeService implements IKnowledgeService {
 	 * @throws Exception
 	 */
 	private void deleteRollBack(long knowledgeId, long columnId,
-			KnowledgeMongo oldKnowledgeMongo,KnowledgeBase oldKnowledgeBase,KnowledgeReference oldKnowledgeReference, User user,
+			KnowledgeMongo oldKnowledgeMongo,KnowledgeBase oldKnowledgeBase,KnowledgeReference oldKnowledgeReference, Long userId,
 			boolean isMongo,boolean isBase,boolean isReference,boolean isBigData,boolean isUserFeed) throws Exception {
-		if(isMongo) this.knowledgeMongoDao.insert(oldKnowledgeMongo, user);
-		if(isBase) this.knowledgeBaseDao.insert(oldKnowledgeBase, user);
-		if(isReference) this.knowledgeReferenceDao.insert(oldKnowledgeReference, knowledgeId, user);
-		if(isBigData) this.bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, oldKnowledgeMongo, user);
-		if(isUserFeed) this.userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(oldKnowledgeMongo, user, diaryService));
+		if(isMongo) this.knowledgeMongoDao.insert(oldKnowledgeMongo, userId);
+		if(isBase) this.knowledgeBaseDao.insert(oldKnowledgeBase, userId);
+		if(isReference) this.knowledgeReferenceDao.insert(oldKnowledgeReference, knowledgeId, userId);
+		if(isBigData) this.bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, oldKnowledgeMongo, userId);
+        //TODO: check if need or not
+		//if(isUserFeed) this.userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(oldKnowledgeMongo, userId, diaryService));
 	}
 	
 	/**
@@ -402,7 +404,7 @@ public class KnowledgeService implements IKnowledgeService {
 	 * @date 2016年1月15日 上午11:32:13
 	 * @throws Exception
 	 */
-	private void deleteListRollBack(List<KnowledgeMongo> oldKnowledgeMongoList,List<KnowledgeBase> oldKnowledgeBaseList,List<KnowledgeReference> oldKnowledgeReferenceList, User user,
+	private void deleteListRollBack(List<KnowledgeMongo> oldKnowledgeMongoList,List<KnowledgeBase> oldKnowledgeBaseList,List<KnowledgeReference> oldKnowledgeReferenceList, Long userId,
 			boolean isMongo,boolean isBase,boolean isReference,boolean isBigData,boolean isUserFeed) throws Exception {
 		if(isMongo) this.knowledgeMongoDao.insertList(oldKnowledgeMongoList, user);
 		if(isBase) this.knowledgeBaseDao.insertList(oldKnowledgeBaseList, user);
@@ -410,7 +412,8 @@ public class KnowledgeService implements IKnowledgeService {
 		if(isBigData) this.bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, oldKnowledgeMongoList, user);
 		if(isUserFeed) {
 			for (KnowledgeMongo oldKnowledgeMongo: oldKnowledgeMongoList)
-			this.userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(oldKnowledgeMongo, user, diaryService));
+            //TODO: check if need or not
+			//this.userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(oldKnowledgeMongo, user, diaryService));
 		}
 		
 	}

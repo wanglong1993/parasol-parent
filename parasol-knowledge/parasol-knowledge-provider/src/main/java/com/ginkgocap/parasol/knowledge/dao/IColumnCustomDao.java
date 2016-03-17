@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
-import com.ginkgocap.ywxt.user.model.User;
 
 /**
  * @Title: 用户定制栏目表
@@ -46,7 +45,7 @@ public interface IColumnCustomDao {
      */
     public Boolean del(long id) throws Exception;
     
-	public Map<String,Object> queryHomeColumn(User user);
+	public Map<String,Object> queryHomeColumn(Long userId);
 
 	/**
 	 * 根据用户id和上级栏目id及可见状态查询

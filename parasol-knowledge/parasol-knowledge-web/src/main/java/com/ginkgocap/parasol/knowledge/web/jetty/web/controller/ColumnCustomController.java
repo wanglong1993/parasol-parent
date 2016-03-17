@@ -33,7 +33,7 @@ public class ColumnCustomController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<List<ColumnCustom>> showColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		InterfaceResult<List<ColumnCustom>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		JSONObject requestJson = this.getRequestJson(request);
 		if(!requestJson.containsKey("pid")){
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
@@ -54,7 +54,7 @@ public class ColumnCustomController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<ColumnCustom> addColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		InterfaceResult<ColumnCustom> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		JSONObject requestJson = this.getRequestJson(request);
 		//{"columnname":"l2","pid":0,"type":1,"pathName":"l2","tags":"ddd,kkk"}:
 		if(!requestJson.containsKey("columnname")||!requestJson.containsKey("pid")){
@@ -83,7 +83,7 @@ public class ColumnCustomController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<ColumnCustom> updateColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		InterfaceResult<ColumnCustom> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		JSONObject requestJson = this.getRequestJson(request);
 		//{"columnid":"2854","columnName":"l21","tags":"栏目标签"}:
 		if(!requestJson.containsKey("columnname")||!requestJson.containsKey("columnid")){
@@ -100,7 +100,7 @@ public class ColumnCustomController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<ColumnCustom> deleteColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		InterfaceResult<ColumnCustom> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		JSONObject requestJson = this.getRequestJson(request);
 		//{"columnid":"2854"}:
 		if(!requestJson.containsKey("columnid")){

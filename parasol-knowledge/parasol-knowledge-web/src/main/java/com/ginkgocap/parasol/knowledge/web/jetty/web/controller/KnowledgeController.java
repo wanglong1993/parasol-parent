@@ -49,8 +49,8 @@ public class KnowledgeController extends BaseControl {
 	@RequestMapping(value = "",method = RequestMethod.POST)
 	@ResponseBody
 	public InterfaceResult<DataCollection> insert(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		User user = this.getUser(request);
+
+        LoginInfo user = this.getUser(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -81,7 +81,7 @@ public class KnowledgeController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<DataCollection> update(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -115,7 +115,7 @@ public class KnowledgeController extends BaseControl {
 	public InterfaceResult<DataCollection> delete(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable Long id,@PathVariable Long columnId) throws IOException {
 		
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -152,7 +152,7 @@ public class KnowledgeController extends BaseControl {
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION);
 		}
 		
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		
 		//如果是游客登录，则给予金桐脑权限
 		if (null == user) {
@@ -191,7 +191,7 @@ public class KnowledgeController extends BaseControl {
 	public InterfaceResult<List<DataCollection>> getAll(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable int start,@PathVariable int size) throws IOException {
 		
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -220,7 +220,7 @@ public class KnowledgeController extends BaseControl {
 	public InterfaceResult<List<DataCollection>> getAllByColumnId(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable long columnId,@PathVariable int start,@PathVariable int size) throws IOException {
 		
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -249,7 +249,7 @@ public class KnowledgeController extends BaseControl {
 	public InterfaceResult<List<DataCollection>> getByCreateUserId(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable int start,@PathVariable int size) throws IOException {
 		
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -278,7 +278,7 @@ public class KnowledgeController extends BaseControl {
 	public InterfaceResult<List<DataCollection>> getByCreateUserIdAndColumnId(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable long columnId,@PathVariable int start,@PathVariable int size) throws IOException {
 		
-		User user = this.getUser(request);
+		Long userId = this.getUser(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);

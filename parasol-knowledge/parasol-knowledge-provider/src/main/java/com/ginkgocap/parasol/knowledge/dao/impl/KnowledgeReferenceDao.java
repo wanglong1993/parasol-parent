@@ -16,7 +16,7 @@ import com.ginkgocap.ywxt.user.model.User;
 public class KnowledgeReferenceDao extends BaseService<KnowledgeReference> implements IKnowledgeReferenceDao {
 
 	@Override
-	public KnowledgeReference insert(KnowledgeReference knowledgeReference,long knowledgeId,User user)
+	public KnowledgeReference insert(KnowledgeReference knowledgeReference,long knowledgeId,Long userId)
 			throws Exception {
 		
 		if(knowledgeReference == null)
@@ -40,7 +40,7 @@ public class KnowledgeReferenceDao extends BaseService<KnowledgeReference> imple
 	}
 	
 	@Override
-	public List<KnowledgeReference> insertList(List<KnowledgeReference> knowledgeReferenceList,User user)
+	public List<KnowledgeReference> insertList(List<KnowledgeReference> knowledgeReferenceList,Long userId)
 			throws Exception {
 		
 		if(knowledgeReferenceList == null || knowledgeReferenceList.isEmpty())
@@ -63,7 +63,7 @@ public class KnowledgeReferenceDao extends BaseService<KnowledgeReference> imple
 	}
 
 	@Override
-	public KnowledgeReference update(KnowledgeReference knowledgeReference,User user)
+	public KnowledgeReference update(KnowledgeReference knowledgeReference,Long userId)
 			throws Exception {
 		if(knowledgeReference == null)
 			return null;
@@ -79,7 +79,7 @@ public class KnowledgeReferenceDao extends BaseService<KnowledgeReference> imple
 
 	@Override
 	public KnowledgeReference insertAfterDelete(
-			KnowledgeReference knowledgeReference,long knowledgeId,User user) throws Exception {
+			KnowledgeReference knowledgeReference,long knowledgeId,Long userId) throws Exception {
 		
 		long id = knowledgeReference.getId();
 		

@@ -34,7 +34,7 @@ public interface IKnowledgeMongoDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeMongo insert(KnowledgeMongo knowledgeMongo,User user,String... collectionName) throws Exception;
+	public KnowledgeMongo insert(KnowledgeMongo knowledgeMongo,Long userId,String... collectionName) throws Exception;
 	
 	/**
 	 * 批量插入
@@ -46,7 +46,7 @@ public interface IKnowledgeMongoDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<KnowledgeMongo> insertList(List<KnowledgeMongo> knowledgeMongoList,User user,String... collectionName) throws Exception;
+	public List<KnowledgeMongo> insertList(List<KnowledgeMongo> knowledgeMongoList,Long userId,String... collectionName) throws Exception;
 	
 	/**
 	 * 更新
@@ -58,7 +58,7 @@ public interface IKnowledgeMongoDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeMongo update(KnowledgeMongo knowledgeMongo,User user,String... collectionName) throws Exception;
+	public KnowledgeMongo update(KnowledgeMongo knowledgeMongo,Long userId,String... collectionName) throws Exception;
 	
 	/**
 	 * 先删除后插入
@@ -71,7 +71,7 @@ public interface IKnowledgeMongoDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeMongo insertAfterDelete(KnowledgeMongo knowledgeMongo,long knowledgeId,User user,String... collectionName) throws Exception;
+	public KnowledgeMongo insertAfterDelete(KnowledgeMongo knowledgeMongo,long knowledgeId,Long userId,String... collectionName) throws Exception;
 	
 	/**
 	 * 根据主键及栏目删除数据
