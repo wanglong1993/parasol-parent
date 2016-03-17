@@ -45,7 +45,7 @@ public enum ColumnType {
     /**
      * 知识javaBean （文章）
      */
-	EKnowledgeArticle(10)
+	EKnowledgeArticle(10);
 
 	private short type;
 	private ColumnType(int t){
