@@ -29,7 +29,8 @@
 			</list>
 		</property>
 	</bean>
-	<import resource="classpath:user-dubbo-config.xml" />
+	<import resource="classpath:person-dubbo-config.xml" />
+	<import resource="classpath:person-dubbo-consumer.xml" />
 	<import resource="classpath:user-dubbo-consumer.xml" />
 	<import resource="classpath:file-dubbo-consumer.xml"/>
 	<import resource="classpath:oauth2-dubbo-consumer.xml"/>

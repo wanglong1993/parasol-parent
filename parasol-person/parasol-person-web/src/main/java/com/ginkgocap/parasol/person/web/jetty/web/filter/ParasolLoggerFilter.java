@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.user.web.jetty.web.filter;
+package com.ginkgocap.parasol.person.web.jetty.web.filter;
 
 import java.io.IOException;
 

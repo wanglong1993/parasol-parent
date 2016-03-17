@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.user.web.jetty.web;
+package com.ginkgocap.parasol.person.web.jetty.web;
 
 import java.io.Serializable;
 
