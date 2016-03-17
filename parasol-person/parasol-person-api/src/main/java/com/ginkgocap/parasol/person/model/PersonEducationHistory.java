@@ -43,11 +43,11 @@ public class PersonEducationHistory implements java.io.Serializable {
 	/**
 	 * 开始时间.
 	 */
-	private Long beginTime;
+	private String beginTime;
 	/**
 	 * 结束时间.
 	 */
-	private Long endTime;
+	private String endTime;
 	/**
 	 * 描述.
 	 */
@@ -121,20 +121,20 @@ public class PersonEducationHistory implements java.io.Serializable {
 	}
 
 	@Column(name = "begin_time")
-	public Long getBeginTime() {
+	public String getBeginTime() {
 		return this.beginTime;
 	}
 
-	public void setBeginTime(Long beginTime) {
+	public void setBeginTime(String beginTime) {
 		this.beginTime = beginTime;
 	}
 
 	@Column(name = "end_time")
-	public Long getEndTime() {
+	public String getEndTime() {
 		return this.endTime;
 	}
 
-	public void setEndTime(Long endTime) {
+	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 
