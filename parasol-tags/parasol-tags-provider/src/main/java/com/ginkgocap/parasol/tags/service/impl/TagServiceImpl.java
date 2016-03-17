@@ -61,7 +61,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 			throw new TagServiceException(ServiceError.ERROR_TAG_NAME_TOO_LENGTH, "tagName too length， max is " + MAX_LEN_TAG);
 		}
 
-		tag.setTagName(tag.getTagName().replace(" ", "")); //replace tab blank
+		//tag.setTagName(tag.getTagName().replace(" ", "")); //replace tab blank , 有英文情况
 		int count = countTagsByUserIdAppidTagType(userId, tag.getAppId(), tag.getTagType());
 		if (count >= MAX_TAG) {
 			throw new TagServiceException(ServiceError.ERROR_TOO_MANY, "Can't create too many tag， Max is " + MAX_TAG);
