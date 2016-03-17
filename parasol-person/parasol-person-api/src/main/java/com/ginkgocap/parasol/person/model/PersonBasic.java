@@ -61,17 +61,17 @@ public class PersonBasic implements java.io.Serializable {
 	 */
 	private Long picId;
 	/**
-	 * 国外的洲或国内的省.
+	 * 国外的洲或国内的省id.
 	 */
-	private Long country;
+	private Long countryId;
 	/**
-	 * 国外的国家或国内的城市.
+	 * 国外的国家或国内的城市id.
 	 */
-	private Long city;
+	private Long cityId;
 	/**
-	 * 县.
+	 * 县id.
 	 */
-	private Long county;
+	private Long countyId;
 	/**
 	 * 详细地址.
 	 */
@@ -80,9 +80,13 @@ public class PersonBasic implements java.io.Serializable {
 	 * 个人描述.
 	 */
 	private String remark;
-
+	/**
+	 * 一级职能ID
+	 */
 	private Long firstIndustryId;
-
+	/**
+	 * 二级职能ID
+	 */
 	private Long secondIndustryId;
 	/**
 	 * 创建人.
@@ -190,30 +194,30 @@ public class PersonBasic implements java.io.Serializable {
 	}
 
 	@Column(name = "country")
-	public Long getCountry() {
-		return this.country;
+	public Long getCountryId() {
+		return this.countryId;
 	}
 
-	public void setCountry(Long country) {
-		this.country = country;
+	public void setCountryId(Long countryId) {
+		this.countryId = countryId;
 	}
 
 	@Column(name = "city")
-	public Long getCity() {
-		return this.city;
+	public Long getCityId() {
+		return this.cityId;
 	}
 
-	public void setCity(Long city) {
-		this.city = city;
+	public void setCityId(Long cityId) {
+		this.cityId = cityId;
 	}
 
 	@Column(name = "county")
-	public Long getCounty() {
-		return this.county;
+	public Long getCountyId() {
+		return this.countyId;
 	}
 
-	public void setCounty(Long county) {
-		this.county = county;
+	public void setCountyId(Long countyId) {
+		this.countyId = countyId;
 	}
 
 	@Column(name = "address", length = 100)

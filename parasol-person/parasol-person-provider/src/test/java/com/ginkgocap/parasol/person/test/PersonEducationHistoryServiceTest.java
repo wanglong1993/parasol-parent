@@ -113,7 +113,7 @@ public class PersonEducationHistoryServiceTest  extends TestBase implements Test
 		personEducationHistory.setPersonId(personId);
 		personEducationHistory.setSchool("家里墩大学"+industryId);
 		personEducationHistory.setMajor("软件工程"+industryId);
-		personEducationHistory.setDegree(new Byte("1"));
+		personEducationHistory.setDegree("中学");
 		personEducationHistory.setBeginTime(ctime);
 		personEducationHistory.setEndTime(ctime);
 		personEducationHistory.setDescription("非常想念在学把妹的时光"+industryId);
