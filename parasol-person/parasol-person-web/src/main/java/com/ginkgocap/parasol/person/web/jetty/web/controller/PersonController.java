@@ -203,7 +203,7 @@ public class PersonController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				personInfo = new PersonInfo();
-				personInfo.setBirthday(birthday.getTime());
+				personInfo.setBirthday(birthday!=null?birthday.getTime():null);
 				personInfo.setCountyId(countyId2);
 				personInfo.setCityId(cityId2);
 				personInfo.setCtime(ctime);
