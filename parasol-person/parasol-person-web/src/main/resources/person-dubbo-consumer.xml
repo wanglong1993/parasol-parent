@@ -31,15 +31,10 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
-    <dubbo:reference id="userLoginRegisterService" interface="com.ginkgocap.parasol.user.service.UserLoginRegisterService" version="2.0.0"/>
-    <dubbo:reference id="userInterestIndustryService" interface="com.ginkgocap.parasol.user.service.UserInterestIndustryService" version="2.0.0"/>
-    <dubbo:reference id="userBasicService" interface="com.ginkgocap.parasol.user.service.UserBasicService" version="2.0.0"/>
-    <dubbo:reference id="userFriendlyService" interface="com.ginkgocap.parasol.user.service.UserFriendlyService" version="2.0.0"/>
-    <dubbo:reference id="userOrganBasicService" interface="com.ginkgocap.parasol.user.service.UserOrganBasicService" version="2.0.0"/>
-    <dubbo:reference id="userOrgPerCusRelService" interface="com.ginkgocap.parasol.user.service.UserOrgPerCusRelService" version="2.0.0"/>
-    <dubbo:reference id="userLoginThirdService" interface="com.ginkgocap.parasol.user.service.UserLoginThirdService" version="2.0.0"/>
-    <dubbo:reference id="userExtService" interface="com.ginkgocap.parasol.user.service.UserExtService" version="2.0.0"/>
-    <dubbo:reference id="userOrganExtService" interface="com.ginkgocap.parasol.user.service.UserOrganExtService" version="2.0.0"/>
-    <dubbo:reference id="userDefinedService" interface="com.ginkgocap.parasol.user.service.UserDefinedService" version="2.0.0"/>
-    
+    <dubbo:reference id="personBasicService" interface="com.ginkgocap.parasol.person.service.PersonBasicService" version="2.0.0"/>
+    <dubbo:reference id="personContactWayService" interface="com.ginkgocap.parasol.person.service.PersonContactWayService" version="2.0.0"/>
+    <dubbo:reference id="personDefinedService" interface="com.ginkgocap.parasol.person.service.PersonDefinedService" version="2.0.0"/>
+    <dubbo:reference id="personEducationHistoryService" interface="com.ginkgocap.parasol.person.service.PersonEducationHistoryService" version="2.0.0"/>
+    <dubbo:reference id="personInfoService" interface="com.ginkgocap.parasol.person.service.PersonInfoService" version="2.0.0"/>
+    <dubbo:reference id="personWorkHistoryService" interface="com.ginkgocap.parasol.person.service.PersonWorkHistoryService" version="2.0.0"/>
 </beans>
