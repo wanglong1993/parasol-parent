@@ -65,29 +65,11 @@ public class PersonController extends BaseControl {
 	@Autowired
 	private PersonWorkHistoryService personWorkHistoryService;
 	@Autowired
-	private UserLoginRegisterService userLoginRegisterService;
-	@Autowired
 	private TagSourceService tagSourceService;
 	@Autowired
 	private AssociateService associateService;
 	@Autowired
 	private DirectorySourceService directorySourceService;
-	@Value("${user.web.url}")  
-    private String userWebUrl;  
-	@Value("${oauth.web.url}")  
-    private String oauthWebUrl;  
-	@Value("${oauth.web.logout}")  
-	private String oauthWebLogout;  
-	@Value("${client_id}")  
-    private String client_id;  
-	@Value("${client_secret}")  
-    private String client_secret; 
-	@Value("${email.validate.url}")  
-    private String emailValidateUrl; 	
-	@Value("${dfs.gintong.com}")  
-	private String dfsGintongCom; 	
-    private static final String GRANT_TYPE="password"; 
-    private static final String CLASS_NAME = PersonController.class.getName();
 
 	/**
 	 * 创建人脉
@@ -345,7 +327,7 @@ public class PersonController extends BaseControl {
 							tagSource.setSourceId(id);
 							tagSource.setSourceType(1);
 							tagSource.setCreateAt(ctime);
-							tagSourceId=tagSourceService.createTagSource(tagSource);
+							tagSourceService.createTagSource(tagSource);
 						}
 					}else{
 						for (int i = 0; i < tagIds.length; i++) {
@@ -387,7 +369,7 @@ public class PersonController extends BaseControl {
 							directorySource.setSourceId(id);
 							directorySource.setSourceType(2);
 							directorySource.setCreateAt(ctime);
-							directorySourceId=directorySourceService.createDirectorySources(directorySource);
+							directorySourceService.createDirectorySources(directorySource);
 						}
 					}else{
 						for (int i = 0; i < directoryIds.length; i++) {
@@ -398,7 +380,7 @@ public class PersonController extends BaseControl {
 							directorySource.setSourceId(id);
 							directorySource.setSourceType(2);
 							directorySource.setCreateAt(ctime);
-							directorySourceId=directorySourceService.createDirectorySources(directorySource);
+							directorySourceService.createDirectorySources(directorySource);
 						}
 					}
 				}
