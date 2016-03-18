@@ -145,9 +145,9 @@ public class PersonController extends BaseControl {
 			//教育经历
 			,@RequestParam(name = "personEducationHistorys",required = false) String personEducationHistoryJson
 			//标签TagSource
-			,@RequestParam(name = "tagIds",required = true) Long[] tagIds
+			,@RequestParam(name = "tagIds",required = false) Long[] tagIds
 			//目录DirectorySource
-			 ,@RequestParam(name = "directoryId",required = true) Long[] directoryIds
+			 ,@RequestParam(name = "directoryId",required = false) Long[] directoryIds
 			 //关联Associate
 			 ,@RequestParam(name = "associates",required = false) String associateJson
 			)throws Exception {
