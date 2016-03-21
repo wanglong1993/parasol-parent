@@ -556,58 +556,55 @@ public class PersonController extends BaseControl {
 			personBasic.setCtime(ctime);
 			personBasic.setUtime(utime);
 			personBasic.setIp(ip);
-			id=personBasicService.createPersonBasic(personBasic);
-			if(id<=0l || id==null){
+			boolean bl=personBasicService.updatePersonBasic(personBasic);
+			if(bl==false){
 				resultMap.put( "message", "保存人脉基本信息出错！");
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
 			personInfo =personInfoService.getPersonInfo(id);
-			if(ObjectUtils.isEmpty(personInfo)){
-				personInfo=new PersonInfo();
-			}
-			personInfo.setBirthday(birthday!=null?birthday.getTime():null);
-			personInfo.setCountyId(countyId2);
-			personInfo.setCityId(cityId2);
-			personInfo.setCtime(ctime);
-			personInfo.setIp(ip);
-			personInfo.setPersonId(id);
-			personInfo.setProvinceId(provinceId);
-			personId=personInfoService.createPersonInfo(personInfo);
-			if(!personId.equals(id)){
-				personBasicService.realDeletePersonBasic(id);
-				resultMap.put( "message", "保存人脉个人信息出错！");
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
+			if(!ObjectUtils.isEmpty(personInfo)){
+				personInfo.setBirthday(birthday!=null?birthday.getTime():null);
+				personInfo.setCountyId(countyId2);
+				personInfo.setCityId(cityId2);
+				personInfo.setCtime(ctime);
+				personInfo.setIp(ip);
+				personInfo.setPersonId(id);
+				personInfo.setProvinceId(provinceId);
+				bl=personInfoService.updatePersonInfo(personInfo);
+				if(bl==false){
+					personBasicService.realDeletePersonBasic(id);
+					resultMap.put( "message", "保存人脉个人信息出错！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
 			}
 			personContactWay=personContactWayService.getPersonContactWay(id);
-			if(ObjectUtils.isEmpty(personContactWay)){
-				personContactWay=new PersonContactWay();
-			}
-			personContactWay.setPersonId(id);
-			personContactWay.setCellphone(cellphone);
-			personContactWay.setEmail(email);
-			personContactWay.setWeixin(weixin);
-			personContactWay.setQq(qq);
-			personContactWay.setWeibo(weibo);
-			personContactWay.setCtime(ctime);
-			personContactWay.setUtime(utime);
-			personContactWay.setIp(ip);
-			personId=personContactWayService.createPersonContactWay(personContactWay);
-			if(!personId.equals(id)){
-				personBasicService.realDeletePersonBasic(id);
-				personInfoService.realDeletePersonInfo(id);
-				personContactWayService.realDeletePersonContactWay(id);
-				resultMap.put( "message", "保存人脉联系方式出错！");
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
+			if(!ObjectUtils.isEmpty(personContactWay)){
+				personContactWay.setPersonId(id);
+				personContactWay.setCellphone(cellphone);
+				personContactWay.setEmail(email);
+				personContactWay.setWeixin(weixin);
+				personContactWay.setQq(qq);
+				personContactWay.setWeibo(weibo);
+				personContactWay.setCtime(ctime);
+				personContactWay.setUtime(utime);
+				personContactWay.setIp(ip);
+				bl=personContactWayService.updatePersonContactWay(personContactWay);
+				if(!personId.equals(id)){
+					personBasicService.realDeletePersonBasic(id);
+					personInfoService.realDeletePersonInfo(id);
+					personContactWayService.realDeletePersonContactWay(id);
+					resultMap.put( "message", "保存人脉联系方式出错！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
 			}
 			//保存工作经历
 			if(!StringUtils.isEmpty(personWorkHistoryJson)){
 				listPersonWorkHistory =new ArrayList<PersonWorkHistory>();
 				JSONObject jsonObject = JSONObject.fromObject(personWorkHistoryJson);
 				JSONArray jsonArray=jsonObject.getJSONArray("personWorkHistoryList");
-				List<Long> ids =personWorkHistoryService.getIdList(id);
 				for (int i = 0; i < jsonArray.size(); i++) {
 					JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
 					personWorkHistory=new PersonWorkHistory();
@@ -669,7 +666,6 @@ public class PersonController extends BaseControl {
 			}
 			//保存标签
 			if(!ObjectUtils.isEmpty(tagIds)){
-				boolean bl=false;
 				Long tagId=0L;
 				List<Long> m_tagIds=new ArrayList<Long>();
 				List<TagSource> listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, id, 1l);
@@ -711,7 +707,6 @@ public class PersonController extends BaseControl {
 			}
 			//保存目录
 			if(!ObjectUtils.isEmpty(directoryIds)){
-				boolean bl=false;
 				Long directoryId=0L;
 				List<Long> m_directoryIds=new ArrayList<Long>();
 				List<DirectorySource> listDirectorySource=directorySourceService.getDirectorySourcesBySourceId(userId, appId, 1, id);
