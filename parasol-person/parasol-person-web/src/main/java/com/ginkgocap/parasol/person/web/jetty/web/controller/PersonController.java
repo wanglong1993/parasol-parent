@@ -149,7 +149,7 @@ public class PersonController extends BaseControl {
 			//目录DirectorySource
 			 ,@RequestParam(name = "directoryId",required = false) Long[] directoryIds
 			 //关联Associate
-			 ,@RequestParam(name = "associates",required = false) String associateJson
+			 ,@RequestParam(name = "associateJson",required = false) String associateJson
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		PersonBasic personBasic= null;
