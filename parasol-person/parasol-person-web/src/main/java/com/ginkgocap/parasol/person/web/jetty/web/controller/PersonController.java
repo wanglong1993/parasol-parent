@@ -103,7 +103,7 @@ public class PersonController extends BaseControl {
 	 * 教育经历
 	 * @param personEducationHistoryJson  json字符串
 	 * 标签TagSource
-	 * @param tagId 标签ID
+	 * @param tagIds 标签ID tagIds=3933811599736848&tagIds=3933811561988102&tagIds=3933811356467203
 	 * 目录DirectorySource
 	 * @param directoryId 目录ID
 	 * 关联Associate
@@ -141,9 +141,9 @@ public class PersonController extends BaseControl {
 			,@RequestParam(name = "qq",required = false) String qq
 			,@RequestParam(name = "weibo",required = false) String weibo
 			//工作经历
-			,@RequestParam(name = "personWorkHistorys",required = false) String personWorkHistoryJson
+			,@RequestParam(name = "personWorkHistoryJson",required = false) String personWorkHistoryJson
 			//教育经历
-			,@RequestParam(name = "personEducationHistorys",required = false) String personEducationHistoryJson
+			,@RequestParam(name = "personEducationHistoryJson",required = false) String personEducationHistoryJson
 			//标签TagSource
 			,@RequestParam(name = "tagIds",required = false) Long[] tagIds
 			//目录DirectorySource
