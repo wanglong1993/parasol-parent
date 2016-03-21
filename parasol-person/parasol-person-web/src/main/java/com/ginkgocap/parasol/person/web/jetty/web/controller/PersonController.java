@@ -403,8 +403,8 @@ public class PersonController extends BaseControl {
 						associateService.createAssociate(appId, userId, associate);
 					}
 				}
-				resultMap.put("message", Prompt.paramter_type_or_userType_error);
-				resultMap.put("status",0);
+				resultMap.put("id", id);
+				resultMap.put("status",1);
 				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			//异常失败回滚
