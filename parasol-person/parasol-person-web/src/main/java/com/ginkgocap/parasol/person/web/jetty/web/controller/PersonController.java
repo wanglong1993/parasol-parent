@@ -245,7 +245,7 @@ public class PersonController extends BaseControl {
 						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
 						personWorkHistory=new PersonWorkHistory();
 						personWorkHistory.setPersonId(id);
-						personWorkHistory.setIncName(jsonObject2.has("inc_name")?jsonObject2.getString("incname"):null);
+						personWorkHistory.setIncName(jsonObject2.has("inc_name")?jsonObject2.getString("inc_name"):null);
 						personWorkHistory.setPosition(jsonObject2.has("position")?jsonObject2.getString("position"):null);
 						personWorkHistory.setBeginTime(jsonObject2.has("begin_time")?jsonObject2.getString("begin_time"):null);
 						personWorkHistory.setEndTime(jsonObject2.has("end_time")?jsonObject2.getString("end_time"):null);
