@@ -591,7 +591,7 @@ public class PersonController extends BaseControl {
 				personContactWay.setUtime(utime);
 				personContactWay.setIp(ip);
 				bl=personContactWayService.updatePersonContactWay(personContactWay);
-				if(!personId.equals(id)){
+				if(bl==false){
 					personBasicService.realDeletePersonBasic(id);
 					personInfoService.realDeletePersonInfo(id);
 					personContactWayService.realDeletePersonContactWay(id);
