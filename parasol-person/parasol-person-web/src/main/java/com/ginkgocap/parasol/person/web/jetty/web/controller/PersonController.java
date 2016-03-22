@@ -303,86 +303,28 @@ public class PersonController extends BaseControl {
 				}
 				//保存标签
 				if(!ObjectUtils.isEmpty(tagIds)){
-					boolean bl=false;
-					Long tagId=0L;
-					List<Long> m_tagIds=new ArrayList<Long>();
-					List<TagSource> listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, id, 1l);
-					if(listTagSource!=null && listTagSource.size()>0){
-						for (int i = 0; i < tagIds.length; i++){
-							tagId=tagIds[i];
-							for (TagSource tagSource2 : listTagSource) {
-								if(tagSource2.getTagId()==tagId){
-									bl=true;
-								}
-							}
-							if(bl==false)m_tagIds.add(tagId);
-							else bl=false;
-						}
-					}
-					if(m_tagIds.size()>0){
-						for(Long tagId_2 : m_tagIds){
-							tagSource = new TagSource();
-							tagSource.setTagId(tagId_2);
-							tagSource.setAppId(appId);
-							tagSource.setUserId(userId);
-							tagSource.setSourceId(id);
-							tagSource.setSourceType(1);
-							tagSource.setCreateAt(ctime);
-							tagSourceService.createTagSource(tagSource);
-						}
-					}else{
-						for (int i = 0; i < tagIds.length; i++) {
-							tagSource = new TagSource();
-							tagSource.setTagId(tagIds[i]);
-							tagSource.setAppId(appId);
-							tagSource.setUserId(userId);
-							tagSource.setSourceId(id);
-							tagSource.setSourceType(1);//1为人脉
-							tagSource.setCreateAt(ctime);
-							tagSourceService.createTagSource(tagSource);
-						}
+					for (int i = 0; i < tagIds.length; i++) {
+						tagSource = new TagSource();
+						tagSource.setTagId(tagIds[i]);
+						tagSource.setAppId(appId);
+						tagSource.setUserId(userId);
+						tagSource.setSourceId(id);
+						tagSource.setSourceType(1);//1为人脉
+						tagSource.setCreateAt(ctime);
+						tagSourceService.createTagSource(tagSource);
 					}
 				}
 				//保存目录
 				if(!ObjectUtils.isEmpty(directoryIds)){
-					boolean bl=false;
-					Long directoryId=0L;
-					List<Long> m_directoryIds=new ArrayList<Long>();
-					List<DirectorySource> listDirectorySource=directorySourceService.getDirectorySourcesBySourceId(userId, appId, 2, id);
-					if(listDirectorySource!=null && listDirectorySource.size()>0){
-						for (int i = 0; i < directoryIds.length; i++){
-							directoryId=directoryIds[i];
-							for (DirectorySource directorySource2 : listDirectorySource) {
-								if(directorySource2.getDirectoryId()==directoryId){
-									bl=true;
-								}
-							}
-							if(bl==false)m_directoryIds.add(directoryId);
-							else bl=false;
-						}
-					}
-					if(m_directoryIds.size()>0){
-						for(Long directoryId_2 : m_directoryIds){
-							directorySource = new DirectorySource();
-							directorySource.setDirectoryId(directoryId_2);
-							directorySource.setAppId(appId);
-							directorySource.setUserId(userId);
-							directorySource.setSourceId(id);
-							directorySource.setSourceType(2);
-							directorySource.setCreateAt(ctime);
-							directorySourceService.createDirectorySources(directorySource);
-						}
-					}else{
-						for (int i = 0; i < directoryIds.length; i++) {
-							directorySource = new DirectorySource();
-							directorySource.setDirectoryId(directoryIds[i]);
-							directorySource.setAppId(appId);
-							directorySource.setUserId(userId);
-							directorySource.setSourceId(id);
-							directorySource.setSourceType(2);
-							directorySource.setCreateAt(ctime);
-							directorySourceService.createDirectorySources(directorySource);
-						}
+					for (int i = 0; i < directoryIds.length; i++) {
+						directorySource = new DirectorySource();
+						directorySource.setDirectoryId(directoryIds[i]);
+						directorySource.setAppId(appId);
+						directorySource.setUserId(userId);
+						directorySource.setSourceId(id);
+						directorySource.setSourceType(2);
+						directorySource.setCreateAt(ctime);
+						directorySourceService.createDirectorySources(directorySource);
 					}
 				}
 				//保存关联
@@ -666,84 +608,37 @@ public class PersonController extends BaseControl {
 			}
 			//保存标签
 			if(!ObjectUtils.isEmpty(tagIds)){
-				Long tagId=0L;
-				List<Long> m_tagIds=new ArrayList<Long>();
+				//查找该人脉下的所有标签
 				List<TagSource> listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, id, 1l);
-				if(listTagSource!=null && listTagSource.size()>0){
-					for (int i = 0; i < tagIds.length; i++){
-						tagId=tagIds[i];
-						for (TagSource tagSource2 : listTagSource) {
-							if(tagSource2.getTagId()==tagId){
-								bl=true;
-							}
-						}
-						if(bl==false)m_tagIds.add(tagId);
-						else bl=false;
-					}
+				//删除该人脉下的所有标签
+				for (TagSource tagSource2 : listTagSource) {
+					bl=tagSourceService.removeTagSource(appId, userId, tagSource2.getId());
 				}
-				if(m_tagIds.size()>0){
-					for(Long tagId_2 : m_tagIds){
-						tagSource = new TagSource();
-						tagSource.setTagId(tagId_2);
-						tagSource.setAppId(appId);
-						tagSource.setUserId(userId);
-						tagSource.setSourceId(id);
-						tagSource.setSourceType(1);
-						tagSource.setCreateAt(ctime);
-						tagSourceService.createTagSource(tagSource);
-					}
-				}else{
-					for (int i = 0; i < tagIds.length; i++) {
-						tagSource = new TagSource();
-						tagSource.setTagId(tagIds[i]);
-						tagSource.setAppId(appId);
-						tagSource.setUserId(userId);
-						tagSource.setSourceId(id);
-						tagSource.setSourceType(1);//1为人脉
-						tagSource.setCreateAt(ctime);
-						tagSourceService.createTagSource(tagSource);
-					}
+				for (int i = 0; i < tagIds.length; i++) {
+					tagSource = new TagSource();
+					tagSource.setTagId(tagIds[i]);
+					tagSource.setAppId(appId);
+					tagSource.setUserId(userId);
+					tagSource.setSourceId(id);
+					tagSource.setSourceType(1);//1为人脉
+					tagSource.setCreateAt(ctime);
+					tagSourceService.createTagSource(tagSource);
 				}
 			}
 			//保存目录
 			if(!ObjectUtils.isEmpty(directoryIds)){
-				Long directoryId=0L;
-				List<Long> m_directoryIds=new ArrayList<Long>();
-				List<DirectorySource> listDirectorySource=directorySourceService.getDirectorySourcesBySourceId(userId, appId, 1, id);
-				if(listDirectorySource!=null && listDirectorySource.size()>0){
-					for (int i = 0; i < directoryIds.length; i++){
-						directoryId=directoryIds[i];
-						for (DirectorySource directorySource2 : listDirectorySource) {
-							if(directorySource2.getDirectoryId()==directoryId){
-								bl=true;
-							}
-						}
-						if(bl==false)m_directoryIds.add(directoryId);
-						else bl=false;
-					}
-				}
-				if(m_directoryIds.size()>0){
-					for(Long directoryId_2 : m_directoryIds){
-						directorySource = new DirectorySource();
-						directorySource.setDirectoryId(directoryId_2);
-						directorySource.setAppId(appId);
-						directorySource.setUserId(userId);
-						directorySource.setSourceId(id);
-						directorySource.setSourceType(1);
-						directorySource.setCreateAt(ctime);
-						directorySourceService.createDirectorySources(directorySource);
-					}
-				}else{
-					for (int i = 0; i < directoryIds.length; i++) {
-						directorySource = new DirectorySource();
-						directorySource.setDirectoryId(directoryIds[i]);
-						directorySource.setAppId(appId);
-						directorySource.setUserId(userId);
-						directorySource.setSourceId(id);
-						directorySource.setSourceType(2);
-						directorySource.setCreateAt(ctime);
-						directorySourceService.createDirectorySources(directorySource);
-					}
+				//删除以前的
+				bl=directorySourceService.removeDirectorySourcesBySourceId(userId, appId, 1, id);
+				//保存现在的
+				for (int i = 0; i < directoryIds.length; i++) {
+					directorySource = new DirectorySource();
+					directorySource.setDirectoryId(directoryIds[i]);
+					directorySource.setAppId(appId);
+					directorySource.setUserId(userId);
+					directorySource.setSourceId(id);
+					directorySource.setSourceType(2);
+					directorySource.setCreateAt(ctime);
+					directorySourceService.createDirectorySources(directorySource);
 				}
 			}
 			//保存关联
