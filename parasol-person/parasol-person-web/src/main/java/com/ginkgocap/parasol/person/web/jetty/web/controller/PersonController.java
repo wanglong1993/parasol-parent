@@ -723,6 +723,7 @@ public class PersonController extends BaseControl {
 		List<TagSource> listTagSource=null;
 		List<DirectorySource> listDirectorySource=null;
 		Map<AssociateType, List<Associate>> map=null;
+		Map<String, List<Associate>> mapAssociate=new HashMap<String, List<Associate>>();
 		Long appId =0l;
 		Long userId=0L;
 		try {
@@ -756,6 +757,10 @@ public class PersonController extends BaseControl {
 			listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, id, 1l);
 			listDirectorySource=directorySourceService.getDirectorySourcesBySourceId(userId, appId, 1, id);
 			map=associateService.getAssociatesBy(appId, 1l, id);
+			for ( AssociateType key  : map.keySet()) {
+				List<Associate> list =map.get(key);
+				mapAssociate.put(key.getName(), list);
+			}
 			resultMap.put("personBasic", personBasic);
 			if(!ObjectUtils.isEmpty(personInfo))resultMap.put("personInfo", personInfo);
 			if(!ObjectUtils.isEmpty(personContactWay))resultMap.put("personContactWay", personContactWay);
@@ -763,7 +768,7 @@ public class PersonController extends BaseControl {
 			if(!ObjectUtils.isEmpty(listPersonEducationHistory))resultMap.put("listPersonEducationHistory", listPersonEducationHistory);
 			if(!ObjectUtils.isEmpty(listTagSource))resultMap.put("listTagSource", listTagSource);
 			if(!ObjectUtils.isEmpty(listDirectorySource))resultMap.put("listDirectorySource", listDirectorySource);
-			if(!ObjectUtils.isEmpty(map))resultMap.put("mapAssociate", map);
+			if(!ObjectUtils.isEmpty(mapAssociate))resultMap.put("mapAssociate", mapAssociate);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("获取人脉详情失败:"+id);
