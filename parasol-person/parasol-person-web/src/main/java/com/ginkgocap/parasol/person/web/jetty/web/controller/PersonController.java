@@ -710,7 +710,7 @@ public class PersonController extends BaseControl {
 	 * @param id 
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/person/person/getPersonDetail" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/person/person/getPersonDetail" }, method = { RequestMethod.POST })
 	public MappingJacksonValue getPersonDetail(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "id",required = true) Long id
 			)throws Exception {
