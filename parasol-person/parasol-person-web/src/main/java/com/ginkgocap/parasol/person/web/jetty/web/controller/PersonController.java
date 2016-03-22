@@ -322,7 +322,7 @@ public class PersonController extends BaseControl {
 						directorySource.setAppId(appId);
 						directorySource.setUserId(userId);
 						directorySource.setSourceId(id);
-						directorySource.setSourceType(2);
+						directorySource.setSourceType(1);//1为人脉
 						directorySource.setCreateAt(ctime);
 						directorySourceService.createDirectorySources(directorySource);
 					}
@@ -336,7 +336,7 @@ public class PersonController extends BaseControl {
 						associate=new Associate();
 						associate.setUserId(userId);
 						associate.setAppId(appId);
-						associate.setSourceTypeId(1);
+						associate.setSourceTypeId(1);//1为人脉
 						associate.setSourceId(id);
 						associate.setAssocDesc(jsonObject2.has("assoc_desc")?jsonObject2.getString("assoc_desc"):null);
 						associate.setAssocTypeId(jsonObject2.has("assoc_type_id")?jsonObject2.getLong("assoc_type_id"):null);
@@ -636,7 +636,7 @@ public class PersonController extends BaseControl {
 					directorySource.setAppId(appId);
 					directorySource.setUserId(userId);
 					directorySource.setSourceId(id);
-					directorySource.setSourceType(2);
+					directorySource.setSourceType(1);
 					directorySource.setCreateAt(ctime);
 					directorySourceService.createDirectorySources(directorySource);
 				}
