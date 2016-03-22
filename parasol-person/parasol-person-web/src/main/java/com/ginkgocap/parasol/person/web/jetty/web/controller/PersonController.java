@@ -166,16 +166,27 @@ public class PersonController extends BaseControl {
 		Long appId =0l;
 		Long ctime=0l;
 		Long utime=0l;
+		Long userId =0l;
 		try {
 				if((StringUtils.isEmpty(name))){
 					resultMap.put( "message", "人脉姓名不能为空！");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
+				appId = LoginUserContextHolder.getAppKey();
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userId = LoginUserContextHolder.getUserId();
+				if(ObjectUtils.isEmpty(userId)){
+					resultMap.put( "message", "userId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
 				ctime=System.currentTimeMillis();
 				utime=System.currentTimeMillis();
-				appId = LoginUserContextHolder.getAppKey();
-				Long userId = LoginUserContextHolder.getUserId();
 				personBasic=new PersonBasic();
 				personBasic.setUserId(userId);
 				personBasic.setPersonType(new Byte("1"));
@@ -453,10 +464,10 @@ public class PersonController extends BaseControl {
 		List<PersonWorkHistory> listPersonWorkHistory = null;
 		List<PersonEducationHistory> listPersonEducationHistory = null;
 		String ip=getIpAddr(request);
-		Long personId=0l;
 		Long appId =0l;
 		Long ctime=0l;
 		Long utime=0l;
+		Long userId =0l;
 		try {
 			if((StringUtils.isEmpty(name))){
 				resultMap.put( "message", "人脉姓名不能为空！");
@@ -468,10 +479,20 @@ public class PersonController extends BaseControl {
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
+			appId = LoginUserContextHolder.getAppKey();
+			if(ObjectUtils.isEmpty(appId)){
+				resultMap.put( "message", "appId不能为空！");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userId = LoginUserContextHolder.getUserId();
+			if(ObjectUtils.isEmpty(userId)){
+				resultMap.put( "message", "userId不能为空！");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
 			ctime=System.currentTimeMillis();
 			utime=System.currentTimeMillis();
-			appId = LoginUserContextHolder.getAppKey();
-			Long userId = LoginUserContextHolder.getUserId();
 			personBasic=personBasicService.getPersonBasic(id);
 			if(ObjectUtils.isEmpty(personBasic)){
 				resultMap.put( "message", "人脉id不存在！");
@@ -679,6 +700,73 @@ public class PersonController extends BaseControl {
 			personEducationHistoryService.realDeletePersonEducationHistoryList(personEducationHistoryService.getIdList(id));
 			resultMap.put( "message", "保存人脉教育经历出错！");
 			resultMap.put( "status", 0);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 获取人脉详情
+	 * 
+	 * @param id 
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/person/person/getPersonDetail" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "id",required = true) Long id
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		PersonBasic personBasic= null;
+		PersonInfo personInfo= null;
+		PersonContactWay personContactWay= null;
+		List<PersonWorkHistory> listPersonWorkHistory = null;
+		List<PersonEducationHistory> listPersonEducationHistory = null;
+		List<TagSource> listTagSource=null;
+		List<DirectorySource> listDirectorySource=null;
+		Map<AssociateType, List<Associate>> map=null;
+		Long appId =0l;
+		Long userId=0L;
+		try {
+			if((ObjectUtils.isEmpty(id))){
+				resultMap.put( "message", "人脉id不能为空！");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userId = LoginUserContextHolder.getUserId();
+			if(ObjectUtils.isEmpty(userId)){
+				resultMap.put( "message", "userId不能为空！");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			appId = LoginUserContextHolder.getAppKey();
+			if(ObjectUtils.isEmpty(appId)){
+				resultMap.put( "message", "appId不能为空！");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			personBasic=personBasicService.getPersonBasic(id);
+			if(ObjectUtils.isEmpty(personBasic)){
+				resultMap.put( "message", "人脉id不存在！");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			personInfo=personInfoService.getPersonInfo(id);
+			personContactWay=personContactWayService.getPersonContactWay(id);
+			listPersonWorkHistory=personWorkHistoryService.getIdList(personWorkHistoryService.getIdList(id));
+			listPersonEducationHistory=personEducationHistoryService.getIdList(personEducationHistoryService.getIdList(id));
+			listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, id, 1l);
+			listDirectorySource=directorySourceService.getDirectorySourcesBySourceId(userId, appId, 1, id);
+			map=associateService.getAssociatesBy(appId, 1l, id);
+			resultMap.put("personBasic", personBasic);
+			if(!ObjectUtils.isEmpty(personInfo))resultMap.put("personInfo", personInfo);
+			if(!ObjectUtils.isEmpty(personContactWay))resultMap.put("personContactWay", personContactWay);
+			if(!ObjectUtils.isEmpty(listPersonWorkHistory))resultMap.put("listPersonWorkHistory", listPersonWorkHistory);
+			if(!ObjectUtils.isEmpty(listPersonEducationHistory))resultMap.put("listPersonEducationHistory", listPersonEducationHistory);
+			if(!ObjectUtils.isEmpty(listTagSource))resultMap.put("listTagSource", listTagSource);
+			if(!ObjectUtils.isEmpty(listDirectorySource))resultMap.put("listDirectorySource", listDirectorySource);
+			if(!ObjectUtils.isEmpty(map))resultMap.put("mapAssociate", map);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取人脉详情失败:"+id);
 			logger.info(e.getStackTrace());
 			throw e;
 		}
