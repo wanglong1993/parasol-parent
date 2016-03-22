@@ -711,7 +711,7 @@ public class PersonController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/person/person/getPersonDetail" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
+	public MappingJacksonValue getPersonDetail(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "id",required = true) Long id
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
