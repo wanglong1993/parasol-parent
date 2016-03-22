@@ -16,7 +16,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -42,10 +41,8 @@ import com.ginkgocap.parasol.person.service.PersonDefinedService;
 import com.ginkgocap.parasol.person.service.PersonEducationHistoryService;
 import com.ginkgocap.parasol.person.service.PersonInfoService;
 import com.ginkgocap.parasol.person.service.PersonWorkHistoryService;
-import com.ginkgocap.parasol.person.web.jetty.web.utils.Prompt;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
-import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 
 /**
  * 人脉登录注册
