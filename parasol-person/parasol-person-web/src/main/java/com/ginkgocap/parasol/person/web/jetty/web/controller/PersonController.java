@@ -763,7 +763,7 @@ public class PersonController extends BaseControl {
 			listDirectorySource=directorySourceService.getDirectorySourcesBySourceId(userId, appId, 1, id);
 			map=associateService.getAssociatesBy(appId, 1l, id);
 			for ( AssociateType key  : map.keySet()) {
-//				resultMap.put(key.getId().toString(), map.get(key));
+				resultMap.put(key.getId().toString(), map.get(key));
 			}
 			resultMap.put("personBasic", personBasic);
 			if(!ObjectUtils.isEmpty(personInfo))resultMap.put("personInfo", personInfo);
@@ -771,8 +771,7 @@ public class PersonController extends BaseControl {
 			if(!ObjectUtils.isEmpty(listPersonWorkHistory))resultMap.put("listPersonWorkHistory", listPersonWorkHistory);
 			if(!ObjectUtils.isEmpty(listPersonEducationHistory))resultMap.put("listPersonEducationHistory", listPersonEducationHistory);
 			if(!ObjectUtils.isEmpty(listTagSource))resultMap.put("listTagSource", listTagSource);
-//			if(!ObjectUtils.isEmpty(listDirectorySource))resultMap.put("listDirectorySource", listDirectorySource);
-			if(!ObjectUtils.isEmpty(mapAssociate))resultMap.put("mapAssociate", mapAssociate);
+			if(!ObjectUtils.isEmpty(listDirectorySource))resultMap.put("listDirectorySource", listDirectorySource);
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
 			mappingJacksonValue.setFilters(filterProvider);
@@ -833,6 +832,8 @@ public class PersonController extends BaseControl {
 		}
 
 		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("id","directoryId","sourceTitle","sourceUrl"));
+		filterProvider.addFilter(Associate.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("id","assocTitle"));
 		return filterProvider;
 	}
 	/**
