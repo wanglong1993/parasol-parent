@@ -727,7 +727,6 @@ public class PersonController extends BaseControl {
 		List<TagSource> listTagSource=null;
 		List<DirectorySource> listDirectorySource=null;
 		Map<AssociateType, List<Associate>> map=null;
-		Map<String, List<Associate>> mapAssociate=new HashMap<String, List<Associate>>();
 		Long appId =0l;
 		Long userId=0L;
 		MappingJacksonValue mappingJacksonValue = null;
@@ -828,7 +827,6 @@ public class PersonController extends BaseControl {
 			filter.add("sourceId"); // 资源ID
 			filter.add("sourceType"); // 资源类型
 			filter.add("tagName"); // 标签名称
-
 		}
 
 		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
