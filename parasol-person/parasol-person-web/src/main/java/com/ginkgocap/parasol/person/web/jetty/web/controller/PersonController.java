@@ -3,8 +3,10 @@ package com.ginkgocap.parasol.person.web.jetty.web.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.associate.model.Associate;
 import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateService;
@@ -726,6 +730,7 @@ public class PersonController extends BaseControl {
 		Map<String, List<Associate>> mapAssociate=new HashMap<String, List<Associate>>();
 		Long appId =0l;
 		Long userId=0L;
+		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			if((ObjectUtils.isEmpty(id))){
 				resultMap.put( "message", "人脉id不能为空！");
@@ -768,7 +773,10 @@ public class PersonController extends BaseControl {
 			if(!ObjectUtils.isEmpty(listTagSource))resultMap.put("listTagSource", listTagSource);
 //			if(!ObjectUtils.isEmpty(listDirectorySource))resultMap.put("listDirectorySource", listDirectorySource);
 			if(!ObjectUtils.isEmpty(mapAssociate))resultMap.put("mapAssociate", mapAssociate);
-			return new MappingJacksonValue(resultMap);
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
+			mappingJacksonValue.setFilters(filterProvider);
+			return mappingJacksonValue;
 		}catch (Exception e ){
 			logger.info("获取人脉详情失败:"+id);
 			logger.info(e.getStackTrace());
@@ -798,6 +806,35 @@ public class PersonController extends BaseControl {
            logger.info(m.matches()+"---");     
            return m.matches();     
     }
+	/**
+	 * 指定显示那些字段
+	 * 
+	 * @param fileds
+	 * @return
+	 */
+	private SimpleFilterProvider builderSimpleFilterProvider(String fileds) {
+		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+		// 请求指定字段
+		String[] filedNames = StringUtils.split(fileds, ",");
+		Set<String> filter = new HashSet<String>();
+		if (filedNames != null && filedNames.length > 0) {
+			for (int i = 0; i < filedNames.length; i++) {
+				String filedName = filedNames[i];
+				if (!StringUtils.isEmpty(filedName)) {
+					filter.add(filedName);
+				}
+			}
+		} else {
+			filter.add("id"); // id',
+			filter.add("sourceId"); // 资源ID
+			filter.add("sourceType"); // 资源类型
+			filter.add("tagName"); // 标签名称
+
+		}
+
+		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		return filterProvider;
+	}
 	/**
 	 * 获取真实IP的方法
 	 * @param request
