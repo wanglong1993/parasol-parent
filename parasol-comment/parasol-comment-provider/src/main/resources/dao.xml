@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="GB2312"?>
+<dal>
+	<default>
+		<dbStrategy name=""
+			clazz="com.lenovo.vctl.dal.dao.route.strategy.DefaultStrategy">
+			<pattern value="[0-9]$" group="g2" />
+		</dbStrategy>
+		<listenerClass className="" />
+		<idCenterDS ds="idCenterDS" />   <!-- 缺省IdCenter使用的数据源配置 -->
+	</default>
+	<route>
+		<!-- 在一个侦听器中实现before after -->
+		<object name="com.ginkgocap.parasol.comment.model.Comment" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="pid">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+
+           <!-- 查询一个资源下有多少关联 --> 
+           <list name="List_Comment_Id_AppId_SourceTypeId_SourceId"
+                  sqlitem="select id from tb_comment where appId=? and sourceTypeId=? and sourceId=?"
+                  sqlType="hsql" keyProperty="appId,sourceTypeId,sourceId" valueProperty="id"/>
+                  
+		</object>
+		
+		<object name="com.ginkgocap.parasol.comment.model.CommentType" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+           <!-- 通过AppId找应用的关联分类ID（组织，用户、知识等） --> 
+           <list name="List_CommentType_Id_AppId"
+                  sqlitem="select id from tb_comment_type where appId=?"
+                  sqlType="hsql" keyProperty="appId" valueProperty="id"  update="true"/>
+
+           <!-- 通过AppId找应用的AppId 和 Name 查询 Id --> 
+		   <map name="Map_CommentType_Id_AppId_Name"
+                 sqlitem="select id from tb_comment_type where appId=? and name=?"
+                 keyProperty="appId,name" valueProperty="id" />
+		</object>
+		
+
+	</route>
+</dal>
+
