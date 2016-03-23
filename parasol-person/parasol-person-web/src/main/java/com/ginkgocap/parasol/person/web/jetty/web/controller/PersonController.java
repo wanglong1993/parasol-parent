@@ -765,7 +765,7 @@ public class PersonController extends BaseControl {
 			if(!ObjectUtils.isEmpty(personContactWay))resultMap.put("personContactWay", personContactWay);
 			if(!ObjectUtils.isEmpty(listPersonWorkHistory))resultMap.put("listPersonWorkHistory", listPersonWorkHistory);
 			if(!ObjectUtils.isEmpty(listPersonEducationHistory))resultMap.put("listPersonEducationHistory", listPersonEducationHistory);
-//			if(!ObjectUtils.isEmpty(listTagSource))resultMap.put("listTagSource", listTagSource);
+			if(!ObjectUtils.isEmpty(listTagSource))resultMap.put("listTagSource", listTagSource);
 //			if(!ObjectUtils.isEmpty(listDirectorySource))resultMap.put("listDirectorySource", listDirectorySource);
 			if(!ObjectUtils.isEmpty(mapAssociate))resultMap.put("mapAssociate", mapAssociate);
 			return new MappingJacksonValue(resultMap);
