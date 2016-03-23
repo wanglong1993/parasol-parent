@@ -763,7 +763,7 @@ public class PersonController extends BaseControl {
 			listDirectorySource=directorySourceService.getDirectorySourcesBySourceId(userId, appId, 1, id);
 			map=associateService.getAssociatesBy(appId, 1l, id);
 			for ( AssociateType key  : map.keySet()) {
-				resultMap.put(key.getId().toString(), map.get(key));
+				resultMap.put(key.getName(), map.get(key));
 			}
 			resultMap.put("personBasic", personBasic);
 			if(!ObjectUtils.isEmpty(personInfo))resultMap.put("personInfo", personInfo);
