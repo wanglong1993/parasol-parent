@@ -760,7 +760,7 @@ public class PersonController extends BaseControl {
 			for ( AssociateType key  : map.keySet()) {
 //				List<Associate> list =map.get(key);
 //				mapAssociate.put(key.getName(), list);
-				resultMap.put("qqqq", map.get(key));
+				resultMap.put(key.getId().toString(), map.get(key));
 				break;
 			}
 			resultMap.put("personBasic", personBasic);
