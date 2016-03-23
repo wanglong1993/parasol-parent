@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ginkgocap.parasol.user.web.jetty;
+package com.ginkgocap.parasol.person.web.jetty;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

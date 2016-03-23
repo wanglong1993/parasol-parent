@@ -41,9 +41,9 @@ public class PersonWorkHistoryServiceImpl extends BaseService<PersonWorkHistory>
 			checkValidity(list);
 			//删除以前的
 			deleteEntityByIds(getIdList(personId));
-			List<PersonWorkHistory> userDefineds=saveEntitys(list);
-			if(userDefineds==null || userDefineds.size()==0) throw new PersonWorkHistoryServiceException("createPersonWorkHistoryByList failed.");
-			return userDefineds;
+			List<PersonWorkHistory> personWorkHistorys=saveEntitys(list);
+			if(personWorkHistorys==null || personWorkHistorys.size()==0) throw new PersonWorkHistoryServiceException("createPersonWorkHistoryByList failed.");
+			return personWorkHistorys;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -57,9 +57,9 @@ public class PersonWorkHistoryServiceImpl extends BaseService<PersonWorkHistory>
 			checkValidity(list);
 			//删除以前的
 			deleteEntityByIds(getIdList(personId));
-			List<PersonWorkHistory> userDefineds=saveEntitys(list);
-			if(userDefineds==null || userDefineds.size()==0) throw new PersonWorkHistoryServiceException("updatePersonWorkHistoryByList failed.");
-			return userDefineds;
+			List<PersonWorkHistory> personWorkHistorys=saveEntitys(list);
+			if(personWorkHistorys==null || personWorkHistorys.size()==0) throw new PersonWorkHistoryServiceException("updatePersonWorkHistoryByList failed.");
+			return personWorkHistorys;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

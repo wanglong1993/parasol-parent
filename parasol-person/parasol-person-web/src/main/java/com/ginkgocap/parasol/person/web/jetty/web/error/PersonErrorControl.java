@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.user.web.jetty.web.error;
+package com.ginkgocap.parasol.person.web.jetty.web.error;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -42,11 +42,11 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 import com.alibaba.dubbo.rpc.RpcException;
-import com.ginkgocap.parasol.user.web.jetty.web.ResponseError;
+import com.ginkgocap.parasol.person.web.jetty.web.ResponseError;
 
 @ControllerAdvice
-public class UserErrorControl {
-	public static Logger logger = Logger.getLogger(UserErrorControl.class);
+public class PersonErrorControl {
+	public static Logger logger = Logger.getLogger(PersonErrorControl.class);
 	private static Pattern service_method_parttern = Pattern.compile("Failed to invoke the method (.+?) in the service (.+?). No provider");
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })

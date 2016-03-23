@@ -31,11 +31,10 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
-
-
-
-   <dubbo:application name="${dubbo.application.name}" />
-   <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
-   <dubbo:consumer timeout="10000" check="false" />
-
+    <dubbo:reference id="personBasicService" interface="com.ginkgocap.parasol.person.service.PersonBasicService" version="2.0.0"/>
+    <dubbo:reference id="personContactWayService" interface="com.ginkgocap.parasol.person.service.PersonContactWayService" version="2.0.0"/>
+    <dubbo:reference id="personDefinedService" interface="com.ginkgocap.parasol.person.service.PersonDefinedService" version="2.0.0"/>
+    <dubbo:reference id="personEducationHistoryService" interface="com.ginkgocap.parasol.person.service.PersonEducationHistoryService" version="2.0.0"/>
+    <dubbo:reference id="personInfoService" interface="com.ginkgocap.parasol.person.service.PersonInfoService" version="2.0.0"/>
+    <dubbo:reference id="personWorkHistoryService" interface="com.ginkgocap.parasol.person.service.PersonWorkHistoryService" version="2.0.0"/>
 </beans>

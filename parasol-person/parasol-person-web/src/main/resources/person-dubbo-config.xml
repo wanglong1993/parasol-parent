@@ -31,15 +31,8 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
-    <dubbo:reference id="userLoginRegisterService" interface="com.ginkgocap.parasol.user.service.UserLoginRegisterService" version="2.0.0"/>
-    <dubbo:reference id="userInterestIndustryService" interface="com.ginkgocap.parasol.user.service.UserInterestIndustryService" version="2.0.0"/>
-    <dubbo:reference id="userBasicService" interface="com.ginkgocap.parasol.user.service.UserBasicService" version="2.0.0"/>
-    <dubbo:reference id="userFriendlyService" interface="com.ginkgocap.parasol.user.service.UserFriendlyService" version="2.0.0"/>
-    <dubbo:reference id="userOrganBasicService" interface="com.ginkgocap.parasol.user.service.UserOrganBasicService" version="2.0.0"/>
-    <dubbo:reference id="userOrgPerCusRelService" interface="com.ginkgocap.parasol.user.service.UserOrgPerCusRelService" version="2.0.0"/>
-    <dubbo:reference id="userLoginThirdService" interface="com.ginkgocap.parasol.user.service.UserLoginThirdService" version="2.0.0"/>
-    <dubbo:reference id="userExtService" interface="com.ginkgocap.parasol.user.service.UserExtService" version="2.0.0"/>
-    <dubbo:reference id="userOrganExtService" interface="com.ginkgocap.parasol.user.service.UserOrganExtService" version="2.0.0"/>
-    <dubbo:reference id="userDefinedService" interface="com.ginkgocap.parasol.user.service.UserDefinedService" version="2.0.0"/>
-    
+    <dubbo:application name="${dubbo.application.name}" />
+    <dubbo:protocol name="${dubbo.protocol.name}" />
+    <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
+    <dubbo:consumer timeout="10000" check="false" />
 </beans>

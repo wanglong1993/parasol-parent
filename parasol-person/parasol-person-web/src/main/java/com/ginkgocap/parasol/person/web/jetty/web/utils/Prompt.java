@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.user.web.jetty.web.utils;
+package com.ginkgocap.parasol.person.web.jetty.web.utils;
 
 public final class Prompt {
 	public static final  String email_already_exists="邮箱已经存在";

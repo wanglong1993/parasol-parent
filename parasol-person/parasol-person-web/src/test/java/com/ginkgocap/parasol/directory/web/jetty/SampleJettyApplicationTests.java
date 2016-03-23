@@ -28,7 +28,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.ginkgocap.parasol.user.web.jetty.ParasolUserApplication;
+import com.ginkgocap.parasol.person.web.jetty.ParasolUserApplication;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.user.web.jetty.autoconfig;
+package com.ginkgocap.parasol.person.web.jetty.autoconfig;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 /**
  * 
- * @author allenshen
  * @date 2015年11月19日
  * @time 下午7:42:22
  * @Copyright Copyright©2015 www.gintong.com

@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.user.web.jetty.autoconfig;
+package com.ginkgocap.parasol.person.web.jetty.autoconfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import com.ginkgocap.parasol.user.web.jetty.web.filter.ParasolLoggerFilter;
+import com.ginkgocap.parasol.person.web.jetty.web.filter.ParasolLoggerFilter;
 
 @Configuration
 @EnableConfigurationProperties(ParasolLogerFilterPropertys.class)
