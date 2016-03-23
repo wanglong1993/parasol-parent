@@ -1,7 +1,6 @@
 package com.ginkgocap.parasol.knowledge.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 知识javaBean （资讯，资产管理,宏观，观点，文章）

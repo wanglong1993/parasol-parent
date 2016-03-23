@@ -1,5 +1,9 @@
 package com.ginkgocap.parasol.knowledge.model;
 
+import com.ginkgocap.parasol.knowledge.model.v1.ColumnCustom;
+import com.ginkgocap.parasol.knowledge.model.v1.ColumnSelf;
+import com.ginkgocap.parasol.knowledge.model.v1.ColumnSys;
+
 import java.io.Serializable;
 
 /**

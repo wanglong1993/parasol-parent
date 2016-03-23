@@ -1,7 +1,5 @@
 package com.ginkgocap.parasol.knowledge.model;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * 知识javaBean （文章）
  * 

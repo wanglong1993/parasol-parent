@@ -2,14 +2,12 @@ package com.ginkgocap.parasol.knowledge.model;
 
 import java.util.List;
 
-import com.ginkgocap.ywxt.user.model.User;
-
 public class KnowledgeShareVO {
 	private List<Long> receiveList;
 	
 	private KnowledgeNewsVO vo;
 	
-	private User user;
+	//private User user;
 
 	
 	public List<Long> getReceiveList() {
@@ -28,13 +26,14 @@ public class KnowledgeShareVO {
 		this.vo = vo;
 	}
 
+    /*
 	public User getUser() {
 		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
-	}
+	}*/
 	
 	
 }

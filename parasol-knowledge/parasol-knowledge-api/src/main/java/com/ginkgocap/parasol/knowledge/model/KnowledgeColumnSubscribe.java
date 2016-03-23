@@ -2,8 +2,6 @@ package com.ginkgocap.parasol.knowledge.model;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import org.springframework.data.annotation.Transient;
 /**
  *   
  * <p>栏目订阅</p>  

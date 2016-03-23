@@ -1,8 +1,5 @@
 package com.ginkgocap.parasol.knowledge.model;
 
-import java.util.Date;
-import org.apache.commons.lang3.StringUtils;
-
 
 /**
  * 知识javaBean （资产管理）

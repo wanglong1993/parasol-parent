@@ -1,8 +1,11 @@
 package com.ginkgocap.parasol.knowledge.model;
 
-import java.io.Serializable;
-
+import com.ginkgocap.parasol.knowledge.model.ColumnCollection;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeReference;
+import com.ginkgocap.parasol.knowledge.model.v1.KnowledgeBase;
 import com.ginkgocap.ywxt.asso.model.Asso;
+
+import java.io.Serializable;
 
 /**
  * @Title: 知识数据的大集合对象

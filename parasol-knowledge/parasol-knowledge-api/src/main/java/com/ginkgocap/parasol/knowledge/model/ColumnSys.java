@@ -1,11 +1,8 @@
 package com.ginkgocap.parasol.knowledge.model;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
-
+import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 
 /**

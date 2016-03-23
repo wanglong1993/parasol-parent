@@ -1,11 +1,10 @@
 package com.ginkgocap.parasol.knowledge.model;
 
-import java.io.Serializable;
-import java.util.List;
-
+import com.ginkgocap.parasol.knowledge.form.Friends;
 import org.springframework.data.annotation.Transient;
 
-import com.ginkgocap.ywxt.knowledge.form.Friends;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * 知识分享
