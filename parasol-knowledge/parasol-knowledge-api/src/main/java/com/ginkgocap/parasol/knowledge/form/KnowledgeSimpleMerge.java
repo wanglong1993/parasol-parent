@@ -1,13 +1,13 @@
 package com.ginkgocap.parasol.knowledge.form;
 
+import com.ginkgocap.parasol.knowledge.model.Knowledge;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.ginkgocap.ywxt.knowledge.model.Knowledge;
 /**
  * 
  * @author guangyuan

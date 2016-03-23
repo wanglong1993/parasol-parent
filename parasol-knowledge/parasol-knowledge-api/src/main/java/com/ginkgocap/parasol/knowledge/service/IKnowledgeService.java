@@ -1,11 +1,9 @@
 package com.ginkgocap.parasol.knowledge.service;
 
-import java.util.List;
-
-import net.sf.json.JSONObject;
-
 import com.ginkgocap.parasol.knowledge.model.DataCollection;
-import com.gintong.frame.util.dto.InterfaceResult;
+import com.ginkgocap.parasol.knowledge.model.common.InterfaceResult;
+
+import java.util.List;
 
 /**
  * @Title: 知识管理服务
@@ -26,7 +24,7 @@ public interface IKnowledgeService {
 	 * @author 周仕奇
 	 * @date 2016年1月15日 上午9:41:03
 	 * @param dataCollection
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
@@ -42,7 +40,6 @@ public interface IKnowledgeService {
 	 * @author 周仕奇
 	 * @date 2016年1月15日 上午9:41:16
 	 * @param dataCollection
-	 * @param user
 	 * @return
 	 * @throws Exception
 	 */
@@ -59,7 +56,7 @@ public interface IKnowledgeService {
 	 * @date 2016年1月15日 上午9:41:20
 	 * @param knowledgeId
 	 * @param columnId
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
@@ -76,7 +73,7 @@ public interface IKnowledgeService {
 	 * @date 2016年1月15日 上午9:41:23
 	 * @param knowledgeIds
 	 * @param columnId
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
@@ -90,7 +87,7 @@ public interface IKnowledgeService {
 	 * @date 2016年1月15日 上午9:41:26
 	 * @param knowledgeId
 	 * @param columnId 由于知识详细表信息为分库存储，则columnId为必须字段
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
@@ -103,7 +100,7 @@ public interface IKnowledgeService {
 	 * @author 周仕奇
 	 * @date 2016年1月15日 上午9:41:39
 	 * @param knowledgeId
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
@@ -116,7 +113,7 @@ public interface IKnowledgeService {
 	 * @author 周仕奇
 	 * @date 2016年1月15日 上午9:41:37
 	 * @param knowledgeIds
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
@@ -139,7 +136,7 @@ public interface IKnowledgeService {
 	 * <p>1、知识基础表信息</P>
 	 * @author 周仕奇
 	 * @date 2016年1月15日 上午9:41:33
-	 * @param user
+	 * @param userId
 	 * @param start
 	 * @param size
 	 * @return
@@ -152,7 +149,7 @@ public interface IKnowledgeService {
 	 * <p>1、知识基础表信息</P>
 	 * @author 周仕奇
 	 * @date 2016年1月15日 上午9:41:32
-	 * @param user
+	 * @param userId
 	 * @param columnId
 	 * @param start
 	 * @param size
@@ -166,7 +163,7 @@ public interface IKnowledgeService {
 	 * <p>1、知识基础表信息</P>
 	 * @author 周仕奇
 	 * @date 2016年1月15日 上午9:41:30
-	 * @param user
+	 * @param userId
 	 * @param type
 	 * @param start
 	 * @param size
@@ -180,7 +177,7 @@ public interface IKnowledgeService {
 	 * <p>1、知识基础表信息</P>
 	 * @author 周仕奇
 	 * @date 2016年1月15日 上午9:41:29
-	 * @param user
+	 * @param userId
 	 * @param columnId
 	 * @param type
 	 * @param start

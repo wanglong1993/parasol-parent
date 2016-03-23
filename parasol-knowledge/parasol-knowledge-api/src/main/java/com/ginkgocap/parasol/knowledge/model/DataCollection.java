@@ -1,8 +1,5 @@
 package com.ginkgocap.parasol.knowledge.model;
 
-import com.ginkgocap.parasol.knowledge.model.ColumnCollection;
-import com.ginkgocap.parasol.knowledge.model.KnowledgeReference;
-import com.ginkgocap.parasol.knowledge.model.v1.KnowledgeBase;
 import com.ginkgocap.ywxt.asso.model.Asso;
 
 import java.io.Serializable;

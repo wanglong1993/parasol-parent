@@ -1,17 +1,5 @@
 package com.ginkgocap.parasol.knowledge.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-//import com.ginkgocap.ywxt.asso.service.annotation.AssoDeleteAnnotation;
-//import com.ginkgocap.ywxt.asso.service.annotation.AssoGetAnnotation;
-//import com.ginkgocap.ywxt.asso.service.annotation.AssoSaveAnnotation;
-//import com.ginkgocap.ywxt.asso.service.annotation.AssoUpdateAnnotation;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeBaseDao;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeMongoDao;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeReferenceDao;
@@ -19,14 +7,18 @@ import com.ginkgocap.parasol.knowledge.model.DataCollection;
 import com.ginkgocap.parasol.knowledge.model.KnowledgeBase;
 import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
 import com.ginkgocap.parasol.knowledge.model.KnowledgeReference;
+import com.ginkgocap.parasol.knowledge.model.common.CommonResultCode;
+import com.ginkgocap.parasol.knowledge.model.common.InterfaceResult;
 import com.ginkgocap.parasol.knowledge.service.IKnowledgeService;
 import com.ginkgocap.parasol.knowledge.service.common.IBigDataService;
 import com.ginkgocap.parasol.knowledge.service.common.IKnowledgeCommonService;
-import com.ginkgocap.parasol.knowledge.utils.PackingDataUtil;
-//import com.ginkgocap.parasol.knowledge.service.DiaryService;
-//import com.ginkgocap.parasol.knowledge.service.UserFeedService;
-import com.gintong.frame.util.dto.CommonResultCode;
-import com.gintong.frame.util.dto.InterfaceResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service("knowledgeService")
 public class KnowledgeService implements IKnowledgeService {
@@ -56,6 +48,7 @@ public class KnowledgeService implements IKnowledgeService {
 	//private DiaryService diaryService;
 	
 	//@AssoSaveAnnotation
+
 	@Override
 	public InterfaceResult<DataCollection> insert(DataCollection dataCollection, Long userId) throws Exception {
 		
@@ -71,13 +64,13 @@ public class KnowledgeService implements IKnowledgeService {
 		knowledgeMongo.createContendDesc();
 		
 		//知识详细信息插入
-		KnowledgeMongo afterSaveKnowledgeMongo = this.knowledgeMongoDao.insert(knowledgeMongo, user);
+		KnowledgeMongo afterSaveKnowledgeMongo = this.knowledgeMongoDao.insert(knowledgeMongo, userId);
 		
 		//知识基础表插入
 		try {
-			this.knowledgeBaseDao.insert(afterSaveKnowledgeMongo, user);
+			this.knowledgeBaseDao.insert(afterSaveKnowledgeMongo, userId);
 		} catch (Exception e) {
-			this.insertRollBack(knowledgeId, columnId, user, true, false, false, false, false);
+			this.insertRollBack(knowledgeId, columnId, userId, true, false, false, false, false);
 			logger.error("知识基础表插入失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
@@ -85,9 +78,9 @@ public class KnowledgeService implements IKnowledgeService {
 		//知识来源表插入
 		KnowledgeReference afterSaveKnowledgeReference = null;
 		try {
-			this.knowledgeReferenceDao.insert(knowledgeReference, knowledgeId, user);
+			this.knowledgeReferenceDao.insert(knowledgeReference, knowledgeId, userId);
 		} catch (Exception e) {
-			this.insertRollBack(knowledgeId, columnId, user, true, true, false, false, false);
+			this.insertRollBack(knowledgeId, columnId, userId, true, true, false, false, false);
 			logger.error("知识基础表插入失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
@@ -96,16 +89,16 @@ public class KnowledgeService implements IKnowledgeService {
 		try {
 			bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, afterSaveKnowledgeMongo, userId);
 		} catch (Exception e) {
-			this.insertRollBack(knowledgeId, columnId, user, true, true, true, false, false);
+			this.insertRollBack(knowledgeId, columnId, userId, true, true, true, false, false);
 			logger.error("知识MQ推送失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
 		
 		//动态推送（仅推送观点）
 		try {
-			userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledgeMongo, userId, diaryService));
+			//userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledgeMongo, userId, diaryService));
 		} catch (Exception e) {
-			this.insertRollBack(knowledgeId, columnId, user, true, true, true, true, false);
+			this.insertRollBack(knowledgeId, columnId, userId, true, true, true, true, false);
 			logger.error("动态推送失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
@@ -129,14 +122,14 @@ public class KnowledgeService implements IKnowledgeService {
 		KnowledgeMongo oldKnowledgeMongo = this.knowledgeMongoDao.getByIdAndColumnId(knowledgeId, columnId);
 		
 		//知识详细表更新
-		KnowledgeMongo afterSaveKnowledgeMongo = this.knowledgeMongoDao.update(knowledgeMongo, user);
+		KnowledgeMongo afterSaveKnowledgeMongo = this.knowledgeMongoDao.update(knowledgeMongo, userId);
 		
 		//知识简表更新
 		KnowledgeBase oldKnowledgeBase = this.knowledgeBaseDao.getById(knowledgeId);
 		try {
-			this.knowledgeBaseDao.update(afterSaveKnowledgeMongo, user);
+			this.knowledgeBaseDao.update(afterSaveKnowledgeMongo, userId);
 		} catch (Exception e) {
-			this.updateRollBack(knowledgeId, columnId,oldKnowledgeMongo,null,null, user, true, false, false, false, false);
+			this.updateRollBack(knowledgeId, columnId,oldKnowledgeMongo,null,null, userId, true, false, false, false, false);
 			logger.error("知识基础表更新失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
@@ -145,27 +138,27 @@ public class KnowledgeService implements IKnowledgeService {
 		KnowledgeReference afterSaveKnowledgeReference = null;
 		KnowledgeReference oldKnowledgeReference = this.knowledgeReferenceDao.getByKnowledgeId(knowledgeId);
 		try {
-			this.knowledgeReferenceDao.update(knowledgeReference, user);
+			this.knowledgeReferenceDao.update(knowledgeReference, userId);
 		} catch (Exception e) {
-			this.updateRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,null, user, true, true, false, false, false);
+			this.updateRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,null, userId, true, true, false, false, false);
 			logger.error("知识来源表更新失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
 		
 		//大数据MQ推送更新
 		try {
-			bigDataService.sendMessage(IBigDataService.KNOWLEDGE_UPDATE, afterSaveKnowledgeMongo, user);
+			bigDataService.sendMessage(IBigDataService.KNOWLEDGE_UPDATE, afterSaveKnowledgeMongo, userId);
 		} catch (Exception e) {
-			this.updateRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,oldKnowledgeReference, user, true, true, true, false, false);
+			this.updateRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,oldKnowledgeReference, userId, true, true, true, false, false);
 			logger.error("知识MQ推送失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
 		
 		//动态推送更新（仅推送观点）
 		try {
-			userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledgeMongo, user, diaryService));
+			//userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledgeMongo, user, diaryService));
 		} catch (Exception e) {
-			this.updateRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,oldKnowledgeReference, user, true, true, true, true, false);
+			this.updateRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,oldKnowledgeReference, userId, true, true, true, true, false);
 			logger.error("动态推送失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
@@ -187,7 +180,7 @@ public class KnowledgeService implements IKnowledgeService {
 		try {
 			this.knowledgeBaseDao.deleteById(knowledgeId);
 		} catch (Exception e) {
-			this.deleteRollBack(knowledgeId, columnId,oldKnowledgeMongo,null,null, user, true, false, false, false, false);
+			this.deleteRollBack(knowledgeId, columnId,oldKnowledgeMongo,null,null, userId, true, false, false, false, false);
 			logger.error("知识基础表删除失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
@@ -197,28 +190,29 @@ public class KnowledgeService implements IKnowledgeService {
 		try {
 			this.knowledgeReferenceDao.deleteById(knowledgeId);
 		} catch (Exception e) {
-			this.deleteRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,null, user, true, true, false, false, false);
+			this.deleteRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,null, userId, true, true, false, false, false);
 			logger.error("知识来源表删除失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
 		
 		//大数据MQ推送删除
 		try {
-			bigDataService.sendMessage(IBigDataService.KNOWLEDGE_DELETE, oldKnowledgeMongo, user);
+			bigDataService.sendMessage(IBigDataService.KNOWLEDGE_DELETE, oldKnowledgeMongo, userId);
 		} catch (Exception e) {
-			this.deleteRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,oldKnowledgeReference, user, true, true, true, false, false);
+			this.deleteRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,oldKnowledgeReference, userId, true, true, true, false, false);
 			logger.error("知识MQ推送失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
 		
 		//动态推送删除（仅推送观点）
+        /*
 		try {
-			userFeedService.deleteDynamicKnowledge(knowledgeId);
+			//userFeedService.deleteDynamicKnowledge(knowledgeId);
 		} catch (Exception e) {
 			this.deleteRollBack(knowledgeId, columnId,oldKnowledgeMongo,oldKnowledgeBase,oldKnowledgeReference, user, true, true, true, true, false);
 			logger.error("动态推送失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
-		}
+		}*/
 		
 		return InterfaceResult.getSuccessInterfaceResultInstance(null);
 	}
@@ -237,7 +231,7 @@ public class KnowledgeService implements IKnowledgeService {
 		try {
 			this.knowledgeBaseDao.deleteByIds(knowledgeIds);
 		} catch (Exception e) {
-			this.deleteListRollBack(oldKnowledgeMongoList,null,null, user, true, false, false, false, false);
+			this.deleteListRollBack(oldKnowledgeMongoList,null,null, userId, true, false, false, false, false);
 			logger.error("知识基础表删除失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
@@ -247,21 +241,22 @@ public class KnowledgeService implements IKnowledgeService {
 		try {
 			this.knowledgeReferenceDao.deleteByIds(knowledgeIds);
 		} catch (Exception e) {
-			this.deleteListRollBack(oldKnowledgeMongoList,oldKnowledgeBaseList,null, user, true, true, false, false, false);
+			this.deleteListRollBack(oldKnowledgeMongoList,oldKnowledgeBaseList,null, userId, true, true, false, false, false);
 			logger.error("知识来源表删除失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
 		
 		//大数据MQ推送删除
 		try {
-			bigDataService.sendMessage(IBigDataService.KNOWLEDGE_DELETE, oldKnowledgeMongoList, user);
+			bigDataService.sendMessage(IBigDataService.KNOWLEDGE_DELETE, oldKnowledgeMongoList, userId);
 		} catch (Exception e) {
-			this.deleteListRollBack(oldKnowledgeMongoList,oldKnowledgeBaseList,oldKnowledgeReferenceList, user, true, true, true, false, false);
+			this.deleteListRollBack(oldKnowledgeMongoList,oldKnowledgeBaseList,oldKnowledgeReferenceList, userId, true, true, true, false, false);
 			logger.error("知识MQ推送失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
 		}
 		
 		//动态推送删除（仅推送观点）
+        /*
 		try {
 			for(long knowledgeId : knowledgeIds) 
 				userFeedService.deleteDynamicKnowledge(knowledgeId);
@@ -269,7 +264,7 @@ public class KnowledgeService implements IKnowledgeService {
 			this.deleteListRollBack(oldKnowledgeMongoList,oldKnowledgeBaseList,oldKnowledgeReferenceList, user, true, true, true, true, false);
 			logger.error("动态推送失败！失败原因：\n"+e.getCause().toString());
 			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
-		}
+		}*/
 		
 		return InterfaceResult.getSuccessInterfaceResultInstance(null);
 	}
@@ -315,23 +310,23 @@ public class KnowledgeService implements IKnowledgeService {
 	@Override
 	public InterfaceResult<List<DataCollection>> getBaseByCreateUserId(Long userId,int start,int size) throws Exception {
 		
-		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserId(user.getId(), start, size)));
+		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserId(userId, start, size)));
 	}
 
 	@Override
 	public InterfaceResult<List<DataCollection>> getBaseByCreateUserIdAndColumnId(Long userId,long columnId,int start,int size) throws Exception {
 		
-		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserIdAndColumnId(user.getId(), columnId, start, size)));
+		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserIdAndColumnId(userId, columnId, start, size)));
 	}
 
 	@Override
 	public InterfaceResult<List<DataCollection>> getBaseByCreateUserIdAndType(Long userId,String type,int start,int size) throws Exception {
-		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserIdAndType(user.getId(), type, start, size)));
+		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserIdAndType(userId, type, start, size)));
 	}
 
 	@Override
 	public InterfaceResult<List<DataCollection>> getBaseByCreateUserIdAndColumnIdAndType(Long userId,long columnId,String type,int start,int size) throws Exception {
-		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserIdAndTypeAndColumnId(user.getId(), type, columnId, start, size)));
+		return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(this.knowledgeBaseDao.getByCreateUserIdAndTypeAndColumnId(userId, type, columnId, start, size)));
 	}
 	
 	@Override
@@ -406,12 +401,12 @@ public class KnowledgeService implements IKnowledgeService {
 	 */
 	private void deleteListRollBack(List<KnowledgeMongo> oldKnowledgeMongoList,List<KnowledgeBase> oldKnowledgeBaseList,List<KnowledgeReference> oldKnowledgeReferenceList, Long userId,
 			boolean isMongo,boolean isBase,boolean isReference,boolean isBigData,boolean isUserFeed) throws Exception {
-		if(isMongo) this.knowledgeMongoDao.insertList(oldKnowledgeMongoList, user);
-		if(isBase) this.knowledgeBaseDao.insertList(oldKnowledgeBaseList, user);
-		if(isReference) this.knowledgeReferenceDao.insertList(oldKnowledgeReferenceList, user);
-		if(isBigData) this.bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, oldKnowledgeMongoList, user);
+		if(isMongo) this.knowledgeMongoDao.insertList(oldKnowledgeMongoList, userId);
+		if(isBase) this.knowledgeBaseDao.insertList(oldKnowledgeBaseList, userId);
+		if(isReference) this.knowledgeReferenceDao.insertList(oldKnowledgeReferenceList, userId);
+		if(isBigData) this.bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, oldKnowledgeMongoList, userId);
 		if(isUserFeed) {
-			for (KnowledgeMongo oldKnowledgeMongo: oldKnowledgeMongoList)
+			//for (KnowledgeMongo oldKnowledgeMongo: oldKnowledgeMongoList)
             //TODO: check if need or not
 			//this.userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(oldKnowledgeMongo, user, diaryService));
 		}

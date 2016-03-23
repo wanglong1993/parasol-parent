@@ -19,7 +19,7 @@ public interface IKnowledgeBaseDao {
 	 * @author 周仕奇
 	 * @date 2016年1月11日 下午6:05:29
 	 * @param knowledgeBase
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
@@ -30,7 +30,7 @@ public interface IKnowledgeBaseDao {
 	 * @author 周仕奇
 	 * @date 2016年1月13日 下午4:36:14
 	 * @param knowledgeBaseList
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
@@ -41,7 +41,7 @@ public interface IKnowledgeBaseDao {
 	 * @author 周仕奇
 	 * @date 2016年1月11日 下午6:05:40
 	 * @param knowledgeBase
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
@@ -52,7 +52,7 @@ public interface IKnowledgeBaseDao {
 	 * @author 周仕奇
 	 * @date 2016年1月11日 下午6:05:47
 	 * @param knowledgeBase
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */

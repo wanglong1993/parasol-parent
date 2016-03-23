@@ -1,9 +1,9 @@
 package com.ginkgocap.parasol.knowledge.dao;
 
+import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
+
 import java.util.List;
 import java.util.Map;
-
-import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
 
 /**
  * @Title: 用户定制栏目表

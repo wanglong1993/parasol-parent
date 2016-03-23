@@ -1,10 +1,9 @@
 package com.ginkgocap.parasol.knowledge.model;
 
-import java.io.Serializable;
-
+import com.ginkgocap.parasol.knowledge.utils.HtmlToText;
 import org.apache.commons.lang3.StringUtils;
 
-import com.ginkgocap.parasol.knowledge.utils.HtmlToText;
+import java.io.Serializable;
 
 /**
  * @Title: 知识详细信息（mongoDB保存，保存知识的全部信息，提供给编辑、详细信息查看界面查询）

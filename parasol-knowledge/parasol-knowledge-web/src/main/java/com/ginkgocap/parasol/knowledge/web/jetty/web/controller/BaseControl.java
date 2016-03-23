@@ -29,7 +29,6 @@ public abstract class BaseControl {
 	/**
 	 * 从错误日志中找到服务名称
 	 * 
-	 * @param errMessage
 	 * @return
 	 */
 	protected String getServiceNameByRpcMessage(RpcException rpc) {
@@ -96,8 +95,8 @@ public abstract class BaseControl {
 	 */
 	public LoginInfo getLoginInfo(HttpServletRequest request) {
         // 登陆人的信息
-        Long loginAppId = LoginUserContextHolder.getAppKey();
-        Long loginUserId = LoginUserContextHolder.getUserId();
+        Long loginAppId = 0L; //LoginUserContextHolder.getAppKey();
+        Long loginUserId = 0L; //LoginUserContextHolder.getUserId();
 		return new LoginInfo(loginAppId, loginUserId);
 	}
 	

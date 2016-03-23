@@ -1,9 +1,8 @@
 package com.ginkgocap.parasol.knowledge.dao;
 
-import java.util.List;
-
 import com.ginkgocap.parasol.knowledge.model.KnowledgeReference;
-import com.ginkgocap.ywxt.user.model.User;
+
+import java.util.List;
 
 /**
  * @Title: 知识来源表
@@ -29,7 +28,7 @@ public interface IKnowledgeReferenceDao {
 	 * @author 周仕奇
 	 * @date 2016年1月14日 下午6:05:51
 	 * @param knowledgeReference
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */

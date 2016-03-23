@@ -1,10 +1,5 @@
 package com.ginkgocap.parasol.knowledge.service;
 
-import java.util.List;
-import java.util.Map;
-
-import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
-
 /**
  * @Title: 栏目管理服务
  * @Description: 栏目管理服务

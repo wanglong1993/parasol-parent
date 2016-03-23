@@ -1,20 +1,18 @@
 package com.ginkgocap.parasol.knowledge.service.impl.common;
 
-import java.util.List;
-
+import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
+import com.ginkgocap.parasol.knowledge.service.common.IBigDataService;
+import com.ginkgocap.parasol.knowledge.utils.PackingDataUtil;
+import com.gintong.rocketmq.api.DefaultMessageService;
+import com.gintong.rocketmq.api.enums.TopicType;
+import com.gintong.rocketmq.api.model.RocketSendResult;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
-import com.ginkgocap.parasol.knowledge.service.common.IBigDataService;
-import com.ginkgocap.parasol.knowledge.utils.PackingDataUtil;
-import com.ginkgocap.ywxt.user.model.User;
-import com.gintong.rocketmq.api.DefaultMessageService;
-import com.gintong.rocketmq.api.enums.TopicType;
-import com.gintong.rocketmq.api.model.RocketSendResult;
+import java.util.List;
 
 @Service("bigDataService")
 public class BigDataService implements IBigDataService{
@@ -26,14 +24,14 @@ public class BigDataService implements IBigDataService{
 
 	@Override
 	public void sendMessage(String optionType, KnowledgeMongo knowledgeMongo, Long userId) {
-		logger.info("通知大数据，发送请求 请求用户{}", user.getId());
+		logger.info("通知大数据，发送请求 请求用户{}", userId);
 		RocketSendResult result = null;
 		try {
 			if (StringUtils.isNotBlank(optionType)) {
-				result = defaultMessageService.sendMessage(TopicType.KNOWLEDGE_TOPIC, optionType, PackingDataUtil.packingSendBigData(knowledgeMongo,user));
+				result = defaultMessageService.sendMessage(TopicType.KNOWLEDGE_TOPIC, optionType, PackingDataUtil.packingSendBigData(knowledgeMongo,userId));
 				logger.info("返回参数{}", result.getSendResult());
 			} else {
-				defaultMessageService.sendMessage(TopicType.KNOWLEDGE_TOPIC, PackingDataUtil.packingSendBigData(knowledgeMongo,user));
+				defaultMessageService.sendMessage(TopicType.KNOWLEDGE_TOPIC, PackingDataUtil.packingSendBigData(knowledgeMongo,userId));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,9 +44,7 @@ public class BigDataService implements IBigDataService{
 		if(knowledgeMongoList != null && !knowledgeMongoList.isEmpty()) {
 			
 			for (KnowledgeMongo data : knowledgeMongoList) {
-				
-				this.sendMessage(optionType, data, user);
-				
+				this.sendMessage(optionType, data, userId);
 			}
 			
 		}
@@ -63,7 +59,7 @@ public class BigDataService implements IBigDataService{
 		data.setId(knowledgeId);
 		data.setColumnId(columnId);
 		
-		this.sendMessage(KNOWLEDGE_UPDATE, data, user);
+		this.sendMessage(KNOWLEDGE_UPDATE, data, userId);
 		
 	}
 

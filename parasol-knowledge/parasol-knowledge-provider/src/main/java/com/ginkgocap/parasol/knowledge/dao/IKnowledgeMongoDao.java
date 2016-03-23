@@ -1,9 +1,8 @@
 package com.ginkgocap.parasol.knowledge.dao;
 
-import java.util.List;
-
 import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
-import com.ginkgocap.ywxt.user.model.User;
+
+import java.util.List;
 
 /**
  * @Title: 知识详细表
@@ -29,7 +28,7 @@ public interface IKnowledgeMongoDao {
 	 * @author 周仕奇
 	 * @date 2016年1月13日 上午10:54:20
 	 * @param knowledgeMongo
-	 * @param user
+	 * @param userId
 	 * @param collectionName 数据表名称（当前参数可传可不传），不传此参数时，将根据columnId构造出表名称
 	 * @return
 	 * @throws Exception
@@ -41,7 +40,7 @@ public interface IKnowledgeMongoDao {
 	 * @author 周仕奇
 	 * @date 2016年1月13日 下午4:24:56
 	 * @param knowledgeMongoList
-	 * @param user
+	 * @param userId
 	 * @param collectionName 数据表名称（当前参数可传可不传），不传此参数时，将根据columnId构造出表名称
 	 * @return
 	 * @throws Exception
@@ -53,7 +52,7 @@ public interface IKnowledgeMongoDao {
 	 * @author 周仕奇
 	 * @date 2016年1月13日 上午10:54:29
 	 * @param knowledgeMongo
-	 * @param user
+	 * @param userId
 	 * @param collectionName 数据表名称（当前参数可传可不传），不传此参数时，将根据columnId构造出表名称
 	 * @return
 	 * @throws Exception
@@ -66,7 +65,7 @@ public interface IKnowledgeMongoDao {
 	 * @date 2016年1月13日 上午10:54:44
 	 * @param knowledgeMongo
 	 * @param knowledgeId
-	 * @param user
+	 * @param userId
 	 * @param collectionName 数据表名称（当前参数可传可不传），不传此参数时，将根据columnId构造出表名称
 	 * @return
 	 * @throws Exception
