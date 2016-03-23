@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.knowledge.dao.IColumnCustomDao;
 import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
-import com.ginkgocap.ywxt.user.model.User;
 
 @Repository("columnCustomDao")
 public class ColumnCustomDao extends BaseService<ColumnCustom> implements IColumnCustomDao {
@@ -23,7 +22,7 @@ public class ColumnCustomDao extends BaseService<ColumnCustom> implements IColum
 
 
 	@Override
-	public Map<String, Object> queryHomeColumn(User user) {
+	public Map<String, Object> queryHomeColumn(Long userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

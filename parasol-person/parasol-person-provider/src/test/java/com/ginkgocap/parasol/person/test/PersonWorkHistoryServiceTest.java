@@ -113,8 +113,8 @@ public class PersonWorkHistoryServiceTest  extends TestBase implements Test  {
 		personWorkHistory.setPersonId(personId);
 		personWorkHistory.setIncName("公司名称"+industryId);
 		personWorkHistory.setPosition("职位"+industryId);
-		personWorkHistory.setBeginTime(ctime);
-		personWorkHistory.setEndTime(ctime);
+		personWorkHistory.setBeginTime("201603");
+		personWorkHistory.setEndTime("201603");
 		personWorkHistory.setDescription("非常想念在公司天天加班的时光"+industryId);
 		personWorkHistory.setIp("119.10.29.28");
 		return personWorkHistory;

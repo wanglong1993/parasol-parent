@@ -1,9 +1,8 @@
 package com.ginkgocap.parasol.knowledge.dao;
 
-import java.util.List;
-
 import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
-import com.ginkgocap.ywxt.user.model.User;
+
+import java.util.List;
 
 /**
  * @Title: 知识详细表
@@ -29,36 +28,36 @@ public interface IKnowledgeMongoDao {
 	 * @author 周仕奇
 	 * @date 2016年1月13日 上午10:54:20
 	 * @param knowledgeMongo
-	 * @param user
+	 * @param userId
 	 * @param collectionName 数据表名称（当前参数可传可不传），不传此参数时，将根据columnId构造出表名称
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeMongo insert(KnowledgeMongo knowledgeMongo,User user,String... collectionName) throws Exception;
+	public KnowledgeMongo insert(KnowledgeMongo knowledgeMongo,Long userId,String... collectionName) throws Exception;
 	
 	/**
 	 * 批量插入
 	 * @author 周仕奇
 	 * @date 2016年1月13日 下午4:24:56
 	 * @param knowledgeMongoList
-	 * @param user
+	 * @param userId
 	 * @param collectionName 数据表名称（当前参数可传可不传），不传此参数时，将根据columnId构造出表名称
 	 * @return
 	 * @throws Exception
 	 */
-	public List<KnowledgeMongo> insertList(List<KnowledgeMongo> knowledgeMongoList,User user,String... collectionName) throws Exception;
+	public List<KnowledgeMongo> insertList(List<KnowledgeMongo> knowledgeMongoList,Long userId,String... collectionName) throws Exception;
 	
 	/**
 	 * 更新
 	 * @author 周仕奇
 	 * @date 2016年1月13日 上午10:54:29
 	 * @param knowledgeMongo
-	 * @param user
+	 * @param userId
 	 * @param collectionName 数据表名称（当前参数可传可不传），不传此参数时，将根据columnId构造出表名称
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeMongo update(KnowledgeMongo knowledgeMongo,User user,String... collectionName) throws Exception;
+	public KnowledgeMongo update(KnowledgeMongo knowledgeMongo,Long userId,String... collectionName) throws Exception;
 	
 	/**
 	 * 先删除后插入
@@ -66,12 +65,12 @@ public interface IKnowledgeMongoDao {
 	 * @date 2016年1月13日 上午10:54:44
 	 * @param knowledgeMongo
 	 * @param knowledgeId
-	 * @param user
+	 * @param userId
 	 * @param collectionName 数据表名称（当前参数可传可不传），不传此参数时，将根据columnId构造出表名称
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeMongo insertAfterDelete(KnowledgeMongo knowledgeMongo,long knowledgeId,User user,String... collectionName) throws Exception;
+	public KnowledgeMongo insertAfterDelete(KnowledgeMongo knowledgeMongo,long knowledgeId,Long userId,String... collectionName) throws Exception;
 	
 	/**
 	 * 根据主键及栏目删除数据

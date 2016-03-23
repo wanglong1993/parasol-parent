@@ -1,8 +1,8 @@
 package com.ginkgocap.parasol.knowledge.model;
 
-import java.io.Serializable;
-
 import com.ginkgocap.ywxt.asso.model.Asso;
+
+import java.io.Serializable;
 
 /**
  * @Title: 知识数据的大集合对象

@@ -3,7 +3,6 @@ package com.ginkgocap.parasol.knowledge.service.common;
 import java.util.List;
 
 import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
-import com.ginkgocap.ywxt.user.model.User;
 import com.gintong.rocketmq.api.utils.FlagTypeUtils;
 
 /**
@@ -33,7 +32,7 @@ public interface IBigDataService {
 	 * @param user
 	 * @throws Exception
 	 */
-	public void sendMessage(String optionType, KnowledgeMongo knowledgeMongo,User user) throws Exception;
+	public void sendMessage(String optionType, KnowledgeMongo knowledgeMongo,Long userId) throws Exception;
 
 	/**
 	 * MQ数据发送（批量发送）
@@ -44,7 +43,7 @@ public interface IBigDataService {
 	 * @param user
 	 * @throws Exception
 	 */
-	public void sendMessage(String optionType,List<KnowledgeMongo> knowledgeMongoList, User user) throws Exception;
+	public void sendMessage(String optionType,List<KnowledgeMongo> knowledgeMongoList, Long userId) throws Exception;
 	
 	/**
 	 * MQ数据删除
@@ -55,7 +54,7 @@ public interface IBigDataService {
 	 * @param user
 	 * @throws Exception
 	 */
-	public void deleteMessage(long knowledgeId,long columnId, User user) throws Exception;
+	public void deleteMessage(long knowledgeId,long columnId, Long userId) throws Exception;
 	
 	
 }

@@ -1,22 +1,13 @@
 package com.ginkgocap.parasol.knowledge.model;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import net.sf.json.JSONObject;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
-import com.ginkgocap.parasol.knowledge.utils.JsonKeyConstant;
 
 /**
  * @Title: 知识来源信息
@@ -52,10 +43,10 @@ public class KnowledgeReference implements Serializable {
 	private String status;
 	
 	/**引用时间*/
-	private String refDate;
+	private long refDate;
 	
 	/**创建时间*/
-	private String createDate;
+	private long createDate;
 	
 	/**修改时间*/
 	private String modifyDate;
@@ -118,20 +109,20 @@ public class KnowledgeReference implements Serializable {
 	}
 
 	@Column(name = "ref_date")
-	public String getRefDate() {
+	public long getRefDate() {
 		return refDate;
 	}
 
-	public void setRefDate(String refDate) {
+	public void setRefDate(long refDate) {
 		this.refDate = refDate;
 	}
 
 	@Column(name = "create_date")
-	public String getCreateDate() {
+	public long getCreateDate() {
 		return createDate;
 	}
 
-	public void setCreateDate(String createDate) {
+	public void setCreateDate(long createDate) {
 		this.createDate = createDate;
 	}
 

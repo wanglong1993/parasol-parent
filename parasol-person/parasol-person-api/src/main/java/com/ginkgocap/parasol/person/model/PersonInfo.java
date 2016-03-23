@@ -1,13 +1,10 @@
 package com.ginkgocap.parasol.person.model;
 
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * 个人情况
@@ -25,7 +22,7 @@ public class PersonInfo implements java.io.Serializable {
 	 */
 	private Long personId;
 	/**
-	 * 若为组织则为全称，不可更改；若为个人则为昵称，可修改。.
+	 * 出生日期。.
 	 */
 	private Long birthday;
 	/**
@@ -40,6 +37,15 @@ public class PersonInfo implements java.io.Serializable {
 	 * 县id.
 	 */
 	private Long countyId;
+	/**
+	 * 兴趣爱好.
+	 */
+	private String interests;
+	/**
+	 * 擅长技能.
+	 */
+	private String skills;
+	
 	/**
 	 * 好友可见 1.公开，2.好友可见.
 	 */
@@ -106,6 +112,26 @@ public class PersonInfo implements java.io.Serializable {
 	public void setCountyId(Long countyId) {
 		this.countyId = countyId;
 	}
+
+	public String getInterests() {
+		return interests;
+	}
+
+
+	public void setInterests(String interests) {
+		this.interests = interests;
+	}
+
+
+	public String getSkills() {
+		return skills;
+	}
+
+
+	public void setSkills(String skills) {
+		this.skills = skills;
+	}
+
 
 	@Column(name = "is_visible")
 	public Byte getIsVisible() {

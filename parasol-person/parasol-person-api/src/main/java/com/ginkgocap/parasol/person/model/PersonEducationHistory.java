@@ -37,17 +37,17 @@ public class PersonEducationHistory implements java.io.Serializable {
 	 */
 	private String major;
 	/**
-	 * 学历  0小学 1初中 2高中 3中专 4专科 5本科 6硕士 7博士.
+	 * 学历  小学 初中 高中 中专 专科 本科 硕士 博士.
 	 */
-	private Byte degree;
+	private String degree;
 	/**
 	 * 开始时间.
 	 */
-	private Long beginTime;
+	private String beginTime;
 	/**
 	 * 结束时间.
 	 */
-	private Long endTime;
+	private String endTime;
 	/**
 	 * 描述.
 	 */
@@ -112,29 +112,29 @@ public class PersonEducationHistory implements java.io.Serializable {
 	}
 
 	@Column(name = "degree", length = 1)
-	public Byte getDegree() {
+	public String getDegree() {
 		return this.degree;
 	}
 
-	public void setDegree(Byte degree) {
+	public void setDegree(String degree) {
 		this.degree = degree;
 	}
 
 	@Column(name = "begin_time")
-	public Long getBeginTime() {
+	public String getBeginTime() {
 		return this.beginTime;
 	}
 
-	public void setBeginTime(Long beginTime) {
+	public void setBeginTime(String beginTime) {
 		this.beginTime = beginTime;
 	}
 
 	@Column(name = "end_time")
-	public Long getEndTime() {
+	public String getEndTime() {
 		return this.endTime;
 	}
 
-	public void setEndTime(Long endTime) {
+	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 

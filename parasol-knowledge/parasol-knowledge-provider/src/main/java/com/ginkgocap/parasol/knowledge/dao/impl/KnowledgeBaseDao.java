@@ -1,20 +1,18 @@
 package com.ginkgocap.parasol.knowledge.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.stereotype.Repository;
-
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeBaseDao;
 import com.ginkgocap.parasol.knowledge.model.KnowledgeBase;
-import com.ginkgocap.ywxt.user.model.User;
+import org.springframework.stereotype.Repository;
+
+import java.util.Date;
+import java.util.List;
 
 @Repository("knowledgeBaseDao")
 public class KnowledgeBaseDao extends BaseService<KnowledgeBase> implements IKnowledgeBaseDao {
 
 	@Override
-	public KnowledgeBase insert(KnowledgeBase knowledgeBase,User user) throws Exception {
+	public KnowledgeBase insert(KnowledgeBase knowledgeBase,Long userId) throws Exception {
 		
 		if(knowledgeBase == null)
 			return null;
@@ -25,7 +23,7 @@ public class KnowledgeBaseDao extends BaseService<KnowledgeBase> implements IKno
 	}
 	
 	@Override
-	public List<KnowledgeBase> insertList(List<KnowledgeBase> knowledgeBaseList,User user) throws Exception {
+	public List<KnowledgeBase> insertList(List<KnowledgeBase> knowledgeBaseList,Long userId) throws Exception {
 		
 		if(knowledgeBaseList == null || knowledgeBaseList.isEmpty())
 			return null;
@@ -34,7 +32,7 @@ public class KnowledgeBaseDao extends BaseService<KnowledgeBase> implements IKno
 	}
 
 	@Override
-	public KnowledgeBase update(KnowledgeBase knowledgeBase,User user) throws Exception {
+	public KnowledgeBase update(KnowledgeBase knowledgeBase,Long userId) throws Exception {
 		
 		if(knowledgeBase == null)
 			return null;
@@ -45,7 +43,7 @@ public class KnowledgeBaseDao extends BaseService<KnowledgeBase> implements IKno
 	}
 
 	@Override
-	public KnowledgeBase insertAfterDelete(KnowledgeBase knowledgeBase,User user)
+	public KnowledgeBase insertAfterDelete(KnowledgeBase knowledgeBase,Long userId)
 			throws Exception {
 		
 		long id = knowledgeBase.getId();
@@ -59,10 +57,10 @@ public class KnowledgeBaseDao extends BaseService<KnowledgeBase> implements IKno
 		}
 		
 		try {
-			this.insert(knowledgeBase, user);
+            this.insert(knowledgeBase, userId);
 		} catch (Exception e) {
 			if(oldValue != null && oldValue.getId() > 0)
-				this.insert(oldValue, user);
+				this.insert(oldValue, userId);
 			throw e;
 		}
 		

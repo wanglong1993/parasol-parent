@@ -41,9 +41,9 @@ public class PersonEducationHistoryServiceImpl extends BaseService<PersonEducati
 			checkValidity(list);
 			//删除以前的
 			deleteEntityByIds(getIdList(personId));
-			List<PersonEducationHistory> userDefineds=saveEntitys(list);
-			if(userDefineds==null || userDefineds.size()==0) throw new PersonEducationHistoryServiceException("createPersonEducationHistoryByList failed.");
-			return userDefineds;
+			List<PersonEducationHistory> personEducationHistorys=saveEntitys(list);
+			if(personEducationHistorys==null || personEducationHistorys.size()==0) throw new PersonEducationHistoryServiceException("createPersonEducationHistoryByList failed.");
+			return personEducationHistorys;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);
@@ -57,9 +57,9 @@ public class PersonEducationHistoryServiceImpl extends BaseService<PersonEducati
 			checkValidity(list);
 			//删除以前的
 			deleteEntityByIds(getIdList(personId));
-			List<PersonEducationHistory> userDefineds=saveEntitys(list);
-			if(userDefineds==null || userDefineds.size()==0) throw new PersonEducationHistoryServiceException("updatePersonEducationHistoryByList failed.");
-			return userDefineds;
+			List<PersonEducationHistory> personEducationHistorys=saveEntitys(list);
+			if(personEducationHistorys==null || personEducationHistorys.size()==0) throw new PersonEducationHistoryServiceException("updatePersonEducationHistoryByList failed.");
+			return personEducationHistorys;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

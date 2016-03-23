@@ -95,9 +95,9 @@ public class PersonBasicServiceTest  extends TestBase implements Test  {
 			personBasic.setCompany("金桐网");
 			personBasic.setPosition("工程师");
 			personBasic.setPicId(1l);
-			personBasic.setCountry(1l);
-			personBasic.setCity(2l);
-			personBasic.setCounty(3l);
+			personBasic.setCountryId(1l);
+			personBasic.setCityId(2l);
+			personBasic.setCountyId(3l);
 			personBasic.setAddress("北京市大兴区");
 			personBasic.setRemark("我的个人介绍");
 			personBasic.setFirstIndustryId(1l);

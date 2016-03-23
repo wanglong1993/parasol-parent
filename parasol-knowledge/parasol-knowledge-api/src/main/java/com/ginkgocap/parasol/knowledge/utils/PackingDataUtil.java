@@ -9,11 +9,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
-import com.ginkgocap.ywxt.user.form.EtUserInfo;
-import com.ginkgocap.ywxt.user.form.ReceiversInfo;
-import com.ginkgocap.ywxt.user.model.User;
-import com.ginkgocap.ywxt.user.model.UserFeed;
-import com.ginkgocap.ywxt.user.service.DiaryService;
+import com.ginkgocap.parasol.knowledge.model.EtUserInfo;
+import com.ginkgocap.parasol.knowledge.model.ReceiversInfo;
+import com.ginkgocap.parasol.knowledge.model.UserFeed;
+import com.ginkgocap.parasol.knowledge.service.DiaryService;
 
 /**
  * @Title: 数据包装转换类
@@ -28,15 +27,15 @@ public class PackingDataUtil {
 	 * @author 周仕奇
 	 * @date 2016年1月14日 下午4:33:26
 	 * @param knowledgeMongo
-	 * @param user
+	 * @param userId
 	 * @return
 	 */
-	public static String packingSendBigData(KnowledgeMongo knowledgeMongo,User user) {
+	public static String packingSendBigData(KnowledgeMongo knowledgeMongo,Long userId) {
 		
 		JSONObject json = new JSONObject();
 		json.put("kid", knowledgeMongo.getId());
-		json.put("cid", user.getId());
-		json.put("cname", user.getName());
+		json.put("cid", userId);
+		//json.put("cname", user.getName());
 		json.put("title", knowledgeMongo.getTitle());
 		json.put("cpathid", /*knowledgeMongo.getColumnId()*/"");
 		json.put("pic", knowledgeMongo.getPictureId());
@@ -58,16 +57,16 @@ public class PackingDataUtil {
 	 * @author 周仕奇
 	 * @date 2016年1月14日 下午5:04:52
 	 * @param knowledgeMongo
-	 * @param user
+	 * @param userId
 	 * @param diaryService
 	 * @return
 	 */
-	public static UserFeed packingSendFeedData(KnowledgeMongo knowledgeMongo,User user,DiaryService diaryService) {
+	public static UserFeed packingSendFeedData(KnowledgeMongo knowledgeMongo,Long userId,DiaryService diaryService) {
 		if (knowledgeMongo.getColumnId() == 8) {
 			UserFeed feed = new UserFeed();
 			feed.setContent(knowledgeMongo.getContent());
-			feed.setCreatedBy(user.getName());
-			feed.setCreatedById(user.getId());
+			//feed.setCreatedBy(user.getName());
+			feed.setCreatedById(userId);
 			feed.setCtime(knowledgeMongo.getCreateDate());
 			feed.setGroupName("仅好友可见");
 			feed.setScope(1);// 设置可见级别
@@ -77,7 +76,7 @@ public class PackingDataUtil {
 			feed.setType(1);
 			feed.setImgPath("");// 长观点地址
 			feed.setDelstatus(0);// 删除状态
-			List<ReceiversInfo> receivers = diaryService.getReceiversInfo(knowledgeMongo.getContent(), -1, user.getId());
+			List<ReceiversInfo> receivers = diaryService.getReceiversInfo(knowledgeMongo.getContent(), -1, userId);
 			feed.setReceivers(receivers);// 获取接收人信息
 			feed.setDiaryType(1);
 			List<EtUserInfo> etInfo = new ArrayList<EtUserInfo>();// 被@的信息

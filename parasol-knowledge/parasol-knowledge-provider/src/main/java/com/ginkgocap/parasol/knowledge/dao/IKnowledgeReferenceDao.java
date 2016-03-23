@@ -1,9 +1,8 @@
 package com.ginkgocap.parasol.knowledge.dao;
 
-import java.util.List;
-
 import com.ginkgocap.parasol.knowledge.model.KnowledgeReference;
-import com.ginkgocap.ywxt.user.model.User;
+
+import java.util.List;
 
 /**
  * @Title: 知识来源表
@@ -22,18 +21,18 @@ public interface IKnowledgeReferenceDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeReference insert(KnowledgeReference knowledgeReference,long knowledgeId,User user) throws Exception;
+	public KnowledgeReference insert(KnowledgeReference knowledgeReference,long knowledgeId,Long userId) throws Exception;
 	
 	/**
 	 * 批量插入
 	 * @author 周仕奇
 	 * @date 2016年1月14日 下午6:05:51
 	 * @param knowledgeReference
-	 * @param user
+	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
-	public List<KnowledgeReference> insertList(List<KnowledgeReference> knowledgeReference,User user) throws Exception;
+	public List<KnowledgeReference> insertList(List<KnowledgeReference> knowledgeReference,Long userId) throws Exception;
 	
 	/**
 	 * 更新
@@ -43,7 +42,7 @@ public interface IKnowledgeReferenceDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeReference update(KnowledgeReference knowledgeReference,User user) throws Exception;
+	public KnowledgeReference update(KnowledgeReference knowledgeReference,Long userId) throws Exception;
 	
 	/**
 	 * 先删除后插入
@@ -53,7 +52,7 @@ public interface IKnowledgeReferenceDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public KnowledgeReference insertAfterDelete(KnowledgeReference knowledgeReference,long knowledgeId,User user) throws Exception;
+	public KnowledgeReference insertAfterDelete(KnowledgeReference knowledgeReference,long knowledgeId,Long userId) throws Exception;
 	
 	/**
 	 * 根据主键删除

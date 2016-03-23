@@ -1,7 +1,6 @@
 package com.ginkgocap.parasol.knowledge.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
 

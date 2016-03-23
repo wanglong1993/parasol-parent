@@ -1,26 +1,21 @@
 package com.ginkgocap.parasol.knowledge.web.jetty.web.controller;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
+import com.ginkgocap.parasol.knowledge.model.LoginInfo;
+import com.ginkgocap.parasol.knowledge.model.common.CommonResultCode;
+import com.ginkgocap.parasol.knowledge.model.common.InterfaceResult;
+import com.ginkgocap.parasol.knowledge.service.IColumnCustomService;
+import com.ginkgocap.parasol.knowledge.web.jetty.web.ResponseError;
 import net.sf.json.JSONObject;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
-
-import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
-import com.ginkgocap.parasol.knowledge.service.IColumnCustomService;
-import com.ginkgocap.parasol.knowledge.web.jetty.web.ResponseError;
-import com.ginkgocap.ywxt.user.model.User;
-import com.gintong.frame.util.dto.CommonResultCode;
-import com.gintong.frame.util.dto.InterfaceResult;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/knowledge_columncustom")
@@ -33,7 +28,7 @@ public class ColumnCustomController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<List<ColumnCustom>> showColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		InterfaceResult<List<ColumnCustom>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		User user = this.getUser(request);
+		LoginInfo user = this.getLoginInfo(request);
 		JSONObject requestJson = this.getRequestJson(request);
 		if(!requestJson.containsKey("pid")){
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
@@ -42,7 +37,7 @@ public class ColumnCustomController extends BaseControl {
 		List<ColumnCustom> list=null;
 		long uid=0l;
 		if(user!=null){
-			uid=user.getId();
+			uid=user.getUserId();
 		}
 
 		list=this.columnCustomService.queryListByPidAndUserId(uid, pid);
@@ -54,7 +49,7 @@ public class ColumnCustomController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<ColumnCustom> addColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		InterfaceResult<ColumnCustom> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		User user = this.getUser(request);
+        LoginInfo user = this.getLoginInfo(request);
 		JSONObject requestJson = this.getRequestJson(request);
 		//{"columnname":"l2","pid":0,"type":1,"pathName":"l2","tags":"ddd,kkk"}:
 		if(!requestJson.containsKey("columnname")||!requestJson.containsKey("pid")){
@@ -72,7 +67,7 @@ public class ColumnCustomController extends BaseControl {
 		cc.setUserOrSystem((short)1);
 		long uid=0l;
 		if(user!=null){
-			uid=user.getId();
+			uid=user.getUserId();
 		}
 		ColumnCustom newCC=this.columnCustomService.insert(cc, uid);
 		result.setResponseData(newCC);
@@ -83,7 +78,7 @@ public class ColumnCustomController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<ColumnCustom> updateColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		InterfaceResult<ColumnCustom> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		User user = this.getUser(request);
+        LoginInfo user = this.getLoginInfo(request);
 		JSONObject requestJson = this.getRequestJson(request);
 		//{"columnid":"2854","columnName":"l21","tags":"栏目标签"}:
 		if(!requestJson.containsKey("columnname")||!requestJson.containsKey("columnid")){
@@ -100,7 +95,7 @@ public class ColumnCustomController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<ColumnCustom> deleteColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		InterfaceResult<ColumnCustom> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		User user = this.getUser(request);
+        LoginInfo user = this.getLoginInfo(request);
 		JSONObject requestJson = this.getRequestJson(request);
 		//{"columnid":"2854"}:
 		if(!requestJson.containsKey("columnid")){

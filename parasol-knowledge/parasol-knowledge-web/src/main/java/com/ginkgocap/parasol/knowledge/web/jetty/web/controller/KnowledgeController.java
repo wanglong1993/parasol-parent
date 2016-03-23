@@ -1,17 +1,12 @@
 package com.ginkgocap.parasol.knowledge.web.jetty.web.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONArray;
+import com.ginkgocap.parasol.knowledge.model.DataCollection;
+import com.ginkgocap.parasol.knowledge.model.LoginInfo;
+import com.ginkgocap.parasol.knowledge.model.common.CommonResultCode;
+import com.ginkgocap.parasol.knowledge.model.common.InterfaceResult;
+import com.ginkgocap.parasol.knowledge.service.IKnowledgeService;
+import com.ginkgocap.parasol.knowledge.web.jetty.web.ResponseError;
 import net.sf.json.JSONObject;
-
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ginkgocap.parasol.knowledge.web.jetty.web.ResponseError;
-import com.ginkgocap.parasol.knowledge.model.DataCollection;
-import com.ginkgocap.parasol.knowledge.service.IKnowledgeService;
-import com.ginkgocap.parasol.knowledge.utils.PackingDataUtil;
-import com.ginkgocap.ywxt.user.model.User;
-import com.ginkgocap.ywxt.util.HttpClientHelper;
-import com.gintong.frame.util.dto.CommonResultCode;
-import com.gintong.frame.util.dto.InterfaceResult;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Controller
 @RequestMapping("/knowledge")
@@ -49,8 +44,8 @@ public class KnowledgeController extends BaseControl {
 	@RequestMapping(value = "",method = RequestMethod.POST)
 	@ResponseBody
 	public InterfaceResult<DataCollection> insert(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		User user = this.getUser(request);
+
+        LoginInfo user = this.getLoginInfo(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -58,11 +53,11 @@ public class KnowledgeController extends BaseControl {
 		JSONObject requestJson = this.getRequestJson(request);
 		
 		DataCollection dataCollection = (DataCollection) JSONObject.toBean(requestJson, DataCollection.class);
-		
+
 		InterfaceResult<DataCollection> affterSaveDataCollection = null;
 		
 		try {
-			affterSaveDataCollection = this.knowledgeService.insert(dataCollection, user);
+			affterSaveDataCollection = this.knowledgeService.insert(dataCollection, user.getUserId());
 		} catch (Exception e) {
 			logger.error("知识插入失败！失败原因："+affterSaveDataCollection.getNotification().getNotifInfo());
 			return affterSaveDataCollection;
@@ -80,8 +75,8 @@ public class KnowledgeController extends BaseControl {
 	@RequestMapping(value = "",method = RequestMethod.PUT)
 	@ResponseBody
 	public InterfaceResult<DataCollection> update(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		User user = this.getUser(request);
+
+        LoginInfo user = this.getLoginInfo(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -93,7 +88,7 @@ public class KnowledgeController extends BaseControl {
 		InterfaceResult<DataCollection> affterSaveDataCollection = null;
 		
 		try {
-			affterSaveDataCollection = this.knowledgeService.update(dataCollection, user);
+			affterSaveDataCollection = this.knowledgeService.update(dataCollection, user.getUserId());
 		} catch (Exception e) {
 			logger.error("知识更新失败！失败原因："+affterSaveDataCollection.getNotification().getNotifInfo());
 			return affterSaveDataCollection;
@@ -115,7 +110,7 @@ public class KnowledgeController extends BaseControl {
 	public InterfaceResult<DataCollection> delete(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable Long id,@PathVariable Long columnId) throws IOException {
 		
-		User user = this.getUser(request);
+		LoginInfo user = this.getLoginInfo(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -125,7 +120,7 @@ public class KnowledgeController extends BaseControl {
 		
 		InterfaceResult<DataCollection> affterDeleteDataCollection = null;
 		try {
-			affterDeleteDataCollection = this.knowledgeService.deleteByKnowledgeId(id, columnId, user);
+			affterDeleteDataCollection = this.knowledgeService.deleteByKnowledgeId(id, columnId, user.getUserId());
 		} catch (Exception e) {
 			logger.error("知识删除失败！失败原因："+affterDeleteDataCollection.getNotification().getNotifInfo());
 			return affterDeleteDataCollection;
@@ -152,17 +147,17 @@ public class KnowledgeController extends BaseControl {
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION);
 		}
 		
-		User user = this.getUser(request);
+		LoginInfo user = this.getLoginInfo(request);
 		
 		//如果是游客登录，则给予金桐脑权限
 		if (null == user) {
-			user = new User();
-			user.setId(0);// 金桐脑
+			user = new LoginInfo(0L,0L);
+			//user.setUserId(0L);// 金桐脑
 		}
 		
 		InterfaceResult<DataCollection> affterDeleteDataCollection = null;
 		try {
-			affterDeleteDataCollection = this.knowledgeService.getDetailById(id, columnId, user);
+			affterDeleteDataCollection = this.knowledgeService.getDetailById(id, columnId, user.getUserId());
 		} catch (Exception e) {
 			logger.error("知识提取失败！失败原因："+affterDeleteDataCollection.getNotification().getNotifInfo());
 			return affterDeleteDataCollection;
@@ -190,8 +185,8 @@ public class KnowledgeController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<List<DataCollection>> getAll(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable int start,@PathVariable int size) throws IOException {
-		
-		User user = this.getUser(request);
+
+        LoginInfo user = this.getLoginInfo(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
@@ -219,15 +214,15 @@ public class KnowledgeController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<List<DataCollection>> getAllByColumnId(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable long columnId,@PathVariable int start,@PathVariable int size) throws IOException {
-		
-		User user = this.getUser(request);
+
+        LoginInfo user = this.getLoginInfo(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
 		
 		InterfaceResult<List<DataCollection>> getDataCollection = null;
 		try {
-			getDataCollection = this.knowledgeService.getBaseByCreateUserId(user, start, size);
+			getDataCollection = this.knowledgeService.getBaseByCreateUserId(user.getUserId(), start, size);
 		} catch (Exception e) {
 			logger.error("知识提取失败！失败原因：{}",getDataCollection.getNotification().getNotifInfo());
 			return getDataCollection;
@@ -248,15 +243,15 @@ public class KnowledgeController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<List<DataCollection>> getByCreateUserId(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable int start,@PathVariable int size) throws IOException {
-		
-		User user = this.getUser(request);
+
+        LoginInfo user = this.getLoginInfo(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
 		
 		InterfaceResult<List<DataCollection>> getDataCollection = null;
 		try {
-			getDataCollection = this.knowledgeService.getBaseByCreateUserId(user, start, size);
+			getDataCollection = this.knowledgeService.getBaseByCreateUserId(user.getUserId(), start, size);
 		} catch (Exception e) {
 			logger.error("知识提取失败！失败原因："+getDataCollection.getNotification().getNotifInfo());
 			return getDataCollection;
@@ -277,15 +272,15 @@ public class KnowledgeController extends BaseControl {
 	@ResponseBody
 	public InterfaceResult<List<DataCollection>> getByCreateUserIdAndColumnId(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable long columnId,@PathVariable int start,@PathVariable int size) throws IOException {
-		
-		User user = this.getUser(request);
+
+        LoginInfo user = this.getLoginInfo(request);
 		
 		if(user == null)
 			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
 		
 		InterfaceResult<List<DataCollection>> getDataCollection = null;
 		try {
-			getDataCollection = this.knowledgeService.getBaseByCreateUserIdAndColumnId(user, columnId, start, size);
+			getDataCollection = this.knowledgeService.getBaseByCreateUserIdAndColumnId(user.getUserId(), columnId, start, size);
 		} catch (Exception e) {
 			logger.error("知识提取失败！失败原因："+getDataCollection.getNotification().getNotifInfo());
 			return getDataCollection;
@@ -314,8 +309,8 @@ public class KnowledgeController extends BaseControl {
 		pairs.add(new BasicNameValuePair("type", type));// 1,推荐 2,发现
 		Map<String, Object> model = new HashMap<String, Object>();
 		try {
-			String responseJson = HttpClientHelper.post(url + "/API/hotKno.do", pairs);
-			model.put("list", PackingDataUtil.getRecommendResult(responseJson));
+			//String responseJson = HttpClientHelper.post(url + "/API/hotKno.do", pairs);
+			//model.put("list", PackingDataUtil.getRecommendResult(responseJson));
 		} catch (Exception e) {
 			logger.error("连接大数据出错！");
 			e.printStackTrace();

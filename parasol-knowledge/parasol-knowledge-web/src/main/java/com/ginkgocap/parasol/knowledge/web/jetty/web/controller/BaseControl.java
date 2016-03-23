@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.alibaba.dubbo.rpc.RpcException;
 import com.ginkgocap.parasol.knowledge.web.jetty.web.ResponseError;
-import com.ginkgocap.ywxt.user.model.User;
+import com.ginkgocap.parasol.knowledge.model.LoginInfo;
 /**
  * 
  * @author allenshen
@@ -29,7 +29,6 @@ public abstract class BaseControl {
 	/**
 	 * 从错误日志中找到服务名称
 	 * 
-	 * @param errMessage
 	 * @return
 	 */
 	protected String getServiceNameByRpcMessage(RpcException rpc) {
@@ -94,9 +93,11 @@ public abstract class BaseControl {
 	 * @param request
 	 * @return
 	 */
-	public User getUser(HttpServletRequest request) {
-		//在AppFilter过滤器里面从cache获取了当前用户对象并设置到request中了
-		return (User) request.getAttribute("sessionUser");
+	public LoginInfo getLoginInfo(HttpServletRequest request) {
+        // 登陆人的信息
+        Long loginAppId = 0L; //LoginUserContextHolder.getAppKey();
+        Long loginUserId = 0L; //LoginUserContextHolder.getUserId();
+		return new LoginInfo(loginAppId, loginUserId);
 	}
 	
 	/**
