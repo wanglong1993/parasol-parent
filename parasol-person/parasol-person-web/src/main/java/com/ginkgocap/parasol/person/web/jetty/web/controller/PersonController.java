@@ -761,6 +761,7 @@ public class PersonController extends BaseControl {
 //				List<Associate> list =map.get(key);
 //				mapAssociate.put(key.getName(), list);
 				resultMap.put(key.getName(), map.get(key));
+				break;
 			}
 			resultMap.put("personBasic", personBasic);
 			if(!ObjectUtils.isEmpty(personInfo))resultMap.put("personInfo", personInfo);
