@@ -52,7 +52,24 @@
          <region name="com.ginkgocap.parasol.user.model.UserInterestIndustry"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
-        </region>                                           
+        </region>
+
+         <region name="com.ginkgocap.parasol.user.model.UserInfo"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region>                                     
+         <region name="com.ginkgocap.parasol.user.model.UserContactWay"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region>                                     
+         <region name="com.ginkgocap.parasol.user.model.UserEducationHistory"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region>                                     
+         <region name="com.ginkgocap.parasol.user.model.UserWorkHistory"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region>                                                   
 		<!--  Map cache config -->   
         <region name="UserLoginRegister_Map_Passport"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" >
             <keyPattern value="[02468]$" datasource="object1" />
@@ -123,7 +140,11 @@
         <region name="UserDefined_List_UserId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[02468]$" datasource="object1" />
             <keyPattern value="[13579]$" datasource="object2" />
-        </region>                                                       
+        </region>
+        <region name="UserEducationHistory_List_UserId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
+            <keyPattern value="[02468]$" datasource="object1" />
+            <keyPattern value="[13579]$" datasource="object2" />
+        </region>                                                               
       </regions>
 </root>
 

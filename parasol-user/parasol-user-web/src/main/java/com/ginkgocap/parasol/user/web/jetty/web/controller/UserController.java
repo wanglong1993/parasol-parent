@@ -1,16 +1,20 @@
 package com.ginkgocap.parasol.user.web.jetty.web.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.http.Consts;
@@ -37,27 +41,49 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.ginkgocap.parasol.associate.model.Associate;
+import com.ginkgocap.parasol.associate.model.AssociateType;
+import com.ginkgocap.parasol.associate.service.AssociateService;
+import com.ginkgocap.parasol.directory.model.DirectorySource;
+import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.UserBasic;
+import com.ginkgocap.parasol.user.model.UserContactWay;
+import com.ginkgocap.parasol.user.model.UserEducationHistory;
+import com.ginkgocap.parasol.user.model.UserInfo;
+import com.ginkgocap.parasol.user.model.UserWorkHistory;
+import com.ginkgocap.parasol.tags.model.TagSource;
+import com.ginkgocap.parasol.tags.service.TagSourceService;
+import com.ginkgocap.parasol.user.model.UserBasic;
+import com.ginkgocap.parasol.user.model.UserContactWay;
 import com.ginkgocap.parasol.user.model.UserDefined;
+import com.ginkgocap.parasol.user.model.UserEducationHistory;
 import com.ginkgocap.parasol.user.model.UserExt;
 import com.ginkgocap.parasol.user.model.UserFriendly;
+import com.ginkgocap.parasol.user.model.UserInfo;
 import com.ginkgocap.parasol.user.model.UserInterestIndustry;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.model.UserOrganExt;
+import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserBasicService;
+import com.ginkgocap.parasol.user.service.UserContactWayService;
 import com.ginkgocap.parasol.user.service.UserDefinedService;
+import com.ginkgocap.parasol.user.service.UserEducationHistoryService;
 import com.ginkgocap.parasol.user.service.UserExtService;
 import com.ginkgocap.parasol.user.service.UserFriendlyService;
+import com.ginkgocap.parasol.user.service.UserInfoService;
 import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserLoginThirdService;
 import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
 import com.ginkgocap.parasol.user.service.UserOrganBasicService;
 import com.ginkgocap.parasol.user.service.UserOrganExtService;
+import com.ginkgocap.parasol.user.service.UserWorkHistoryService;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.HuanxinUtils;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Prompt;
@@ -91,6 +117,22 @@ public class UserController extends BaseControl {
 	private UserOrgPerCusRelService userOrgPerCusRelService;
 	@Autowired
 	private MessageRelationService messageRelationService;
+
+	@Autowired
+	private UserContactWayService userContactWayService;
+	@Autowired
+	private UserEducationHistoryService userEducationHistoryService;
+	@Autowired
+	private UserInfoService userInfoService;
+	@Autowired
+	private UserWorkHistoryService userWorkHistoryService;
+	@Autowired
+	private TagSourceService tagSourceService;
+	@Autowired
+	private AssociateService associateService;
+	@Autowired
+	private DirectorySourceService directorySourceService;	
+	
 	@Value("${user.web.url}")  
     private String userWebUrl;  
 	@Value("${oauth.web.url}")  
@@ -374,7 +416,16 @@ public class UserController extends BaseControl {
 		UserBasic userBasic= null;
 		UserExt userExt= null;
 		List<UserDefined> list=null;
+		UserInfo userInfo= null;
+		UserContactWay userContactWay= null;
+		List<UserWorkHistory> listUserWorkHistory = null;
+		List<UserEducationHistory> listUserEducationHistory = null;
+		List<TagSource> listTagSource=null;
+		List<DirectorySource> listDirectorySource=null;
+		Map<AssociateType, List<Associate>> map=null;
 		Long userId=null;
+		Long appId =0l;
+		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			userId = LoginUserContextHolder.getUserId();
 			if(userId==null){
@@ -382,6 +433,12 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
+			appId = LoginUserContextHolder.getAppKey();
+			if(ObjectUtils.isEmpty(appId)){
+				resultMap.put( "message", "appId不能为空！");
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}			
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(userLoginRegister==null){
 				resultMap.put("message", Prompt.passport_is_not_exists);
@@ -426,6 +483,26 @@ public class UserController extends BaseControl {
 						userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
 					}
 				}
+				userInfo=userInfoService.getUserInfo(userId);
+				userContactWay=userContactWayService.getUserContactWay(userId);
+				listUserWorkHistory=userWorkHistoryService.getIdList(userWorkHistoryService.getIdList(userId));
+				listUserEducationHistory=userEducationHistoryService.getIdList(userEducationHistoryService.getIdList(userId));
+				listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, userId, 1l);
+				listDirectorySource=directorySourceService.getDirectorySourcesBySourceId(userId, appId, 1, userId);
+				map=associateService.getAssociatesBy(appId, 1l, userId);
+				for ( AssociateType key  : map.keySet()) {
+					resultMap.put(key.getName(), map.get(key));
+				}
+				resultMap.put("userBasic", userBasic);
+				if(!ObjectUtils.isEmpty(userInfo))resultMap.put("userInfo", userInfo);
+				if(!ObjectUtils.isEmpty(userContactWay))resultMap.put("userContactWay", userContactWay);
+				if(!ObjectUtils.isEmpty(listUserWorkHistory))resultMap.put("listUserWorkHistory", listUserWorkHistory);
+				if(!ObjectUtils.isEmpty(listUserEducationHistory))resultMap.put("listUserEducationHistory", listUserEducationHistory);
+				if(!ObjectUtils.isEmpty(listTagSource))resultMap.put("listTagSource", listTagSource);
+				if(!ObjectUtils.isEmpty(listDirectorySource))resultMap.put("listDirectorySource", listDirectorySource);
+				mappingJacksonValue = new MappingJacksonValue(resultMap);
+				SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
+				mappingJacksonValue.setFilters(filterProvider);
 				resultMap.put("userBasic", userBasic);
 				resultMap.put("userExt", userExt);
 				resultMap.put("userDefinedList", list);
@@ -440,6 +517,36 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
+	/**
+	 * 指定显示那些字段
+	 * 
+	 * @param fileds
+	 * @return
+	 */
+	private SimpleFilterProvider builderSimpleFilterProvider(String fileds) {
+		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+		// 请求指定字段
+		String[] filedNames = StringUtils.split(fileds, ",");
+		Set<String> filter = new HashSet<String>();
+		if (filedNames != null && filedNames.length > 0) {
+			for (int i = 0; i < filedNames.length; i++) {
+				String filedName = filedNames[i];
+				if (!StringUtils.isEmpty(filedName)) {
+					filter.add(filedName);
+				}
+			}
+		} else {
+			filter.add("id"); // id',
+			filter.add("sourceId"); // 资源ID
+			filter.add("sourceType"); // 资源类型
+			filter.add("tagName"); // 标签名称
+		}
+
+		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("id","directoryId","sourceTitle","sourceUrl"));
+		filterProvider.addFilter(Associate.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("id","assocTitle"));
+		return filterProvider;
+	}	
 	/**
 	 *根据userId获取用户我的里面的组织好友列表
 	 * 
@@ -1014,6 +1121,29 @@ public class UserController extends BaseControl {
 	 * @param provinceId 省ID
 	 * @param cityId   市ID
 	 * @param countyId   县ID
+	 * 个人情况
+	 * @param birthday 出生日期
+	 * @param provinceId 籍贯省ID
+	 * @param cityId 籍贯市ID
+	 * @param countyId 籍贯县ID
+	 * @param interests 兴趣爱好
+	 * @param skills   擅长技能
+	 * 联系方式
+	 * @param cellphone  手机
+	 * @param email  邮箱
+	 * @param weixin  微信
+	 * @param qq  QQ
+	 * @param weibo  微博
+	 * 工作经历
+	 * @param userWorkHistoryJson  json字符串
+	 * 教育经历
+	 * @param userEducationHistoryJson  json字符串
+	 * 标签TagSource
+	 * @param tagIds 标签ID tagIds=3933811599736848&tagIds=3933811561988102&tagIds=3933811356467203
+	 * 目录DirectorySource
+	 * @param directoryId 目录ID
+	 * 关联Associate
+	 * @param associateJson json字符串	 
 	 * @throws Exception
 	 * @return MappingJacksonValue
 	 */
@@ -1034,6 +1164,29 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "provinceId",required = false) Long provinceId
 			,@RequestParam(name = "cityId",required = false) Long cityId
 			,@RequestParam(name = "countyId",required = false) Long countyId
+			//个人情况
+			,@RequestParam(name = "birthday",required = false) Date birthday
+			,@RequestParam(name = "provinceId",required = false) Long provinceId2
+			,@RequestParam(name = "cityId",required = false) Long cityId2
+			,@RequestParam(name = "countyId",required = false) Long countyId2
+			,@RequestParam(name = "interests",required = false) String interests
+			,@RequestParam(name = "skills",required = false) String skills
+			//联系方式
+			,@RequestParam(name = "cellphone",required = false) String cellphone
+			,@RequestParam(name = "email",required = false) String email2
+			,@RequestParam(name = "weixin",required = false) String weixin
+			,@RequestParam(name = "qq",required = false) String qq
+			,@RequestParam(name = "weibo",required = false) String weibo
+			//工作经历
+			,@RequestParam(name = "userWorkHistoryJson",required = false) String userWorkHistoryJson
+			//教育经历
+			,@RequestParam(name = "userEducationHistoryJson",required = false) String userEducationHistoryJson
+			//标签TagSource
+			,@RequestParam(name = "tagIds",required = false) Long[] tagIds
+			//目录DirectorySource
+			 ,@RequestParam(name = "directoryId",required = false) Long[] directoryIds
+			 //关联Associate
+			 ,@RequestParam(name = "associateJson",required = false) String associateJson
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserInterestIndustry userInterestIndustry= null;
@@ -1045,8 +1198,22 @@ public class UserController extends BaseControl {
 		UserExt userExt= null;
 		List<UserInterestIndustry> list = null;
 		List<UserDefined> listUserDefined = null;
+		UserInfo userInfo= null;
+		UserContactWay userContactWay= null;
+		UserWorkHistory userWorkHistory= null;
+		UserEducationHistory userEducationHistory= null;
+		TagSource tagSource= null;
+		DirectorySource directorySource= null;
+		Associate associate=null;
+		UserOrgPerCusRel userOrgPerCusRel=null;
+		List<UserWorkHistory> listUserWorkHistory = null;
+		List<UserEducationHistory> listUserEducationHistory = null;
 		String ip=getIpAddr(request);
 		Long userId=null;
+		Long appId =0l;
+		Long ctime=0l;
+		Long utime=0l;
+		boolean bl=false;
 		try {
 			userId = LoginUserContextHolder.getUserId();
 			if(userId==null){
@@ -1149,6 +1316,174 @@ public class UserController extends BaseControl {
 				userExt.setIp(ip);
 				userExt.setName(name);
 				userExtService.updateUserExt(userExt);
+				//个人信息
+				userInfo =userInfoService.getUserInfo(userId);
+				if(!ObjectUtils.isEmpty(userInfo)){
+					userInfo.setBirthday(birthday!=null?birthday.getTime():null);
+					userInfo.setCountyId(countyId2);
+					userInfo.setCityId(cityId2);
+					userInfo.setCtime(ctime);
+					userInfo.setIp(ip);
+					userInfo.setUserId(userId);
+					userInfo.setProvinceId(provinceId);
+					bl=userInfoService.updateUserInfo(userInfo);
+//					if(bl==false){
+//						userBasicService.realDeleteUserBasic(userId);
+//						resultMap.put( "message", "保存用户个人信息出错！");
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+				}
+				//联系方式
+				userContactWay=userContactWayService.getUserContactWay(userId);
+				if(!ObjectUtils.isEmpty(userContactWay)){
+					userContactWay.setUserId(userId);
+					userContactWay.setCellphone(cellphone);
+					userContactWay.setEmail(email);
+					userContactWay.setWeixin(weixin);
+					userContactWay.setQq(qq);
+					userContactWay.setWeibo(weibo);
+					userContactWay.setCtime(ctime);
+					userContactWay.setUtime(utime);
+					userContactWay.setIp(ip);
+					bl=userContactWayService.updateUserContactWay(userContactWay);
+//					if(bl==false){
+//						userBasicService.realDeleteUserBasic(userId);
+//						userInfoService.realDeleteUserInfo(userId);
+//						userContactWayService.realDeleteUserContactWay(userId);
+//						resultMap.put( "message", "保存用户联系方式出错！");
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+				}
+				//保存工作经历
+				if(!StringUtils.isEmpty(userWorkHistoryJson)){
+					listUserWorkHistory =new ArrayList<UserWorkHistory>();
+					JSONObject jsonObject = JSONObject.fromObject(userWorkHistoryJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("userWorkHistoryList");
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+						userWorkHistory=new UserWorkHistory();
+						userWorkHistory.setUserId(userId);
+						userWorkHistory.setIncName(jsonObject2.has("inc_name")?jsonObject2.getString("inc_name"):null);
+						userWorkHistory.setPosition(jsonObject2.has("position")?jsonObject2.getString("position"):null);
+						userWorkHistory.setBeginTime(jsonObject2.has("begin_time")?jsonObject2.getString("begin_time"):null);
+						userWorkHistory.setEndTime(jsonObject2.has("end_time")?jsonObject2.getString("end_time"):null);
+						userWorkHistory.setDescription(jsonObject2.has("description")?jsonObject2.getString("description"):null);
+						userWorkHistory.setCtime(ctime);
+						userWorkHistory.setUtime(utime);
+						userWorkHistory.setIp(ip);
+						listUserWorkHistory.add(userWorkHistory);
+					}
+					if(listUserWorkHistory.size()>0)
+						listUserWorkHistory=userWorkHistoryService.createUserWorkHistoryByList(listUserWorkHistory, userId);
+//					if(listUserWorkHistory==null|| listUserWorkHistory.size()<=0){
+//						userBasicService.realDeleteUserBasic(userId);
+//						userInfoService.realDeleteUserInfo(userId);
+//						userContactWayService.realDeleteUserContactWay(userId);
+//						userWorkHistoryService.realDeleteUserWorkHistoryList(userWorkHistoryService.getIdList(userId));
+//						resultMap.put( "message", "保存用户工作经历出错！");
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+				}
+				//保存教育经历
+				if(!StringUtils.isEmpty(userEducationHistoryJson)){
+					listUserEducationHistory =new ArrayList<UserEducationHistory>();
+					JSONObject jsonObject = JSONObject.fromObject(userEducationHistoryJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("userEducationHistoryList");
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+						userEducationHistory=new UserEducationHistory();
+						userEducationHistory.setUserId(userId);
+						userEducationHistory.setSchool(jsonObject2.has("school")?jsonObject2.getString("school"):null);
+						userEducationHistory.setMajor(jsonObject2.has("major")?jsonObject2.getString("major"):null);
+						userEducationHistory.setDegree(jsonObject2.has("degree")?jsonObject2.getString("degree"):null);
+						userEducationHistory.setBeginTime(jsonObject2.has("begin_time")?jsonObject2.getString("begin_time"):null);
+						userEducationHistory.setEndTime(jsonObject2.has("end_time")?jsonObject2.getString("end_time"):null);
+						userEducationHistory.setDescription(jsonObject2.has("description")?jsonObject2.getString("description"):null);
+						userEducationHistory.setCtime(ctime);
+						userEducationHistory.setUtime(utime);
+						userEducationHistory.setIp(ip);
+						listUserEducationHistory.add(userEducationHistory);
+					}
+					if(listUserEducationHistory.size()>0)
+						listUserEducationHistory=userEducationHistoryService.createUserEducationHistoryByList(listUserEducationHistory, userId);
+//					if(listUserEducationHistory==null|| listUserEducationHistory.size()<=0){
+//						userBasicService.realDeleteUserBasic(userId);
+//						userInfoService.realDeleteUserInfo(userId);
+//						userContactWayService.realDeleteUserContactWay(userId);
+//						userWorkHistoryService.realDeleteUserWorkHistoryList(userWorkHistoryService.getIdList(userId));
+//						userEducationHistoryService.realDeleteUserEducationHistoryList(userEducationHistoryService.getIdList(userId));
+//						resultMap.put( "message", "保存用户教育经历出错！");
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+				}
+				//保存标签
+				if(!ObjectUtils.isEmpty(tagIds)){
+					//查找该用户下的所有标签
+					List<TagSource> listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, userId, 1l);
+					//删除该用户下的所有标签
+					for (TagSource tagSource2 : listTagSource) {
+						bl=tagSourceService.removeTagSource(appId, userId, tagSource2.getId());
+					}
+					for (int i = 0; i < tagIds.length; i++) {
+						tagSource = new TagSource();
+						tagSource.setTagId(tagIds[i]);
+						tagSource.setAppId(appId);
+						tagSource.setUserId(userId);
+						tagSource.setSourceId(userId);
+						tagSource.setSourceType(1);//1为用户
+						tagSource.setCreateAt(ctime);
+						tagSourceService.createTagSource(tagSource);
+					}
+				}
+				//保存目录
+				if(!ObjectUtils.isEmpty(directoryIds)){
+					//删除以前的
+					bl=directorySourceService.removeDirectorySourcesBySourceId(userId, appId, 1, userId);
+					//保存现在的
+					for (int i = 0; i < directoryIds.length; i++) {
+						directorySource = new DirectorySource();
+						directorySource.setDirectoryId(directoryIds[i]);
+						directorySource.setAppId(appId);
+						directorySource.setUserId(userId);
+						directorySource.setSourceId(userId);
+						directorySource.setSourceType(1);
+						directorySource.setCreateAt(ctime);
+						directorySourceService.createDirectorySources(directorySource);
+					}
+				}
+				//保存关联
+				if(!StringUtils.isEmpty(associateJson)){
+					JSONObject jsonObject = JSONObject.fromObject(associateJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("associateList");
+					//查询以前用户id关联的数据
+					Map<AssociateType, List<Associate>> map=associateService.getAssociatesBy(appId, 1l, userId);
+					for ( AssociateType key  : map.keySet()) {
+						List<Associate> list2 =map.get(key);
+						for (Associate associate2 : list2) {
+							//删除以前的数据
+							associateService.removeAssociate(appId, userId, associate2.getId());
+						}
+					}
+					//创建新的。
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+						associate=new Associate();
+						associate.setUserId(userId);
+						associate.setAppId(appId);
+						associate.setSourceTypeId(1);
+						associate.setSourceId(userId);
+						associate.setAssocDesc(jsonObject2.has("assoc_desc")?jsonObject2.getString("assoc_desc"):null);
+						associate.setAssocTypeId(jsonObject2.has("assoc_type_id")?jsonObject2.getLong("assoc_type_id"):null);
+						associate.setAssocId(jsonObject2.has("associd")?jsonObject2.getLong("associd"):null);
+						associate.setAssocTitle(jsonObject2.has("assoc_title")?jsonObject2.getString("assoc_title"):null);
+						associate.setCreateAt(ctime);
+						associateService.createAssociate(appId, userId, associate);
+					}
+				}				
 				resultMap.put( "message", Prompt.updateUser_success);
 				resultMap.put( "userId", userId);
 				resultMap.put("status",1);
@@ -1156,7 +1491,7 @@ public class UserController extends BaseControl {
 			}			
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("登录失败:"+userId);
+			logger.info("修改失败:"+userId);
 			logger.info(e.getStackTrace());
 			throw e;
 		}

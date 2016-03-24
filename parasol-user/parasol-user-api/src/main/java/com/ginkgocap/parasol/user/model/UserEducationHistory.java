@@ -3,8 +3,11 @@ package com.ginkgocap.parasol.user.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 教育经历
@@ -16,15 +19,15 @@ public class UserEducationHistory implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5825315645529184397L;
+	private static final Long serialVersionUID = -3176181471395972961L;
 	/**
 	 * 主键.
 	 */
-	private long id;
+	private Long id;
 	/**
 	 * 个人用户id.
 	 */
-	private long userId;
+	private Long userId;
 	/**
 	 * 学校.
 	 */
@@ -34,9 +37,9 @@ public class UserEducationHistory implements java.io.Serializable {
 	 */
 	private String major;
 	/**
-	 * 学历  0小学 1初中 2高中 3中专 4专科 5本科 6硕士 7博士.
+	 * 学历  小学 初中 高中 中专 专科 本科 硕士 博士.
 	 */
-	private char degree;
+	private String degree;
 	/**
 	 * 开始时间.
 	 */
@@ -69,53 +72,24 @@ public class UserEducationHistory implements java.io.Serializable {
 	public UserEducationHistory() {
 	}
 
-	public UserEducationHistory(long id, long userId, char degree,
-			String beginTime, String endTime, Long ctime, Long utime,
-			String ip) {
-		this.id = id;
-		this.userId = userId;
-		this.degree = degree;
-		this.beginTime = beginTime;
-		this.endTime = endTime;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
-
-	public UserEducationHistory(long id, long userId, String school,
-			String major, char degree, String beginTime, String endTime,
-			String description, Byte isVisible, Long ctime, Long utime,
-			String ip) {
-		this.id = id;
-		this.userId = userId;
-		this.school = school;
-		this.major = major;
-		this.degree = degree;
-		this.beginTime = beginTime;
-		this.endTime = endTime;
-		this.description = description;
-		this.isVisible = isVisible;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
-
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
-	public long getId() {
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
+	@Column(name = "id")
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	@Column(name = "user_id", nullable = false)
-	public long getUserId() {
+	@Column(name = "user_id")
+	public Long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -137,16 +111,16 @@ public class UserEducationHistory implements java.io.Serializable {
 		this.major = major;
 	}
 
-	@Column(name = "degree", nullable = false, length = 1)
-	public char getDegree() {
+	@Column(name = "degree", length = 1)
+	public String getDegree() {
 		return this.degree;
 	}
 
-	public void setDegree(char degree) {
+	public void setDegree(String degree) {
 		this.degree = degree;
 	}
 
-	@Column(name = "begin_time", nullable = false)
+	@Column(name = "begin_time")
 	public String getBeginTime() {
 		return this.beginTime;
 	}
@@ -155,7 +129,7 @@ public class UserEducationHistory implements java.io.Serializable {
 		this.beginTime = beginTime;
 	}
 
-	@Column(name = "end_time", nullable = false)
+	@Column(name = "end_time")
 	public String getEndTime() {
 		return this.endTime;
 	}
@@ -182,8 +156,7 @@ public class UserEducationHistory implements java.io.Serializable {
 		this.isVisible = isVisible;
 	}
 
-	
-	@Column(name = "ctime", nullable = false, length = 19)
+	@Column(name = "ctime")
 	public Long getCtime() {
 		return this.ctime;
 	}
@@ -192,8 +165,7 @@ public class UserEducationHistory implements java.io.Serializable {
 		this.ctime = ctime;
 	}
 
-	
-	@Column(name = "utime", nullable = false, length = 19)
+	@Column(name = "utime")
 	public Long getUtime() {
 		return this.utime;
 	}
@@ -202,7 +174,7 @@ public class UserEducationHistory implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip", nullable = false, length = 16)
+	@Column(name = "ip", length = 16)
 	public String getIp() {
 		return this.ip;
 	}

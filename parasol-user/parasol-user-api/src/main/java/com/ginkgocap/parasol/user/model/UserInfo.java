@@ -7,7 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * 
  * 个人情况
  */
 @Entity
@@ -17,27 +16,36 @@ public class UserInfo implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -814700630019653933L;
+	private static final Long serialVersionUID = 4089605921400987683L;
 	/**
 	 * 个人用户id.
 	 */
-	private long userId;
+	private Long userId;
 	/**
-	 * 若为组织则为全称，不可更改；若为个人则为昵称，可修改。.
+	 * 出生日期。.
 	 */
 	private Long birthday;
 	/**
 	 * 省份id.
 	 */
-	private int provinceId;
+	private Long provinceId;
 	/**
 	 * 城市id.
 	 */
-	private int cityId;
+	private Long cityId;
 	/**
 	 * 县id.
 	 */
-	private int countyId;
+	private Long countyId;
+	/**
+	 * 兴趣爱好.
+	 */
+	private String interests;
+	/**
+	 * 擅长技能.
+	 */
+	private String skills;
+	
 	/**
 	 * 好友可见 1.公开，2.好友可见.
 	 */
@@ -58,43 +66,18 @@ public class UserInfo implements java.io.Serializable {
 	public UserInfo() {
 	}
 
-	public UserInfo(long userId, Long birthday, int provinceId, int cityId,
-			int countyId, Long ctime, Long utime, String ip) {
-		this.userId = userId;
-		this.birthday = birthday;
-		this.provinceId = provinceId;
-		this.cityId = cityId;
-		this.countyId = countyId;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
-
-	public UserInfo(long userId, Long birthday, int provinceId, int cityId,
-			int countyId, Byte isVisible, Long ctime, Long utime,
-			String ip) {
-		this.userId = userId;
-		this.birthday = birthday;
-		this.provinceId = provinceId;
-		this.cityId = cityId;
-		this.countyId = countyId;
-		this.isVisible = isVisible;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
 
 	@Id
-	@Column(name = "user_id", unique = true, nullable = false)
-	public long getUserId() {
+	@Column(name = "user_id", unique = true)
+	public Long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
-	@Column(name = "birthday", nullable = false, length = 10)
+	@Column(name = "birthday", length = 10)
 	public Long getBirthday() {
 		return this.birthday;
 	}
@@ -103,32 +86,52 @@ public class UserInfo implements java.io.Serializable {
 		this.birthday = birthday;
 	}
 
-	@Column(name = "province_id", nullable = false)
-	public int getProvinceId() {
+	@Column(name = "province_id")
+	public Long getProvinceId() {
 		return this.provinceId;
 	}
 
-	public void setProvinceId(int provinceId) {
+	public void setProvinceId(Long provinceId) {
 		this.provinceId = provinceId;
 	}
 
-	@Column(name = "city_id", nullable = false)
-	public int getCityId() {
+	@Column(name = "city_id")
+	public Long getCityId() {
 		return this.cityId;
 	}
 
-	public void setCityId(int cityId) {
+	public void setCityId(Long cityId) {
 		this.cityId = cityId;
 	}
 
-	@Column(name = "county_id", nullable = false)
-	public int getCountyId() {
+	@Column(name = "county_id")
+	public Long getCountyId() {
 		return this.countyId;
 	}
 
-	public void setCountyId(int countyId) {
+	public void setCountyId(Long countyId) {
 		this.countyId = countyId;
 	}
+
+	public String getInterests() {
+		return interests;
+	}
+
+
+	public void setInterests(String interests) {
+		this.interests = interests;
+	}
+
+
+	public String getSkills() {
+		return skills;
+	}
+
+
+	public void setSkills(String skills) {
+		this.skills = skills;
+	}
+
 
 	@Column(name = "is_visible")
 	public Byte getIsVisible() {
@@ -139,8 +142,7 @@ public class UserInfo implements java.io.Serializable {
 		this.isVisible = isVisible;
 	}
 
-	
-	@Column(name = "ctime", nullable = false, length = 19)
+	@Column(name = "ctime")
 	public Long getCtime() {
 		return this.ctime;
 	}
@@ -149,8 +151,7 @@ public class UserInfo implements java.io.Serializable {
 		this.ctime = ctime;
 	}
 
-	
-	@Column(name = "utime", nullable = false, length = 19)
+	@Column(name = "utime")
 	public Long getUtime() {
 		return this.utime;
 	}
@@ -159,7 +160,7 @@ public class UserInfo implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip", nullable = false, length = 16)
+	@Column(name = "ip", length = 16)
 	public String getIp() {
 		return this.ip;
 	}
