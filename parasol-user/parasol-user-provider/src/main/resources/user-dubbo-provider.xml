@@ -45,4 +45,5 @@
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserEducationHistoryService" ref="userEducationHistoryService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserInfoService" ref="userInfoService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserWorkHistoryService" ref="userWorkHistoryService" version="2.0.0" timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserConfigService" ref="userConfigService" version="2.0.0" timeout="3000000" />
 </beans>

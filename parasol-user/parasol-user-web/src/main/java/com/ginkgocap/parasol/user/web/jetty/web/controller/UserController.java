@@ -50,14 +50,10 @@ import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
-import com.ginkgocap.parasol.user.model.UserBasic;
-import com.ginkgocap.parasol.user.model.UserContactWay;
-import com.ginkgocap.parasol.user.model.UserEducationHistory;
-import com.ginkgocap.parasol.user.model.UserInfo;
-import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.parasol.user.model.UserBasic;
+import com.ginkgocap.parasol.user.model.UserConfig;
 import com.ginkgocap.parasol.user.model.UserContactWay;
 import com.ginkgocap.parasol.user.model.UserDefined;
 import com.ginkgocap.parasol.user.model.UserEducationHistory;
@@ -71,6 +67,7 @@ import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.model.UserOrganExt;
 import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserBasicService;
+import com.ginkgocap.parasol.user.service.UserConfigService;
 import com.ginkgocap.parasol.user.service.UserContactWayService;
 import com.ginkgocap.parasol.user.service.UserDefinedService;
 import com.ginkgocap.parasol.user.service.UserEducationHistoryService;
@@ -119,7 +116,6 @@ public class UserController extends BaseControl {
 	private UserOrgPerCusRelService userOrgPerCusRelService;
 	@Autowired
 	private MessageRelationService messageRelationService;
-
 	@Autowired
 	private UserContactWayService userContactWayService;
 	@Autowired
@@ -134,6 +130,8 @@ public class UserController extends BaseControl {
 	private AssociateService associateService;
 	@Autowired
 	private DirectorySourceService directorySourceService;	
+	@Autowired
+	private UserConfigService userConfigService;	
 	
 	@Value("${user.web.url}")  
     private String userWebUrl;  
@@ -2229,6 +2227,128 @@ public class UserController extends BaseControl {
 			List<UserBasic> list2 = userBasicService.getUserBasecList(ids);
 			resultMap.put( "status", 1);
 			resultMap.put( "list", list2);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
+	 * 设置用户浏览我的主页权限
+	 * @param homePageVisible 浏览我的主页
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/userSetHomePageVisible" }, method = { RequestMethod.POST})
+	public MappingJacksonValue userSetHomePageVisible(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "homePageVisible",required = true) String homePageVisible
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(StringUtils.isEmpty(homePageVisible)){
+				resultMap.put("message", "浏览我的主页设置不能为空");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			UserConfig userConfig=userConfigService.getUserConfig(userId);
+			if(ObjectUtils.isEmpty(userConfig)){
+				resultMap.put("message", "用户设置不存在");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userConfig.setHomePageVisible(new Byte(homePageVisible));
+			userConfigService.updateUserConfig(userConfig);
+			resultMap.put( "status", 1);
+			resultMap.put("message", "设置成功!");
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
+	 * 设置用户对我评价权限
+	 * 
+	 * @param evaluateVisible 对我评价
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/userSetEvaluateVisible" }, method = { RequestMethod.POST})
+	public MappingJacksonValue userSetEvaluateVisible(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "evaluateVisible",required = true) String evaluateVisible
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(StringUtils.isEmpty(evaluateVisible)){
+				resultMap.put("message", "对我评价设置不能为空");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			UserConfig userConfig=userConfigService.getUserConfig(userId);
+			if(ObjectUtils.isEmpty(userConfig)){
+				resultMap.put("message", "用户设置不存在");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userConfig.setHomePageVisible(new Byte(evaluateVisible));
+			userConfigService.updateUserConfig(userConfig);
+			resultMap.put( "status", 1);
+			resultMap.put("message", "设置成功!");
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
+	 * 设置用户自动保存权限
+	 * 
+	 * @param autosave 自动保存
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/userSetHomePageVisible" }, method = { RequestMethod.POST})
+	public MappingJacksonValue getUserListByThirdIndustryId(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "autosave",required = true) String autosave
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(StringUtils.isEmpty(autosave)){
+				resultMap.put("message", "自动保存设置不能为空");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			UserConfig userConfig=userConfigService.getUserConfig(userId);
+			if(ObjectUtils.isEmpty(userConfig)){
+				resultMap.put("message", "用户设置不存在");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userConfig.setHomePageVisible(new Byte(autosave));
+			userConfigService.updateUserConfig(userConfig);
+			resultMap.put( "status", 1);
+			resultMap.put("message", "设置成功!");
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info(e.getStackTrace());

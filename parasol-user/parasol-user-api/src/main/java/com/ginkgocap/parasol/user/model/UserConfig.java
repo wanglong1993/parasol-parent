@@ -20,11 +20,10 @@ public class UserConfig implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private long id;
 	/**
 	 * 用户ID.
 	 */
-	private Byte userId;
+	private Long userId;
 	/**
 	 * 浏览我的主页.
 	 */
@@ -37,32 +36,25 @@ public class UserConfig implements java.io.Serializable {
 	 * 自动保存 .
 	 */
 	private Byte autosave;
+	/**
+	 * 创建时间.
+	 */
+	private Long ctime;
+	/**
+	 * 修改时间.
+	 */
+	private Long utime;
 
 	public UserConfig() {
 	}
 
-	public UserConfig(long id) {
-		this.id = id;
-	}
-
 	@Id
-	@GeneratedValue(generator = "id")
-	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
-	@Column(name = "id")
-	public long getId() {
-		return this.id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	@Column(name = "user_id")
-	public Byte getUserId() {
+	public Long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(Byte userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -91,6 +83,23 @@ public class UserConfig implements java.io.Serializable {
 
 	public void setAutosave(Byte autosave) {
 		this.autosave = autosave;
+	}
+	@Column(name = "ctime")
+	public Long getCtime() {
+		return this.ctime;
+	}
+
+	public void setCtime(Long ctime) {
+		this.ctime = ctime;
+	}
+
+	@Column(name = "utime")
+	public Long getUtime() {
+		return this.utime;
+	}
+
+	public void setUtime(Long utime) {
+		this.utime = utime;
 	}
 
 }
