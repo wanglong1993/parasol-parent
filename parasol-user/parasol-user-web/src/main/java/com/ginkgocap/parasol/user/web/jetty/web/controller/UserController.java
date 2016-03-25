@@ -334,6 +334,13 @@ public class UserController extends BaseControl {
 							}
 						});
 					}
+					//用户设置
+					UserConfig userConfig =new UserConfig();
+					userConfig.setUserId(id);
+					userConfig.setHomePageVisible(new Byte("2"));
+					userConfig.setEvaluateVisible(new Byte("2"));
+					userConfig.setAutosave(new Byte("0"));
+					userConfigService.createUserConfig(userConfig);
 					userLoginRegisterService.deleteIdentifyingCode(passport);
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
