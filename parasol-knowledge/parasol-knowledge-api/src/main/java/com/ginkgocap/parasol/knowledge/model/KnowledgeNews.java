@@ -14,13 +14,13 @@ public class KnowledgeNews extends Knowledge implements Serializable{
 
 	@Override
 	public <T> Knowledge setValue(KnowledgeNewsVO vo, Long userId) {
-		this.setColumnid(vo.getColumnid() != null ? vo.getColumnid() : "");
-		this.setUid(userId);
+		this.setColumnId(vo.getColumnId());
+		this.setUId(userId);
 		//this.setUname(user.getName());
 		this.setTags(vo.getTags());
 		this.setId(vo.getkId());
 		this.setTitle(vo.getTitle());
-		this.setCid(userId);
+		this.setCId(userId);
 		//this.setCname(user.getName());
 		this.setSource(vo.getSource());
 		this.setS_addr("");
@@ -45,13 +45,13 @@ public class KnowledgeNews extends Knowledge implements Serializable{
 
 	@Override
 	public <T> Knowledge setDraftValue(KnowledgeNewsVO vo, Long userId) {
-		this.setColumnid(vo.getColumnid() + "");
-		this.setUid(userId);
+		this.setColumnId(vo.getColumnId());
+		this.setUId(userId);
 		//this.setUname(user.getName());
 		this.setTags(vo.getTags());
 		this.setId(vo.getkId());
 		this.setTitle(vo.getTitle());
-		this.setCid(userId);
+		this.setCId(userId);
 		//this.setCname(user.getName());
 		this.setSource(vo.getSource());
 		this.setS_addr("");

@@ -137,5 +137,4 @@ public enum ColumnType {
             default: return EUnknowKnowledge;
         }
     }
-
 }

@@ -33,7 +33,7 @@ public class KnowledgeBase implements Serializable {
 	private short type;
 	
 	/**栏目主键*/
-	private long columnId;
+	private short columnId;
 	
 	/**描述*/
 	private String content;
@@ -111,11 +111,11 @@ public class KnowledgeBase implements Serializable {
 	}
 
 	@Column(name = "column_id")
-	public long getColumnId() {
+	public short getColumnId() {
 		return columnId;
 	}
 
-	public void setColumnId(long columnId) {
+	public void setColumnId(short columnId) {
 		this.columnId = columnId;
 	}
 
@@ -253,6 +253,4 @@ public class KnowledgeBase implements Serializable {
 	public void setReportStatus(short reportStatus) {
 		this.reportStatus = reportStatus;
 	}
-	
-	
 }

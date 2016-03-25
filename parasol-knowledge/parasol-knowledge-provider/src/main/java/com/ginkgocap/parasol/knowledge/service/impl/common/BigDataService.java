@@ -23,7 +23,7 @@ public class BigDataService implements IBigDataService{
 	private DefaultMessageService defaultMessageService;
 
 	@Override
-	public void sendMessage(String optionType, KnowledgeMongo knowledgeMongo, Long userId) {
+	public void sendMessage(String optionType, KnowledgeMongo knowledgeMongo, long userId) {
 		logger.info("通知大数据，发送请求 请求用户{}", userId);
 		RocketSendResult result = null;
 		try {
@@ -40,7 +40,7 @@ public class BigDataService implements IBigDataService{
 	}
 	
 	@Override
-	public void sendMessage(String optionType, List<KnowledgeMongo> knowledgeMongoList, Long userId) {
+	public void sendMessage(String optionType, List<KnowledgeMongo> knowledgeMongoList, long userId) {
 		if(knowledgeMongoList != null && !knowledgeMongoList.isEmpty()) {
 			
 			for (KnowledgeMongo data : knowledgeMongoList) {
@@ -51,7 +51,7 @@ public class BigDataService implements IBigDataService{
 	}
 
 	@Override
-	public void deleteMessage(long knowledgeId, long columnId, Long userId)
+	public void deleteMessage(long knowledgeId, short columnId, long userId)
 			throws Exception {
 		
 		KnowledgeMongo data = new KnowledgeMongo();

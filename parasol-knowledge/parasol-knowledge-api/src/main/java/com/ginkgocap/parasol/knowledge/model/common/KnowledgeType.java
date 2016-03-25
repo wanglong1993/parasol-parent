@@ -3,7 +3,7 @@ package com.ginkgocap.parasol.knowledge.model.common;
 /**
  * Created by Chen Peifeng on 2016/3/22.
  */
-public class Knowledge {
+public class KnowledgeType {
 
     public static enum EType {
         EUnKnown((short)-1, "无效类型"),

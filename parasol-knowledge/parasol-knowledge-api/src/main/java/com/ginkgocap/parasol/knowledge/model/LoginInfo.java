@@ -6,18 +6,18 @@ package com.ginkgocap.parasol.knowledge.model;
 public class LoginInfo {
 
     public LoginInfo(Long loginAppId, Long loginUserId) {
-        this.loginAppId = loginAppId;
-        this.loginUserId = loginUserId;
+        this.appId = loginAppId;
+        this.userId = loginUserId;
     }
 
-    Long loginAppId;
-    Long loginUserId;
+    Long appId;
+    Long userId;
 
-    public Long getLoginAppId() {
-        return loginAppId;
+    public Long getAppId() {
+        return appId;
     }
 
-    public Long getLoginUserId() {
-        return loginUserId;
+    public Long getUserId() {
+        return userId;
     }
 }

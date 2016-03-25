@@ -1,26 +1,14 @@
 package com.ginkgocap.parasol.knowledge.web.jetty.web.controller;
 
-import com.ginkgocap.parasol.knowledge.model.ColumnCustom;
-import com.ginkgocap.parasol.knowledge.model.LoginInfo;
-import com.ginkgocap.parasol.knowledge.model.common.CommonResultCode;
-import com.ginkgocap.parasol.knowledge.model.common.InterfaceResult;
-import com.ginkgocap.parasol.knowledge.service.IColumnCustomService;
 import com.ginkgocap.parasol.knowledge.web.jetty.web.ResponseError;
-import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.List;
 
 @Controller
 @RequestMapping("/knowledge_columncustom")
 public class ColumnCustomController extends BaseControl {
-	
+
+    /*
 	@Resource
 	private IColumnCustomService columnCustomService;
 	
@@ -104,7 +92,7 @@ public class ColumnCustomController extends BaseControl {
 		Long columnid=requestJson.getLong("columnid");
 		this.columnCustomService.del(columnid);
 		return result;
-	}
+	}*/
 
 	@Override
 	protected <T> void processBusinessException(ResponseError error,

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ginkgocap.parasol.knowledge.model.Knowledge;
 import com.ginkgocap.parasol.knowledge.model.common.ColumnType;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeBase;
 
 import java.io.*;
 
@@ -20,17 +21,38 @@ public final class DataUtil {
         objectMapper = new ObjectMapper();
     }
 
+    public static KnowledgeBase getKnowledgeBaseObject()
+    {
+        KnowledgeBase knowledgeBase = new  KnowledgeBase();
+        knowledgeBase.setId(123456667788L);
+        knowledgeBase.setColumnId((short)15);
+        knowledgeBase.setCreateUserId(123456L);
+        knowledgeBase.setCreateUserName("testUser");
+        knowledgeBase.setAttachmentId(12567L);
+        knowledgeBase.setAuthor("testUser");
+        knowledgeBase.setContent("test Content");
+        knowledgeBase.setContentDesc("test Content Desc");
+        knowledgeBase.setAuditStatus((short)0);
+        knowledgeBase.setPublicDate(System.currentTimeMillis());
+        knowledgeBase.setModifyDate(System.currentTimeMillis());
+        knowledgeBase.setPictureId(1247656L);
+        knowledgeBase.setReportStatus((short)0);
+        knowledgeBase.setType((short)1);
+
+        return knowledgeBase;
+    }
+
     public static Knowledge getKnowledgeObject(ColumnType columnType)
     {
         Knowledge knowledge = new Knowledge();
         knowledge.setTitle("KnowledgeTitle");
         knowledge.setContent("Knowledge Content");
         knowledge.setCname(columnType.getClass().getSimpleName());
-        knowledge.setCid(123456L);
-        knowledge.setColumnid("12345");
-        knowledge.setColumnType(columnType.getVal());
+        knowledge.setCId(123456L);
+        knowledge.setColumnId((short)12);
+        //knowledge.setColumnType(columnType.getVal());
         knowledge.setCpathid("12324");
-        knowledge.setCreatetime(System.currentTimeMillis());
+        //knowledge.setCreatetime(System.currentTimeMillis());
         knowledge.setDesc("Knowledge Description");
         knowledge.setStatus(1);
 

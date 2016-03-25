@@ -72,7 +72,7 @@ public class Knowledge implements Serializable {
 	private String tags;
 
 	// 栏目
-	private String columnid;
+	private short columnId;
 
 	// 关联
 	private String asso;
@@ -211,12 +211,12 @@ public class Knowledge implements Serializable {
 		this.asso = asso;
 	}
 
-	public String getColumnid() {
-		return columnid;
+	public short getColumnId() {
+		return columnId;
 	}
 
-	public void setColumnid(String columnid) {
-		this.columnid = columnid;
+	public void setColumnId(short columnId) {
+		this.columnId = columnId;
 	}
 
 	public String getTags() {
@@ -246,11 +246,11 @@ public class Knowledge implements Serializable {
 		this.title = title;
 	}
 
-	public long getUid() {
+	public long getUId() {
 		return uid;
 	}
 
-	public void setUid(long uid) {
+	public void setUId(long uid) {
 		this.uid = uid;
 	}
 
@@ -262,11 +262,11 @@ public class Knowledge implements Serializable {
 		this.uname = uname;
 	}
 
-	public long getCid() {
+	public long getCId() {
 		return cid;
 	}
 
-	public void setCid(long cid) {
+	public void setCId(long cid) {
 		this.cid = cid;
 	}
 

@@ -15,7 +15,7 @@ public class DataCollection implements Serializable {
 
 	
 	private static final long serialVersionUID = -424912985959502809L;
-	
+
 	/**知识信息*/
 	private KnowledgeBase knowledge;
 

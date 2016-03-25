@@ -38,8 +38,13 @@
 			<artifactId>phoenix-asso-api</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+        <dependency>
+            <groupId>com.ginkgocap.parasol</groupId>
+            <artifactId>parasol-associate-api</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
 
-		<!-- JPA分布式存储 begin -->
+        <!-- JPA分布式存储 begin -->
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-common-provider</artifactId>

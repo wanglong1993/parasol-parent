@@ -3,8 +3,6 @@ package com.ginkgocap.parasol.knowledge.dao.impl;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.knowledge.dao.IKnowledgeReferenceDao;
 import com.ginkgocap.parasol.knowledge.model.KnowledgeReference;
-import com.ginkgocap.parasol.knowledge.utils.DateUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -26,9 +24,9 @@ public class KnowledgeReferenceDao extends BaseService<KnowledgeReference> imple
 		
 		knowledgeReference.setKnowledgeId(knowledgeId);
 		
-		String currentDate = DateUtil.formatWithYYYYMMDDHHMMSS(new Date());
+		long currentDate = new Date().getTime();
 		
-		if(StringUtils.isBlank(knowledgeReference.getCreateDate()))
+		if(knowledgeReference.getCreateDate() > 0)
 			knowledgeReference.setCreateDate(currentDate);
 		knowledgeReference.setModifyDate(currentDate);
 		
@@ -44,14 +42,13 @@ public class KnowledgeReferenceDao extends BaseService<KnowledgeReference> imple
 		if(knowledgeReferenceList == null || knowledgeReferenceList.isEmpty())
 			return null;
 		
-		String currentDate = DateUtil.formatWithYYYYMMDDHHMMSS(new Date());
-		
+		long currentDate = new Date().getTime();
 		for (KnowledgeReference date : knowledgeReferenceList) {
 			if(date.getKnowledgeId() <= 0) {
 				throw new Exception("插入知识来源表时，知识主键缺失");
 			}
 			
-			if(StringUtils.isBlank(date.getCreateDate()))
+			if(date.getCreateDate() > 0)
 				date.setCreateDate(currentDate);
 			date.setModifyDate(currentDate);
 		}
@@ -66,10 +63,8 @@ public class KnowledgeReferenceDao extends BaseService<KnowledgeReference> imple
 		if(knowledgeReference == null)
 			return null;
 		
-		String currentDate = DateUtil.formatWithYYYYMMDDHHMMSS(new Date());
-
+		long currentDate = new Date().getTime();
 		knowledgeReference.setModifyDate(currentDate);
-		
 		this.updateEntity(knowledgeReference);
 		
 		return this.getById(knowledgeReference.getId());

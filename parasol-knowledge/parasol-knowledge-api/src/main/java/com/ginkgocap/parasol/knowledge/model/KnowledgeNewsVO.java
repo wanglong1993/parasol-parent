@@ -14,7 +14,7 @@ public class KnowledgeNewsVO implements Serializable {
 	private String tags; // 知识
 	private String source; // 知识来源
 	private String catalogueIds; // 知识所在目录 (目录数组) 格式(263,266,267,268)
-	private String columnid; // 知识所属栏目
+	private short columnid; // 知识所属栏目
 	private String essence; // 知识加精状态( 是否加精（0-不加 1-加）)
 	private String selectedIds; // 知识所属权限 格式(
 	private String shareMessage; // 分享感言
@@ -285,11 +285,11 @@ public class KnowledgeNewsVO implements Serializable {
 		this.selectedIds = selectedIds;
 	}
 
-	public String getColumnid() {
+	public short getColumnId() {
 		return columnid;
 	}
 
-	public void setColumnid(String columnid) {
+	public void setColumnId(short columnid) {
 		this.columnid = columnid;
 	}
 

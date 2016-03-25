@@ -1,18 +1,19 @@
 package com.ginkgocap.parasol.knowledge.utils;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
+import com.ginkgocap.parasol.knowledge.model.UserFeed;
+import com.ginkgocap.parasol.knowledge.model.Knowledge;
+import com.ginkgocap.parasol.knowledge.service.DiaryService;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import com.ginkgocap.parasol.knowledge.model.KnowledgeMongo;
-import com.ginkgocap.parasol.knowledge.model.EtUserInfo;
-import com.ginkgocap.parasol.knowledge.model.ReceiversInfo;
-import com.ginkgocap.parasol.knowledge.model.UserFeed;
-import com.ginkgocap.parasol.knowledge.service.DiaryService;
 
 /**
  * @Title: 数据包装转换类
@@ -51,6 +52,20 @@ public class PackingDataUtil {
 		return json.toString();
 		
 	}
+
+    public static String packingSendBigData(Knowledge knowledge,long userId) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        String jsonConent = null;
+        try {
+            jsonConent = objectMapper.writeValueAsString(knowledge);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return jsonConent;
+
+    }
 	
 	/**
 	 * 动态推送数据包装
@@ -62,7 +77,7 @@ public class PackingDataUtil {
 	 * @return
 	 */
 	public static UserFeed packingSendFeedData(KnowledgeMongo knowledgeMongo,Long userId,DiaryService diaryService) {
-		if (knowledgeMongo.getColumnId() == 8) {
+		if (knowledgeMongo.getColumnId() == 8) {/*
 			UserFeed feed = new UserFeed();
 			feed.setContent(knowledgeMongo.getContent());
 			//feed.setCreatedBy(user.getName());
@@ -81,7 +96,8 @@ public class PackingDataUtil {
 			feed.setDiaryType(1);
 			List<EtUserInfo> etInfo = new ArrayList<EtUserInfo>();// 被@的信息
 			feed.setEtInfo(etInfo);
-			return feed;
+			return feed;*/
+            return null;
 		} else {
 			return null;
 		}

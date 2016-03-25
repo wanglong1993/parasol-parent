@@ -49,7 +49,7 @@ public class KnowledgeReference implements Serializable {
 	private long createDate;
 	
 	/**修改时间*/
-	private String modifyDate;
+	private long modifyDate;
 
 	@Id
 	@GeneratedValue(generator = "id")
@@ -127,11 +127,11 @@ public class KnowledgeReference implements Serializable {
 	}
 
 	@Column(name = "modify_date")
-	public String getModifyDate() {
+	public long getModifyDate() {
 		return modifyDate;
 	}
 
-	public void setModifyDate(String modifyDate) {
+	public void setModifyDate(long modifyDate) {
 		this.modifyDate = modifyDate;
 	}
 	
@@ -145,38 +145,54 @@ public class KnowledgeReference implements Serializable {
 			knowledgeReferenceList = new ArrayList<KnowledgeReference>();
 		
 		Iterator<KnowledgeBase> baseIt = knowledgeBaseList.iterator();
-		
 		while(baseIt.hasNext()) {
-			
 			KnowledgeBase base = baseIt.next();
-			
 			Iterator<KnowledgeReference> referenceIt = knowledgeReferenceList.iterator();
-			
 			KnowledgeReference reference = null;
-			
 			while(referenceIt.hasNext()) {
-				
 				KnowledgeReference referenceTemp = referenceIt.next();
-				
 				if(base.getId() == referenceTemp.getId()) {
-					
 					reference = referenceTemp;
 					break;
-					
 				}
-				
 			}
 			
 			DataCollection dataCollection = new DataCollection();
-			
 			dataCollection.setKnowledge(base);
-			
 			dataCollection.setReference(reference);
-			
 			returnList.add(dataCollection);
-			
 		}
 		
 		return returnList;
 	}
+
+    public static List<KnowledgeData> putReferenceListToKnowledgeList(List<KnowledgeBase> knowledgeBaseList,List<KnowledgeReference> knowledgeReferenceList) {
+        List<KnowledgeData> returnList = new ArrayList<KnowledgeData>();
+
+        if(knowledgeBaseList == null || knowledgeBaseList.isEmpty())
+            return returnList;
+        if(knowledgeReferenceList == null)
+            knowledgeReferenceList = new ArrayList<KnowledgeReference>();
+
+        Iterator<KnowledgeBase> baseIt = knowledgeBaseList.iterator();
+        while(baseIt.hasNext()) {
+            KnowledgeBase base = baseIt.next();
+            Iterator<KnowledgeReference> referenceIt = knowledgeReferenceList.iterator();
+            KnowledgeReference reference = null;
+            while(referenceIt.hasNext()) {
+                KnowledgeReference referenceTemp = referenceIt.next();
+                if(base.getId() == referenceTemp.getId()) {
+                    reference = referenceTemp;
+                    break;
+                }
+            }
+
+            KnowledgeData knowledgeData = new KnowledgeData();
+            knowledgeData.setKnowledgeBase(base);
+            knowledgeData.setReference(reference);
+            returnList.add(knowledgeData);
+        }
+
+        return returnList;
+    }
 }
