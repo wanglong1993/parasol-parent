@@ -502,17 +502,17 @@ public class UserController extends BaseControl {
 				if(!ObjectUtils.isEmpty(listUserEducationHistory))resultMap.put("listUserEducationHistory", listUserEducationHistory);
 				if(!ObjectUtils.isEmpty(listTagSource))resultMap.put("listTagSource", listTagSource);
 				if(!ObjectUtils.isEmpty(listDirectorySource))resultMap.put("listDirectorySource", listDirectorySource);
-				mappingJacksonValue = new MappingJacksonValue(resultMap);
-				SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
-				mappingJacksonValue.setFilters(filterProvider);
 				resultMap.put("userBasic", userBasic);
 				resultMap.put("userExt", userExt);
 				resultMap.put("userDefinedList", list);
 				resultMap.put("status",1);
+				mappingJacksonValue = new MappingJacksonValue(resultMap);
+				SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
+				mappingJacksonValue.setFilters(filterProvider);
 			}
 			userLoginRegister.setPassword(null);
 			userLoginRegister.setSalt(null);
-			return new MappingJacksonValue(resultMap);
+			return mappingJacksonValue;
 		}catch (Exception e ){
 			logger.info("获取用户资料失败:"+userId);
 			logger.info(e.getStackTrace());
