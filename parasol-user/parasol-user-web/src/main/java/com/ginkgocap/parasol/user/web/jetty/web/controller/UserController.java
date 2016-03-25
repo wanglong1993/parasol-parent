@@ -95,6 +95,8 @@ import com.ginkgocap.parasol.user.web.jetty.web.utils.ThreadPoolUtils;
 @RestController
 public class UserController extends BaseControl {
 	private static Logger logger = Logger.getLogger(UserController.class);
+	private static long sourceType  = 2l;
+	private static int sourceType2  = 2;
 	@Autowired
 	private UserLoginThirdService userLoginThirdService;
 	@Autowired
@@ -1154,7 +1156,7 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "picId",required = true) Long picId
 			,@RequestParam(name = "shortName",required = false) String shortName
 			,@RequestParam(name = "firstIndustryIds", required = false) Long[] firstIndustryIds
-			,@RequestParam(name = "userDefineds", required = false) String[] userDefineds
+			,@RequestParam(name = "userDefinedsJson", required = false) String userDefinedsJson
 			,@RequestParam(name = "email",required = false) String email
 			,@RequestParam(name = "phone",required = false) String phone
 			,@RequestParam(name = "brief",required = false) String brief
@@ -1185,7 +1187,7 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "tagIds",required = false) Long[] tagIds
 			//目录DirectorySource
 			 ,@RequestParam(name = "directoryId",required = false) Long[] directoryIds
-			 //关联Associate
+			//关联Associate
 			 ,@RequestParam(name = "associateJson",required = false) String associateJson
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -1205,7 +1207,6 @@ public class UserController extends BaseControl {
 		TagSource tagSource= null;
 		DirectorySource directorySource= null;
 		Associate associate=null;
-		UserOrgPerCusRel userOrgPerCusRel=null;
 		List<UserWorkHistory> listUserWorkHistory = null;
 		List<UserEducationHistory> listUserEducationHistory = null;
 		String ip=getIpAddr(request);
@@ -1213,9 +1214,12 @@ public class UserController extends BaseControl {
 		Long appId =0l;
 		Long ctime=0l;
 		Long utime=0l;
+		Long id=0l;
 		boolean bl=false;
+		boolean bl2=false;
 		try {
 			userId = LoginUserContextHolder.getUserId();
+			appId =LoginUserContextHolder.getAppKey();
 			if(userId==null){
 				resultMap.put("message", Prompt.userId_is_null_or_empty);
 				resultMap.put("status",0);
@@ -1250,18 +1254,18 @@ public class UserController extends BaseControl {
 					list.add(userInterestIndustry);
 					list=userInterestIndustryService.createUserInterestIndustryByList(list, userId);
 				}
-				if(userDefineds!=null){
+				if(!StringUtils.isEmpty(userDefinedsJson)){
 					listUserDefined=new ArrayList<UserDefined>();
-					for (String strUserDefined : userDefineds) {
-						String object[]=strUserDefined.split(",");
+					JSONObject jsonObject = JSONObject.fromObject(userDefinedsJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("userDefinedsJsonList");
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
 						userDefined= new UserDefined();
 						userDefined.setUserId(userId);
 						userDefined.setIp(ip);
-						for (int i = 0; i < object.length; i++) {
-							if(i==0)userDefined.setUserDefinedModel(object[i]);
-							if(i==1)userDefined.setUserDefinedFiled(object[i]);
-							if(i==2)userDefined.setUserDefinedValue(object[i]);
-						}
+						userDefined.setUserDefinedModel(jsonObject2.has("model_name")?jsonObject2.getString("model_name"):null);
+						userDefined.setUserDefinedFiled(jsonObject2.has("filed")?jsonObject2.getString("filed"):null);
+						userDefined.setUserDefinedValue(jsonObject2.has("value")?jsonObject2.getString("value"):null);
 						listUserDefined.add(userDefined);
 						listUserDefined=userDefinedService.createUserDefinedByList(listUserDefined, userId);
 					}
@@ -1293,18 +1297,18 @@ public class UserController extends BaseControl {
 				userBasic.setName(name);
 				userBasic.setSex(new Byte("1"));
 				userBasicService.updateUserBasic(userBasic);
-				if(userDefineds!=null){
+				if(!StringUtils.isEmpty(userDefinedsJson)){
 					listUserDefined=new ArrayList<UserDefined>();
-					for (String strUserDefined : userDefineds) {
-						String object[]=strUserDefined.split(",");
+					JSONObject jsonObject = JSONObject.fromObject(userDefinedsJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("userDefinedsJsonList");
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
 						userDefined= new UserDefined();
 						userDefined.setUserId(userId);
 						userDefined.setIp(ip);
-						for (int i = 0; i < object.length; i++) {
-							if(i==0)userDefined.setUserDefinedModel(object[i]);
-							if(i==1)userDefined.setUserDefinedFiled(object[i]);
-							if(i==2)userDefined.setUserDefinedValue(object[i]);
-						}
+						userDefined.setUserDefinedModel(jsonObject2.has("model_name")?jsonObject2.getString("model_name"):null);
+						userDefined.setUserDefinedFiled(jsonObject2.has("filed")?jsonObject2.getString("filed"):null);
+						userDefined.setUserDefinedValue(jsonObject2.has("value")?jsonObject2.getString("value"):null);
 						listUserDefined.add(userDefined);
 						listUserDefined=userDefinedService.createUserDefinedByList(listUserDefined, userId);
 					}
@@ -1318,35 +1322,49 @@ public class UserController extends BaseControl {
 				userExtService.updateUserExt(userExt);
 				//个人信息
 				userInfo =userInfoService.getUserInfo(userId);
-				if(!ObjectUtils.isEmpty(userInfo)){
-					userInfo.setBirthday(birthday!=null?birthday.getTime():null);
-					userInfo.setCountyId(countyId2);
-					userInfo.setCityId(cityId2);
-					userInfo.setCtime(ctime);
-					userInfo.setIp(ip);
-					userInfo.setUserId(userId);
-					userInfo.setProvinceId(provinceId);
+				if(ObjectUtils.isEmpty(userInfo)){
+					userInfo= new UserInfo();
+					bl2=true;
+				}
+				userInfo.setBirthday(birthday!=null?birthday.getTime():null);
+				userInfo.setCountyId(countyId2);
+				userInfo.setCityId(cityId2);
+				userInfo.setCtime(ctime);
+				userInfo.setIp(ip);
+				userInfo.setUserId(userId);
+				userInfo.setProvinceId(provinceId);
+				if(bl2){
+					id=userInfoService.createUserInfo(userInfo);
+					bl2=false;
+				}else{
 					bl=userInfoService.updateUserInfo(userInfo);
+				}
 //					if(bl==false){
 //						userBasicService.realDeleteUserBasic(userId);
 //						resultMap.put( "message", "保存用户个人信息出错！");
 //						resultMap.put( "status", 0);
 //						return new MappingJacksonValue(resultMap);
 //					}
-				}
 				//联系方式
 				userContactWay=userContactWayService.getUserContactWay(userId);
-				if(!ObjectUtils.isEmpty(userContactWay)){
-					userContactWay.setUserId(userId);
-					userContactWay.setCellphone(cellphone);
-					userContactWay.setEmail(email);
-					userContactWay.setWeixin(weixin);
-					userContactWay.setQq(qq);
-					userContactWay.setWeibo(weibo);
-					userContactWay.setCtime(ctime);
-					userContactWay.setUtime(utime);
-					userContactWay.setIp(ip);
+				if(ObjectUtils.isEmpty(userContactWay)){
+					userContactWay=new UserContactWay();
+					bl2=true;
+				}
+				userContactWay.setUserId(userId);
+				userContactWay.setCellphone(cellphone);
+				userContactWay.setEmail(email);
+				userContactWay.setWeixin(weixin);
+				userContactWay.setQq(qq);
+				userContactWay.setWeibo(weibo);
+				userContactWay.setCtime(ctime);
+				userContactWay.setUtime(utime);
+				userContactWay.setIp(ip);
+				if(bl2){
+					id=userContactWayService.createUserContactWay(userContactWay);
+				}else{
 					bl=userContactWayService.updateUserContactWay(userContactWay);
+				}
 //					if(bl==false){
 //						userBasicService.realDeleteUserBasic(userId);
 //						userInfoService.realDeleteUserInfo(userId);
@@ -1355,7 +1373,6 @@ public class UserController extends BaseControl {
 //						resultMap.put( "status", 0);
 //						return new MappingJacksonValue(resultMap);
 //					}
-				}
 				//保存工作经历
 				if(!StringUtils.isEmpty(userWorkHistoryJson)){
 					listUserWorkHistory =new ArrayList<UserWorkHistory>();
@@ -1460,7 +1477,7 @@ public class UserController extends BaseControl {
 					JSONObject jsonObject = JSONObject.fromObject(associateJson);
 					JSONArray jsonArray=jsonObject.getJSONArray("associateList");
 					//查询以前用户id关联的数据
-					Map<AssociateType, List<Associate>> map=associateService.getAssociatesBy(appId, 1l, userId);
+					Map<AssociateType, List<Associate>> map=associateService.getAssociatesBy(appId, sourceType, userId);
 					for ( AssociateType key  : map.keySet()) {
 						List<Associate> list2 =map.get(key);
 						for (Associate associate2 : list2) {
@@ -1474,7 +1491,7 @@ public class UserController extends BaseControl {
 						associate=new Associate();
 						associate.setUserId(userId);
 						associate.setAppId(appId);
-						associate.setSourceTypeId(1);
+						associate.setSourceTypeId(sourceType);
 						associate.setSourceId(userId);
 						associate.setAssocDesc(jsonObject2.has("assoc_desc")?jsonObject2.getString("assoc_desc"):null);
 						associate.setAssocTypeId(jsonObject2.has("assoc_type_id")?jsonObject2.getLong("assoc_type_id"):null);
