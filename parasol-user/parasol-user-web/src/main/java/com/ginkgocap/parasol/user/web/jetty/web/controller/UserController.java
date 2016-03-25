@@ -1300,7 +1300,7 @@ public class UserController extends BaseControl {
 				if(!StringUtils.isEmpty(userDefinedsJson)){
 					listUserDefined=new ArrayList<UserDefined>();
 					JSONObject jsonObject = JSONObject.fromObject(userDefinedsJson);
-					JSONArray jsonArray=jsonObject.getJSONArray("userDefinedsJson");
+					JSONArray jsonArray=jsonObject.getJSONArray("userDefinedsJsonList");
 					for (int i = 0; i < jsonArray.size(); i++) {
 						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
 						userDefined= new UserDefined();
