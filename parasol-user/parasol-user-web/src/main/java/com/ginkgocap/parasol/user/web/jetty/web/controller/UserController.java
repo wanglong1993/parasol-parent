@@ -1185,7 +1185,7 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "tagIds",required = false) Long[] tagIds
 			//目录DirectorySource
 			 ,@RequestParam(name = "directoryId",required = false) Long[] directoryIds
-			 //关联Associate
+			//关联Associate
 			 ,@RequestParam(name = "associateJson",required = false) String associateJson
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -1216,6 +1216,7 @@ public class UserController extends BaseControl {
 		boolean bl=false;
 		try {
 			userId = LoginUserContextHolder.getUserId();
+			appId =LoginUserContextHolder.getAppKey();
 			if(userId==null){
 				resultMap.put("message", Prompt.userId_is_null_or_empty);
 				resultMap.put("status",0);
