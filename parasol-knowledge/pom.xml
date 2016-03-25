@@ -576,7 +576,7 @@
 		</profile>
 		<!-- 开发打包使用的profile -->
 		<profile>
-			<id>dev</id>
+			<id>default</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
