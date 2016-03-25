@@ -36,6 +36,7 @@ import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.person.model.PersonBasic;
 import com.ginkgocap.parasol.person.model.PersonContactWay;
+import com.ginkgocap.parasol.person.model.PersonDefined;
 import com.ginkgocap.parasol.person.model.PersonEducationHistory;
 import com.ginkgocap.parasol.person.model.PersonInfo;
 import com.ginkgocap.parasol.person.model.PersonWorkHistory;
@@ -126,6 +127,7 @@ public class PersonController extends BaseControl {
 			,@RequestParam(name = "picId",required = false) Long picId
 			,@RequestParam(name = "firstIndustryId",required = false) Long firstIndustryId
 			,@RequestParam(name = "secondIndustryId",required = false) Long secondIndustryId
+			,@RequestParam(name = "personDefinedsJson", required = false) String personDefinedsJson
 			,@RequestParam(name = "company",required = false) String company
 			,@RequestParam(name = "position",required = false) String position
 			,@RequestParam(name = "countryId",required = false) Long countryId
@@ -169,6 +171,8 @@ public class PersonController extends BaseControl {
 		UserOrgPerCusRel userOrgPerCusRel=null;
 		List<PersonWorkHistory> listPersonWorkHistory = null;
 		List<PersonEducationHistory> listPersonEducationHistory = null;
+		List<PersonDefined> listPersonDefined = null;
+		PersonDefined personDefined=null;
 		String ip=getIpAddr(request);
 		Long id=0l;
 		Long personId=0l;
@@ -253,6 +257,23 @@ public class PersonController extends BaseControl {
 					resultMap.put( "message", "保存人脉联系方式出错！");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
+				}
+				//保存自定义
+				if(!StringUtils.isEmpty(personDefinedsJson)){
+					listPersonDefined=new ArrayList<PersonDefined>();
+					JSONObject jsonObject = JSONObject.fromObject(personDefinedsJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("personDefinedsJsonList");
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+						personDefined= new PersonDefined();
+						personDefined.setPersonId(id);
+						personDefined.setIp(ip);
+						personDefined.setPersonDefinedModel(jsonObject2.has("model_name")?jsonObject2.getString("model_name"):null);
+						personDefined.setPersonDefinedFiled(jsonObject2.has("filed")?jsonObject2.getString("filed"):null);
+						personDefined.setPersonDefinedValue(jsonObject2.has("value")?jsonObject2.getString("value"):null);
+						listPersonDefined.add(personDefined);
+						listPersonDefined=personDefinedService.createPersonDefinedByList(listPersonDefined, id);
+					}
 				}
 				//保存工作经历
 				if(!StringUtils.isEmpty(personWorkHistoryJson)){
@@ -438,6 +459,7 @@ public class PersonController extends BaseControl {
 			,@RequestParam(name = "picId",required = false) Long picId
 			,@RequestParam(name = "firstIndustryId",required = false) Long firstIndustryId
 			,@RequestParam(name = "secondIndustryId",required = false) Long secondIndustryId
+			,@RequestParam(name = "personDefinedsJson", required = false) String personDefinedsJson
 			,@RequestParam(name = "company",required = false) String company
 			,@RequestParam(name = "position",required = false) String position
 			,@RequestParam(name = "countryId",required = false) Long countryId
@@ -480,6 +502,8 @@ public class PersonController extends BaseControl {
 		Associate associate=null;
 		List<PersonWorkHistory> listPersonWorkHistory = null;
 		List<PersonEducationHistory> listPersonEducationHistory = null;
+		List<PersonDefined> listPersonDefined = null;
+		PersonDefined personDefined=null;
 		String ip=getIpAddr(request);
 		Long appId =0l;
 		Long ctime=0l;
@@ -575,6 +599,23 @@ public class PersonController extends BaseControl {
 					resultMap.put( "message", "保存人脉联系方式出错！");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
+				}
+			}
+			//保存自定义
+			if(!StringUtils.isEmpty(personDefinedsJson)){
+				listPersonDefined=new ArrayList<PersonDefined>();
+				JSONObject jsonObject = JSONObject.fromObject(personDefinedsJson);
+				JSONArray jsonArray=jsonObject.getJSONArray("personDefinedsJsonList");
+				for (int i = 0; i < jsonArray.size(); i++) {
+					JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+					personDefined= new PersonDefined();
+					personDefined.setPersonId(id);
+					personDefined.setIp(ip);
+					personDefined.setPersonDefinedModel(jsonObject2.has("model_name")?jsonObject2.getString("model_name"):null);
+					personDefined.setPersonDefinedFiled(jsonObject2.has("filed")?jsonObject2.getString("filed"):null);
+					personDefined.setPersonDefinedValue(jsonObject2.has("value")?jsonObject2.getString("value"):null);
+					listPersonDefined.add(personDefined);
+					listPersonDefined=personDefinedService.createPersonDefinedByList(listPersonDefined, id);
 				}
 			}
 			//保存工作经历
@@ -739,6 +780,7 @@ public class PersonController extends BaseControl {
 		List<PersonEducationHistory> listPersonEducationHistory = null;
 		List<TagSource> listTagSource=null;
 		List<DirectorySource> listDirectorySource=null;
+		List<PersonDefined> listPersonDefined=null;
 		Map<AssociateType, List<Associate>> map=null;
 		Long appId =0l;
 		Long userId=0L;
@@ -767,6 +809,8 @@ public class PersonController extends BaseControl {
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
+			List<Long> ids=personDefinedService.getIdList(id);
+			if(ids!=null && ids.size()!=0)listPersonDefined=personDefinedService.getIdList(ids);
 			personInfo=personInfoService.getPersonInfo(id);
 			personContactWay=personContactWayService.getPersonContactWay(id);
 			listPersonWorkHistory=personWorkHistoryService.getIdList(personWorkHistoryService.getIdList(id));
@@ -778,6 +822,7 @@ public class PersonController extends BaseControl {
 				resultMap.put(key.getName(), map.get(key));
 			}
 			resultMap.put("personBasic", personBasic);
+			resultMap.put("listPersonDefined", listPersonDefined);
 			if(!ObjectUtils.isEmpty(personInfo))resultMap.put("personInfo", personInfo);
 			if(!ObjectUtils.isEmpty(personContactWay))resultMap.put("personContactWay", personContactWay);
 			if(!ObjectUtils.isEmpty(listPersonWorkHistory))resultMap.put("listPersonWorkHistory", listPersonWorkHistory);
