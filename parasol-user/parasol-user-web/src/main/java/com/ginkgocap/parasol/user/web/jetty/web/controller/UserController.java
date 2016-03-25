@@ -1215,6 +1215,7 @@ public class UserController extends BaseControl {
 		Long utime=0l;
 		Long id=0l;
 		boolean bl=false;
+		boolean bl2=false;
 		try {
 			userId = LoginUserContextHolder.getUserId();
 			appId =LoginUserContextHolder.getAppKey();
@@ -1322,6 +1323,7 @@ public class UserController extends BaseControl {
 				userInfo =userInfoService.getUserInfo(userId);
 				if(ObjectUtils.isEmpty(userInfo)){
 					userInfo= new UserInfo();
+					bl2=true;
 				}
 				userInfo.setBirthday(birthday!=null?birthday.getTime():null);
 				userInfo.setCountyId(countyId2);
@@ -1330,10 +1332,11 @@ public class UserController extends BaseControl {
 				userInfo.setIp(ip);
 				userInfo.setUserId(userId);
 				userInfo.setProvinceId(provinceId);
-				if(!ObjectUtils.isEmpty(userInfo)){
-					bl=userInfoService.updateUserInfo(userInfo);
-				}else{
+				if(bl2){
 					id=userInfoService.createUserInfo(userInfo);
+					bl2=false;
+				}else{
+					bl=userInfoService.updateUserInfo(userInfo);
 				}
 //					if(bl==false){
 //						userBasicService.realDeleteUserBasic(userId);
@@ -1345,6 +1348,7 @@ public class UserController extends BaseControl {
 				userContactWay=userContactWayService.getUserContactWay(userId);
 				if(ObjectUtils.isEmpty(userContactWay)){
 					userContactWay=new UserContactWay();
+					bl2=true;
 				}
 				userContactWay.setUserId(userId);
 				userContactWay.setCellphone(cellphone);
@@ -1355,10 +1359,10 @@ public class UserController extends BaseControl {
 				userContactWay.setCtime(ctime);
 				userContactWay.setUtime(utime);
 				userContactWay.setIp(ip);
-				if(!ObjectUtils.isEmpty(userInfo)){
-					bl=userContactWayService.updateUserContactWay(userContactWay);
-				}else{
+				if(bl2){
 					id=userContactWayService.createUserContactWay(userContactWay);
+				}else{
+					bl=userContactWayService.updateUserContactWay(userContactWay);
 				}
 //					if(bl==false){
 //						userBasicService.realDeleteUserBasic(userId);
