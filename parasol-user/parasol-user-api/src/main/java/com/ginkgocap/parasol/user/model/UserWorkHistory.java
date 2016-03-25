@@ -3,8 +3,11 @@ package com.ginkgocap.parasol.user.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 工作经历
@@ -14,17 +17,13 @@ import javax.persistence.Table;
 public class UserWorkHistory implements java.io.Serializable {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8539917753197384890L;
-	/**
 	 * 主键.
 	 */
-	private long id;
+	private Long id;
 	/**
 	 * 个人用户id.
 	 */
-	private long userId;
+	private Long userId;
 	/**
 	 * 单位名称.
 	 */
@@ -65,48 +64,25 @@ public class UserWorkHistory implements java.io.Serializable {
 	public UserWorkHistory() {
 	}
 
-	public UserWorkHistory(long id, long userId, Long ctime, Long utime,
-			String ip) {
-		this.id = id;
-		this.userId = userId;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
-
-	public UserWorkHistory(long id, long userId, String incName,
-			String position, String beginTime, String endTime,
-			String description, Byte isVisible, Long ctime, Long utime,
-			String ip) {
-		this.id = id;
-		this.userId = userId;
-		this.incName = incName;
-		this.position = position;
-		this.beginTime = beginTime;
-		this.endTime = endTime;
-		this.description = description;
-		this.isVisible = isVisible;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
-	public long getId() {
+	@GeneratedValue(generator = "id")
+	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
+	@Column(name = "id")
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	@Column(name = "user_id", nullable = false)
-	public long getUserId() {
+	@Column(name = "user_id")
+	public Long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -164,8 +140,7 @@ public class UserWorkHistory implements java.io.Serializable {
 		this.isVisible = isVisible;
 	}
 
-	
-	@Column(name = "ctime", nullable = false, length = 19)
+	@Column(name = "ctime")
 	public Long getCtime() {
 		return this.ctime;
 	}
@@ -174,8 +149,7 @@ public class UserWorkHistory implements java.io.Serializable {
 		this.ctime = ctime;
 	}
 
-	
-	@Column(name = "utime", nullable = false, length = 19)
+	@Column(name = "utime")
 	public Long getUtime() {
 		return this.utime;
 	}
@@ -184,7 +158,7 @@ public class UserWorkHistory implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip", nullable = false, length = 16)
+	@Column(name = "ip", length = 16)
 	public String getIp() {
 		return this.ip;
 	}

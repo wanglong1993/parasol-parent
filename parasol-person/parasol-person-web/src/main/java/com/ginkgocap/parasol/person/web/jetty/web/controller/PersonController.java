@@ -47,6 +47,8 @@ import com.ginkgocap.parasol.person.service.PersonInfoService;
 import com.ginkgocap.parasol.person.service.PersonWorkHistoryService;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
+import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
+import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
 
 /**
  * 人脉登录注册
@@ -72,6 +74,8 @@ public class PersonController extends BaseControl {
 	private AssociateService associateService;
 	@Autowired
 	private DirectorySourceService directorySourceService;
+	@Autowired
+	private UserOrgPerCusRelService userOrgPerCusRelService;
 
 	/**
 	 * 创建人脉
@@ -162,6 +166,7 @@ public class PersonController extends BaseControl {
 		TagSource tagSource= null;
 		DirectorySource directorySource= null;
 		Associate associate=null;
+		UserOrgPerCusRel userOrgPerCusRel=null;
 		List<PersonWorkHistory> listPersonWorkHistory = null;
 		List<PersonEducationHistory> listPersonEducationHistory = null;
 		String ip=getIpAddr(request);
@@ -358,6 +363,14 @@ public class PersonController extends BaseControl {
 						associateService.createAssociate(appId, userId, associate);
 					}
 				}
+				userOrgPerCusRel=new UserOrgPerCusRel();
+				userOrgPerCusRel.setUserId(userId);
+				userOrgPerCusRel.setReleationType(new Byte("6"));
+				userOrgPerCusRel.setFriendId(id);
+				userOrgPerCusRel.setCtime(ctime);
+				userOrgPerCusRel.setUtime(utime);
+				userOrgPerCusRel.setName(name);
+				userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 				resultMap.put("id", id);
 				resultMap.put("status",1);
 				return new MappingJacksonValue(resultMap);
@@ -727,7 +740,6 @@ public class PersonController extends BaseControl {
 		List<TagSource> listTagSource=null;
 		List<DirectorySource> listDirectorySource=null;
 		Map<AssociateType, List<Associate>> map=null;
-		Map<String, List<Associate>> mapAssociate=new HashMap<String, List<Associate>>();
 		Long appId =0l;
 		Long userId=0L;
 		MappingJacksonValue mappingJacksonValue = null;
@@ -828,7 +840,6 @@ public class PersonController extends BaseControl {
 			filter.add("sourceId"); // 资源ID
 			filter.add("sourceType"); // 资源类型
 			filter.add("tagName"); // 标签名称
-
 		}
 
 		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));

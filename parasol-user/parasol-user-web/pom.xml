@@ -180,6 +180,21 @@
 			<artifactId>parasol-file-api</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-directory-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-tags-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-associate-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
 		<!-- apache common -->
 		<dependency>
 			<groupId>commons-lang</groupId>

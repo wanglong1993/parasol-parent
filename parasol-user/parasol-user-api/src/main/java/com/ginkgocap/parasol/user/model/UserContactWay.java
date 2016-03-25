@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.user.model;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,11 +16,11 @@ public class UserContactWay implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 525251088829953176L;
+	private static final Long serialVersionUID = -6953363902667088290L;
 	/**
 	 * 个人用户id.
 	 */
-	private long userId;
+	private Long userId;
 	/**
 	 * 手机.
 	 */
@@ -60,42 +61,18 @@ public class UserContactWay implements java.io.Serializable {
 	public UserContactWay() {
 	}
 
-	public UserContactWay(long userId, String cellphone, byte isVisible,
-			Long ctime, Long utime, String ip) {
-		this.userId = userId;
-		this.cellphone = cellphone;
-		this.isVisible = isVisible;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
-
-	public UserContactWay(long userId, String cellphone, String email,
-			String weixin, String qq, String weibo, byte isVisible, Long ctime,
-			Long utime, String ip) {
-		this.userId = userId;
-		this.cellphone = cellphone;
-		this.email = email;
-		this.weixin = weixin;
-		this.qq = qq;
-		this.weibo = weibo;
-		this.isVisible = isVisible;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
 
 	@Id
 	@Column(name = "user_id", unique = true, nullable = false)
-	public long getUserId() {
+	public Long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
-	@Column(name = "cellphone", nullable = false, length = 16)
+	@Column(name = "cellphone", length = 16)
 	public String getCellphone() {
 		return this.cellphone;
 	}
@@ -140,7 +117,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.weibo = weibo;
 	}
 
-	@Column(name = "is_visible", nullable = false)
+	@Column(name = "is_visible")
 	public byte getIsVisible() {
 		return this.isVisible;
 	}
@@ -149,8 +126,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.isVisible = isVisible;
 	}
 
-	
-	@Column(name = "ctime", nullable = false, length = 19)
+	@Column(name = "ctime")
 	public Long getCtime() {
 		return this.ctime;
 	}
@@ -159,8 +135,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.ctime = ctime;
 	}
 
-	
-	@Column(name = "utime", nullable = false, length = 19)
+	@Column(name = "utime")
 	public Long getUtime() {
 		return this.utime;
 	}
@@ -169,7 +144,7 @@ public class UserContactWay implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip", nullable = false, length = 16)
+	@Column(name = "ip", length = 16)
 	public String getIp() {
 		return this.ip;
 	}

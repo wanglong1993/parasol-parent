@@ -34,6 +34,9 @@
 	<import resource="classpath:file-dubbo-consumer.xml"/>
 	<import resource="classpath:oauth2-dubbo-consumer.xml"/>
 	<import resource="classpath:message-dubbo-consumer.xml"/>
+	<import resource="classpath:tags-dubbo-consumer.xml"/>
+	<import resource="classpath:metadata-directory-consumer.xml"/>
+	<import resource="classpath:metadata-associate-consumer.xml"/>
 	<context:component-scan base-package="com.ginkgocap.parasol.user,com.ginkgocap.parasol.oauth2">
     </context:component-scan>
 </beans>
