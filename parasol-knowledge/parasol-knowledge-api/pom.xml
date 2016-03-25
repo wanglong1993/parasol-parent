@@ -33,11 +33,6 @@
 			<artifactId>phoenix-frame-util</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.ginkgocap.ywxt</groupId>
-			<artifactId>phoenix-asso-api</artifactId>
-			<version>1.0.0</version>
-		</dependency>
         <dependency>
             <groupId>com.ginkgocap.parasol</groupId>
             <artifactId>parasol-associate-api</artifactId>

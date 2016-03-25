@@ -1,6 +1,6 @@
 package com.ginkgocap.parasol.knowledge.model;
 
-import com.ginkgocap.ywxt.asso.model.Asso;
+import com.ginkgocap.parasol.associate.model.Associate;
 
 /**
  * Created by Admin on 2016/3/24.
@@ -29,7 +29,7 @@ public class KnowledgeData {
     private ColumnCollection column;
 
     /**关联*/
-    private Asso asso;
+    private Associate asso;
 
     public Knowledge getKnowledge() {
         return knowledge;
@@ -55,11 +55,11 @@ public class KnowledgeData {
         this.column = column;
     }
 
-    public Asso getAsso() {
+    public Associate getAsso() {
         return asso;
     }
 
-    public void setAsso(Asso asso) {
+    public void setAsso(Associate asso) {
         this.asso = asso;
     }
 }

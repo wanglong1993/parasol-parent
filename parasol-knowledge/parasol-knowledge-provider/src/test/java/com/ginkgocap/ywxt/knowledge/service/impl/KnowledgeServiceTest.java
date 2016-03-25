@@ -1,19 +1,13 @@
 package com.ginkgocap.ywxt.knowledge.service.impl;
 
-import javax.annotation.Resource;
-
-import com.ginkgocap.parasol.knowledge.dao.IKnowledgeBaseDao;
-import org.junit.Test;
-
 import com.ginkgocap.ywxt.knowledge.base.TestBase;
-import com.ginkgocap.parasol.knowledge.service.IKnowledgeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.Test;
 
 
 public class KnowledgeServiceTest extends TestBase {
 	
-	@Resource
-	private IKnowledgeService knowledgeService;
+	//@Resource
+	//private IKnowledgeService knowledgeService;
 	
 	public void insert() {
 		

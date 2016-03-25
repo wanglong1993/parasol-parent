@@ -80,12 +80,13 @@ public class KnowledgeServiceV1 implements IKnowledgeServiceV1 {
         } catch (Exception e) {
             this.insertRollBack(knowledgeId, columnId, userId, true, true, false, false, false);
             logger.error("知识基础表插入失败！失败原因：\n"+e.getCause().toString());
-            //return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
+            return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
         }
 
         //大数据MQ推送
+        /*
         try {
-            //bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, afterSaveKnowledge, userId);
+            bigDataService.sendMessage(IBigDataService.KNOWLEDGE_INSERT, afterSaveKnowledge, userId);
         } catch (Exception e) {
             this.insertRollBack(knowledgeId, columnId, userId, true, true, true, false, false);
             logger.error("知识MQ推送失败！失败原因：\n"+e.getCause().toString());
@@ -94,12 +95,12 @@ public class KnowledgeServiceV1 implements IKnowledgeServiceV1 {
 
         //动态推送（仅推送观点）
         try {
-            //userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledge, userId, diaryService));
+            userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledge, userId, diaryService));
         } catch (Exception e) {
             this.insertRollBack(knowledgeId, columnId, userId, true, true, true, true, false);
             logger.error("动态推送失败！失败原因：\n"+e.getCause().toString());
             return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
-        }
+        }*/
 
         return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(afterSaveKnowledge,afterSaveKnowledgeReference));
     }
@@ -142,6 +143,7 @@ public class KnowledgeServiceV1 implements IKnowledgeServiceV1 {
             return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
         }
 
+        /*
         //大数据MQ推送更新
         try {
             //bigDataService.sendMessage(IBigDataService.KNOWLEDGE_UPDATE, afterSaveKnowledge, userId);
@@ -153,12 +155,12 @@ public class KnowledgeServiceV1 implements IKnowledgeServiceV1 {
 
         //动态推送更新（仅推送观点）
         try {
-            //userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledge, user, diaryService));
+            userFeedService.saveOrUpdate(PackingDataUtil.packingSendFeedData(afterSaveKnowledge, user, diaryService));
         } catch (Exception e) {
             this.updateRollBack(knowledgeId, columnId,oldKnowledge,oldKnowledgeBase,oldKnowledgeReference, userId, true, true, true, true, false);
             logger.error("动态推送失败！失败原因：\n"+e.getCause().toString());
             return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
-        }
+        }*/
 
         return InterfaceResult.getSuccessInterfaceResultInstance(getReturn(afterSaveKnowledge,afterSaveKnowledgeReference));
     }
@@ -192,9 +194,10 @@ public class KnowledgeServiceV1 implements IKnowledgeServiceV1 {
             //return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
         }
 
+        /*
         //大数据MQ推送删除
         try {
-            //bigDataService.sendMessage(IBigDataService.KNOWLEDGE_DELETE, oldKnowledge, userId);
+            bigDataService.sendMessage(IBigDataService.KNOWLEDGE_DELETE, oldKnowledge, userId);
         } catch (Exception e) {
             this.deleteRollBack(knowledgeId, columnId,oldKnowledge,oldKnowledgeBase,oldKnowledgeReference, userId, true, true, true, false, false);
             logger.error("知识MQ推送失败！失败原因：\n"+e.getCause().toString());
@@ -202,7 +205,6 @@ public class KnowledgeServiceV1 implements IKnowledgeServiceV1 {
         }
 
         //动态推送删除（仅推送观点）
-        /*
 		try {
 			//userFeedService.deleteDynamicKnowledge(knowledgeId);
 		} catch (Exception e) {
@@ -243,6 +245,7 @@ public class KnowledgeServiceV1 implements IKnowledgeServiceV1 {
             return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
         }
 
+        /*
         //大数据MQ推送删除
         try {
             bigDataService.sendMessage(IBigDataService.KNOWLEDGE_DELETE, oldKnowledgeList, userId);
@@ -253,7 +256,6 @@ public class KnowledgeServiceV1 implements IKnowledgeServiceV1 {
         }
 
         //动态推送删除（仅推送观点）
-        /*
 		try {
 			for(long knowledgeId : knowledgeIds) 
 				userFeedService.deleteDynamicKnowledge(knowledgeId);
