@@ -2328,8 +2328,8 @@ public class UserController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/userSetHomePageVisible" }, method = { RequestMethod.POST})
-	public MappingJacksonValue getUserListByThirdIndustryId(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/user/user/userSetAutosave" }, method = { RequestMethod.POST})
+	public MappingJacksonValue userSetAutosave(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "autosave",required = true) String autosave
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
