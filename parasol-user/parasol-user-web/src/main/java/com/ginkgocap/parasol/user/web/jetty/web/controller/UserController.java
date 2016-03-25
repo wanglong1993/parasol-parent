@@ -1213,6 +1213,7 @@ public class UserController extends BaseControl {
 		Long appId =0l;
 		Long ctime=0l;
 		Long utime=0l;
+		Long id=0l;
 		boolean bl=false;
 		try {
 			userId = LoginUserContextHolder.getUserId();
@@ -1319,35 +1320,46 @@ public class UserController extends BaseControl {
 				userExtService.updateUserExt(userExt);
 				//个人信息
 				userInfo =userInfoService.getUserInfo(userId);
+				if(ObjectUtils.isEmpty(userInfo)){
+					userInfo= new UserInfo();
+				}
+				userInfo.setBirthday(birthday!=null?birthday.getTime():null);
+				userInfo.setCountyId(countyId2);
+				userInfo.setCityId(cityId2);
+				userInfo.setCtime(ctime);
+				userInfo.setIp(ip);
+				userInfo.setUserId(userId);
+				userInfo.setProvinceId(provinceId);
 				if(!ObjectUtils.isEmpty(userInfo)){
-					userInfo.setBirthday(birthday!=null?birthday.getTime():null);
-					userInfo.setCountyId(countyId2);
-					userInfo.setCityId(cityId2);
-					userInfo.setCtime(ctime);
-					userInfo.setIp(ip);
-					userInfo.setUserId(userId);
-					userInfo.setProvinceId(provinceId);
 					bl=userInfoService.updateUserInfo(userInfo);
+				}else{
+					id=userInfoService.createUserInfo(userInfo);
+				}
 //					if(bl==false){
 //						userBasicService.realDeleteUserBasic(userId);
 //						resultMap.put( "message", "保存用户个人信息出错！");
 //						resultMap.put( "status", 0);
 //						return new MappingJacksonValue(resultMap);
 //					}
-				}
 				//联系方式
 				userContactWay=userContactWayService.getUserContactWay(userId);
-				if(!ObjectUtils.isEmpty(userContactWay)){
-					userContactWay.setUserId(userId);
-					userContactWay.setCellphone(cellphone);
-					userContactWay.setEmail(email);
-					userContactWay.setWeixin(weixin);
-					userContactWay.setQq(qq);
-					userContactWay.setWeibo(weibo);
-					userContactWay.setCtime(ctime);
-					userContactWay.setUtime(utime);
-					userContactWay.setIp(ip);
+				if(ObjectUtils.isEmpty(userContactWay)){
+					userContactWay=new UserContactWay();
+				}
+				userContactWay.setUserId(userId);
+				userContactWay.setCellphone(cellphone);
+				userContactWay.setEmail(email);
+				userContactWay.setWeixin(weixin);
+				userContactWay.setQq(qq);
+				userContactWay.setWeibo(weibo);
+				userContactWay.setCtime(ctime);
+				userContactWay.setUtime(utime);
+				userContactWay.setIp(ip);
+				if(!ObjectUtils.isEmpty(userInfo)){
 					bl=userContactWayService.updateUserContactWay(userContactWay);
+				}else{
+					id=userContactWayService.createUserContactWay(userContactWay);
+				}
 //					if(bl==false){
 //						userBasicService.realDeleteUserBasic(userId);
 //						userInfoService.realDeleteUserInfo(userId);
@@ -1356,7 +1368,6 @@ public class UserController extends BaseControl {
 //						resultMap.put( "status", 0);
 //						return new MappingJacksonValue(resultMap);
 //					}
-				}
 				//保存工作经历
 				if(!StringUtils.isEmpty(userWorkHistoryJson)){
 					listUserWorkHistory =new ArrayList<UserWorkHistory>();
