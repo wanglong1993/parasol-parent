@@ -407,6 +407,7 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
+
 	/**
 	 * 获取用户资料
 	 * 
@@ -1188,12 +1189,6 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "userWorkHistoryJson",required = false) String userWorkHistoryJson
 			//教育经历
 			,@RequestParam(name = "userEducationHistoryJson",required = false) String userEducationHistoryJson
-			//标签TagSource
-			,@RequestParam(name = "tagIds",required = false) Long[] tagIds
-			//目录DirectorySource
-			 ,@RequestParam(name = "directoryId",required = false) Long[] directoryIds
-			//关联Associate
-			 ,@RequestParam(name = "associateJson",required = false) String associateJson
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserInterestIndustry userInterestIndustry= null;
@@ -1441,70 +1436,6 @@ public class UserController extends BaseControl {
 //						resultMap.put( "status", 0);
 //						return new MappingJacksonValue(resultMap);
 //					}
-				}
-				//保存标签
-				if(!ObjectUtils.isEmpty(tagIds)){
-					//查找该用户下的所有标签
-					List<TagSource> listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, userId, 1l);
-					//删除该用户下的所有标签
-					for (TagSource tagSource2 : listTagSource) {
-						bl=tagSourceService.removeTagSource(appId, userId, tagSource2.getId());
-					}
-					for (int i = 0; i < tagIds.length; i++) {
-						tagSource = new TagSource();
-						tagSource.setTagId(tagIds[i]);
-						tagSource.setAppId(appId);
-						tagSource.setUserId(userId);
-						tagSource.setSourceId(userId);
-						tagSource.setSourceType(1);//1为用户
-						tagSource.setCreateAt(ctime);
-						tagSourceService.createTagSource(tagSource);
-					}
-				}
-				//保存目录
-				if(!ObjectUtils.isEmpty(directoryIds)){
-					//删除以前的
-					bl=directorySourceService.removeDirectorySourcesBySourceId(userId, appId, 1, userId);
-					//保存现在的
-					for (int i = 0; i < directoryIds.length; i++) {
-						directorySource = new DirectorySource();
-						directorySource.setDirectoryId(directoryIds[i]);
-						directorySource.setAppId(appId);
-						directorySource.setUserId(userId);
-						directorySource.setSourceId(userId);
-						directorySource.setSourceType(1);
-						directorySource.setCreateAt(ctime);
-						directorySourceService.createDirectorySources(directorySource);
-					}
-				}
-				//保存关联
-				if(!StringUtils.isEmpty(associateJson)){
-					JSONObject jsonObject = JSONObject.fromObject(associateJson);
-					JSONArray jsonArray=jsonObject.getJSONArray("associateList");
-					//查询以前用户id关联的数据
-					Map<AssociateType, List<Associate>> map=associateService.getAssociatesBy(appId, sourceType, userId);
-					for ( AssociateType key  : map.keySet()) {
-						List<Associate> list2 =map.get(key);
-						for (Associate associate2 : list2) {
-							//删除以前的数据
-							associateService.removeAssociate(appId, userId, associate2.getId());
-						}
-					}
-					//创建新的。
-					for (int i = 0; i < jsonArray.size(); i++) {
-						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
-						associate=new Associate();
-						associate.setUserId(userId);
-						associate.setAppId(appId);
-						associate.setSourceTypeId(sourceType);
-						associate.setSourceId(userId);
-						associate.setAssocDesc(jsonObject2.has("assoc_desc")?jsonObject2.getString("assoc_desc"):null);
-						associate.setAssocTypeId(jsonObject2.has("assoc_type_id")?jsonObject2.getLong("assoc_type_id"):null);
-						associate.setAssocId(jsonObject2.has("associd")?jsonObject2.getLong("associd"):null);
-						associate.setAssocTitle(jsonObject2.has("assoc_title")?jsonObject2.getString("assoc_title"):null);
-						associate.setCreateAt(ctime);
-						associateService.createAssociate(appId, userId, associate);
-					}
 				}				
 				resultMap.put( "message", Prompt.updateUser_success);
 				resultMap.put( "userId", userId);
