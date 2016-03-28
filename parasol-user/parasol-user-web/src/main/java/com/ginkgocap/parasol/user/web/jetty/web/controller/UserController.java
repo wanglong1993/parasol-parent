@@ -85,6 +85,10 @@ import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.HuanxinUtils;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Prompt;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.ThreadPoolUtils;
+import com.gintong.easemob.server.comm.GsonUtils;
+import com.gintong.rocketmq.api.DefaultMessageService;
+import com.gintong.rocketmq.api.enums.FlagType;
+import com.gintong.rocketmq.api.enums.TopicType;
 
 /**
  * 用户登录注册
@@ -132,6 +136,8 @@ public class UserController extends BaseControl {
 	private DirectorySourceService directorySourceService;	
 	@Autowired
 	private UserConfigService userConfigService;	
+	@Autowired
+	private DefaultMessageService defaultMessageService;	
 	
 	@Value("${user.web.url}")  
     private String userWebUrl;  
@@ -200,6 +206,7 @@ public class UserController extends BaseControl {
 		UserExt userExt= null;
 		UserInterestIndustry userInterestIndustry= null;
 		List<UserInterestIndustry> list = null;
+		List<Object> jsonList=null;
 		String ip=getIpAddr(request);
 		Long userBasicId=0l;
 		Long userExtId=0l;
@@ -342,6 +349,15 @@ public class UserController extends BaseControl {
 					userConfig.setAutosave(new Byte("0"));
 					userConfigService.createUserConfig(userConfig);
 					userLoginRegisterService.deleteIdentifyingCode(passport);
+					//向万能插座发送消息
+					jsonList=new ArrayList<Object>();
+					if(userType.equals("0")){
+						jsonList.add(userLoginRegister);
+						jsonList.add(userBasic);
+						jsonList.add(userExt);
+						jsonList.add(userInterestIndustry);
+					}
+					defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(jsonList));
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -381,10 +397,19 @@ public class UserController extends BaseControl {
 							}
 						});
 					}
+					//向万能插座发送消息
+					jsonList=new ArrayList<Object>();
+					if(userType.equals("1")){
+						jsonList.add(userLoginRegister);
+						jsonList.add(userOrganBasic);
+						jsonList.add(userOrganExt);
+					}
+					defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(jsonList));
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
 				}
+				
 				resultMap.put("message", Prompt.paramter_type_or_userType_error);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
@@ -1203,6 +1228,7 @@ public class UserController extends BaseControl {
 		Associate associate=null;
 		List<UserWorkHistory> listUserWorkHistory = null;
 		List<UserEducationHistory> listUserEducationHistory = null;
+		List<Object> jsonList=null;
 		String ip=getIpAddr(request);
 		Long userId=null;
 		Long appId =0l;
@@ -1430,7 +1456,14 @@ public class UserController extends BaseControl {
 //						resultMap.put( "status", 0);
 //						return new MappingJacksonValue(resultMap);
 //					}
-				}				
+				}
+				//向万能插座发送消息
+				jsonList=new ArrayList<Object>();
+				jsonList.add(userLoginRegister);
+				jsonList.add(userBasic);
+				jsonList.add(userExt);
+				jsonList.add(userInterestIndustry);
+				defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_UPDATE, GsonUtils.objectToString(jsonList));
 				resultMap.put( "message", Prompt.updateUser_success);
 				resultMap.put( "userId", userId);
 				resultMap.put("status",1);
