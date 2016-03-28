@@ -220,6 +220,12 @@
 			<groupId>com.gintong</groupId>
 			<artifactId>phoenix-rocketmq-api</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>phoenix-util</artifactId>
+					<groupId>com.ginkgocap.ywxt</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.ywxt</groupId>
