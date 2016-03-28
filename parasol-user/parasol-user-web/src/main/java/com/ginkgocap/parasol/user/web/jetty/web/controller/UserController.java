@@ -1145,13 +1145,7 @@ public class UserController extends BaseControl {
 	 * 工作经历
 	 * @param userWorkHistoryJson  json字符串
 	 * 教育经历
-	 * @param userEducationHistoryJson  json字符串
-	 * 标签TagSource
-	 * @param tagIds 标签ID tagIds=3933811599736848&tagIds=3933811561988102&tagIds=3933811356467203
-	 * 目录DirectorySource
-	 * @param directoryId 目录ID
-	 * 关联Associate
-	 * @param associateJson json字符串	 
+	 * @param userEducationHistoryJson  json字符串 
 	 * @throws Exception
 	 * @return MappingJacksonValue
 	 */
