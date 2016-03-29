@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+
+	<cache>
+		<datasource name="default" timeout="5000" server="192.168.101.22"
+			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
+		<datasource name="object" timeout="5000" server="192.168.101.22"
+			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
+
+		<datasource name="object1" timeout="5000" server="192.168.101.22"
+			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
+		<datasource name="object2" timeout="5000" server="192.168.101.22"
+			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
+
+		<datasource name="list1" timeout="5000" server="192.168.101.22"
+			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
+		<!-- <datasource name="map1" timeout="5000" server="${memcached.map_1.ip}" 
+			port="${memcached.list_1.port}" maxActive="1" maxIdle="1" maxWait="-1"/> -->
+
+
+	</cache>
+
+
+
+	<regions>
+		<region name="global"
+			listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl"
+			strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy">
+			<keyPattern value="[0-9A-Za-z]$" datasource="default" />
+		</region>
+
+		<!-- Object config -->
+		<region name="com.ginkgocap.parasol.mapping.model.Mapping"
+			listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl"
+			strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy"
+			localCache="true">
+			<keyPattern value="[02468]$" datasource="object1" />
+			<keyPattern value="[13579]$" datasource="object2" />
+		</region>
+
+		<!-- List cache config -->
+		<region name="Map_Mapping_Id_OpenId_IdType"
+			listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl"
+			strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy"
+			localCache="false" limitLen="100000">
+			<keyPattern value="[0-9A-Za-z]$" datasource="list1" />
+		</region>
+		<region name="Map_Mapping_Id_OpenId_IdType"
+			listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl"
+			strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy"
+			localCache="false" limitLen="100000">
+			<keyPattern value="[0-9A-Za-z]$" datasource="list1" />
+		</region>
+	</regions>
+</root>
+
