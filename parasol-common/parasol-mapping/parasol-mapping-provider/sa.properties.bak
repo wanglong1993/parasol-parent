@@ -1,0 +1,13 @@
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://${directory.delivery.mysql.ip}/phoenix_directory?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8
+jdbc.username=${directory.delivery.jdbc.username}
+jdbc.password=${directory.delivery.jdbc.password}
+dubbo.application.name=directorydubboprovider
+dubbo.registry.address=${delivery.dubbo.registry.address}
+dubbo.protocol.name=dubbo
+#dubbo.protocol.port=20885
+dubbo.protocol.port=${directory.delivery.dubbo.protocol.port}
+
+
+
+
