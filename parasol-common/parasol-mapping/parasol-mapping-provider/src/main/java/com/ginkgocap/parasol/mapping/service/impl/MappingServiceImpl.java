@@ -60,11 +60,17 @@ public class MappingServiceImpl extends BaseService<Mapping> implements MappingS
 						}
 
 						if (uId != null && uId > 0 && mapping.getuId() <= 0l) {
+							id =  (Long) this.getMapId(MAP_MAPPING_ID_UID_IDTYPE, uId, type.value());
+							if (id != null) { //已经存在了一个Uid，删除掉。
+								this.deleteEntity(id);
+							}
 							mapping.setuId(uId);
 						}
+						
 						if (openId != null && openId > 0 && mapping.getOpenId() <= 0l) {
 							mapping.setOpenId(openId);
 						}
+						
 						this.updateEntity(mapping);
 					}
 				} else {

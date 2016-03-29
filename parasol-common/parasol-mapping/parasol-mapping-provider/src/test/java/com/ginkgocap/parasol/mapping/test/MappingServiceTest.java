@@ -43,11 +43,10 @@ public class MappingServiceTest extends TestBase implements Test {
 
 		
 		//新建一个万能插座的用户
-		mappingService.saveMapping(null, 55l, MappingType.USER);
+		mappingService.saveMapping(null, 66l, MappingType.USER);
 		//新建开放平台4l用户
-		mappingService.saveMapping(5l, null, MappingType.USER);
-		
-		mappingService.saveMapping(5l, 55l, MappingType.USER);
+		mappingService.saveMapping(6l, null, MappingType.USER);
+		mappingService.saveMapping(6l, 66l, MappingType.USER);
 
 		
 		
