@@ -90,6 +90,7 @@ import com.gintong.easemob.server.comm.GsonUtils;
 import com.gintong.rocketmq.api.DefaultMessageService;
 import com.gintong.rocketmq.api.enums.FlagType;
 import com.gintong.rocketmq.api.enums.TopicType;
+import com.gintong.rocketmq.api.model.RocketSendResult;
 
 /**
  * 用户登录注册
@@ -1458,7 +1459,9 @@ public class UserController extends BaseControl {
 				user.setUserBasic(userBasic);
 				user.setUserExt(userExt);
 				user.setUserInterestIndustry(userInterestIndustry);
-				defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_UPDATE, GsonUtils.objectToString(user));
+				RocketSendResult rocketSendResult=defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_UPDATE, GsonUtils.objectToString(user));
+				rocketSendResult.getSendResult().getSendStatusCode();
+				rocketSendResult.getSendResult().getMsgId();
 				resultMap.put( "message", Prompt.updateUser_success);
 				resultMap.put( "userId", userId);
 				resultMap.put("status",1);
