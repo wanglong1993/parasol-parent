@@ -52,6 +52,7 @@ import com.ginkgocap.parasol.message.service.MessageRelationService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
+import com.ginkgocap.parasol.user.model.User;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserConfig;
 import com.ginkgocap.parasol.user.model.UserContactWay;
@@ -206,7 +207,7 @@ public class UserController extends BaseControl {
 		UserExt userExt= null;
 		UserInterestIndustry userInterestIndustry= null;
 		List<UserInterestIndustry> list = null;
-		List<Object> jsonList=null;
+		User user=null;
 		String ip=getIpAddr(request);
 		Long userBasicId=0l;
 		Long userExtId=0l;
@@ -297,6 +298,13 @@ public class UserController extends BaseControl {
 							}
 						});
 					}
+					//向万能插座发送消息
+					user = new User();
+					user.setUserLoginRegister(userLoginRegister);
+					user.setUserBasic(userBasic);
+					user.setUserExt(userExt);
+					user.setUserInterestIndustry(userInterestIndustry);
+					defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -350,14 +358,12 @@ public class UserController extends BaseControl {
 					userConfigService.createUserConfig(userConfig);
 					userLoginRegisterService.deleteIdentifyingCode(passport);
 					//向万能插座发送消息
-					jsonList=new ArrayList<Object>();
-					if(userType.equals("0")){
-						jsonList.add(userLoginRegister);
-						jsonList.add(userBasic);
-						jsonList.add(userExt);
-						jsonList.add(userInterestIndustry);
-					}
-					defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(jsonList));
+					user = new User();
+					user.setUserLoginRegister(userLoginRegister);
+					user.setUserBasic(userBasic);
+					user.setUserExt(userExt);
+					user.setUserInterestIndustry(userInterestIndustry);
+					defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -397,14 +403,6 @@ public class UserController extends BaseControl {
 							}
 						});
 					}
-					//向万能插座发送消息
-					jsonList=new ArrayList<Object>();
-					if(userType.equals("1")){
-						jsonList.add(userLoginRegister);
-						jsonList.add(userOrganBasic);
-						jsonList.add(userOrganExt);
-					}
-					defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(jsonList));
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -1223,18 +1221,15 @@ public class UserController extends BaseControl {
 		UserContactWay userContactWay= null;
 		UserWorkHistory userWorkHistory= null;
 		UserEducationHistory userEducationHistory= null;
-		TagSource tagSource= null;
-		DirectorySource directorySource= null;
-		Associate associate=null;
 		List<UserWorkHistory> listUserWorkHistory = null;
 		List<UserEducationHistory> listUserEducationHistory = null;
-		List<Object> jsonList=null;
 		String ip=getIpAddr(request);
 		Long userId=null;
 		Long appId =0l;
 		Long ctime=0l;
 		Long utime=0l;
 		Long id=0l;
+		User user= null;
 		boolean bl=false;
 		boolean bl2=false;
 		try {
@@ -1458,12 +1453,12 @@ public class UserController extends BaseControl {
 //					}
 				}
 				//向万能插座发送消息
-				jsonList=new ArrayList<Object>();
-				jsonList.add(userLoginRegister);
-				jsonList.add(userBasic);
-				jsonList.add(userExt);
-				jsonList.add(userInterestIndustry);
-				defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_UPDATE, GsonUtils.objectToString(jsonList));
+				user = new User();
+				user.setUserLoginRegister(userLoginRegister);
+				user.setUserBasic(userBasic);
+				user.setUserExt(userExt);
+				user.setUserInterestIndustry(userInterestIndustry);
+				defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_UPDATE, GsonUtils.objectToString(user));
 				resultMap.put( "message", Prompt.updateUser_success);
 				resultMap.put( "userId", userId);
 				resultMap.put("status",1);
