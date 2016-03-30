@@ -1203,6 +1203,7 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "weixin",required = false) String weixin
 			,@RequestParam(name = "qq",required = false) String qq
 			,@RequestParam(name = "weibo",required = false) String weibo
+			,@RequestParam(name = "contactName",required = false) String contactName
 			//工作经历
 			,@RequestParam(name = "userWorkHistoryJson",required = false) String userWorkHistoryJson
 			//教育经历
@@ -1292,6 +1293,25 @@ public class UserController extends BaseControl {
 				userOrganExt.setIp(ip);
 				userOrganExt.setName(name);
 				userOrganExtService.updateUserOrganExt(userOrganExt);
+				//联系方式
+				userContactWay=userContactWayService.getUserContactWay(userId);
+				if(ObjectUtils.isEmpty(userContactWay)){
+					userContactWay=new UserContactWay();
+					bl2=true;
+				}
+				userContactWay.setUserId(userId);
+				userContactWay.setCellphone(cellphone);
+				userContactWay.setName(contactName);
+				userContactWay.setEmail(email);
+				userContactWay.setWeibo(weibo);
+				userContactWay.setCtime(ctime);
+				userContactWay.setUtime(utime);
+				userContactWay.setIp(ip);
+				if(bl2){
+					id=userContactWayService.createUserContactWay(userContactWay);
+				}else{
+					bl=userContactWayService.updateUserContactWay(userContactWay);
+				}
 				resultMap.put( "message", Prompt.updateUser_success);
 				resultMap.put( "userId", userId);
 				resultMap.put("status",1);
