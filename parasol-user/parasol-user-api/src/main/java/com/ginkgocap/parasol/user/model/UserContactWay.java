@@ -26,6 +26,10 @@ public class UserContactWay implements java.io.Serializable {
 	 */
 	private String cellphone;
 	/**
+	 * 联系人.
+	 */
+	private String name;
+	/**
 	 * 邮箱.
 	 */
 	private String email;
@@ -151,6 +155,16 @@ public class UserContactWay implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+
+	@Column(name = "name", length = 50)
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
