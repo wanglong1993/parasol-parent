@@ -305,7 +305,7 @@ public class UserController extends BaseControl {
 					user.setUserBasic(userBasic);
 					user.setUserExt(userExt);
 					user.setUserInterestIndustry(userInterestIndustry);
-					defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
+					defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -364,7 +364,7 @@ public class UserController extends BaseControl {
 					user.setUserBasic(userBasic);
 					user.setUserExt(userExt);
 					user.setUserInterestIndustry(userInterestIndustry);
-					defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
+					defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
 					resultMap.put( "id", id);
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
@@ -1459,7 +1459,7 @@ public class UserController extends BaseControl {
 				user.setUserBasic(userBasic);
 				user.setUserExt(userExt);
 				user.setUserInterestIndustry(userInterestIndustry);
-				RocketSendResult rocketSendResult=defaultMessageService.sendMessage(TopicType.USER_TOPIC, FlagType.USER_UPDATE, GsonUtils.objectToString(user));
+				RocketSendResult rocketSendResult=defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_UPDATE, GsonUtils.objectToString(user));
 				rocketSendResult.getSendResult().getSendStatusCode();
 				rocketSendResult.getSendResult().getMsgId();
 				resultMap.put( "message", Prompt.updateUser_success);
