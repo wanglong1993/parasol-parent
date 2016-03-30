@@ -48,10 +48,6 @@ public class MappingServiceTest extends TestBase implements Test {
 		mappingService.saveMapping(6l, null, MappingType.USER);
 		mappingService.saveMapping(6l, 66l, MappingType.USER);
 
-		
-		
-		
-		
 		System.out.println(mappingService.getOpenId(44l, MappingType.USER));
 		System.out.println(mappingService.getUid(4l, MappingType.USER));
 		System.out.println(mappingService.getUid(5l, MappingType.USER));
