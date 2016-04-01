@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -45,6 +46,10 @@ public class UserInterestIndustry implements java.io.Serializable {
 	 * 用户IP.
 	 */
 	private String ip;
+	/**
+	 * 一级行业名称.
+	 */
+	private String firstIndustryName;
 
 	public UserInterestIndustry() {
 	}
@@ -124,6 +129,14 @@ public class UserInterestIndustry implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	@Transient
+	public String getFirstIndustryName() {
+		return firstIndustryName;
+	}
+
+	public void setFirstIndustryName(String firstIndustryName) {
+		this.firstIndustryName = firstIndustryName;
 	}
 
 }
