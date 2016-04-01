@@ -1,14 +1,23 @@
 package com.ginkgocap.parasol.user.service.impl;
 
+import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
+import com.ginkgocap.parasol.file.model.FileIndex;
+import com.ginkgocap.parasol.metadata.exception.CodeServiceException;
+import com.ginkgocap.parasol.metadata.model.Code;
+import com.ginkgocap.parasol.metadata.service.CodeService;
 import com.ginkgocap.parasol.user.exception.UserInterestIndustryServiceException;
 import com.ginkgocap.parasol.user.model.UserInterestIndustry;
 import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
@@ -16,6 +25,8 @@ import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
 public class UserInterestIndustryServiceImpl extends BaseService<UserInterestIndustry> implements UserInterestIndustryService {
 	private static final String USER_INTEREST_INDUSTRY_LIST_USERID = "UserInterestIndustry_List_UserId";
 	private static final String UserInterestIndustry_List_Id_FirstIndustryId = "UserInterestIndustry_List_Id_FirstIndustryId";
+	@Resource
+	private CodeService codeService;
 	private static Logger logger = Logger.getLogger(UserInterestIndustryServiceImpl.class);
 	
 	/**
@@ -92,6 +103,33 @@ public class UserInterestIndustryServiceImpl extends BaseService<UserInterestInd
 		try {
 			if(getEntity(id)!=null)return true;
 			else return false;
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserInterestIndustryServiceException(e);
+		}
+	}
+
+	@Override
+	public List<UserInterestIndustry> getInterestIndustryListBy(List<Long> ids)throws UserInterestIndustryServiceException {
+		try {
+			if(ids==null || ids.size()==0) return Collections.EMPTY_LIST;
+			List<UserInterestIndustry> list=getEntityByIds(ids);
+			if(list!=null &&  list.size()!=0){
+				for (UserInterestIndustry userInterestIndustry : list) {
+					Code code=null;
+					try {
+						code = codeService.getCode(userInterestIndustry.getId());
+					} catch (CodeServiceException e) {
+						e.printStackTrace();
+					}
+					if(!ObjectUtils.isEmpty(code)){
+						userInterestIndustry.setFirstIndustryName(code.getName());
+					}
+				}
+			}
+			return list;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

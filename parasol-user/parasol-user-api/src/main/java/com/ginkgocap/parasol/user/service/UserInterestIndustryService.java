@@ -39,6 +39,13 @@ public interface UserInterestIndustryService {
 	 * @throws UserInterestIndustryServiceException
 	 */
 	public List<Long> getIdList(Long userId) throws UserInterestIndustryServiceException;
+	/**
+	 * 根据Id列表获取用户感兴趣的对象列表
+	 * @param userId 
+	 * @return list
+	 * @throws UserInterestIndustryServiceException
+	 */
+	public List<UserInterestIndustry> getInterestIndustryListBy(List<Long> ids) throws UserInterestIndustryServiceException;
 
 	/**
 	 * Id是否存在
