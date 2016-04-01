@@ -452,6 +452,7 @@ public class UserController extends BaseControl {
 		UserContactWay userContactWay= null;
 		List<UserWorkHistory> listUserWorkHistory = null;
 		List<UserEducationHistory> listUserEducationHistory = null;
+		List<UserInterestIndustry> listUserInterestIndustry = null;
 		List<TagSource> listTagSource=null;
 		List<DirectorySource> listDirectorySource=null;
 		Map<AssociateType, List<Associate>> map=null;
@@ -515,6 +516,7 @@ public class UserController extends BaseControl {
 						userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
 					}
 				}
+				listUserInterestIndustry=userInterestIndustryService.getInterestIndustryListBy(userInterestIndustryService.getIdList(userId));
 				userInfo=userInfoService.getUserInfo(userId);
 				userContactWay=userContactWayService.getUserContactWay(userId);
 				listUserWorkHistory=userWorkHistoryService.getIdList(userWorkHistoryService.getIdList(userId));
@@ -527,6 +529,7 @@ public class UserController extends BaseControl {
 				}
 				resultMap.put("userBasic", userBasic);
 				if(!ObjectUtils.isEmpty(userInfo))resultMap.put("userInfo", userInfo);
+				if(!ObjectUtils.isEmpty(listUserInterestIndustry))resultMap.put("listUserInterestIndustry", listUserInterestIndustry);
 				if(!ObjectUtils.isEmpty(userContactWay))resultMap.put("userContactWay", userContactWay);
 				if(!ObjectUtils.isEmpty(listUserWorkHistory))resultMap.put("listUserWorkHistory", listUserWorkHistory);
 				if(!ObjectUtils.isEmpty(listUserEducationHistory))resultMap.put("listUserEducationHistory", listUserEducationHistory);
