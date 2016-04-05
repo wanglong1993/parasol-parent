@@ -83,6 +83,8 @@ public class FileController extends BaseControl {
 	private static final String parameterYEnd = "yEnd"; // y结束坐标
 	private static final String parameterXStart = "xStart"; // x开始坐标
 	private static final String parameterYStart = "yStart"; // y开始坐标
+	private static final String parameterAppId = "appId"; // y开始坐标
+	private static final String parameterUserId = "userId"; // y开始坐标
 
 	@Resource
 	private FileIndexService fileIndexService;
@@ -140,6 +142,86 @@ public class FileController extends BaseControl {
 			FileIndex index = new FileIndex();
 			index.setAppId(loginAppId);
 			index.setCreaterId(loginUserId);
+			index.setServerHost(fields[0]);
+			index.setFilePath(fields[1]);
+			index.setFileSize(file.getSize());
+			index.setFileTitle(file.getOriginalFilename());
+			index.setFileType(fileType);
+			index.setModuleType(moduleType);
+			index.setTaskId(taskId);
+			index.setThumbnailsPath(thumbnailsPath);
+			index = fileIndexService.insertFileIndex(index);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(index);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			storageClient=null;
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;
+		}
+	}
+	/**
+	 * 
+	 * @param fileds
+	 * @param debug
+	 * @param appId
+	 * @param file
+	 * @param userId
+	 * @param name
+	 * @return
+	 * @throws FileIndexServiceException 
+	 * @throws IOException 
+	 * @throws MyException 
+	 */
+	@RequestMapping(path = { "/fileext/upload" }, method = { RequestMethod.POST })
+	public MappingJacksonValue fileextUpload(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
+			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
+			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
+			@RequestParam(name = FileController.parameterAppId) Integer appId,
+			@RequestParam(name = FileController.parameterUserId) Integer userId,
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId ) throws FileIndexServiceException, IOException, MyException {
+		MappingJacksonValue mappingJacksonValue = null;
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			if(file.getSize() == 0) {
+				result.put("error", "上传文件无效，请重新上传！");
+				return new MappingJacksonValue(result);
+			}
+			
+			byte[] file_buff = file.getBytes();
+			StorageClient storageClient = getStorageClient();
+			String fileName = file.getOriginalFilename();
+			int f = fileName.lastIndexOf(".");
+			String fileExtName = "";
+			if (f>-1) fileExtName = fileName.substring(f+1);
+			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
+			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
+			String thumbnailsPath = "";
+			
+			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
+			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
+				generateAvatar(fields[0], fields[1], fileExtName, null);
+				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
+			}
+			FileIndex index = new FileIndex();
+			index.setAppId(appId);
+			index.setCreaterId(userId);
 			index.setServerHost(fields[0]);
 			index.setFilePath(fields[1]);
 			index.setFileSize(file.getSize());
