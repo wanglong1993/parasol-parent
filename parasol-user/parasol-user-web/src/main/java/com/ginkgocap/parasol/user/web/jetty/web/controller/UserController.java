@@ -199,8 +199,6 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "companyContacts",required = false) String companyContacts
 			,@RequestParam(name = "idcardFrontPicId",required = false) Long idcardFrontPicId
 			,@RequestParam(name = "idcardBackPicId",required = false) Long idcardBackPicId
-			,@RequestParam(name = "isWn",required = false,defaultValue="0") String isWn
-			,@RequestParam(name = "wid",required = false) Long wid
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
@@ -258,7 +256,6 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				userLoginRegister= new UserLoginRegister();
-				if(isWn.equals("1"))userLoginRegister.setId(wid);
 				userLoginRegister.setPassport(passport);
 				byte[] bt = Base64.decode(password);
 				String salt=userLoginRegisterService.setSalt();
