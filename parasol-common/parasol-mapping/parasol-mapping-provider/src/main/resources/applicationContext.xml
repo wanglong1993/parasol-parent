@@ -29,8 +29,8 @@
 			</list>
 		</property>
 	</bean>
-	<import resource="classpath:mapping-dubbo-config.xml" />
-	<import resource="classpath:mapping-dubbo-provider.xml" />
+	<import resource="classpath:mappings-dubbo-config.xml" />
+	<import resource="classpath:mappings-dubbo-provider.xml" />
 	<context:component-scan base-package="com.ginkgocap.parasol.mapping">
 	</context:component-scan>
 	<bean name="dao" class="com.ginkgocap.ywxt.framework.dal.dao.impl.CompositeDaoImpl"/>
