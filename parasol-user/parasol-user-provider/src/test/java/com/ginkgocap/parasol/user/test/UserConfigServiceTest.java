@@ -12,12 +12,12 @@ import org.junit.Assert;
 
 import com.ginkgocap.parasol.user.model.UserConfig;
 import com.ginkgocap.parasol.user.service.UserBasicService;
-import com.ginkgocap.parasol.user.service.UserConfigService;
+import com.ginkgocap.parasol.user.service.UserConfigerService;
 
 public class UserConfigServiceTest  extends TestBase implements Test  {
 
 	@Resource
-	private UserConfigService userConfigService;
+	private UserConfigerService userConfigerService;
 	@Resource
 	private UserBasicService userBasicService;
 	
@@ -34,7 +34,7 @@ public class UserConfigServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testCreateUserConfig(){
 		try {
-			Long id2 =userConfigService.createUserConfig(setUserConfig(3953254564364289l));
+			Long id2 =userConfigerService.createUserConfig(setUserConfig(3953254564364289l));
 			Assert.assertTrue(id2!=null && id2>0l);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,8 +46,8 @@ public class UserConfigServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testUpdateUserConfig(){
 		try {
-			UserConfig userConfig = userConfigService.getUserConfig(3953254564364289l);
-			boolean bl =userConfigService.updateUserConfig(userConfig);
+			UserConfig userConfig = userConfigerService.getUserConfig(3953254564364289l);
+			boolean bl =userConfigerService.updateUserConfig(userConfig);
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,7 +59,7 @@ public class UserConfigServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testGetUserConfig(){
 		try {
-			UserConfig list = userConfigService.getUserConfig(3953254564364289l);
+			UserConfig list = userConfigerService.getUserConfig(3953254564364289l);
 			Assert.assertTrue(list==null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,7 +73,7 @@ public class UserConfigServiceTest  extends TestBase implements Test  {
 		try {
 			List<Long> ids=new ArrayList<Long>();
 			ids.add(3953254564364289l);
-			List<UserConfig> list = userConfigService.getUserConfig(ids);
+			List<UserConfig> list = userConfigerService.getUserConfig(ids);
 			Assert.assertTrue(list.size()>0);
 		} catch (Exception e) {
 			e.printStackTrace();
