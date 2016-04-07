@@ -10,17 +10,13 @@ import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
-import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
-import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
-import com.ginkgocap.parasol.user.model.UserConfig;
-import com.ginkgocap.parasol.user.model.UserConfig;
-import com.ginkgocap.parasol.user.service.UserConfigService;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
+import com.ginkgocap.parasol.user.model.UserConfig;
+import com.ginkgocap.parasol.user.service.UserConfigerService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
-@Service("userConfigService")
-public class UserConfigServiceImpl extends BaseService<UserConfig> implements UserConfigService  {
+@Service("userConfigerService")
+public class UserConfigServiceImpl extends BaseService<UserConfig> implements UserConfigerService  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
 	private static Logger logger = Logger.getLogger(UserConfigServiceImpl.class);

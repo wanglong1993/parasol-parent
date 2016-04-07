@@ -68,7 +68,7 @@ import com.ginkgocap.parasol.user.model.UserOrganBasic;
 import com.ginkgocap.parasol.user.model.UserOrganExt;
 import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserBasicService;
-import com.ginkgocap.parasol.user.service.UserConfigService;
+import com.ginkgocap.parasol.user.service.UserConfigerService;
 import com.ginkgocap.parasol.user.service.UserContactWayService;
 import com.ginkgocap.parasol.user.service.UserDefinedService;
 import com.ginkgocap.parasol.user.service.UserEducationHistoryService;
@@ -137,7 +137,7 @@ public class UserController extends BaseControl {
 	@Autowired
 	private DirectorySourceService directorySourceService;	
 	@Autowired
-	private UserConfigService userConfigService;	
+	private UserConfigerService userConfigerService;	
 	@Autowired
 	private DefaultMessageService defaultMessageService;	
 	
@@ -356,7 +356,7 @@ public class UserController extends BaseControl {
 					userConfig.setHomePageVisible(new Byte("2"));
 					userConfig.setEvaluateVisible(new Byte("2"));
 					userConfig.setAutosave(new Byte("0"));
-					userConfigService.createUserConfig(userConfig);
+					userConfigerService.createUserConfig(userConfig);
 					userLoginRegisterService.deleteIdentifyingCode(passport);
 					//向万能插座发送消息
 					user = new User();
@@ -2638,14 +2638,14 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			UserConfig userConfig=userConfigService.getUserConfig(userId);
+			UserConfig userConfig=userConfigerService.getUserConfig(userId);
 			if(ObjectUtils.isEmpty(userConfig)){
 				resultMap.put("message", "用户设置不存在");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
 			userConfig.setHomePageVisible(new Byte(homePageVisible));
-			userConfigService.updateUserConfig(userConfig);
+			userConfigerService.updateUserConfig(userConfig);
 			resultMap.put( "status", 1);
 			resultMap.put("message", "设置成功!");
 			return new MappingJacksonValue(resultMap);
@@ -2679,14 +2679,14 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			UserConfig userConfig=userConfigService.getUserConfig(userId);
+			UserConfig userConfig=userConfigerService.getUserConfig(userId);
 			if(ObjectUtils.isEmpty(userConfig)){
 				resultMap.put("message", "用户设置不存在");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
 			userConfig.setHomePageVisible(new Byte(evaluateVisible));
-			userConfigService.updateUserConfig(userConfig);
+			userConfigerService.updateUserConfig(userConfig);
 			resultMap.put( "status", 1);
 			resultMap.put("message", "设置成功!");
 			return new MappingJacksonValue(resultMap);
@@ -2720,14 +2720,14 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			UserConfig userConfig=userConfigService.getUserConfig(userId);
+			UserConfig userConfig=userConfigerService.getUserConfig(userId);
 			if(ObjectUtils.isEmpty(userConfig)){
 				resultMap.put("message", "用户设置不存在");
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
 			userConfig.setHomePageVisible(new Byte(autosave));
-			userConfigService.updateUserConfig(userConfig);
+			userConfigerService.updateUserConfig(userConfig);
 			resultMap.put( "status", 1);
 			resultMap.put("message", "设置成功!");
 			return new MappingJacksonValue(resultMap);

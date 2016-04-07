@@ -10,7 +10,7 @@ import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
  * 用户设置
  * 
  */
-public interface UserConfigService {
+public interface UserConfigerService {
 
 	/**
 	 * 创建用户设置
