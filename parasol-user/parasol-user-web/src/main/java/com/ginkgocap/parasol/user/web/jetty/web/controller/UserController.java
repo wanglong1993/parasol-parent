@@ -199,6 +199,8 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "companyContacts",required = false) String companyContacts
 			,@RequestParam(name = "idcardFrontPicId",required = false) Long idcardFrontPicId
 			,@RequestParam(name = "idcardBackPicId",required = false) Long idcardBackPicId
+			,@RequestParam(name = "isWn",required = false,defaultValue="0") String isWn
+			,@RequestParam(name = "wid",required = false) Long wid
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
@@ -256,6 +258,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				userLoginRegister= new UserLoginRegister();
+				if(isWn.equals("1"))userLoginRegister.setId(wid);
 				userLoginRegister.setPassport(passport);
 				byte[] bt = Base64.decode(password);
 				String salt=userLoginRegisterService.setSalt();
@@ -800,6 +803,71 @@ public class UserController extends BaseControl {
 		}
 	}	
 	/**
+	 * 申请添加好友：临时使用此方法
+	 * @param userId  当前用户ID
+	 * @param friendId 要添加的好友的用户ID
+	 * @param content 添加用户时发送的消息.
+	 * @param appId 来源应用id.
+	 * @param status 申请状态.
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userext/user/applyToAddFriendly" }, method = { RequestMethod.POST })
+	public MappingJacksonValue extApplyToAddFriendly(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "userId",required = true) Long userId
+			,@RequestParam(name = "friendId",required = true) Long friendId
+			,@RequestParam(name = "status",required = true) String status
+			,@RequestParam(name = "appId",required = true) Long appId
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserFriendly userFriendly=null;
+		try {
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(!status.equals("0")){
+				resultMap.put("message", "status must be 0.");
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(userLoginRegisterService.getUserLoginRegister(friendId)==null){
+				resultMap.put("message", Prompt.friendId_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userFriendly=new UserFriendly();
+			userFriendly.setUserId(userId);
+			userFriendly.setFriendId(friendId);
+			userFriendly.setStatus(new Byte(status));
+			userFriendly.setAppId(appId);
+			UserFriendly uf=userFriendlyService.getFriendly(userId ,friendId);
+			if(uf!=null && uf.getStatus().intValue()==0){
+				resultMap.put("message", Prompt.has_been_add_this_friendly_please_waiting_for_him_to_agree);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(uf!=null && uf.getStatus().intValue()==1){
+				resultMap.put("message", Prompt.he_s_already_a_good_friend_of_yours_cannot_repeat_add_him);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userFriendlyService.createUserFriendly(userFriendly,true);
+			resultMap.put("message", Prompt.apply_to_add_friendly_successed);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("添加好友"+friendId+"失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
 	 * 同意添加好友
 	 * @param userId  当前用户ID
 	 * @param friendId 要添加的好友的用户ID
@@ -1011,6 +1079,204 @@ public class UserController extends BaseControl {
 		}
 	}	
 	/**
+	 * 同意添加好友:临时使用些方法
+	 * @param userId  当前用户ID
+	 * @param friendId 要添加的好友的用户ID
+	 * @param appId  应用的appId.
+	 * @param status 申请状态.
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userext/user/auditByAddFriendly" }, method = { RequestMethod.POST })
+	public MappingJacksonValue extAuditByAddFriendly(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "friendId",required = true) Long friendId
+			,@RequestParam(name = "userId",required = true) Long userId
+			,@RequestParam(name = "appId",required = true) Long appId
+			,@RequestParam(name = "status",required = true) String  status
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserFriendly userFriendly=null;
+		UserOrgPerCusRel userOrgPerCusRel=null;
+		UserLoginRegister userLoginRegister=null;
+		UserLoginRegister userLoginRegisterFriend=null;
+		UserBasic userBasic=null;
+		UserOrganBasic userOrganBasic=null;
+		Long id=0l;
+		Long userOrgPerCusRelId=0l;
+		Long userOrgPerCusRelFriendlyId=0l;
+		boolean bl=false;
+		try {
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(!status.equals("1")){
+				resultMap.put("message", Prompt.status_must_be_1);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegisterFriend=userLoginRegisterService.getUserLoginRegister(friendId);
+			if(userLoginRegisterFriend==null){
+				resultMap.put("message", Prompt.friendId_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			//检查个人好友是否存在
+			if(userLoginRegisterFriend.getUsetType().intValue()==0){
+				userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
+				if(userBasic==null){
+					resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
+			//检查组织好友是否存在
+			if(userLoginRegisterFriend.getUsetType().intValue()==1){
+				userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegisterFriend.getId());
+				if(userOrganBasic==null){
+					resultMap.put("message", Prompt.friendId_is_not_exists_in_UserOrganBasic);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
+			//更新好友关系和创建对方的好友关系
+			userFriendly=new UserFriendly();
+			userFriendly.setUserId(userId);
+			userFriendly.setFriendId(friendId);
+			userFriendly.setStatus(new Byte(status));
+			userFriendly.setAppId(appId);
+			bl=userFriendlyService.updateStatus(friendId, userId, new Byte(status));
+			if(!bl){
+				resultMap.put("message", Prompt.update_Friendly_status_friendId_failed+ friendId+",userId:"+userId);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			UserFriendly uf=userFriendlyService.getFriendly(friendId,userId);
+			if(uf!=null){
+				if(uf.getStatus().intValue()==1){
+					resultMap.put("message", userId +Prompt.is_already_a_good_friend_of_yours_cannot_repeat_add_him);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
+			if(uf==null)id=userFriendlyService.createUserFriendly(userFriendly,false);
+			//添加个人好友
+			if(userLoginRegisterFriend.getUsetType().intValue()==0){
+				userOrgPerCusRel=new UserOrgPerCusRel();
+				userOrgPerCusRel.setUserId(userId);
+				userOrgPerCusRel.setFriendId(friendId);
+				userOrgPerCusRel.setName(userBasic.getName());
+				userOrgPerCusRel.setReleationType(new Byte("1"));
+				userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+				//添加对方的个人好友
+				if(userLoginRegister.getUsetType().intValue()==0){
+					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+					if(userBasic==null){
+						userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+						if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+						if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+						resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+					userOrgPerCusRel=new UserOrgPerCusRel();
+					userOrgPerCusRel.setUserId(friendId);
+					userOrgPerCusRel.setFriendId(userId);
+					userOrgPerCusRel.setReleationType(new Byte("1"));
+					userOrgPerCusRel.setName(userBasic.getName());
+					userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+				}
+				//添加对方的组织好友
+				if(userLoginRegister.getUsetType().intValue()==1){
+					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+					if(userOrganBasic==null){
+						userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+						if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+						if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+						resultMap.put("message", Prompt.friendId_is_not_exists_in_UserOrganBasic);
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+					userOrgPerCusRel=new UserOrgPerCusRel();
+					userOrgPerCusRel.setUserId(friendId);
+					userOrgPerCusRel.setFriendId(userId);
+					userOrgPerCusRel.setReleationType(new Byte("2"));
+					userOrgPerCusRel.setName(userOrganBasic.getName());
+					userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+				}
+				resultMap.put("message", "add friendId successed.");
+				resultMap.put("status",1);
+			}
+			//同意添加组织好友
+			if(userLoginRegisterFriend.getUsetType().intValue()==1){
+				userOrgPerCusRel=new UserOrgPerCusRel();
+				userOrgPerCusRel.setUserId(userId);
+				userOrgPerCusRel.setFriendId(friendId);
+				userOrgPerCusRel.setName(userOrganBasic.getName());
+				userOrgPerCusRel.setReleationType(new Byte("2"));
+				userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+				//添加对方的个人好友
+				if(userLoginRegister.getUsetType().intValue()==0){
+					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+					if(userBasic==null){
+						userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+						if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+						if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+						resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+					userOrgPerCusRel=new UserOrgPerCusRel();
+					userOrgPerCusRel.setUserId(friendId);
+					userOrgPerCusRel.setFriendId(userId);
+					userOrgPerCusRel.setName(userBasic.getName());
+					userOrgPerCusRel.setReleationType(new Byte("1"));
+					userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+				}
+				//添加对方的组织好友
+				if(userLoginRegister.getUsetType().intValue()==1){
+					userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
+					if(userOrganBasic==null){
+						userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+						if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+						if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+						resultMap.put("message", Prompt.friendId_is_not_exists_in_UserOrganBasic);
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+					userOrgPerCusRel=new UserOrgPerCusRel();
+					userOrgPerCusRel.setUserId(friendId);
+					userOrgPerCusRel.setFriendId(userId);
+					userOrgPerCusRel.setName(userOrganBasic.getName());
+					userOrgPerCusRel.setReleationType(new Byte("2"));
+					userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+				}
+				if(userOrgPerCusRelFriendlyId !=null && userOrgPerCusRelFriendlyId >0l && userOrgPerCusRelId!=null && userOrgPerCusRelId>0l && id!=null && id>0l){
+					resultMap.put("message", "add friendId successed.");
+					resultMap.put("status",1);
+				}
+			}
+			
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			//失败回滚
+			if(bl)userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
+			if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+			if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
+			if(userOrgPerCusRelFriendlyId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelFriendlyId);
+			logger.info("添加好友"+friendId+"失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
 	 * 删除好友
 	 * @param userId  当前用户ID
 	 * @param friendId 要添加的好友的用户ID
@@ -1019,6 +1285,133 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/deleteFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue deleteFriendly(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "friendId",required = true) Long friendId
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister=null;
+		UserLoginRegister userLoginRegisterFriend=null;
+		UserBasic userBasic=null;
+		UserFriendly userFriendly=null;
+		UserFriendly userFriendlyTarget=null;
+		UserOrgPerCusRel userOrgPerCusRel=null;
+		UserOrgPerCusRel userOrgPerCusRelTarget=null;
+		UserOrganBasic userOrganBasic=null;
+		boolean bl1=false;
+		boolean bl2=false;
+		boolean bl3=false;
+		Long userId=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegisterFriend=userLoginRegisterService.getUserLoginRegister(friendId);
+			if(userLoginRegisterFriend==null){
+				resultMap.put("message", Prompt.friendId_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			//检查个人好友是否存在
+			if(userLoginRegisterFriend.getUsetType().intValue()==0){
+				userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
+				if(userBasic==null){
+					resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
+			//检查组织好友是否存在
+			if(userLoginRegisterFriend.getUsetType().intValue()==1){
+				userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegisterFriend.getId());
+				if(userOrganBasic==null){
+					resultMap.put("message", Prompt.friendId_is_not_exists_in_UserOrganBasic);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
+			//先备份好友数据以备删除出错后恢复
+			userFriendly=userFriendlyService.getFriendly(userId, friendId);
+			userFriendlyTarget=userFriendlyService.getFriendly(friendId, userId);
+			userOrgPerCusRel=userOrgPerCusRelService.getUserOrgPerCusRel(userId, friendId);
+			userOrgPerCusRelTarget=userOrgPerCusRelService.getUserOrgPerCusRel(friendId, userId);
+			//删除好友
+			bl1=userOrgPerCusRelService.deleteFriendly(userId,friendId);
+			bl2=userOrgPerCusRelService.deleteFriendly(friendId,userId);
+			bl3=userFriendlyService.deleteFriendly(userId, friendId);
+			if(bl1 && bl2 && bl3){
+				resultMap.put("message",Prompt.delete_friendly_successed);
+				resultMap.put("status",1);
+				return new MappingJacksonValue(resultMap);
+			}else{
+				//恢复
+				if(bl1 && userOrgPerCusRel!=null ){
+					if(userOrgPerCusRelService.getUserOrgPerCusRel(userId, friendId)==null)userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+				}
+				if(bl2 && userOrgPerCusRelTarget!=null){
+					if(userOrgPerCusRelService.getUserOrgPerCusRel(friendId, userId)==null)userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRelTarget);
+				}
+				if(bl3 && userFriendly!=null){
+					if(userFriendlyService.getFriendly(userId, friendId)==null)userFriendlyService.createUserFriendly(userFriendly, false);
+				}
+				if(bl3 && userFriendlyTarget!=null){
+					if(userFriendlyService.getFriendly(friendId, userId)==null)userFriendlyService.createUserFriendly(userFriendlyTarget, false);
+				}
+				if(!bl3){
+					if(userFriendlyService.getFriendly(userId, friendId)==null){
+						if(userFriendly!=null)userFriendlyService.createUserFriendly(userFriendly, false);
+					}
+					if(userFriendlyService.getFriendly(friendId, userId)==null){
+						if(userFriendlyTarget!=null)userFriendlyService.createUserFriendly(userFriendlyTarget, false);
+					}
+				}
+				resultMap.put("message",Prompt.delete_friendly_failed);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+		}catch (Exception e ){
+			//失败回滚
+			if(bl1 && userOrgPerCusRel!=null ){
+				if(userOrgPerCusRelService.getUserOrgPerCusRel(userId, friendId)==null)userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
+			}
+			if(bl2 && userOrgPerCusRelTarget!=null){
+				if(userOrgPerCusRelService.getUserOrgPerCusRel(friendId, userId)==null)userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRelTarget);
+			}
+			if(bl3 && userFriendly!=null){
+				if(userFriendlyService.getFriendly(userId, friendId)==null)userFriendlyService.createUserFriendly(userFriendly, false);
+			}
+			if(bl3 && userFriendlyTarget!=null){
+				if(userFriendlyService.getFriendly(friendId, userId)==null)userFriendlyService.createUserFriendly(userFriendlyTarget, false);
+			}
+			if(!bl3){
+				if(userFriendlyService.getFriendly(userId, friendId)==null){
+					if(userFriendly!=null)userFriendlyService.createUserFriendly(userFriendly, false);
+				}
+				if(userFriendlyService.getFriendly(friendId, userId)==null){
+					if(userFriendlyTarget!=null)userFriendlyService.createUserFriendly(userFriendlyTarget, false);
+				}
+			}
+			logger.info("删除好友"+friendId+"失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
+	 * 删除好友:临时使用此方法
+	 * @param userId  当前用户ID
+	 * @param friendId 要添加的好友的用户ID
+	 * @param appId 应用的appId
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/userext/user/deleteFriendly" }, method = { RequestMethod.POST })
+	public MappingJacksonValue extDeleteFriendly(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "friendId",required = true) Long friendId
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
