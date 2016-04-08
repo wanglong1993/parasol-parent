@@ -1869,6 +1869,7 @@ public class UserController extends BaseControl {
 				//向万能插座发送消息
 				user = new User();
 				user.setUserLoginRegister(userLoginRegister);
+				userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
 				user.setUserBasic(userBasic);
 				user.setUserExt(userExt);
 				user.setUserContactWay(userContactWay);
