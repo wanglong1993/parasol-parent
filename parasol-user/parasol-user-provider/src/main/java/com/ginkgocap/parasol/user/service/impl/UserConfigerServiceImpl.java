@@ -16,10 +16,10 @@ import com.ginkgocap.parasol.user.model.UserConfig;
 import com.ginkgocap.parasol.user.service.UserConfigerService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 @Service("userConfigerService")
-public class UserConfigServiceImpl extends BaseService<UserConfig> implements UserConfigerService  {
+public class UserConfigerServiceImpl extends BaseService<UserConfig> implements UserConfigerService  {
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
-	private static Logger logger = Logger.getLogger(UserConfigServiceImpl.class);
+	private static Logger logger = Logger.getLogger(UserConfigerServiceImpl.class);
 	/**
 	 * 检查数据
 	 * @param userConfig
