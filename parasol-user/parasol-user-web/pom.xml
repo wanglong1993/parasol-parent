@@ -195,6 +195,11 @@
 			<artifactId>parasol-associate-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-metadata-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
 		<!-- apache common -->
 <!-- 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -291,6 +296,7 @@
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
+				<email.validate.url.hr>http://open.gintong.com/reset-password</email.validate.url.hr>
 				<dfs.gintong.com>http://192.168.101.148/</dfs.gintong.com>
 				<imservice.url>http://192.168.101.41:4446</imservice.url>
 				<client_id>7647448850</client_id>
@@ -310,6 +316,7 @@
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
+				<email.validate.url.hr>http://open.gintong.com/reset-password</email.validate.url.hr>
 				<dfs.gintong.com>http://dfs.gintong.com/</dfs.gintong.com>
 				<imservice.url>http://jtim.gintong.com:4446</imservice.url>
 				<client_id>1</client_id>
@@ -329,6 +336,7 @@
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
+				<email.validate.url.hr>http://open.gintong.com/reset-password</email.validate.url.hr>
 				<dfs.gintong.com>http://192.168.101.148/</dfs.gintong.com>
 				<client_id>1</client_id>
 				<client_secret>2db7c5148a86b59ea285529a41ef84cb</client_secret>

@@ -49,6 +49,8 @@ import com.ginkgocap.parasol.associate.service.AssociateService;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
+import com.ginkgocap.parasol.metadata.model.CodeRegion;
+import com.ginkgocap.parasol.metadata.service.CodeRegionService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
@@ -140,6 +142,8 @@ public class UserController extends BaseControl {
 	private UserConfigerService userConfigerService;	
 	@Autowired
 	private DefaultMessageService defaultMessageService;	
+	@Autowired
+	private CodeRegionService codeRegionService;	
 	
 	@Value("${user.web.url}")  
     private String userWebUrl;  
@@ -153,6 +157,8 @@ public class UserController extends BaseControl {
     private String client_secret; 
 	@Value("${email.validate.url}")  
     private String emailValidateUrl; 	
+	@Value("${email.validate.url.hr}")  
+	private String emailValidateUrlHr; 	
 	@Value("${dfs.gintong.com}")  
 	private String dfsGintongCom; 	
     private static final String GRANT_TYPE="password"; 
@@ -1616,6 +1622,7 @@ public class UserController extends BaseControl {
 		UserContactWay userContactWay= null;
 		UserWorkHistory userWorkHistory= null;
 		UserEducationHistory userEducationHistory= null;
+		CodeRegion codeRegion=null;
 		List<UserWorkHistory> listUserWorkHistory = null;
 		List<UserEducationHistory> listUserEducationHistory = null;
 		String ip=getIpAddr(request);
@@ -1757,11 +1764,17 @@ public class UserController extends BaseControl {
 				}
 				userInfo.setBirthday(birthday!=null?birthday.getTime():null);
 				userInfo.setCountyId(countyId2);
+				if(countyId2!=null)codeRegion=codeRegionService.getCodeRegionById(countyId2);
+				if(codeRegion!=null)userInfo.setCountyName(codeRegion.getCname());
 				userInfo.setCityId(cityId2);
+				if(cityId2!=null)codeRegion=codeRegionService.getCodeRegionById(cityId2);
+				if(cityId2!=null)userInfo.setCityName(codeRegion.getCname());
 				userInfo.setCtime(ctime);
 				userInfo.setIp(ip);
 				userInfo.setUserId(userId);
 				userInfo.setProvinceId(provinceId);
+				if(provinceId!=null)codeRegion=codeRegionService.getCodeRegionById(provinceId);
+				if(codeRegion!=null)userInfo.setProvinceName(codeRegion.getCname());
 				if(bl2){
 					id=userInfoService.createUserInfo(userInfo);
 					bl2=false;
@@ -2721,6 +2734,7 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/getIdentifyingCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
+		,@RequestParam(name = "type",required = false,defaultValue ="1")int type
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String code=null;
@@ -2742,7 +2756,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(isMobileNo(passport)){
-					code=userLoginRegisterService.sendIdentifyingCode(passport);
+					code=userLoginRegisterService.sendIdentifyingCode(passport,type);
 					if(StringUtils.isEmpty(code)){
 						resultMap.put( "message", Prompt.failed_to_get_the_mobile_verfication_code);
 						resultMap.put( "status", 0);
@@ -2792,6 +2806,7 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/getBackPasswordCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getBackPasswordCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
+		,@RequestParam(name = "type",required = false,defaultValue ="1")int type
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String code=null;
@@ -2812,7 +2827,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(isMobileNo(passport)){
-					code=userLoginRegisterService.sendIdentifyingCode(passport);
+					code=userLoginRegisterService.sendIdentifyingCode(passport,type);
 					if(StringUtils.isEmpty(code)){
 						resultMap.put( "message",Prompt.failed_to_get_the_mobile_verfication_code);
 						resultMap.put( "status", 0);

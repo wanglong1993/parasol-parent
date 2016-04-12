@@ -1,3 +1,4 @@
+
 package com.ginkgocap.parasol.user.service.impl;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
 	private final  static String findPasswordTitle = "【金桐】找回密码";
 	private final  static String registerTitle = "【金桐】邮箱注册";
+	private final  static String registerHrTitle = "【金桐HR】邮箱注册";
 	private final  static String bindTitle = "【金桐】绑定邮箱";
 	private final  static String editPasswordTitle = "【金桐】修改密码";
 	
@@ -344,7 +346,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	}
 
 	@Override
-	public String sendIdentifyingCode(String passport)throws UserLoginRegisterServiceException {
+	public String sendIdentifyingCode(String passport,int type)throws UserLoginRegisterServiceException {
 		try {
 			if(isMobileNo(passport)){ 
 //				Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, passport));
@@ -353,7 +355,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 //				if(StringUtils.isEmpty(identifyingCode)){
 					identifyingCode=generationIdentifyingCode();
 					if(setCache(passport,identifyingCode)){
-						int back=shortMessageService.sendMessage(passport, new StringBuffer().append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(passport), 1);
+						int back=shortMessageService.sendMessage(passport, new StringBuffer().append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(passport), type);
 						if(back==1)return identifyingCode;
 						else return "";
 					}
@@ -381,7 +383,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
 			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
 			if(type==0) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-code-emai.ftl");
-//			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-activate-emai-old.ftl");
+			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerHrTitle, null, map, "reg-activate-emai-coopert.ftl");
 			if(type==2)bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
 			if(type==3)bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
 //			if(type==4) bl= emailService.sendEmailSync(mailTo, null, editPasswordTitle, null, map, "findpwd-email_back.ftl");

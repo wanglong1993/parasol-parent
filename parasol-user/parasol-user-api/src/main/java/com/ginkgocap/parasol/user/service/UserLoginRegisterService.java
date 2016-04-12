@@ -140,7 +140,7 @@ public interface UserLoginRegisterService {
 	 * @return Boolean
 	 * @throws UserLoginRegisterServiceException
 	 */
-	public String sendIdentifyingCode(String mobile)throws UserLoginRegisterServiceException;
+	public String sendIdentifyingCode(String mobile,int type)throws UserLoginRegisterServiceException;
 	/**
 	 * 获取验证码
 	 * @param  mobile

@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * 个人情况
@@ -30,13 +31,25 @@ public class UserInfo implements java.io.Serializable {
 	 */
 	private Long provinceId;
 	/**
+	 * 省份.
+	 */
+	private String provinceName;
+	/**
 	 * 城市id.
 	 */
 	private Long cityId;
 	/**
+	 * 城市
+	 */
+	private String cityName;
+	/**
 	 * 县id.
 	 */
 	private Long countyId;
+	/**
+	 * 县.
+	 */
+	private String countyName;
 	/**
 	 * 兴趣爱好.
 	 */
@@ -167,6 +180,36 @@ public class UserInfo implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+
+	@Transient
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	@Transient
+	public String getCityName() {
+		return cityName;
+	}
+
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	@Transient
+	public String getCountyName() {
+		return countyName;
+	}
+
+
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
 	}
 
 }
