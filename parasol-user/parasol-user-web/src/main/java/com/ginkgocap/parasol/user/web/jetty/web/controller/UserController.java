@@ -1894,6 +1894,370 @@ public class UserController extends BaseControl {
 		}
 	}	
 	/**
+	 * 修改资料
+	 * 
+	 * @param passport 为邮箱和手机号
+	 * @param name 昵称,企业全称
+	 * @param sex 性别
+	 * @param picId 个人或组织LOGOID
+	 * @param shortName 组织简称
+	 * @param firstIndustryIds 一级行业ID数组
+	 * @param userDefineds 用户自定义数组 userDefineds=1,自定义字段12,3&userDefineds=4,自定义字段子,好的&userDefineds=7,8,9
+	 * @param email 邮箱
+	 * @param phone 企业电话
+	 * @param brief 企业简介
+	 * @param companyName 公司名称
+	 * @param companyJob 职业
+	 * @param mobile 个人手机号
+	 * @param provinceId 省ID
+	 * @param cityId   市ID
+	 * @param countyId   县ID
+	 * 个人情况
+	 * @param birthday 出生日期
+	 * @param provinceId 籍贯省ID
+	 * @param cityId 籍贯市ID
+	 * @param countyId 籍贯县ID
+	 * @param interests 兴趣爱好
+	 * @param skills   擅长技能
+	 * 联系方式
+	 * @param cellphone  手机
+	 * @param email  邮箱
+	 * @param weixin  微信
+	 * @param qq  QQ
+	 * @param weibo  微博
+	 * 工作经历
+	 * @param userWorkHistoryJson  json字符串
+	 * 教育经历
+	 * @param userEducationHistoryJson  json字符串 
+	 * @throws Exception
+	 * @return MappingJacksonValue
+	 */
+	@RequestMapping(path = { "/userext/user/updateUser" }, method = { RequestMethod.POST})
+	public MappingJacksonValue extUpdateUser(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "userId",required = false) Long userId
+			,@RequestParam(name = "appId",required = false) Long appId
+			,@RequestParam(name = "name",required = true) String name
+			,@RequestParam(name = "sex",required = false) String sex
+			,@RequestParam(name = "picId",required = true) Long picId
+			,@RequestParam(name = "shortName",required = false) String shortName
+			,@RequestParam(name = "firstIndustryIds", required = false) Long[] firstIndustryIds
+			,@RequestParam(name = "userDefinedsJson", required = false) String userDefinedsJson
+			,@RequestParam(name = "email",required = false) String email
+			,@RequestParam(name = "phone",required = false) String phone
+			,@RequestParam(name = "brief",required = false) String brief
+			,@RequestParam(name = "companyName",required = false) String companyName
+			,@RequestParam(name = "companyJob",required = false) String companyJob
+			,@RequestParam(name = "mobile",required = false) String mobile
+			,@RequestParam(name = "provinceId",required = false) Long provinceId
+			,@RequestParam(name = "cityId",required = false) Long cityId
+			,@RequestParam(name = "countyId",required = false) Long countyId
+			//个人情况
+			,@RequestParam(name = "birthday",required = false) Date birthday
+			,@RequestParam(name = "provinceId",required = false) Long provinceId2
+			,@RequestParam(name = "cityId",required = false) Long cityId2
+			,@RequestParam(name = "countyId",required = false) Long countyId2
+			,@RequestParam(name = "interests",required = false) String interests
+			,@RequestParam(name = "skills",required = false) String skills
+			//联系方式
+			,@RequestParam(name = "cellphone",required = false) String cellphone
+			,@RequestParam(name = "email",required = false) String email2
+			,@RequestParam(name = "weixin",required = false) String weixin
+			,@RequestParam(name = "qq",required = false) String qq
+			,@RequestParam(name = "weibo",required = false) String weibo
+			,@RequestParam(name = "contactName",required = false) String contactName
+			//工作经历
+			,@RequestParam(name = "userWorkHistoryJson",required = false) String userWorkHistoryJson
+			//教育经历
+			,@RequestParam(name = "userEducationHistoryJson",required = false) String userEducationHistoryJson
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserInterestIndustry userInterestIndustry= null;
+		UserDefined userDefined= null;
+		UserLoginRegister userLoginRegister= null;
+		UserOrganBasic userOrganBasic= null;
+		UserOrganExt userOrganExt= null;
+		UserBasic userBasic= null;
+		UserExt userExt= null;
+		List<UserInterestIndustry> list = null;
+		List<UserDefined> listUserDefined = null;
+		UserInfo userInfo= null;
+		UserContactWay userContactWay= null;
+		UserWorkHistory userWorkHistory= null;
+		UserEducationHistory userEducationHistory= null;
+		List<UserWorkHistory> listUserWorkHistory = null;
+		List<UserEducationHistory> listUserEducationHistory = null;
+		String ip=getIpAddr(request);
+		Long ctime=0l;
+		Long utime=0l;
+		Long id=0l;
+		User user= null;
+		boolean bl=false;
+		boolean bl2=false;
+		try {
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(ObjectUtils.isEmpty(userLoginRegister)){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userId=userLoginRegister.getId();
+			//修改组织
+			if(userLoginRegister.getUsetType().intValue()==1){
+				userOrganBasic= userOrganBasicService.getUserOrganBasic(userId);
+				if(userOrganBasic==null){
+					resultMap.put( "message", Prompt.userId_is_not_exist_in_UserOrganBasic);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userLoginRegister.setEmail(email);
+				userLoginRegister.setMobile(phone);
+				userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
+				userOrganBasic.setPicId(picId);
+				userOrganBasicService.updateUserOrganBasic(userOrganBasic);
+				list =new ArrayList<UserInterestIndustry>();
+				for (Long firstIndustryId : firstIndustryIds) {
+					userInterestIndustry= new UserInterestIndustry();
+					userInterestIndustry.setUserId(userId);
+					userInterestIndustry.setFirstIndustryId(firstIndustryId);
+					userInterestIndustry.setIp(ip);
+					list.add(userInterestIndustry);
+					list=userInterestIndustryService.createUserInterestIndustryByList(list, userId);
+				}
+				if(!StringUtils.isEmpty(userDefinedsJson)){
+					listUserDefined=new ArrayList<UserDefined>();
+					JSONObject jsonObject = JSONObject.fromObject(userDefinedsJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("userDefinedsJsonList");
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+						userDefined= new UserDefined();
+						userDefined.setUserId(userId);
+						userDefined.setIp(ip);
+						userDefined.setUserDefinedModel(jsonObject2.has("model_name")?jsonObject2.getString("model_name"):null);
+						userDefined.setUserDefinedFiled(jsonObject2.has("filed")?jsonObject2.getString("filed"):null);
+						userDefined.setUserDefinedValue(jsonObject2.has("value")?jsonObject2.getString("value"):null);
+						listUserDefined.add(userDefined);
+						listUserDefined=userDefinedService.createUserDefinedByList(listUserDefined, userId);
+					}
+				}
+				userOrganExt=userOrganExtService.getUserOrganExt(userId);
+				userOrganExt.setPhone(phone);
+				userOrganExt.setShortName(shortName);
+				userOrganExt.setIp(ip);
+				userOrganExt.setName(name);
+				userOrganExtService.updateUserOrganExt(userOrganExt);
+				//联系方式
+				userContactWay=userContactWayService.getUserContactWay(userId);
+				if(ObjectUtils.isEmpty(userContactWay)){
+					userContactWay=new UserContactWay();
+					bl2=true;
+				}
+				userContactWay.setUserId(userId);
+				userContactWay.setCellphone(cellphone);
+				userContactWay.setName(contactName);
+				userContactWay.setEmail(email);
+				userContactWay.setWeibo(weibo);
+				userContactWay.setCtime(ctime);
+				userContactWay.setUtime(utime);
+				userContactWay.setIp(ip);
+				if(bl2){
+					id=userContactWayService.createUserContactWay(userContactWay);
+				}else{
+					bl=userContactWayService.updateUserContactWay(userContactWay);
+				}
+				resultMap.put( "message", Prompt.updateUser_success);
+				resultMap.put( "userId", userId);
+				resultMap.put("status",1);
+				return new MappingJacksonValue(resultMap);
+			}
+			//修改个人
+			if(userLoginRegister.getUsetType().intValue()==0){
+				userBasic= userBasicService.getUserBasic(userId);
+				if(userBasic==null){
+					resultMap.put( "message", Prompt.userId_is_not_exist_in_UserBasic);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userLoginRegister.setEmail(email);
+				userLoginRegister.setMobile(phone);
+				userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
+				userBasic.setPicId(picId);
+				userBasic.setPassport(phone);
+				userBasic.setName(name);
+				userBasic.setSex(new Byte("1"));
+				userBasicService.updateUserBasic(userBasic);
+				if(!StringUtils.isEmpty(userDefinedsJson)){
+					listUserDefined=new ArrayList<UserDefined>();
+					JSONObject jsonObject = JSONObject.fromObject(userDefinedsJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("userDefinedsJsonList");
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+						userDefined= new UserDefined();
+						userDefined.setUserId(userId);
+						userDefined.setIp(ip);
+						userDefined.setUserDefinedModel(jsonObject2.has("model_name")?jsonObject2.getString("model_name"):null);
+						userDefined.setUserDefinedFiled(jsonObject2.has("filed")?jsonObject2.getString("filed"):null);
+						userDefined.setUserDefinedValue(jsonObject2.has("value")?jsonObject2.getString("value"):null);
+						listUserDefined.add(userDefined);
+						listUserDefined=userDefinedService.createUserDefinedByList(listUserDefined, userId);
+					}
+				}
+				userExt=userExtService.getUserExt(userId);
+				userExt.setProvinceId(provinceId);
+				userExt.setCityId(cityId);
+				userExt.setCountyId(countyId);
+				userExt.setIp(ip);
+				userExt.setName(name);
+				userExtService.updateUserExt(userExt);
+				//个人信息
+				userInfo =userInfoService.getUserInfo(userId);
+				if(ObjectUtils.isEmpty(userInfo)){
+					userInfo= new UserInfo();
+					bl2=true;
+				}
+				userInfo.setBirthday(birthday!=null?birthday.getTime():null);
+				userInfo.setCountyId(countyId2);
+				userInfo.setCityId(cityId2);
+				userInfo.setCtime(ctime);
+				userInfo.setIp(ip);
+				userInfo.setUserId(userId);
+				userInfo.setProvinceId(provinceId);
+				if(bl2){
+					id=userInfoService.createUserInfo(userInfo);
+					bl2=false;
+				}else{
+					bl=userInfoService.updateUserInfo(userInfo);
+				}
+//					if(bl==false){
+//						userBasicService.realDeleteUserBasic(userId);
+//						resultMap.put( "message", "保存用户个人信息出错！");
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+				//联系方式
+				userContactWay=userContactWayService.getUserContactWay(userId);
+				if(ObjectUtils.isEmpty(userContactWay)){
+					userContactWay=new UserContactWay();
+					bl2=true;
+				}
+				userContactWay.setUserId(userId);
+				userContactWay.setCellphone(cellphone);
+				userContactWay.setEmail(email);
+				userContactWay.setWeixin(weixin);
+				userContactWay.setQq(qq);
+				userContactWay.setWeibo(weibo);
+				userContactWay.setCtime(ctime);
+				userContactWay.setUtime(utime);
+				userContactWay.setIp(ip);
+				if(bl2){
+					id=userContactWayService.createUserContactWay(userContactWay);
+				}else{
+					bl=userContactWayService.updateUserContactWay(userContactWay);
+				}
+//					if(bl==false){
+//						userBasicService.realDeleteUserBasic(userId);
+//						userInfoService.realDeleteUserInfo(userId);
+//						userContactWayService.realDeleteUserContactWay(userId);
+//						resultMap.put( "message", "保存用户联系方式出错！");
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+				//保存工作经历
+				if(!StringUtils.isEmpty(userWorkHistoryJson)){
+					listUserWorkHistory =new ArrayList<UserWorkHistory>();
+					JSONObject jsonObject = JSONObject.fromObject(userWorkHistoryJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("userWorkHistoryList");
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+						userWorkHistory=new UserWorkHistory();
+						userWorkHistory.setUserId(userId);
+						userWorkHistory.setIncName(jsonObject2.has("inc_name")?jsonObject2.getString("inc_name"):null);
+						userWorkHistory.setPosition(jsonObject2.has("position")?jsonObject2.getString("position"):null);
+						userWorkHistory.setBeginTime(jsonObject2.has("begin_time")?jsonObject2.getString("begin_time"):null);
+						userWorkHistory.setEndTime(jsonObject2.has("end_time")?jsonObject2.getString("end_time"):null);
+						userWorkHistory.setDescription(jsonObject2.has("description")?jsonObject2.getString("description"):null);
+						userWorkHistory.setCtime(ctime);
+						userWorkHistory.setUtime(utime);
+						userWorkHistory.setIp(ip);
+						listUserWorkHistory.add(userWorkHistory);
+					}
+					if(listUserWorkHistory.size()>0)
+						listUserWorkHistory=userWorkHistoryService.createUserWorkHistoryByList(listUserWorkHistory, userId);
+//					if(listUserWorkHistory==null|| listUserWorkHistory.size()<=0){
+//						userBasicService.realDeleteUserBasic(userId);
+//						userInfoService.realDeleteUserInfo(userId);
+//						userContactWayService.realDeleteUserContactWay(userId);
+//						userWorkHistoryService.realDeleteUserWorkHistoryList(userWorkHistoryService.getIdList(userId));
+//						resultMap.put( "message", "保存用户工作经历出错！");
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+				}
+				//保存教育经历
+				if(!StringUtils.isEmpty(userEducationHistoryJson)){
+					listUserEducationHistory =new ArrayList<UserEducationHistory>();
+					JSONObject jsonObject = JSONObject.fromObject(userEducationHistoryJson);
+					JSONArray jsonArray=jsonObject.getJSONArray("userEducationHistoryList");
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+						userEducationHistory=new UserEducationHistory();
+						userEducationHistory.setUserId(userId);
+						userEducationHistory.setSchool(jsonObject2.has("school")?jsonObject2.getString("school"):null);
+						userEducationHistory.setMajor(jsonObject2.has("major")?jsonObject2.getString("major"):null);
+						userEducationHistory.setDegree(jsonObject2.has("degree")?jsonObject2.getString("degree"):null);
+						userEducationHistory.setBeginTime(jsonObject2.has("begin_time")?jsonObject2.getString("begin_time"):null);
+						userEducationHistory.setEndTime(jsonObject2.has("end_time")?jsonObject2.getString("end_time"):null);
+						userEducationHistory.setDescription(jsonObject2.has("description")?jsonObject2.getString("description"):null);
+						userEducationHistory.setCtime(ctime);
+						userEducationHistory.setUtime(utime);
+						userEducationHistory.setIp(ip);
+						listUserEducationHistory.add(userEducationHistory);
+					}
+					if(listUserEducationHistory.size()>0)
+						listUserEducationHistory=userEducationHistoryService.createUserEducationHistoryByList(listUserEducationHistory, userId);
+//					if(listUserEducationHistory==null|| listUserEducationHistory.size()<=0){
+//						userBasicService.realDeleteUserBasic(userId);
+//						userInfoService.realDeleteUserInfo(userId);
+//						userContactWayService.realDeleteUserContactWay(userId);
+//						userWorkHistoryService.realDeleteUserWorkHistoryList(userWorkHistoryService.getIdList(userId));
+//						userEducationHistoryService.realDeleteUserEducationHistoryList(userEducationHistoryService.getIdList(userId));
+//						resultMap.put( "message", "保存用户教育经历出错！");
+//						resultMap.put( "status", 0);
+//						return new MappingJacksonValue(resultMap);
+//					}
+				}
+				//向万能插座发送消息
+				user = new User();
+				user.setUserLoginRegister(userLoginRegister);
+				userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
+				user.setUserBasic(userBasic);
+				user.setUserExt(userExt);
+				user.setUserContactWay(userContactWay);
+				user.setUserInfo(userInfo);
+				user.setListUserInterestIndustry(list);
+				user.setListUserDefined(listUserDefined);
+				user.setListUserWorkHistory(listUserWorkHistory);
+				user.setListUserEducationHistory(listUserEducationHistory);
+				RocketSendResult rocketSendResult=defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_UPDATE, GsonUtils.objectToString(user));
+				rocketSendResult.getSendResult().getSendStatusCode();
+				rocketSendResult.getSendResult().getMsgId();
+				resultMap.put( "message", Prompt.updateUser_success);
+				resultMap.put( "userId", userId);
+				resultMap.put("status",1);
+				return new MappingJacksonValue(resultMap);
+			}			
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("修改失败:"+userId);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
 	 * 用户登录
 	 * 
 	 * @param passport 为邮箱或者手机号

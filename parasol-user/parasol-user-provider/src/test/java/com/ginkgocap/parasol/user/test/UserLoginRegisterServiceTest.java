@@ -172,6 +172,7 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 		try {
 			Long ctime=System.currentTimeMillis();
 			UserLoginRegister userLoginRegister = new UserLoginRegister();
+			userLoginRegister.setId(5555l);
 			userLoginRegister.setPassport(passport);
 			userLoginRegister.setUsetType(usetType);
 			String salt=userLoginRegisterService.setSalt();
