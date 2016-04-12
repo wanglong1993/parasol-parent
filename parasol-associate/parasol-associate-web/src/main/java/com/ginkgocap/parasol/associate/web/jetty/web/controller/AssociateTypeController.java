@@ -58,7 +58,7 @@ public class AssociateTypeController extends BaseControl {
 	private AssociateTypeService associateTypeService;
 
 	/**
-	 * 查询收藏夹的类型</br>
+	 * 查询关联的类型列表</br>
 	 * <code>
 	 * export access_token=6b48bab7-e545-4ef0-ac25-af02bfe92a0b</br>
 	 * curl -i http://api.test.gintong.com/associate/type/getTypeList?access_token=${access_token}</br>
@@ -92,7 +92,7 @@ public class AssociateTypeController extends BaseControl {
 	
 	//@format:
 	/**
-	 * 查询收藏夹的类型
+	 * 创建关联的类型
 	 * </br>
 	 * <code>
 	 * export access_token=6b48bab7-e545-4ef0-ac25-af02bfe92a0b</br>
@@ -106,7 +106,7 @@ public class AssociateTypeController extends BaseControl {
 	 * @return
 	 * @throws CodeServiceException
 	 */
-	@RequestMapping(path = "/associate/type/createTypeList", method = { RequestMethod.POST })
+	@RequestMapping(path = "/associate/type/createAssociateType", method = { RequestMethod.POST })
 	public MappingJacksonValue createFunctionClassList(@RequestParam(name = AssociateTypeController.parameterName, defaultValue = "") String name,
 			@RequestParam(name = AssociateTypeController.parameterDebug, defaultValue = "") String debug) {
 		Long loginAppId = LoginUserContextHolder.getAppKey();

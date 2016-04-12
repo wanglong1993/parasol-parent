@@ -283,7 +283,6 @@ public class AssociateController extends BaseControl {
 			filter.add("assocId"); // '被关联数据ID',
 			filter.add("assocTitle"); // '被关联数据标题',
 			filter.add("assocMetadata"); // '被关联数据的的摘要用Json存放，如图片，连接URL定义等',
-
 		}
 
 		filterProvider.addFilter(Associate.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
