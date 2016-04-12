@@ -158,7 +158,7 @@ public class UserLoginRegisterServiceTest  extends TestBase  implements Test{
 	@org.junit.Test
 	public void testSendIdentifyingCode(){
 		try {
-			String  identifyingCode =userLoginRegisterService.sendIdentifyingCode("13677687632");
+			String  identifyingCode =userLoginRegisterService.sendIdentifyingCode("13677687632",1);
 			Assert.assertTrue(StringUtils.isEmpty(identifyingCode));
 		} catch (Exception e) {
 			e.printStackTrace();
