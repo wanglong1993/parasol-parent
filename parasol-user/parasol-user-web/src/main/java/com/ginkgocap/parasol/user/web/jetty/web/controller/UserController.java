@@ -2734,7 +2734,7 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/getIdentifyingCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
-		,@RequestParam(name = "type",required = false,defaultValue ="1")int type
+		,@RequestParam(name = "type",required = false,defaultValue ="0")int type
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String code=null;
@@ -2774,8 +2774,8 @@ public class UserController extends BaseControl {
 				        map.put("acceptor",passport);
 				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 				        map.put("code", code);
-				        map.put("type","0");
-						if(userLoginRegisterService.sendEmail(passport, 0, map)){
+				        map.put("type",String.valueOf(type));
+						if(userLoginRegisterService.sendEmail(passport, type, map)){
 							resultMap.put( "code", code);
 							resultMap.put( "status", 1);
 						}else{
@@ -2806,7 +2806,7 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/getBackPasswordCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getBackPasswordCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
-		,@RequestParam(name = "type",required = false,defaultValue ="1")int type
+		,@RequestParam(name = "type",required = false,defaultValue ="2")int type
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String code=null;
@@ -2846,7 +2846,7 @@ public class UserController extends BaseControl {
 				        map.put("acceptor",passport);
 				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 				        map.put("code", code);
-				        map.put("type","2");
+				        map.put("type",String.valueOf(type));
 						if(userLoginRegisterService.sendEmail(passport, 2, map)){
 							resultMap.put( "code", code);
 							resultMap.put( "status", 1);
