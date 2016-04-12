@@ -23,7 +23,7 @@
 	<import resource="classpath:sms-dubbo-config.xml" />
 	<import resource="classpath:sms-mongo-config.xml"/>
 	<import resource="classpath:sms-dubbo-provider.xml" />
-	<import resource="classpath:sms-jms-config.xml" />
-	<import resource="classpath:sms-jms-message.xml" />
+<!-- 	<import resource="classpath:sms-jms-config.xml" />
+	<import resource="classpath:sms-jms-message.xml" /> -->
 	<import resource="classpath:sms-spring-context.xml" />
 </beans>

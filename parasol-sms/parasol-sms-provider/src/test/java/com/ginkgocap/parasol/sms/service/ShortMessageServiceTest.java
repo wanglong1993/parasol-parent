@@ -12,7 +12,7 @@ public class ShortMessageServiceTest extends TestBase{
 	@Test
 	public void TestSendMessage() {
 		
-		int flag = shortMessageService.sendMessage("13716683972", "what a fucking day", 1473l, 1);
+		int flag = shortMessageService.sendMessage("13716683972", "验证码:123456", 1473l, 1);
 		
 		System.out.println("send messsage flag =" + flag);
 		
