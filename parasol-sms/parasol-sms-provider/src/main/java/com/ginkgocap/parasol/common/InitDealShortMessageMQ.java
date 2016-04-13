@@ -31,8 +31,11 @@ public class InitDealShortMessageMQ {
     @Resource
     private CommonService commonService;
     
-    @Resource
-    private SmsTemplate	smsTemplate;
+    @Resource(name="smsTemplate")
+    private SmsTemplate	 smsTemplate;
+    
+    @Resource(name="smsTemplateCoopert")
+    private SmsTemplate	 smsTemplateCoopert;
     
     private Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -58,7 +61,8 @@ public class InitDealShortMessageMQ {
     			if(sm != null && StringUtils.isNotEmpty(sm.getPhoneNum()) && StringUtils.isNotEmpty(sm.getContent())) {
     				logger.info("短信发送手机号：{},content：{}", sm.getPhoneNum(), sm.getContent());
     				if(smsTemplate.getIsOpen().equals("1")) {
-						i = sendMsg(sm.getPhoneNum(),sm.getContent());
+    					if(sm.getType()==1)i = sendMsg(sm.getPhoneNum(),sm.getContent());
+    					if(sm.getType()==2)i = sendMsgCoopert(sm.getPhoneNum(),sm.getContent());
     					if(i==1) {
     						logger.info("短信发送成功");
     						sm.setId(commonService.getShortMessageIncreaseId());
@@ -141,6 +145,85 @@ public class InitDealShortMessageMQ {
 		}
 		
 		return result;
+    }
+    /**
+     * 迈远平台短信发送
+     * 平台地址：http://115.29.196.232:8888/sms.aspx
+     * @author liurenyuan
+     * @throws IOException 
+     * */
+    private int sendMsgCoopert(String Mobile, String Content) throws IOException {
+    	
+    	int result = 1;
+    	//平台Base URL
+        // 由平台提供 http://{IP}:{port}/{version}
+        String baseUrl = smsTemplateCoopert.getSendMessageUrl();
+        // 用户ID
+        String UserId = smsTemplateCoopert.getSendMessageUserId();
+        //发送用户帐号
+        String Account = smsTemplateCoopert.getSendMessageUsername();
+        //帐号密码
+        String Password = smsTemplateCoopert.getSendMessagePassword();
+        //全部被叫号码 
+//        String Mobile = "13716683972";
+        //发送内容 
+//        String Content = "【coopert】你的注册验证码为：123456。30分钟内有效，请尽快完成验证";
+        //定时发送时间
+        String SendTime = "";
+        //发送任务命令 
+        String Action = "send";
+        //是否检查内容包含非法关键字 
+        String CheckContent = "1";
+        //任务名称 
+        String TaskName = "微信号绑定手机";
+        //号码总数量 
+        String CountNumber = "1";
+        //手机号码数量  
+        String MobileNumber = "1";
+        //小灵通或座机号码数
+        String TelephoneNumber = "0";
+	    BufferedReader bufferedReader = null;
+	    String responseResult = "";
+	    HttpURLConnection httpURLConnection = null;					//创建HttpURLConnection
+	    
+	    try {			
+	    	//拼接URL
+	    	String url=String.format("%s?action=%s&userid=%s&account=%s&password=%s&mobile=%s&content=%s&sendTime=%s&taskName=%s&checkcontent=%s&mobilenumber=%s&countnumber=%s&telephonenumber=%s",
+	    			baseUrl,Action,UserId,Account,Password,Mobile,URLEncoder.encode(Content, "utf-8"),SendTime,URLEncoder.encode(TaskName, "utf-8"),CheckContent,MobileNumber,CountNumber,TelephoneNumber);
+	        URL realUrl = new URL(url);							
+	        // 打开和URL之间的连接
+	        httpURLConnection = (HttpURLConnection) realUrl.openConnection();
+	        httpURLConnection.setDoOutput(true);
+	        httpURLConnection.setDoInput(true);
+	        // 根据ResponseCode判断连接是否成功
+	        int responseCode = httpURLConnection.getResponseCode();
+	        if (responseCode != 200) {
+	            responseResult = " Error===" + responseCode;
+	        } 
+	        // 定义BufferedReader输入流来读取URL的ResponseData
+	        bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+	        String line;
+	        while ((line = bufferedReader.readLine()) != null) {
+	            responseResult += line;
+	        }
+	    } catch (Exception e) {
+	        responseResult = "send post request error!" + e;
+	    } finally {
+	        httpURLConnection.disconnect();
+	        try {
+	            if (bufferedReader != null) {
+	                bufferedReader.close();
+	            }
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	        }
+	
+	    }
+	    //反馈判断
+	    if(!responseResult.contains("Success")) {
+	    	result = 0;
+	    }
+    	return result;
     }
 
 }

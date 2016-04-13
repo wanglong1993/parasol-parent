@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-sms-api</artifactId>
-			<version>${sms.version}</version> 
+			<version>1.0.2-SNAPSHOT</version> 
 		</dependency>
   		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -398,6 +398,11 @@
 				<sms.send.message.apikey>abded701459c50a016766b4a9e823a39</sms.send.message.apikey>
 				<sms.send.message.username>gintong</sms.send.message.username>
 				<sms.send.message.password>ml150414</sms.send.message.password>
+				
+				<sms.send.message.url.coopert>http://115.29.196.232:8888/sms.aspx</sms.send.message.url.coopert>
+				<sms.send.message.userid.coopert>188</sms.send.message.userid.coopert>
+				<sms.send.message.username.coopert>coopert</sms.send.message.username.coopert>
+				<sms.send.message.password.coopert>4rfgbn</sms.send.message.password.coopert>
 				<!-- active-mq -->
 				<activemq.url>tcp://192.168.130.21:61616</activemq.url>
 				<!-- mongo地址 -->

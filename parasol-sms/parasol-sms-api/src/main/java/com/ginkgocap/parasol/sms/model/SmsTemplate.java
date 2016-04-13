@@ -8,7 +8,14 @@ public class SmsTemplate {
     private String sendMessageApiKey = "";
     private String sendMessageUsername = "";
     private String sendMessagePassword = "";
+    private String sendMessageUserId = "";
     
+	public String getSendMessageUserId() {
+		return sendMessageUserId;
+	}
+	public void setSendMessageUserId(String sendMessageUserId) {
+		this.sendMessageUserId = sendMessageUserId;
+	}
 	public String getIsOpen() {
 		return isOpen;
 	}
