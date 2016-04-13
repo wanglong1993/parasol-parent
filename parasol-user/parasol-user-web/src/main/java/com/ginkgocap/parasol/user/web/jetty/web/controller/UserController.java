@@ -2734,7 +2734,7 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/getIdentifyingCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
-		,@RequestParam(name = "type",required = false,defaultValue ="0")int type
+		,@RequestParam(name = "type",required = false,defaultValue ="1")int type
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String code=null;
