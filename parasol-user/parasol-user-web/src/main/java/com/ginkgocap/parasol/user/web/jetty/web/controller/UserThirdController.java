@@ -106,6 +106,7 @@ public class UserThirdController extends BaseControl {
 	@RequestMapping(path = { "/user/userThird/getIdentifyingCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
+		,@RequestParam(name = "type",required = false,defaultValue ="0")int type
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -124,7 +125,7 @@ public class UserThirdController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-				String code=userLoginRegisterService.sendIdentifyingCode(passport);
+				String code=userLoginRegisterService.sendIdentifyingCode(passport,type);
 				if(StringUtils.isEmpty(code)){
 					resultMap.put( "message", "failed to get the verfication code.");
 					resultMap.put( "status", 0);
