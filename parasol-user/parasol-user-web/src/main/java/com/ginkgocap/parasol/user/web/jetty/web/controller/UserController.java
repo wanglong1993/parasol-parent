@@ -157,8 +157,8 @@ public class UserController extends BaseControl {
     private String client_secret; 
 	@Value("${email.validate.url}")  
     private String emailValidateUrl; 	
-	@Value("${email.validate.url.hr}")  
-	private String emailValidateUrlHr; 	
+	@Value("${email.validate.url.coopert}")  
+	private String emailValidateUrlCoopert; 	
 	@Value("${dfs.gintong.com}")  
 	private String dfsGintongCom; 	
     private static final String GRANT_TYPE="password"; 
@@ -2734,7 +2734,8 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/getIdentifyingCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getIdentifyingCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
-		,@RequestParam(name = "type",required = false,defaultValue ="1")int type
+		,@RequestParam(name = "mobiletype",required = false,defaultValue ="1")int mobiletype
+		,@RequestParam(name = "emailtype",required = false,defaultValue ="0")int emailtype
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String code=null;
@@ -2756,7 +2757,12 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(isMobileNo(passport)){
-					code=userLoginRegisterService.sendIdentifyingCode(passport,type);
+					if(mobiletype!=1 && mobiletype!=2){
+						resultMap.put( "message", Prompt.mobile_type_is_not_correcct);
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
+					}
+					code=userLoginRegisterService.sendIdentifyingCode(passport,mobiletype);
 					if(StringUtils.isEmpty(code)){
 						resultMap.put( "message", Prompt.failed_to_get_the_mobile_verfication_code);
 						resultMap.put( "status", 0);
@@ -2769,13 +2775,19 @@ public class UserController extends BaseControl {
 				if(isEmail(passport)){
 //					code=userLoginRegisterService.getIdentifyingCode(passport);
 //					if(StringUtils.isEmpty(code)){
+					if(emailtype!=0 && emailtype!=1 && emailtype!=2 && emailtype!=3){
+						resultMap.put( "message", Prompt.email_type_is_not_correcct);
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
+					}
 						code=generationIdentifyingCode();
 						Map<String, Object> map = new HashMap<String, Object>();
+						if(emailtype==1)map.put("email", emailValidateUrlCoopert+"?email="+passport+"&code="+code);
 				        map.put("acceptor",passport);
 				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 				        map.put("code", code);
-				        map.put("type",String.valueOf(type));
-						if(userLoginRegisterService.sendEmail(passport, type, map)){
+				        map.put("type",String.valueOf(emailtype));
+						if(userLoginRegisterService.sendEmail(passport, emailtype, map)){
 							resultMap.put( "code", code);
 							resultMap.put( "status", 1);
 						}else{
@@ -2806,7 +2818,8 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/getBackPasswordCode" }, method = { RequestMethod.GET})
 	public MappingJacksonValue getBackPasswordCode(HttpServletRequest request,HttpServletResponse response
 		,@RequestParam(name = "passport",required = true) String passport
-		,@RequestParam(name = "type",required = false,defaultValue ="2")int type
+		,@RequestParam(name = "mobiletype",required = false,defaultValue ="1")int mobiletype
+		,@RequestParam(name = "emailtype",required = false,defaultValue ="2")int emailtype
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String code=null;
@@ -2827,7 +2840,12 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(isMobileNo(passport)){
-					code=userLoginRegisterService.sendIdentifyingCode(passport,type);
+					if(mobiletype!=1 && mobiletype!=2){
+						resultMap.put( "message", Prompt.mobile_type_is_not_correcct);
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
+					}
+					code=userLoginRegisterService.sendIdentifyingCode(passport,mobiletype);
 					if(StringUtils.isEmpty(code)){
 						resultMap.put( "message",Prompt.failed_to_get_the_mobile_verfication_code);
 						resultMap.put( "status", 0);
@@ -2840,14 +2858,19 @@ public class UserController extends BaseControl {
 				if(isEmail(passport)){
 //					code=userLoginRegisterService.getIdentifyingCode(passport);
 //					if(StringUtils.isEmpty(code)){
+					if(emailtype!=0 && emailtype!=1 && emailtype!=2 && emailtype!=3){
+						resultMap.put( "message", Prompt.email_type_is_not_correcct);
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
+					}
 						code=generationIdentifyingCode();
 						Map<String, Object> map = new HashMap<String, Object>();
 				        map.put("email", emailValidateUrl+"?email="+passport+"&code="+code);
 				        map.put("acceptor",passport);
 				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 				        map.put("code", code);
-				        map.put("type",String.valueOf(type));
-						if(userLoginRegisterService.sendEmail(passport, 2, map)){
+				        map.put("type",String.valueOf(emailtype));
+						if(userLoginRegisterService.sendEmail(passport, emailtype, map)){
 							resultMap.put( "code", code);
 							resultMap.put( "status", 1);
 						}else{
