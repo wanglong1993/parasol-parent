@@ -30,7 +30,7 @@ import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
 	private final  static String findPasswordTitle = "【金桐】找回密码";
 	private final  static String registerTitle = "【金桐】邮箱注册";
-	private final  static String registerHrTitle = "【金桐HR】邮箱注册";
+	private final  static String registerHrTitle = "【coopert】邮箱注册";
 	private final  static String bindTitle = "【金桐】绑定邮箱";
 	private final  static String editPasswordTitle = "【金桐】修改密码";
 	
