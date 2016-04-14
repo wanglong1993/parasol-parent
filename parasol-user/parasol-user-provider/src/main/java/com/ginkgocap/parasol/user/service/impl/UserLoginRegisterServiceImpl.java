@@ -355,7 +355,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 //				if(StringUtils.isEmpty(identifyingCode)){
 					identifyingCode=generationIdentifyingCode();
 					if(setCache(passport,identifyingCode)){
-						int back=shortMessageService.sendMessage(passport, new StringBuffer().append(type==2?"【coopert】":null).append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(passport), type);
+						int back=shortMessageService.sendMessage(passport, new StringBuffer().append(type==2?"【coopert】":"").append("您的短信验证码为").append(identifyingCode).append("，有效期30分钟，请及时验证").toString(), getId(passport), type);
 						if(back==1)return identifyingCode;
 						else return "";
 					}
