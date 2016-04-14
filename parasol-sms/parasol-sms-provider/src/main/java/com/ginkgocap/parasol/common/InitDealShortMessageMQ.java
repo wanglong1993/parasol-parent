@@ -76,6 +76,26 @@ public class InitDealShortMessageMQ {
     				// 当队列中无有效数据时，暂停3s；
     				Thread.sleep(3000);
     			}
+    			sm = (ShortMessage) rc.getCache("sms-queue").get("shortMessage2");
+    			// 判断队列中数据是否有效
+    			if(sm != null && StringUtils.isNotEmpty(sm.getPhoneNum()) && StringUtils.isNotEmpty(sm.getContent())) {
+    				logger.info("短信发送手机号：{},content：{}", sm.getPhoneNum(), sm.getContent());
+    				if(smsTemplate.getIsOpen().equals("1")) {
+    					if(sm.getType()==1)i = sendMsg(sm.getPhoneNum(),sm.getContent());
+    					if(sm.getType()==2)i = sendMsgCoopert(sm.getPhoneNum(),sm.getContent());
+    					if(i==1) {
+    						logger.info("短信发送成功:type="+sm.getType());
+    						sm.setId(commonService.getShortMessageIncreaseId());
+    						sm.setCompleteTime(format.format(new Date()));
+    						mongoTemplate.save(sm);
+    					}else {
+    						logger.warn("短信发送失败，手机号是否是空号！");
+    					}
+    				}
+    			} else {
+    				// 当队列中无有效数据时，暂停3s；
+    				Thread.sleep(3000);
+    			}
 			} catch (CacheException e) {
 				logger.error("从memcacheq获取数据失败：{}", e.toString());
 				e.printStackTrace();
