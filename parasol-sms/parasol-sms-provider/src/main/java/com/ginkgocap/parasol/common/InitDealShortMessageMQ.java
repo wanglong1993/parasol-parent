@@ -239,7 +239,7 @@ public class InitDealShortMessageMQ {
 	    }
 	    //反馈判断
 	    if(!responseResult.contains("Success")) {
-	    	logger.info("发送失败！！！！！！！！！！！！！！！");
+	    	logger.info("发送失败！！！！！！！！！！！！！！！："+responseResult);
 	    	result = 0;
 	    }
     	return result;
