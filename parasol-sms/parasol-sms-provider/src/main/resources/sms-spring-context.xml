@@ -21,7 +21,7 @@
 		<property name="sendMessageUsername" value="${sms.send.message.username}" />
 		<property name="sendMessagePassword" value="${sms.send.message.password}" />
 	</bean>
-	<!-- 短信运营商信息 -->
+	<!-- 短信运营商信息迈远 -->
 	<bean name="smsTemplateCoopert" class="com.ginkgocap.parasol.sms.model.SmsTemplate">
 		<property name="isOpen" value="${sms.is.open}" />
 		<property name="sendMessageUrl" value="${sms.send.message.url.coopert}"></property>
