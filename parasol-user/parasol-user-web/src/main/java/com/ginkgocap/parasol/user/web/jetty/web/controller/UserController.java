@@ -1770,7 +1770,7 @@ public class UserController extends BaseControl {
 				if(codeRegion!=null)userInfo.setCountyName(codeRegion.getCname());
 				userInfo.setCityId(cityId2);
 				if(cityId2!=null)codeRegion=codeRegionService.getCodeRegionById(cityId2);
-				if(cityId2!=null)userInfo.setCityName(codeRegion.getCname());
+				if(codeRegion!=null)userInfo.setCityName(codeRegion.getCname());
 				userInfo.setCtime(ctime);
 				userInfo.setIp(ip);
 				userInfo.setUserId(userId);
