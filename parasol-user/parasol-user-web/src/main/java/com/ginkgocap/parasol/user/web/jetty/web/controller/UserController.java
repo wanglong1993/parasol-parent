@@ -159,6 +159,8 @@ public class UserController extends BaseControl {
     private String emailValidateUrl; 	
 	@Value("${email.validate.url.coopert}")  
 	private String emailValidateUrlCoopert; 	
+	@Value("${email.findpwd.url.coopert}")  
+	private String emailFindpwdUrlCoopert; 	
 	@Value("${dfs.gintong.com}")  
 	private String dfsGintongCom; 	
     private static final String GRANT_TYPE="password"; 
@@ -2775,8 +2777,8 @@ public class UserController extends BaseControl {
 				if(isEmail(passport)){
 //					code=userLoginRegisterService.getIdentifyingCode(passport);
 //					if(StringUtils.isEmpty(code)){
-					if(emailtype!=0 && emailtype!=1 && emailtype!=2 && emailtype!=3){
-						resultMap.put( "message", Prompt.email_type_is_not_correcct);
+					if(emailtype!=0 && emailtype!=1){
+						resultMap.put( "message", Prompt.register_email_type_is_not_correcct);
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
 					}
@@ -2858,14 +2860,15 @@ public class UserController extends BaseControl {
 				if(isEmail(passport)){
 //					code=userLoginRegisterService.getIdentifyingCode(passport);
 //					if(StringUtils.isEmpty(code)){
-					if(emailtype!=0 && emailtype!=1 && emailtype!=2 && emailtype!=3){
-						resultMap.put( "message", Prompt.email_type_is_not_correcct);
+					if(emailtype!=2 && emailtype!=4){
+						resultMap.put( "message", Prompt.findpwd_email_type_is_not_correcct);
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
 					}
 						code=generationIdentifyingCode();
 						Map<String, Object> map = new HashMap<String, Object>();
-				        map.put("email", emailValidateUrl+"?email="+passport+"&code="+code);
+				        if(emailtype==4)map.put("email", emailFindpwdUrlCoopert+"?email="+passport+"&code="+code);
+				        if(emailtype==2)map.put("email", emailValidateUrl+"?email="+passport+"&code="+code);
 				        map.put("acceptor",passport);
 				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 				        map.put("code", code);

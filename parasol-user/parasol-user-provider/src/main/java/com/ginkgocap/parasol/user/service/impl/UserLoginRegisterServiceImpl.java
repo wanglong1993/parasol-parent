@@ -29,8 +29,9 @@ import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 @Service("userLoginRegisterService")
 public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister> implements UserLoginRegisterService {
 	private final  static String findPasswordTitle = "【金桐】找回密码";
+	private final  static String findPasswordCoopertTitle = "【coopert】找回密码";
 	private final  static String registerTitle = "【金桐】邮箱注册";
-	private final  static String registerHrTitle = "【coopert】邮箱注册";
+	private final  static String registerCoopertTitle = "【coopert】邮箱注册";
 	private final  static String bindTitle = "【金桐】绑定邮箱";
 	private final  static String editPasswordTitle = "【金桐】修改密码";
 	
@@ -383,10 +384,10 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
 			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
 			if(type==0) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-code-emai.ftl");
-			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerHrTitle, null, map, "reg-activate-emai-coopert.ftl");
+			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerCoopertTitle, null, map, "reg-activate-emai-coopert.ftl");
 			if(type==2)bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
 			if(type==3)bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
-//			if(type==4) bl= emailService.sendEmailSync(mailTo, null, editPasswordTitle, null, map, "findpwd-email_back.ftl");
+			if(type==4) bl= emailService.sendEmailSync(mailTo, null, findPasswordCoopertTitle, null, map, "findpwd-email.ftl");
 			return bl;
 		}catch (Exception e) {
 			if (logger.isDebugEnabled()) {

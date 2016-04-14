@@ -61,7 +61,8 @@ public final class Prompt {
 	public static final  String access_token_is_null_or_empty="access_token不能为空";
 	public static final  String logout_failed="注销失败";
 	public static final  String mobile_type_is_not_correcct="手机验证码类型mobiletype值只能为1或2";
-	public static final  String email_type_is_not_correcct="邮箱验证码类型emailtype值只能为0或1或2或3";
+	public static final  String findpwd_email_type_is_not_correcct="找回密码邮箱验证码类型emailtype值只能为2或4";
+	public static final  String register_email_type_is_not_correcct="注册邮箱验证码类型emailtype值只能为0或1";
 	
 	
 
