@@ -62,7 +62,6 @@ public class InitDealShortMessageMQ {
     				logger.info("短信发送手机号：{},content：{}", sm.getPhoneNum(), sm.getContent());
     				if(smsTemplate.getIsOpen().equals("1")) {
     					if(sm.getType()==1)i = sendMsg(sm.getPhoneNum(),sm.getContent());
-    					if(sm.getType()==2)i = sendMsgCoopert(sm.getPhoneNum(),sm.getContent());
     					if(i==1) {
     						logger.info("短信发送成功:type="+sm.getType());
     						sm.setId(commonService.getShortMessageIncreaseId());
@@ -81,7 +80,6 @@ public class InitDealShortMessageMQ {
     			if(sm != null && StringUtils.isNotEmpty(sm.getPhoneNum()) && StringUtils.isNotEmpty(sm.getContent())) {
     				logger.info("短信发送手机号：{},content：{}", sm.getPhoneNum(), sm.getContent());
     				if(smsTemplate.getIsOpen().equals("1")) {
-    					if(sm.getType()==1)i = sendMsg(sm.getPhoneNum(),sm.getContent());
     					if(sm.getType()==2)i = sendMsgCoopert(sm.getPhoneNum(),sm.getContent());
     					if(i==1) {
     						logger.info("短信发送成功:type="+sm.getType());
@@ -241,7 +239,7 @@ public class InitDealShortMessageMQ {
 	    }
 	    //反馈判断
 	    if(!responseResult.contains("Success")) {
-	    	logger.info("发送成功！！！！！！！！！！！！！！！");
+	    	logger.info("发送失败！！！！！！！！！！！！！！！");
 	    	result = 0;
 	    }
     	return result;
