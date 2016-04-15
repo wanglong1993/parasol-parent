@@ -2283,6 +2283,8 @@ public class UserController extends BaseControl {
 	public MappingJacksonValue login(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "passport",required = true) String passport
 			,@RequestParam(name = "password",required = true) String password
+			,@RequestParam(name = "appid",required = false) String appid
+			,@RequestParam(name = "appsecret",required = false) String appsecret
 			)throws Exception {
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -2323,7 +2325,7 @@ public class UserController extends BaseControl {
 //					}
 //				}
 			}
-			JSONObject json=getAccessToken(request,passport,password,client_id,client_secret,GRANT_TYPE);
+			JSONObject json=getAccessToken(request,passport,password,appid==null?client_id:appid,appsecret==null?client_secret:appsecret,GRANT_TYPE);
 			if(json==null){
 				resultMap.put( "message", Prompt.get_access_token_is_null);
 				resultMap.put( "status", 0);
