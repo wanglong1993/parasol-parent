@@ -412,6 +412,60 @@ public class FileController extends BaseControl {
 			return mappingJacksonValue;	
 		}
 	}
+	/**
+	 * 文件下载
+	 * @param fileds
+	 * @param debug
+	 * @param appId
+	 * @param userId
+	 * @param taskId
+	 * @return	文件索引列表
+	 * @throws FileIndexServiceException 
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/fileext/deleteById" }, method = { RequestMethod.GET })
+	public MappingJacksonValue deleteextFileById(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = FileController.parameterIndexId, required = true) long indexId
+			) throws FileIndexServiceException {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			FileIndex index = fileIndexService.getFileIndexById(indexId);
+			Map<String, Object> result = new HashMap<String, Object>();
+			
+			if(index == null) {
+				result.put("error", "文件索引id不存在，请检查参数！");
+				return new MappingJacksonValue(result);
+			} 
+			// fastDFS中删除上传的文件
+			deleteFileByFileId(index.getServerHost(),index.getFilePath(),index.getModuleType());
+			// 1.查询后台服务
+			boolean flag = fileIndexService.deleteFileIndexById(indexId);
+			result.put("result", flag);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(result);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;	
+		}
+	}
 	
 	private void deleteFileByFileId(String group, String fileId, int moduleType) {
 		try {
