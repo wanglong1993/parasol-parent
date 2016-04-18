@@ -1,9 +1,13 @@
 package org.parasol.column.dao.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.parasol.column.dao.ColumnSysDao;
 import org.parasol.column.entity.ColumnSys;
+import org.parasol.column.entity.ColumnSysExample;
+import org.parasol.column.entity.ColumnSysExample.Criteria;
 import org.parasol.column.mapper.gen.ColumnSysMapper;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +39,16 @@ public class ColumnSysDaoImpl implements ColumnSysDao {
 	public int updateByPrimaryKey(ColumnSys record) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<ColumnSys> selectAll() {
+		// TODO Auto-generated method stub
+		ColumnSysExample example=new ColumnSysExample();
+		Criteria c=example.createCriteria();
+		c.andUserIdEqualTo(0l);
+		List<ColumnSys> list=csm.selectByExample(example);
+		return list;
 	}
 
 }

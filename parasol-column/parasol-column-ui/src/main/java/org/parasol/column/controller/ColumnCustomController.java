@@ -1,31 +1,46 @@
 package org.parasol.column.controller;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.parasol.column.entity.ColumnCustom;
+import org.parasol.column.service.ColumnCustomService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ginkgocap.parasol.user.model.User;
+import com.gintong.frame.util.dto.CommonResultCode;
+import com.gintong.frame.util.dto.InterfaceResult;
 
 @Controller
-@RequestMapping("/knowledge_columncustom")
+@RequestMapping("/columncustom")
 public class ColumnCustomController extends BaseController {
 	
-//	@Resource
-//	private IColumnCustomService columnCustomService;
-//	
-//	@RequestMapping(value="/showColumn/{pid}",method = RequestMethod.GET)
-//	@ResponseBody
-//	public InterfaceResult<List<ColumnCustom>> showColumn(HttpServletRequest request, HttpServletResponse response,@PathVariable Long pid) throws Exception{
-//		InterfaceResult<List<ColumnCustom>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-//		User user = this.getUser(request);
-//		List<ColumnCustom> list=null;
-//		long uid=0l;
-//		if(user!=null){
-//			uid=user.getUserLoginRegister().getId();
-//		}
-//
-//		list=this.columnCustomService.queryListByPidAndUserId(uid, pid);
-//		result.setResponseData(list);
-//		return result;
-//	}
-//	
+	@Resource
+	private ColumnCustomService ccs;
+	
+	@RequestMapping(value="/showColumn/{pid}",method = RequestMethod.GET)
+	@ResponseBody
+	public InterfaceResult<List<ColumnCustom>> showColumn(HttpServletRequest request, HttpServletResponse response,@PathVariable Long pid) throws Exception{
+		InterfaceResult<List<ColumnCustom>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		User user = this.getUser(request);
+		List<ColumnCustom> list=null;
+		long uid=0l;
+		if(user!=null){
+			uid=user.getUserLoginRegister().getId();
+		}
+
+		list=this.ccs.queryListByPidAndUserId(uid, pid);
+		result.setResponseData(list);
+		return result;
+	}
+	
 //	@RequestMapping(value="addColumn",method = RequestMethod.POST)
 //	@ResponseBody
 //	public InterfaceResult<ColumnCustom> addColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{

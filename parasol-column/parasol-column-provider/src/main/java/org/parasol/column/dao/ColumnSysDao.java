@@ -1,5 +1,7 @@
 package org.parasol.column.dao;
 
+import java.util.List;
+
 import org.parasol.column.entity.ColumnSys;
 
 public interface ColumnSysDao {
@@ -11,4 +13,6 @@ public interface ColumnSysDao {
     ColumnSys selectByPrimaryKey(Long id);
     
     int updateByPrimaryKey(ColumnSys record);
+    
+    List<ColumnSys> selectAll();
 }

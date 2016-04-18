@@ -1,11 +1,11 @@
-package org.parasol.column.dao;
+package org.parasol.column.service;
 
 import java.util.List;
 
 import org.parasol.column.entity.ColumnCustom;
 
-public interface ColumnCustomDao {
-
+public interface ColumnCustomService {
+	
 	int deleteByPrimaryKey(Long id);
 
     int insert(ColumnCustom record);
@@ -14,5 +14,8 @@ public interface ColumnCustomDao {
     
     int updateByPrimaryKey(ColumnCustom record);
     
-    List<ColumnCustom> queryListByPidAndUserId(Long pid, Long uid);
+    List<ColumnCustom> queryListByPidAndUserId(Long pid,Long uid);
+    
+    int init(Long uid);
+
 }
