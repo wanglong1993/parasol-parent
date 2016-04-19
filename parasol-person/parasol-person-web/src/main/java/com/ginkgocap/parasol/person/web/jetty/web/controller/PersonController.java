@@ -136,7 +136,7 @@ public class PersonController extends BaseControl {
 			,@RequestParam(name = "remark",required = false) String remark
 			,@RequestParam(name = "address",required = false) String address
 			//个人情况
-			,@RequestParam(name = "birthday",required = false) Date birthday
+			,@RequestParam(name = "birthday",required = false) String birthday
 			,@RequestParam(name = "provinceId",required = false) Long provinceId
 			,@RequestParam(name = "cityId",required = false) Long cityId2
 			,@RequestParam(name = "countyId",required = false) Long countyId2
@@ -225,7 +225,7 @@ public class PersonController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				personInfo = new PersonInfo();
-				personInfo.setBirthday(birthday!=null?birthday.getTime():null);
+				personInfo.setBirthday(birthday);
 				personInfo.setCountyId(countyId2);
 				personInfo.setCityId(cityId2);
 				personInfo.setCtime(ctime);
@@ -468,7 +468,7 @@ public class PersonController extends BaseControl {
 			,@RequestParam(name = "remark",required = false) String remark
 			,@RequestParam(name = "address",required = false) String address
 			//个人情况
-			,@RequestParam(name = "birthday",required = false) Date birthday
+			,@RequestParam(name = "birthday",required = false) String birthday
 			,@RequestParam(name = "provinceId",required = false) Long provinceId
 			,@RequestParam(name = "cityId",required = false) Long cityId2
 			,@RequestParam(name = "countyId",required = false) Long countyId2
@@ -565,7 +565,7 @@ public class PersonController extends BaseControl {
 			}
 			personInfo =personInfoService.getPersonInfo(id);
 			if(!ObjectUtils.isEmpty(personInfo)){
-				personInfo.setBirthday(birthday!=null?birthday.getTime():null);
+				personInfo.setBirthday(birthday);
 				personInfo.setCountyId(countyId2);
 				personInfo.setCityId(cityId2);
 				personInfo.setCtime(ctime);
