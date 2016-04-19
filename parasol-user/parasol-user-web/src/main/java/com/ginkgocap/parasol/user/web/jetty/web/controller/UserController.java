@@ -2259,6 +2259,8 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				userLoginRegister.setEmail(email);
+				userLoginRegister.setSalt(salt);
+				userLoginRegister.setPassword(password);
 				userLoginRegister.setMobile(phone);
 				userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
 				userBasic.setPicId(picId);
