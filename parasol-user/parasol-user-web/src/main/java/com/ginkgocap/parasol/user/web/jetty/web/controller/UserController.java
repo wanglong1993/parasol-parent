@@ -1949,6 +1949,13 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/userext/user/updateUser" }, method = { RequestMethod.POST})
 	public MappingJacksonValue extUpdateUser(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = false) String passport
+			,@RequestParam(name = "type",required = false) int type
+			,@RequestParam(name = "userType",required = false) String userType
+			,@RequestParam(name = "mobile",required = false) String mobile
+			,@RequestParam(name = "email",required = false) String email
+			,@RequestParam(name = "password",required = false) String password
+			,@RequestParam(name = "salt",required = false) String salt
 			,@RequestParam(name = "userId",required = false) Long userId
 			,@RequestParam(name = "appId",required = false) Long appId
 			,@RequestParam(name = "name",required = true) String name
@@ -1957,12 +1964,10 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "shortName",required = false) String shortName
 			,@RequestParam(name = "firstIndustryIds", required = false) Long[] firstIndustryIds
 			,@RequestParam(name = "userDefinedsJson", required = false) String userDefinedsJson
-			,@RequestParam(name = "email",required = false) String email
 			,@RequestParam(name = "phone",required = false) String phone
 			,@RequestParam(name = "brief",required = false) String brief
 			,@RequestParam(name = "companyName",required = false) String companyName
 			,@RequestParam(name = "companyJob",required = false) String companyJob
-			,@RequestParam(name = "mobile",required = false) String mobile
 			,@RequestParam(name = "provinceId",required = false) Long provinceId
 			,@RequestParam(name = "cityId",required = false) Long cityId
 			,@RequestParam(name = "countyId",required = false) Long countyId
@@ -2008,11 +2013,167 @@ public class UserController extends BaseControl {
 		User user= null;
 		boolean bl=false;
 		boolean bl2=false;
+		Long userBasicId=0l;
+		Long userExtId=0l;
+		Long userOrganBasicId=0l;
+		Long userOrganExtId=0l;
 		try {
 			if(userId==null){
-				resultMap.put("message", Prompt.userId_is_null_or_empty);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
+				//新增个人
+				if(userType.equals("0")){
+					userLoginRegister= new UserLoginRegister();
+					userLoginRegister.setPassport(mobile);
+					userLoginRegister.setSalt(salt);
+					userLoginRegister.setPassword(password);
+					userLoginRegister.setUsetType(new Byte(userType));
+					userLoginRegister.setIp(ip);
+					userLoginRegister.setSource(appId.toString());
+					userLoginRegister.setCtime(System.currentTimeMillis());
+					userLoginRegister.setUtime(System.currentTimeMillis());
+					if(type==1)userLoginRegister.setEmail(passport);
+					if(type==2)userLoginRegister.setMobile((passport));
+					id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
+					//个人用户邮箱注册
+					userBasic= new UserBasic();
+					userBasic.setName(name);
+					userBasic.setPicId(picId);
+					userBasic.setStatus(new Byte("1"));
+					userBasic.setSex(new Byte("1"));
+					userBasic.setUserId(id);
+					userBasic.setAuth(new Byte("1"));
+					userBasicId=userBasicService.createUserBasic(userBasic);
+					userExt=new UserExt();
+					userExt.setName(name);
+					userExt.setShortName(name);
+					userExt.setIp(ip);
+					userExt.setUserId(id);
+					userExtId=userExtService.createUserExt(userExt);
+					userLoginRegisterService.deleteIdentifyingCode(passport);
+					//自定义
+					if(!StringUtils.isEmpty(userDefinedsJson)){
+						listUserDefined=new ArrayList<UserDefined>();
+						JSONObject jsonObject = JSONObject.fromObject(userDefinedsJson);
+						JSONArray jsonArray=jsonObject.getJSONArray("userDefinedsJsonList");
+						for (int i = 0; i < jsonArray.size(); i++) {
+							JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+							userDefined= new UserDefined();
+							userDefined.setUserId(userId);
+							userDefined.setIp(ip);
+							userDefined.setUserDefinedModel(jsonObject2.has("model_name")?jsonObject2.getString("model_name"):null);
+							userDefined.setUserDefinedFiled(jsonObject2.has("filed")?jsonObject2.getString("filed"):null);
+							userDefined.setUserDefinedValue(jsonObject2.has("value")?jsonObject2.getString("value"):null);
+							listUserDefined.add(userDefined);
+							listUserDefined=userDefinedService.createUserDefinedByList(listUserDefined, userId);
+						}
+					}
+					//个人信息
+					userInfo= new UserInfo();
+					userInfo.setBirthday(birthday!=null?birthday.getTime():null);
+					userInfo.setCountyId(countyId2);
+					userInfo.setCityId(cityId2);
+					userInfo.setCtime(ctime);
+					userInfo.setIp(ip);
+					userInfo.setUserId(userId);
+					userInfo.setProvinceId(provinceId);
+					id=userInfoService.createUserInfo(userInfo);
+					//联系方式
+					userContactWay=new UserContactWay();
+					userContactWay.setUserId(userId);
+					userContactWay.setCellphone(cellphone);
+					userContactWay.setEmail(email);
+					userContactWay.setWeixin(weixin);
+					userContactWay.setQq(qq);
+					userContactWay.setWeibo(weibo);
+					userContactWay.setCtime(ctime);
+					userContactWay.setUtime(utime);
+					userContactWay.setIp(ip);
+					id=userContactWayService.createUserContactWay(userContactWay);
+					//保存工作经历
+					if(!StringUtils.isEmpty(userWorkHistoryJson)){
+						listUserWorkHistory =new ArrayList<UserWorkHistory>();
+						JSONObject jsonObject = JSONObject.fromObject(userWorkHistoryJson);
+						JSONArray jsonArray=jsonObject.getJSONArray("userWorkHistoryList");
+						for (int i = 0; i < jsonArray.size(); i++) {
+							JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+							userWorkHistory=new UserWorkHistory();
+							userWorkHistory.setUserId(userId);
+							userWorkHistory.setIncName(jsonObject2.has("inc_name")?jsonObject2.getString("inc_name"):null);
+							userWorkHistory.setPosition(jsonObject2.has("position")?jsonObject2.getString("position"):null);
+							userWorkHistory.setBeginTime(jsonObject2.has("begin_time")?jsonObject2.getString("begin_time"):null);
+							userWorkHistory.setEndTime(jsonObject2.has("end_time")?jsonObject2.getString("end_time"):null);
+							userWorkHistory.setDescription(jsonObject2.has("description")?jsonObject2.getString("description"):null);
+							userWorkHistory.setCtime(ctime);
+							userWorkHistory.setUtime(utime);
+							userWorkHistory.setIp(ip);
+							listUserWorkHistory.add(userWorkHistory);
+						}
+						if(listUserWorkHistory.size()>0)
+							listUserWorkHistory=userWorkHistoryService.createUserWorkHistoryByList(listUserWorkHistory, userId);
+					}
+					//保存教育经历
+					if(!StringUtils.isEmpty(userEducationHistoryJson)){
+						listUserEducationHistory =new ArrayList<UserEducationHistory>();
+						JSONObject jsonObject = JSONObject.fromObject(userEducationHistoryJson);
+						JSONArray jsonArray=jsonObject.getJSONArray("userEducationHistoryList");
+						for (int i = 0; i < jsonArray.size(); i++) {
+							JSONObject jsonObject2 = (JSONObject)jsonArray.opt(i); 
+							userEducationHistory=new UserEducationHistory();
+							userEducationHistory.setUserId(userId);
+							userEducationHistory.setSchool(jsonObject2.has("school")?jsonObject2.getString("school"):null);
+							userEducationHistory.setMajor(jsonObject2.has("major")?jsonObject2.getString("major"):null);
+							userEducationHistory.setDegree(jsonObject2.has("degree")?jsonObject2.getString("degree"):null);
+							userEducationHistory.setBeginTime(jsonObject2.has("begin_time")?jsonObject2.getString("begin_time"):null);
+							userEducationHistory.setEndTime(jsonObject2.has("end_time")?jsonObject2.getString("end_time"):null);
+							userEducationHistory.setDescription(jsonObject2.has("description")?jsonObject2.getString("description"):null);
+							userEducationHistory.setCtime(ctime);
+							userEducationHistory.setUtime(utime);
+							userEducationHistory.setIp(ip);
+							listUserEducationHistory.add(userEducationHistory);
+						}
+						if(listUserEducationHistory.size()>0)
+							listUserEducationHistory=userEducationHistoryService.createUserEducationHistoryByList(listUserEducationHistory, userId);
+					}
+					//用户设置
+					UserConfig userConfig =new UserConfig();
+					userConfig.setUserId(id);
+					userConfig.setHomePageVisible(new Byte("2"));
+					userConfig.setEvaluateVisible(new Byte("2"));
+					userConfig.setAutosave(new Byte("0"));
+					userConfigerService.createUserConfig(userConfig);
+					userLoginRegisterService.deleteIdentifyingCode(passport);
+					
+					/**
+					 * 添加集成环信注册用户
+					 */
+					if (id > 1) {
+						final String huanxinParam = String.valueOf(id);
+						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
+							@Override
+							public void run() {
+								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
+							}
+						});
+					}						
+					//向万能插座发送消息
+					user = new User();
+					user.setUserLoginRegister(userLoginRegister);
+					userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
+					user.setUserBasic(userBasic);
+					user.setUserExt(userExt);
+					user.setUserContactWay(userContactWay);
+					user.setUserInfo(userInfo);
+					user.setListUserInterestIndustry(list);
+					user.setListUserDefined(listUserDefined);
+					user.setListUserWorkHistory(listUserWorkHistory);
+					user.setListUserEducationHistory(listUserEducationHistory);
+					RocketSendResult rocketSendResult=defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_UPDATE, GsonUtils.objectToString(user));
+					rocketSendResult.getSendResult().getSendStatusCode();
+					rocketSendResult.getSendResult().getMsgId();
+					resultMap.put( "message", Prompt.updateUser_success);
+					resultMap.put( "userId", userId);
+					resultMap.put("status",1);
+					return new MappingJacksonValue(resultMap);
+				}				
 			}
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 			if(ObjectUtils.isEmpty(userLoginRegister)){
@@ -2105,6 +2266,7 @@ public class UserController extends BaseControl {
 				userBasic.setName(name);
 				userBasic.setSex(new Byte("1"));
 				userBasicService.updateUserBasic(userBasic);
+				//自定义
 				if(!StringUtils.isEmpty(userDefinedsJson)){
 					listUserDefined=new ArrayList<UserDefined>();
 					JSONObject jsonObject = JSONObject.fromObject(userDefinedsJson);
