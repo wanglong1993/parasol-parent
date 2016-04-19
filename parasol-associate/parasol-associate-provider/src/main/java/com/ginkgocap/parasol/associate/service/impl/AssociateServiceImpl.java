@@ -66,6 +66,7 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
 			}
 		} catch (AssociateTypeServiceException e) {
 			e.printStackTrace(System.err);
+			throw new AssociateServiceException(e);
 		}
 		// 7. is exist?
 		// @formatter:off
