@@ -1592,7 +1592,7 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "cityId",required = false) Long cityId
 			,@RequestParam(name = "countyId",required = false) Long countyId
 			//个人情况
-			,@RequestParam(name = "birthday",required = false) Date birthday
+			,@RequestParam(name = "birthday",required = false) String birthday
 			,@RequestParam(name = "provinceId",required = false) Long provinceId2
 			,@RequestParam(name = "cityId",required = false) Long cityId2
 			,@RequestParam(name = "countyId",required = false) Long countyId2
@@ -1764,7 +1764,7 @@ public class UserController extends BaseControl {
 					userInfo= new UserInfo();
 					bl2=true;
 				}
-				userInfo.setBirthday(birthday!=null?birthday.getTime():null);
+				userInfo.setBirthday(birthday);
 				userInfo.setCountyId(countyId2);
 				if(countyId2!=null)codeRegion=codeRegionService.getCodeRegionById(countyId2);
 				if(codeRegion!=null)userInfo.setCountyName(codeRegion.getCname());
@@ -1972,7 +1972,7 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "cityId",required = false) Long cityId
 			,@RequestParam(name = "countyId",required = false) Long countyId
 			//个人情况
-			,@RequestParam(name = "birthday",required = false) Date birthday
+			,@RequestParam(name = "birthday",required = false) String birthday
 			,@RequestParam(name = "provinceId",required = false) Long provinceId2
 			,@RequestParam(name = "cityId",required = false) Long cityId2
 			,@RequestParam(name = "countyId",required = false) Long countyId2
@@ -2068,7 +2068,7 @@ public class UserController extends BaseControl {
 					}
 					//个人信息
 					userInfo= new UserInfo();
-					userInfo.setBirthday(birthday!=null?birthday.getTime():null);
+					userInfo.setBirthday(birthday);
 					userInfo.setCountyId(countyId2);
 					userInfo.setCityId(cityId2);
 					userInfo.setCtime(ctime);
@@ -2296,7 +2296,7 @@ public class UserController extends BaseControl {
 					userInfo= new UserInfo();
 					bl2=true;
 				}
-				userInfo.setBirthday(birthday!=null?birthday.getTime():null);
+				userInfo.setBirthday(birthday);
 				userInfo.setCountyId(countyId2);
 				userInfo.setCityId(cityId2);
 				userInfo.setCtime(ctime);

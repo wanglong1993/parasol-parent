@@ -25,7 +25,7 @@ public class UserInfo implements java.io.Serializable {
 	/**
 	 * 出生日期。.
 	 */
-	private Long birthday;
+	private String birthday;
 	/**
 	 * 省份id.
 	 */
@@ -91,11 +91,11 @@ public class UserInfo implements java.io.Serializable {
 	}
 
 	@Column(name = "birthday", length = 10)
-	public Long getBirthday() {
+	public String getBirthday() {
 		return this.birthday;
 	}
 
-	public void setBirthday(Long birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
 

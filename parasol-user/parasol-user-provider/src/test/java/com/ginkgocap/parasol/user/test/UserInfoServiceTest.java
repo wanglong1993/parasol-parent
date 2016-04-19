@@ -88,7 +88,7 @@ public class UserInfoServiceTest  extends TestBase implements Test  {
 		try {
 			UserInfo userInfo = new UserInfo();
 			userInfo.setUserId(userId);
-			userInfo.setBirthday(System.currentTimeMillis());
+			userInfo.setBirthday("1990-12-9");
 			userInfo.setProvinceId(1l);
 			userInfo.setCityId(1l);
 			userInfo.setCountyId(2l);
