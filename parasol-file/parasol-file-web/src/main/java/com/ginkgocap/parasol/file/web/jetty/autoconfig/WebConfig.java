@@ -3,6 +3,8 @@ package com.ginkgocap.parasol.file.web.jetty.autoconfig;
 import java.net.InetSocketAddress;
 import java.util.List;
 
+import javax.servlet.MultipartConfigElement;
+
 import org.apache.commons.lang3.StringUtils;
 import org.csource.fastdfs.ClientGlobal;
 import org.csource.fastdfs.TrackerGroup;
@@ -10,6 +12,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.MultipartConfigFactory;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
 import org.springframework.context.EnvironmentAware;
@@ -49,7 +52,13 @@ public class WebConfig {
 		return new ShallowEtagHeaderFilter();
 	}
 
-	
+   @Bean
+    public MultipartConfigElement multipartConfigElement() {
+	   MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize("10240KB");
+        factory.setMaxRequestSize("10240KB");
+        return factory.createMultipartConfig();
+    }	
 	
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() {
