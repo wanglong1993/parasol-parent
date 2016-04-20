@@ -2950,7 +2950,7 @@ public class UserController extends BaseControl {
 					}
 						code=generationIdentifyingCode();
 						Map<String, Object> map = new HashMap<String, Object>();
-						if(emailtype==1)map.put("email", emailValidateUrlCoopert+"?email="+passport+"&code="+code);
+						if(emailtype==1)map.put("email", emailValidateUrlCoopert+"&email="+passport+"&code="+code);
 				        map.put("acceptor",passport);
 				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 				        map.put("code", code);
