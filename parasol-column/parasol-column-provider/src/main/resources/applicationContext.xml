@@ -21,7 +21,7 @@
 	http://www.springframework.org/schema/data/jpa/spring-jpa-1.2.xsd">
 	<context:component-scan base-package="org.parasol.column">
 	</context:component-scan>
-	<!-- <import resource="classpath:column-dubbo-provider.xml" /> -->
+	<import resource="classpath:column-dubbo-provider.xml" />
 	<import resource="classpath:spring/spring-config-redis.xml" />
 	<!-- <import resource="classpath:requirement-dubbo-consumer.xml" /> -->
 	<!-- <import resource="classpath:applicationContext_log.xml"/> -->

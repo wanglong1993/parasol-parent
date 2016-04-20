@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/column_sys")
 public class ColumnSysController extends BaseController {
 
-	@Resource
-	private ColumnSysService css;
+	/*@Resource
+	private ColumnSysService css;*/
 }

@@ -13,9 +13,10 @@ import org.parasol.column.entity.ColumnCustom;
 import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.service.ColumnCustomService;
 import org.parasol.column.service.ColumnSelftService;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component("columnCustomService")
 public class ColumnCustomServiceImpl implements ColumnCustomService {
 
 	private static final Log log = LogFactory.getLog(ColumnCustomServiceImpl.class);

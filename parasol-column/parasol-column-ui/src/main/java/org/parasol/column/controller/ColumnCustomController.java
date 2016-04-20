@@ -22,7 +22,7 @@ import com.gintong.frame.util.dto.InterfaceResult;
 @RequestMapping("/columncustom")
 public class ColumnCustomController extends BaseController {
 	
-	@Resource
+	@Resource(name="columnCustomService")
 	private ColumnCustomService ccs;
 	
 	@RequestMapping(value="/showColumn/{pid}",method = RequestMethod.GET)

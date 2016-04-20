@@ -1,8 +1,9 @@
 package org.parasol.column.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ColumnSys {
+public class ColumnSys implements Serializable {
     private Long id;
 
     private String columnname;
