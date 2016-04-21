@@ -387,7 +387,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerCoopertTitle, null, map, "reg-activate-emai-coopert.ftl");
 			if(type==2)bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
 			if(type==3)bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
-			if(type==4) bl= emailService.sendEmailSync(mailTo, null, findPasswordCoopertTitle, null, map, "findpwd-email.ftl");
+			if(type==4) bl= emailService.sendEmailSync(mailTo, null, findPasswordCoopertTitle, null, map, "findpwd-email-coopert.ftl");
 			return bl;
 		}catch (Exception e) {
 			if (logger.isDebugEnabled()) {
