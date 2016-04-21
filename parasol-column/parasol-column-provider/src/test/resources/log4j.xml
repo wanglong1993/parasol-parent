@@ -26,7 +26,7 @@
 		</layout>
 	</appender>
 	<root>
-		<level value="info" />
+		<level value="debug" />
 		<appender-ref ref="normal_log_file" />
 		appender-ref ref="myConsole" />
 	</root>

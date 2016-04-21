@@ -17,6 +17,8 @@ public interface ColumnSelfMapper {
     int insertSelective(ColumnSelf record);
 
     List<ColumnSelf> selectByExample(ColumnSelfExample example);
+    
+    List<ColumnSelf> selectByExampleLimit(ColumnSelfExample example);
 
     ColumnSelf selectByPrimaryKey(Long id);
 

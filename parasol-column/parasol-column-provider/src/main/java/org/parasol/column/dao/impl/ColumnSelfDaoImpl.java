@@ -52,4 +52,20 @@ public class ColumnSelfDaoImpl implements ColumnSelfDao {
 		return list;
 	}
 
+	@Override
+	public ColumnSelf selectMaxOrderColumn(Long pid, Long uid) {
+		// TODO Auto-generated method stub
+		ColumnSelfExample example=new ColumnSelfExample();
+		Criteria c=example.createCriteria();
+		c.andParentIdEqualTo(pid);
+		c.andUserIdEqualTo(uid);
+		example.setOrderByClause("order_num desc");
+		example.setLimit(1);
+		List<ColumnSelf> list=csm.selectByExampleLimit(example);
+		if(list!=null&&list.size()==1){
+			return list.get(0);
+		}
+		return null;
+	}
+
 }

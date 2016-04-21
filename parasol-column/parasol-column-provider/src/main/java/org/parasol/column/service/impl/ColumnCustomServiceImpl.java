@@ -12,7 +12,7 @@ import org.parasol.column.dao.ColumnCustomDao;
 import org.parasol.column.entity.ColumnCustom;
 import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.service.ColumnCustomService;
-import org.parasol.column.service.ColumnSelftService;
+import org.parasol.column.service.ColumnSelfService;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +25,18 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	private ColumnCustomDao ccd;
 	
 	@Resource
-	private ColumnSelftService css;
+	private ColumnSelfService css;
 	
 	@Override
 	public int deleteByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
-		return 0;
+		return ccd.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public int insert(ColumnCustom record) {
 		// TODO Auto-generated method stub
-		return 0;
+		return ccd.insert(record);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	@Override
 	public int updateByPrimaryKey(ColumnCustom record) {
 		// TODO Auto-generated method stub
-		return 0;
+		return ccd.updateByPrimaryKey(record);
 	}
 
 	@Override

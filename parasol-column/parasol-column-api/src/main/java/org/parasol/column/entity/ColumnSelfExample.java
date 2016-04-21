@@ -6,8 +6,10 @@ import java.util.List;
 
 public class ColumnSelfExample {
     protected String orderByClause;
+    
+    protected Integer limit;
 
-    protected boolean distinct;
+	protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
@@ -22,6 +24,14 @@ public class ColumnSelfExample {
     public String getOrderByClause() {
         return orderByClause;
     }
+    
+    public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
 
     public void setDistinct(boolean distinct) {
         this.distinct = distinct;

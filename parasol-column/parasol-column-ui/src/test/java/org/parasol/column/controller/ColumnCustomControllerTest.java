@@ -12,12 +12,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ColumnCustomControllerTest {
 	
-	@Resource(name="columnCustomService")
-	private ColumnCustomService ccs;
+	/*@Resource(name="columnCustomService")
+	private ColumnCustomService ccs;*/
 	
 	@Test
 	public void testShow(){
-		ccs.queryListByPidAndUserId(0l, 0l);
+//		ccs.queryListByPidAndUserId(0l, 0l);
 	}
 
 }

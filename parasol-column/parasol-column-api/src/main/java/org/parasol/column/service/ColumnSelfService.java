@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.parasol.column.entity.ColumnSelf;
 
-public interface ColumnSelftService {
+public interface ColumnSelfService {
 	
 	int deleteByPrimaryKey(Long id);
 
@@ -17,5 +17,7 @@ public interface ColumnSelftService {
     List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid);
     
     int init(Long uid);
+    
+    ColumnSelf selectMaxOrderColumn(Long pid, Long uid);
 
 }

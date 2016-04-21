@@ -25,17 +25,14 @@ public class ColumnCustomController extends BaseController {
 	@Resource(name="columnCustomService")
 	private ColumnCustomService ccs;
 	
-	@RequestMapping(value="/showColumn/{pid}",method = RequestMethod.GET)
+	@RequestMapping(value="/showColumn",method = RequestMethod.GET)
 	@ResponseBody
-	public InterfaceResult<List<ColumnCustom>> showColumn(HttpServletRequest request, HttpServletResponse response,@PathVariable Long pid) throws Exception{
+	public InterfaceResult<List<ColumnCustom>> showColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		InterfaceResult<List<ColumnCustom>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		User user = this.getUser(request);
 		List<ColumnCustom> list=null;
-		long uid=0l;
-		if(user!=null){
-			uid=user.getUserLoginRegister().getId();
-		}
-
+		Long pid=0l;
+		long uid=this.getUserId(request);
 		list=this.ccs.queryListByPidAndUserId(uid, pid);
 		result.setResponseData(list);
 		return result;

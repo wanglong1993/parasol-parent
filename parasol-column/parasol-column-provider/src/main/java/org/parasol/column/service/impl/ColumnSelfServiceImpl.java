@@ -11,14 +11,15 @@ import org.apache.commons.logging.LogFactory;
 import org.parasol.column.dao.ColumnSelfDao;
 import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.entity.ColumnSys;
-import org.parasol.column.service.ColumnSelftService;
+import org.parasol.column.service.ColumnCustomService;
+import org.parasol.column.service.ColumnSelfService;
 import org.parasol.column.service.ColumnSysService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ColumnSelftServiceImpl implements ColumnSelftService {
+public class ColumnSelfServiceImpl implements ColumnSelfService {
 
-	private static final Log log = LogFactory.getLog(ColumnSelftServiceImpl.class);
+	private static final Log log = LogFactory.getLog(ColumnSelfServiceImpl.class);
 	
 	@Resource
 	private ColumnSelfDao csd;
@@ -26,16 +27,19 @@ public class ColumnSelftServiceImpl implements ColumnSelftService {
 	@Resource
 	private ColumnSysService css;
 	
+	@Resource
+	private ColumnCustomService ccs;
+	
 	@Override
 	public int deleteByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
-		return 0;
+		return csd.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public int insert(ColumnSelf record) {
 		// TODO Auto-generated method stub
-		return 0;
+		return csd.insert(record);
 	}
 
 	@Override
@@ -47,7 +51,7 @@ public class ColumnSelftServiceImpl implements ColumnSelftService {
 	@Override
 	public int updateByPrimaryKey(ColumnSelf record) {
 		// TODO Auto-generated method stub
-		return 0;
+		return csd.updateByPrimaryKey(record);
 	}
 
 	@Override
@@ -85,6 +89,12 @@ public class ColumnSelftServiceImpl implements ColumnSelftService {
 		dest.setId(null);
 		dest.setSysColId(source.getId());
 		return dest;
+	}
+
+	@Override
+	public ColumnSelf selectMaxOrderColumn(Long pid, Long uid) {
+		// TODO Auto-generated method stub
+		return csd.selectMaxOrderColumn(pid, uid);
 	}
 
 }

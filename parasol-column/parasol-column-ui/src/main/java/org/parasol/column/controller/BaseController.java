@@ -22,6 +22,15 @@ public class BaseController {
 		return (User) request.getAttribute("sessionUser");
 	}
 	
+	public Long getUserId(HttpServletRequest request){
+		User user=this.getUser(request);
+		Long uid=0l;
+		if(user!=null){
+			uid=user.getUserLoginRegister().getId();
+		}
+		return uid;
+	}
+	
 	/**
 	 * 获取前端数据
 	 * @param request
