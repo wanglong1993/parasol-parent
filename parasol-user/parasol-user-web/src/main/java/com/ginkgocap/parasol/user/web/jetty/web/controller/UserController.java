@@ -512,6 +512,9 @@ public class UserController extends BaseControl {
 				resultMap.put("userOrganExt", userOrganExt);
 				resultMap.put("userDefinedList", list);
 				resultMap.put("status",1);
+				mappingJacksonValue = new MappingJacksonValue(resultMap);
+				SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
+				mappingJacksonValue.setFilters(filterProvider);
 			}
 			if(userLoginRegister.getUsetType().intValue()==0){
 				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
