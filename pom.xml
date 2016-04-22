@@ -24,7 +24,7 @@
 	   	<module>parasol-knowledge</module>
 		-->
 	   	<module>parasol-person</module>
-	   	<module>parasol-column</module>
+	   	<!-- <module>parasol-column</module> -->
  	   	<module>parasol-associate</module>
  	   	<module>parasol-comment</module>
 
