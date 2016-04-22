@@ -16,6 +16,8 @@ public interface ColumnCustomService {
     
     List<ColumnCustom> queryListByPidAndUserId(Long pid,Long uid);
     
+    ColumnCustom queryByCid(Long cid);
+    
     int init(Long uid);
 
 }

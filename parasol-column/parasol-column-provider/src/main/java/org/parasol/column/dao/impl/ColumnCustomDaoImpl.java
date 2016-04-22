@@ -20,7 +20,7 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 	@Override
 	public int deleteByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
-		return 0;
+		return ccm.deleteByPrimaryKey(id);
 	}
 
 	@Override
@@ -32,13 +32,13 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 	@Override
 	public ColumnCustom selectByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return ccm.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByPrimaryKey(ColumnCustom record) {
 		// TODO Auto-generated method stub
-		return 0;
+		return ccm.updateByPrimaryKey(record);
 	}
 
 	@Override
@@ -50,6 +50,19 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 		c.andUserIdEqualTo(uid);
 		List<ColumnCustom> list=ccm.selectByExample(example);
 		return list;
+	}
+
+	@Override
+	public ColumnCustom queryByCid(Long cid) {
+		// TODO Auto-generated method stub
+		ColumnCustomExample example=new ColumnCustomExample();
+		Criteria c=example.createCriteria();
+		c.andCidEqualTo(cid);
+		List<ColumnCustom> list=ccm.selectByExample(example);
+		if(list!=null&&list.size()>0){
+			return list.get(0);
+		}
+		return null;
 	}
 
 }

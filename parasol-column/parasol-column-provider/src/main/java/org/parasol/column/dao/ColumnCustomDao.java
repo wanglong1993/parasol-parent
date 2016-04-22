@@ -15,4 +15,6 @@ public interface ColumnCustomDao {
     int updateByPrimaryKey(ColumnCustom record);
     
     List<ColumnCustom> queryListByPidAndUserId(Long pid, Long uid);
+    
+    ColumnCustom queryByCid(Long cid);
 }

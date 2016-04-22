@@ -40,4 +40,6 @@
 		payload="${column.dubbo.protocol.payload}" heartbeat="${column.dubbo.protocol.heartbeat}" />
     <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
     <dubbo:service  interface="org.parasol.column.service.ColumnCustomService" ref="columnCustomService" version="1.0.1"/>
+    <dubbo:service  interface="org.parasol.column.service.ColumnSelfService" ref="columnSelfService" version="1.0.1"/>
+    <dubbo:service  interface="org.parasol.column.service.ColumnSysService" ref="columnSysService" version="1.0.1"/>
 </beans>

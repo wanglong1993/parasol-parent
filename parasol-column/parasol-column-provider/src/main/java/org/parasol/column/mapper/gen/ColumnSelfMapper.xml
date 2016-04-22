@@ -129,7 +129,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="org.parasol.column.entity.ColumnSelf" >
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="org.parasol.column.entity.ColumnSelf" >
     insert into tb_column_self (id, parent_id, sys_col_id, 
       columnName, user_id, order_num, 
       path_name, subscribe_count, type, 

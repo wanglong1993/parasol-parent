@@ -1,5 +1,6 @@
 package org.parasol.column.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,5 +46,21 @@ public class BaseController {
 		
 		return requestJson;
 	}
+	
+	public String readJSONString(HttpServletRequest request){
+        StringBuffer json = new StringBuffer();
+        String line = null;
+        try {
+            BufferedReader reader = request.getReader();
+            while((line = reader.readLine()) != null) {
+                json.append(line);
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e.toString());
+        }
+        return json.toString();
+		
+    }
 	
 }

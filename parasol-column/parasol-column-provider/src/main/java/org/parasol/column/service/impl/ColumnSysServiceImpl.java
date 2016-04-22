@@ -9,7 +9,7 @@ import org.parasol.column.entity.ColumnSys;
 import org.parasol.column.service.ColumnSysService;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("columnSysService")
 public class ColumnSysServiceImpl implements ColumnSysService {
 	
 	@Resource 

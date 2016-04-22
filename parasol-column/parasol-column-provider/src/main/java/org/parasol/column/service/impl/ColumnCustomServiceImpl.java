@@ -24,7 +24,7 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	@Resource
 	private ColumnCustomDao ccd;
 	
-	@Resource
+	@Resource(name="columnSelfService")
 	private ColumnSelfService css;
 	
 	@Override
@@ -93,6 +93,12 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 		dest.setCid(source.getId());
 		dest.setPcid(source.getParentId());
 		return dest;
+	}
+
+	@Override
+	public ColumnCustom queryByCid(Long cid) {
+		// TODO Auto-generated method stub
+		return ccd.queryByCid(cid);
 	}
 
 }

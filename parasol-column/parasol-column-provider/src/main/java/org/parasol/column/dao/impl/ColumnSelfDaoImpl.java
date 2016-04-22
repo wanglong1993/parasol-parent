@@ -20,7 +20,7 @@ public class ColumnSelfDaoImpl implements ColumnSelfDao {
 	@Override
 	public int deleteByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
-		return 0;
+		return csm.deleteByPrimaryKey(id);
 	}
 
 	@Override
@@ -32,13 +32,13 @@ public class ColumnSelfDaoImpl implements ColumnSelfDao {
 	@Override
 	public ColumnSelf selectByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return csm.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByPrimaryKey(ColumnSelf record) {
 		// TODO Auto-generated method stub
-		return 0;
+		return csm.updateByPrimaryKey(record);
 	}
 
 	@Override
