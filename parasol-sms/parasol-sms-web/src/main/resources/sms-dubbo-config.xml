@@ -32,7 +32,7 @@
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
     <dubbo:application name="${dubbo.application.name}" />
-    <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}" file="/home/tomcat/.dubbo/dubbo-registry-zk.gintong.local.sms.cache"/>
+    <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}" file="${dubbo.registry.file}"/>
     <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
     <dubbo:consumer timeout="10000" check="false" />
 </beans>
