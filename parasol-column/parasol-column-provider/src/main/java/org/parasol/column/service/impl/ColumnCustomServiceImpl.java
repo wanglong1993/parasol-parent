@@ -101,4 +101,12 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 		return ccd.queryByCid(cid);
 	}
 
+	@Override
+	public int replace(Long uid, List<ColumnCustom> newList) {
+		// TODO Auto-generated method stub
+		ccd.deleteByUserId(uid);
+		int n=ccd.insertBatch(newList);
+		return n;
+	}
+
 }

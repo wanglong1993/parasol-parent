@@ -1,5 +1,6 @@
 package org.parasol.column.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.parasol.column.entity.ColumnCustom;
 import org.parasol.column.service.ColumnCustomService;
+import org.parasol.column.utils.JsonUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,63 +40,27 @@ public class ColumnCustomController extends BaseController {
 		return result;
 	}
 	
-//	@RequestMapping(value="addColumn",method = RequestMethod.POST)
-//	@ResponseBody
-//	public InterfaceResult<ColumnCustom> addColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
-//		InterfaceResult<ColumnCustom> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-//		User user = this.getUser(request);
-//		JSONObject requestJson = this.getRequestJson(request);
-//		//{"columnname":"l2","pid":0,"type":1,"pathName":"l2","tags":"ddd,kkk"}:
-//		if(!requestJson.containsKey("columnname")||!requestJson.containsKey("pid")){
-//			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
-//		}
-//		Long pid=requestJson.getLong("pid");
-//		ColumnCustom cc=new ColumnCustom();
-//		cc.setColumnLevelPath("1111111111");
-//		cc.setColumnName(requestJson.getString("columnname"));
-//		cc.setCreateTime(new Date());
-//		cc.setUpdateTime(new Date());
-//		cc.setOrderNum(0);
-//		cc.setPathName(requestJson.getString("pathName"));
-//		cc.setTopColType(0);
-//		cc.setUserOrSystem((short)1);
-//		long uid=0l;
-//		if(user!=null){
-//			uid=user.getUserLoginRegister().getId();
-//		}
-//		ColumnCustom newCC=this.columnCustomService.insert(cc, uid);
-//		result.setResponseData(newCC);
-//		return result;
-//	}
-//	
-//	@RequestMapping(value="",method = RequestMethod.PUT)
-//	@ResponseBody
-//	public InterfaceResult<ColumnCustom> updateColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
-//		InterfaceResult<ColumnCustom> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-//		User user = this.getUser(request);
-//		JSONObject requestJson = this.getRequestJson(request);
-//		//{"columnid":"2854","columnName":"l21","tags":"栏目标签"}:
-//		if(!requestJson.containsKey("columnname")||!requestJson.containsKey("columnid")){
-//			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
-//		}
-//		Long columnid=requestJson.getLong("columnid");
-//		ColumnCustom cc=this.columnCustomService.queryById(columnid);
-//		cc.setColumnName(requestJson.getString("columnName"));
-//		this.columnCustomService.update(cc);
-//		return result;
-//	}
-//	
-//	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
-//	@ResponseBody
-//	public InterfaceResult<ColumnCustom> deleteColumn(HttpServletRequest request, HttpServletResponse response,@PathVariable Long id) throws Exception{
-//		InterfaceResult<ColumnCustom> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-//		User user = this.getUser(request);
-//		JSONObject requestJson = this.getRequestJson(request);
-//		if(id==null){
-//			return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
-//		}
-//		this.columnCustomService.del(id);
-//		return result;
-//	}
+	@RequestMapping(value="/replaceColumn",method = RequestMethod.POST)
+	@ResponseBody
+	public InterfaceResult<Boolean> replaceColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		String jsonStr=this.readJSONString(request);
+		List<ColumnCustom> newList=JsonUtils.jsonToList(jsonStr,ColumnCustom.class);
+		if(newList==null||newList.size()==0){
+			InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+			return result;
+		}
+		for(ColumnCustom c:newList){
+			c.setCreatetime(new Date());
+			c.setUpdateTime(new Date());
+			c.setId(null);
+		}
+		Long pid=0l;
+		long uid=this.getUserId(request);
+		int n=this.ccs.replace(uid, newList);
+		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		Boolean b=n>0;
+		result.setResponseData(b);
+		return result;
+	}
 
 }

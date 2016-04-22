@@ -1,5 +1,6 @@
 package org.parasol.column.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,8 +64,44 @@ public class ColumnSelfController extends BaseController {
 			newCol.setUserId(uid);
 			newCol.setParentId(0l);
 			int n= css.insert(newCol);
-			b=true;
+			b=n>0;
 		}
+		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		result.setResponseData(b);
+		return result;
+	}
+	
+	@RequestMapping(value="/updateColumnSelf",method = RequestMethod.POST)
+	@ResponseBody
+	public InterfaceResult<Boolean> updateColumnSelf(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		Boolean b=false;
+		String jsonStr=this.readJSONString(request);
+		ColumnSelf newCol=(ColumnSelf)JsonUtils.jsonToBean(jsonStr, ColumnSelf.class);
+		if(newCol==null||StringUtils.isEmpty(newCol.getColumnname())||newCol.getId()==null||newCol.getUserOrSystem().shortValue()!=ColumnFlag.user.getVal()){
+			InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+			return result;
+		}
+		newCol.setUpdateTime(new Date());
+		Long uid=this.getUserId(request);
+		int n=this.css.updateByPrimaryKey(newCol);
+		b=n>0;
+		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		result.setResponseData(b);
+		return result;
+	}
+	
+	@RequestMapping(value="/deleteColumnSelf",method = RequestMethod.POST)
+	@ResponseBody
+	public InterfaceResult<Boolean> deleteColumnSelf(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		Boolean b=false;
+		String jsonStr=this.readJSONString(request);
+		ColumnSelf newCol=(ColumnSelf)JsonUtils.jsonToBean(jsonStr, ColumnSelf.class);
+		if(newCol==null||newCol.getId()==null){
+			InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+			return result;
+		}
+		int n=this.css.deleteByPrimaryKey(newCol.getId());
+		b=n>0;
 		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		result.setResponseData(b);
 		return result;

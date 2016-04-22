@@ -65,4 +65,20 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 		return null;
 	}
 
+	@Override
+	public int deleteByUserId(Long uid) {
+		// TODO Auto-generated method stub
+		ColumnCustomExample example=new ColumnCustomExample();
+		Criteria c=example.createCriteria();
+		c.andUserIdEqualTo(uid);
+		int n=ccm.deleteByExample(example);
+		return n;
+	}
+
+	@Override
+	public int insertBatch(List<ColumnCustom> list) {
+		// TODO Auto-generated method stub
+		return ccm.insertBatch(list);
+	}
+
 }

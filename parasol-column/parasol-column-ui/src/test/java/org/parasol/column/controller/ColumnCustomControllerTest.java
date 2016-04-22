@@ -1,9 +1,16 @@
 package org.parasol.column.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.parasol.column.entity.ColumnCustom;
 import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.service.ColumnCustomService;
 import org.parasol.column.service.ColumnSelfService;
@@ -17,17 +24,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ColumnCustomControllerTest {
 	
 	/*@Resource(name="columnCustomService")
-	private ColumnCustomService ccs;*/
+	private ColumnCustomService ccs;
 	
 	@Resource(name="columnSelfService")
-	private ColumnSelfService css;
+	private ColumnSelfService css;*/
 	
 	@Test
 	public void testShow(){
 //		ccs.queryListByPidAndUserId(0l, 0l);
 	}
 	
-	@Test
+	/*@Test
 	public void testAddColumn() throws Exception{
 		ColumnSelf cs=css.selectByPrimaryKey(1l);
 		cs.setColumnname("user1");
@@ -37,5 +44,36 @@ public class ColumnCustomControllerTest {
 		String resp=HttpUtils.sendJsonPost(url, jsonStr);
 		System.out.println(resp);
 	}
+	
+	@Test
+	public void testUpdateColumn() throws Exception{
+		ColumnSelf cs=css.selectByPrimaryKey(14l);
+		cs.setColumnname("user2");
+		String jsonStr=JsonUtils.beanToJson(cs);
+		String url="http://localhost:8090/parasol-column-ui/columnself/updateColumnSelf";
+		String resp=HttpUtils.sendJsonPost(url, jsonStr);
+		System.out.println(resp);
+	}
+	
+	@Test
+	public void testDeleteColumn() throws Exception{
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("id", 15l);
+		String jsonStr=JsonUtils.beanToJson(map);
+		String url="http://localhost:8090/parasol-column-ui/columnself/deleteColumnSelf";
+		String resp=HttpUtils.sendJsonPost(url, jsonStr);
+		System.out.println(resp);
+	}
+	
+	@Test
+	public void testReplaceColumn() throws Exception{
+		List<ColumnCustom> list=ccs.queryListByPidAndUserId(0l, 0l);
+		String jsonStr=JsonUtils.beanToJson(list);
+		String url="http://localhost:8090/parasol-column-ui/columncustom/replaceColumn";
+		String resp=HttpUtils.sendJsonPost(url, jsonStr);
+		System.out.println(resp);
+//		List<ColumnCustom> newList=JsonUtils.jsonToList(jsonStr);
+//		this.ccs.replace(0l, newList);
+	}*/
 
 }

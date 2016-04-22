@@ -17,4 +17,8 @@ public interface ColumnCustomDao {
     List<ColumnCustom> queryListByPidAndUserId(Long pid, Long uid);
     
     ColumnCustom queryByCid(Long cid);
+    
+    int deleteByUserId(Long uid);
+    
+    int insertBatch(List<ColumnCustom> list);
 }

@@ -48,6 +48,7 @@ public class ColumnSelfDaoImpl implements ColumnSelfDao {
 		Criteria c=example.createCriteria();
 		c.andParentIdEqualTo(pid);
 		c.andUserIdEqualTo(uid);
+		c.andDelStatusEqualTo((short)0);
 		List<ColumnSelf> list=csm.selectByExample(example);
 		return list;
 	}

@@ -1,7 +1,11 @@
 package org.parasol.column.utils;
 
-import java.util.Stack;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
 public class JsonUtils {
@@ -33,6 +37,19 @@ private static ObjectMapper mapper;
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}		
+	}
+	
+	 public  static <T> List<T>  jsonToList(String in, Class<T> clsT) throws IOException {
+
+		 ObjectMapper objectMapper = getMapper();
+	       JsonParser parser = objectMapper.getJsonFactory().createJsonParser(in);   
+
+	        JsonNode nodes = parser.readValueAsTree();
+	        List<T> list  = new ArrayList<T>(nodes.size());
+	        for(JsonNode node : nodes){
+	            list.add(objectMapper.readValue(node, clsT));
+	        }
+	        return list;
 	}
 	
 	

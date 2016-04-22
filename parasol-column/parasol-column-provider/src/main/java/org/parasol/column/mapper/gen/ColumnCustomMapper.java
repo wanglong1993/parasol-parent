@@ -27,4 +27,6 @@ public interface ColumnCustomMapper {
     int updateByPrimaryKeySelective(ColumnCustom record);
 
     int updateByPrimaryKey(ColumnCustom record);
+    
+    int insertBatch(List<ColumnCustom> list);
 }

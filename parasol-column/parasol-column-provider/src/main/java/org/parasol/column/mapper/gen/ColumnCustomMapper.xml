@@ -122,6 +122,25 @@
       #{delStatus,jdbcType=SMALLINT}, #{createtime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{columnLevelPath,jdbcType=VARCHAR})
   </insert>
+  <insert id="insertBatch" useGeneratedKeys="true" parameterType="java.util.List">  
+    <selectKey resultType="long" keyProperty="id" order="AFTER">  
+        SELECT  
+        LAST_INSERT_ID()  
+    </selectKey>  
+    insert into tb_column_custom (id, cid, pcid, columnName, 
+      user_id, order_num, path_name, 
+      subscribe_count, type, user_or_system, 
+      del_status, createtime, update_time, 
+      column_level_path)
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id,jdbcType=BIGINT}, #{item.cid,jdbcType=BIGINT}, #{item.pcid,jdbcType=BIGINT}, #{item.columnname,jdbcType=VARCHAR}, 
+      #{item.userId,jdbcType=BIGINT}, #{item.orderNum,jdbcType=INTEGER}, #{item.pathName,jdbcType=VARCHAR}, 
+      #{item.subscribeCount,jdbcType=BIGINT}, #{item.type,jdbcType=INTEGER}, #{item.userOrSystem,jdbcType=SMALLINT}, 
+      #{item.delStatus,jdbcType=SMALLINT}, #{item.createtime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP}, 
+      #{item.columnLevelPath,jdbcType=VARCHAR})  
+    </foreach>  
+</insert>
   <insert id="insertSelective" parameterType="org.parasol.column.entity.ColumnCustom" >
     insert into tb_column_custom
     <trim prefix="(" suffix=")" suffixOverrides="," >

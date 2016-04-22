@@ -19,5 +19,7 @@ public interface ColumnCustomService {
     ColumnCustom queryByCid(Long cid);
     
     int init(Long uid);
+    
+    int replace(Long uid,List<ColumnCustom> newList);
 
 }
