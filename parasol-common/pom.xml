@@ -16,6 +16,6 @@
 	<modules>
 		<module>parasol-common-provider</module>
 		<module>parasol-util</module>
-		<module>parasol-comment</module>
+		<module>parasol-mapping</module>
 	</modules>
 </project>
