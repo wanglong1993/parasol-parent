@@ -7,9 +7,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.parasol.column.entity.ColumnCustom;
+import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.service.ColumnCustomService;
 import org.parasol.column.utils.JsonUtils;
+import org.parasol.column.vo.ColumnVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,15 +31,20 @@ public class ColumnCustomController extends BaseController {
 	@Resource(name="columnCustomService")
 	private ColumnCustomService ccs;
 	
-	@RequestMapping(value="/showColumn",method = RequestMethod.GET)
+	@RequestMapping(value="/showColumn",method = RequestMethod.POST)
 	@ResponseBody
-	public InterfaceResult<List<ColumnCustom>> showColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		InterfaceResult<List<ColumnCustom>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		User user = this.getUser(request);
-		List<ColumnCustom> list=null;
-		Long pid=0l;
+	public InterfaceResult<List<ColumnSelf>> showColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		String jsonStr=this.readJSONString(request);
+		ColumnVo vo=(ColumnVo)JsonUtils.jsonToBean(jsonStr, ColumnVo.class);
+		if(vo==null||vo.getPid()==null){
+			InterfaceResult<List<ColumnSelf>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+			return result;
+		}
+		InterfaceResult<List<ColumnSelf>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		List<ColumnSelf> list=null;
+		Long pid=vo.getPid();
 		long uid=this.getUserId(request);
-		list=this.ccs.queryListByPidAndUserId(uid, pid);
+		list=this.ccs.queryListByPidAndUserId(pid, uid);
 		result.setResponseData(list);
 		return result;
 	}
@@ -44,15 +53,15 @@ public class ColumnCustomController extends BaseController {
 	@ResponseBody
 	public InterfaceResult<Boolean> replaceColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		String jsonStr=this.readJSONString(request);
-		List<ColumnCustom> newList=JsonUtils.jsonToList(jsonStr,ColumnCustom.class);
+		List<ColumnSelf> newList=JsonUtils.jsonToList(jsonStr,ColumnSelf.class);
 		if(newList==null||newList.size()==0){
 			InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
-		for(ColumnCustom c:newList){
+		for(ColumnSelf c:newList){
 			c.setCreatetime(new Date());
 			c.setUpdateTime(new Date());
-			c.setId(null);
+			c.setParentId(0l);
 		}
 		Long pid=0l;
 		long uid=this.getUserId(request);

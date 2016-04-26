@@ -36,7 +36,13 @@ public class ColumnSelfController extends BaseController {
 		InterfaceResult<List<ColumnSelf>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		Long pid=0l;
 		Long uid=this.getUserId(request);
-		List<ColumnSelf> list=css.queryListByPidAndUserId(pid, uid);
+		List<ColumnSelf> list=css.queryListByPidAndUserId(pid, 0l);
+		if (uid.longValue() != 0) {
+			List<ColumnSelf> list1 = css.queryListByPidAndUserId(pid, uid);
+			if (list1 != null) {
+				list.addAll(list1);
+			}
+		}
 		result.setResponseData(list);
 		return result;
 	}
@@ -53,19 +59,16 @@ public class ColumnSelfController extends BaseController {
 		}
 		Long uid=this.getUserId(request);
 		Long pid=0l;
-		ColumnSelf source=css.selectMaxOrderColumn(pid, uid);
-		if(source!=null){
-			newCol.setId(null);
-			newCol.setUserOrSystem(ColumnFlag.user.getVal());
-			newCol.setCreatetime(new Date());
-			newCol.setUpdateTime(new Date());
-			newCol.setDelStatus((short)0);
-			newCol.setPathName(newCol.getColumnname());
-			newCol.setUserId(uid);
-			newCol.setParentId(0l);
-			int n= css.insert(newCol);
-			b=n>0;
-		}
+		newCol.setId(null);
+		newCol.setUserOrSystem(ColumnFlag.user.getVal());
+		newCol.setCreatetime(new Date());
+		newCol.setUpdateTime(new Date());
+		newCol.setDelStatus((short)0);
+		newCol.setPathName(newCol.getColumnname());
+		newCol.setUserId(uid);
+		newCol.setParentId(0l);
+		int n= css.insert(newCol);
+		b=n>0;
 		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		result.setResponseData(b);
 		return result;

@@ -48,6 +48,9 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 		// TODO Auto-generated method stub
 		//int n= csd.deleteByPrimaryKey(id);
 		ColumnSelf cs=this.selectByPrimaryKey(id);
+		if(cs.getUserOrSystem().shortValue()==ColumnFlag.sys.getVal()){
+			return 0;
+		}
 		cs.setDelStatus((short)1);
 		int n = this.updateByPrimaryKey(cs);
 		if(n>0){
@@ -91,6 +94,10 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 	@Override
 	public int updateByPrimaryKey(ColumnSelf record) {
 		// TODO Auto-generated method stub
+		ColumnSelf self=csd.selectByPrimaryKey(record.getId());
+		if(self.getUserOrSystem().shortValue()==ColumnFlag.sys.getVal()){
+			return 0;
+		}
 		int n = csd.updateByPrimaryKey(record);
 		if(n>0){
 			ColumnCustom cc=this.loadByCid(record.getId());
@@ -120,29 +127,6 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 		return csd.queryListByPidAndUserId(pid, uid);
 	}
 
-	@Override
-	public int init(Long uid) {
-		// TODO Auto-generated method stub
-		List<ColumnSelf> list=this.queryListByPidAndUserId(0l, uid);
-		if(list==null||list.size()==0){
-			list=new ArrayList<ColumnSelf>();
-			List<ColumnSys> listSys=css.selectAll();
-			for(ColumnSys source:listSys){
-				try {
-					ColumnSelf dest=buidColumnSelf(source);
-					list.add(dest);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					log.error(e);
-				}
-			}
-			for(ColumnSelf cs:list){
-				csd.insert(cs);
-			}
-		}
-		return 0;
-	}
-	
 	private ColumnSelf buidColumnSelf(ColumnSys source) throws Exception{
 		ColumnSelf dest=new ColumnSelf();
 		BeanUtils.copyProperties(dest,source);
@@ -155,6 +139,12 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 	public ColumnSelf selectMaxOrderColumn(Long pid, Long uid) {
 		// TODO Auto-generated method stub
 		return csd.selectMaxOrderColumn(pid, uid);
+	}
+
+	@Override
+	public List<ColumnSelf> queryListByPid(Long pid) {
+		// TODO Auto-generated method stub
+		return csd.queryListByPid(pid);
 	}
 
 }

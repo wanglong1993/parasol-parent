@@ -16,7 +16,7 @@ public interface ColumnSelfService {
     
     List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid);
     
-    int init(Long uid);
+    List<ColumnSelf> queryListByPid(Long pid);
     
     ColumnSelf selectMaxOrderColumn(Long pid, Long uid);
 

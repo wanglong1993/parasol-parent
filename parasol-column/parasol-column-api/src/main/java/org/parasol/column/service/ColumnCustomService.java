@@ -3,6 +3,7 @@ package org.parasol.column.service;
 import java.util.List;
 
 import org.parasol.column.entity.ColumnCustom;
+import org.parasol.column.entity.ColumnSelf;
 
 public interface ColumnCustomService {
 	
@@ -14,12 +15,12 @@ public interface ColumnCustomService {
     
     int updateByPrimaryKey(ColumnCustom record);
     
-    List<ColumnCustom> queryListByPidAndUserId(Long pid,Long uid);
+    List<ColumnSelf> queryListByPidAndUserId(Long pid,Long uid);
     
     ColumnCustom queryByCid(Long cid);
     
     int init(Long uid);
     
-    int replace(Long uid,List<ColumnCustom> newList);
+    int replace(Long uid,List<ColumnSelf> newList);
 
 }

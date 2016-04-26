@@ -15,6 +15,8 @@ public interface ColumnSelfDao {
     int updateByPrimaryKey(ColumnSelf record);
     
     List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid);
+    
+    List<ColumnSelf> queryListByPid(Long pid);
     /**
      * 查询最大order_num栏目
      * @param pid

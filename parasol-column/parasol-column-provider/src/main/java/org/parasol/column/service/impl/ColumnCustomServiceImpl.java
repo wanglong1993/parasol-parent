@@ -52,15 +52,32 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	}
 
 	@Override
-	public List<ColumnCustom> queryListByPidAndUserId(Long pid, Long uid) {
+	public List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid) {
 		// TODO Auto-generated method stub
-		List<ColumnCustom> list=ccd.queryListByPidAndUserId(pid, uid);
-		if((list==null||list.size()==0)&&pid==0l){
-			css.init(uid);
-			this.init(uid);
-			list=ccd.queryListByPidAndUserId(pid, uid);
+		List<ColumnSelf> result=null;
+		if (pid == 0) {
+			List<ColumnCustom> list = ccd.queryListByPidAndUserId(pid, uid);
+			if (list == null || list.size() == 0) {
+				this.init(uid);
+				list = ccd.queryListByPidAndUserId(pid, uid);
+			}
+			result=new ArrayList<ColumnSelf>();
+			for(ColumnCustom source:list){
+				ColumnSelf dest;
+				try {
+					dest = this.buidColumnSelf(source);
+					result.add(dest);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					log.error(e);
+				}
+			}
 		}
-		return list;
+		else{
+			//当pid不为0时，查询子系统栏目
+			result=css.queryListByPid(pid);
+		}
+		return result;
 	}
 
 	@Override
@@ -69,10 +86,11 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 		List<ColumnCustom> list=ccd.queryListByPidAndUserId(0l, uid);
 		if(list==null||list.size()==0){
 			list=new ArrayList<ColumnCustom>();
-			List<ColumnSelf> listSelf=css.queryListByPidAndUserId(0l, uid);
+			List<ColumnSelf> listSelf=css.queryListByPidAndUserId(0l, 0l);
 			for(ColumnSelf source:listSelf){
 				try {
 					ColumnCustom dest=buidColumnCustom(source);
+					dest.setUserId(uid);
 					list.add(dest);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -94,6 +112,14 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 		dest.setPcid(source.getParentId());
 		return dest;
 	}
+	
+	private ColumnSelf buidColumnSelf(ColumnCustom source) throws Exception{
+		ColumnSelf dest=new ColumnSelf();
+		BeanUtils.copyProperties(dest,source);
+		dest.setId(source.getCid());
+		dest.setParentId(source.getPcid());
+		return dest;
+	}
 
 	@Override
 	public ColumnCustom queryByCid(Long cid) {
@@ -102,10 +128,21 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	}
 
 	@Override
-	public int replace(Long uid, List<ColumnCustom> newList) {
+	public int replace(Long uid, List<ColumnSelf> newList) {
 		// TODO Auto-generated method stub
 		ccd.deleteByUserId(uid);
-		int n=ccd.insertBatch(newList);
+		List<ColumnCustom> list=new ArrayList<ColumnCustom>();
+		for(ColumnSelf source:newList){
+			ColumnCustom dest=null;
+			try {
+				dest = this.buidColumnCustom(source);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				log.error(e);
+			}
+			list.add(dest);
+		}
+		int n=ccd.insertBatch(list);
 		return n;
 	}
 

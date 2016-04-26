@@ -47,7 +47,7 @@ public class ColumnCustomControllerTest {
 	
 	@Test
 	public void testUpdateColumn() throws Exception{
-		ColumnSelf cs=css.selectByPrimaryKey(14l);
+		ColumnSelf cs=css.selectByPrimaryKey(2688l);
 		cs.setColumnname("user2");
 		String jsonStr=JsonUtils.beanToJson(cs);
 		String url="http://localhost:8090/parasol-column-ui/columnself/updateColumnSelf";
@@ -58,7 +58,7 @@ public class ColumnCustomControllerTest {
 	@Test
 	public void testDeleteColumn() throws Exception{
 		Map<String,Object> map=new HashMap<String,Object>();
-		map.put("id", 15l);
+		map.put("id", 2688l);
 		String jsonStr=JsonUtils.beanToJson(map);
 		String url="http://localhost:8090/parasol-column-ui/columnself/deleteColumnSelf";
 		String resp=HttpUtils.sendJsonPost(url, jsonStr);
@@ -67,13 +67,28 @@ public class ColumnCustomControllerTest {
 	
 	@Test
 	public void testReplaceColumn() throws Exception{
-		List<ColumnCustom> list=ccs.queryListByPidAndUserId(0l, 0l);
+		List<ColumnSelf> list=ccs.queryListByPidAndUserId(0l, 0l);
 		String jsonStr=JsonUtils.beanToJson(list);
 		String url="http://localhost:8090/parasol-column-ui/columncustom/replaceColumn";
 		String resp=HttpUtils.sendJsonPost(url, jsonStr);
 		System.out.println(resp);
 //		List<ColumnCustom> newList=JsonUtils.jsonToList(jsonStr);
 //		this.ccs.replace(0l, newList);
+	}
+	
+	@Test
+	public void testShowColumn(){
+		String jsonStr="{\"pid\":\"0\"}";
+		String url="http://localhost:8090/parasol-column-ui/columncustom/showColumn";
+		String resp=HttpUtils.sendJsonPost(url, jsonStr);
+		System.out.println(resp);
+	}
+	
+	@Test
+	public void testShowAllColumn(){
+		String url="http://localhost:8090/parasol-column-ui/columnself/showAllColumnSelf";
+		String resp=HttpUtils.sendGet(url);
+		System.out.println(resp);
 	}*/
 
 }

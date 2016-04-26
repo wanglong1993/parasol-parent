@@ -69,4 +69,15 @@ public class ColumnSelfDaoImpl implements ColumnSelfDao {
 		return null;
 	}
 
+	@Override
+	public List<ColumnSelf> queryListByPid(Long pid) {
+		// TODO Auto-generated method stub
+		ColumnSelfExample example=new ColumnSelfExample();
+		Criteria c=example.createCriteria();
+		c.andParentIdEqualTo(pid);
+		c.andDelStatusEqualTo((short)0);
+		List<ColumnSelf> list=csm.selectByExample(example);
+		return list;
+	}
+
 }
