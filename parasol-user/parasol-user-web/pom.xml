@@ -296,7 +296,7 @@
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
-				<email.validate.url.coopert>http://localhost:8080/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate</email.validate.url.coopert>
+				<email.validate.url.coopert>http://www.cooperts.com/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate</email.validate.url.coopert>
 				<email.findpwd.url.coopert>http://open.gintong.com/reset-password</email.findpwd.url.coopert>
 				<dfs.gintong.com>http://192.168.101.148/</dfs.gintong.com>
 				<imservice.url>http://192.168.101.41:4446</imservice.url>
