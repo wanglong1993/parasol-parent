@@ -55,6 +55,8 @@ public class TagSourceController extends BaseControl {
 	private static final String parameterSourceId = "sourceId";
 	private static final String parameterSourceType = "sourceType";
 	private static final String parameterTagSourceId = "id";
+	private static final String parameterCount = "count";
+	private static final String parameterStart = "start";
 
 	@Autowired
 	private TagSourceService tagsSourceService;
@@ -80,6 +82,41 @@ public class TagSourceController extends BaseControl {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
 			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdSourceIdSourceType(loginAppId, sourceId, sourceType);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (TagSourceServiceException e) {
+			e.printStackTrace(System.err);
+		}
+		return null;
+	}
+	
+	/**
+	 * 3.根据标签获取资源
+	 * curl -i "http://localhost:8081/tags/source/getSourceListByTag?appKey=1&userId=111&tagId=1&start=0&count=10"
+	 * @param fileds
+	 * @param debug
+	 * @param tagId
+	 * @return
+	 */
+	@RequestMapping(path = "/tags/source/getSourceListByTag", method = { RequestMethod.GET })
+	public MappingJacksonValue getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
+			@RequestParam(name = TagSourceController.parameterStart, required = true) Integer start,
+			@RequestParam(name = TagSourceController.parameterCount, required = true) Integer count) {
+		//@formatter:on
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			// 1.查询后台服务
+			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdTagId(loginAppId, tagId, start, count);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
 			// 3.创建页面显示数据项的过滤器
