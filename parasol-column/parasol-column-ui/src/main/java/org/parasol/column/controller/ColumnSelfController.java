@@ -49,12 +49,12 @@ public class ColumnSelfController extends BaseController {
 	
 	@RequestMapping(value="/addColumnSelf",method = RequestMethod.POST)
 	@ResponseBody
-	public InterfaceResult<Boolean> addColumnSelf(HttpServletRequest request, HttpServletResponse response) throws Exception{
+	public InterfaceResult<ColumnSelf> addColumnSelf(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		Boolean b=false;
 		String jsonStr=this.readJSONString(request);
 		ColumnSelf newCol=(ColumnSelf)JsonUtils.jsonToBean(jsonStr, ColumnSelf.class);
 		if(newCol==null||StringUtils.isEmpty(newCol.getColumnname())){
-			InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+			InterfaceResult<ColumnSelf> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
 		Long uid=this.getUserId(request);
@@ -67,10 +67,12 @@ public class ColumnSelfController extends BaseController {
 		newCol.setPathName(newCol.getColumnname());
 		newCol.setUserId(uid);
 		newCol.setParentId(0l);
-		int n= css.insert(newCol);
-		b=n>0;
-		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		result.setResponseData(b);
+		ColumnSelf col= css.insert(newCol);
+		InterfaceResult<ColumnSelf> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		if(col.getId()>0){
+			result.setResponseData(col);
+		}
+		
 		return result;
 	}
 	

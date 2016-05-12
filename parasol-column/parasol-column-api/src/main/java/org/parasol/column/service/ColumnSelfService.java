@@ -8,7 +8,7 @@ public interface ColumnSelfService {
 	
 	int deleteByPrimaryKey(Long id);
 
-    int insert(ColumnSelf record);
+	ColumnSelf insert(ColumnSelf record);
     
     ColumnSelf selectByPrimaryKey(Long id);
     

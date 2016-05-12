@@ -63,7 +63,7 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 	}
 
 	@Override
-	public int insert(ColumnSelf record) {
+	public ColumnSelf insert(ColumnSelf record) {
 		// TODO Auto-generated method stub
 		int n = csd.insert(record);
 		if(n>0&&record.getUserOrSystem().shortValue()==ColumnFlag.user.getVal()){
@@ -82,7 +82,7 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 				log.error(e);
 			}
 		}
-		return n;
+		return record;
 	}
 
 	@Override
