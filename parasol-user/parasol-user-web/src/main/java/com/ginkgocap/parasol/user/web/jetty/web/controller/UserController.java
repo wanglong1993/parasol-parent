@@ -1018,6 +1018,8 @@ public class UserController extends BaseControl {
 					}
 					//更新消息状态
 					messageRelationService.updateMessageRelationStatus(relationId, new Integer(status).intValue());
+					//向万能插座发送消息
+					defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.ADD_FRIEND,"{\"friendId\":"+friendId+",\"userId\":"+userId+"}");
 					resultMap.put("message", "add friendId successed.");
 					resultMap.put("status",1);
 				}
@@ -1067,6 +1069,8 @@ public class UserController extends BaseControl {
 					}
 					//更新消息状态
 					messageRelationService.updateMessageRelationStatus(relationId, new Integer(status).intValue());
+					//向万能插座发送消息
+					defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.ADD_FRIEND,"{\"friendId\":"+friendId+",\"userId\":"+userId+"}");
 					if(userOrgPerCusRelFriendlyId !=null && userOrgPerCusRelFriendlyId >0l && userOrgPerCusRelId!=null && userOrgPerCusRelId>0l && id!=null && id>0l){
 						resultMap.put("message", "add friendId successed.");
 						resultMap.put("status",1);
@@ -1355,6 +1359,8 @@ public class UserController extends BaseControl {
 			bl2=userOrgPerCusRelService.deleteFriendly(friendId,userId);
 			bl3=userFriendlyService.deleteFriendly(userId, friendId);
 			if(bl1 && bl2 && bl3){
+				//向万能插座发送消息
+				defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.DELETE_FRIEND,"{\"friendId\":"+friendId+",\"userId\":"+userId+"}");
 				resultMap.put("message",Prompt.delete_friendly_successed);
 				resultMap.put("status",1);
 				return new MappingJacksonValue(resultMap);
