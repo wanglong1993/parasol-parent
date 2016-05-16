@@ -132,6 +132,43 @@ public class TagController extends BaseControl {
 			throw e;
 		}
 	}
+	
+	//@formatter:off
+	/**
+	 * 2. 更新一个Tag
+	 * curl -i "http://localhost:8081/tags/tags/updateTag?appKey=1&userId=111&tagId=1&tagName=恶人" -d ""
+	 * @param request
+	 * @return
+	 * @throws TagSourceServiceException
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = "/tags/tags/updateTag", method = { RequestMethod.PUT })
+	public MappingJacksonValue updateTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagController.parameterTagId, required = true) long tagId,
+			@RequestParam(name = TagController.parameterTagName, required = true) String tagName)
+			throws TagServiceException {
+		//@formatter:on
+		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginUserId = LoginUserContextHolder.getUserId();
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			Tag tag = new Tag();
+			tag.setAppId(loginAppId);
+			tag.setUserId(loginUserId);
+			tag.setTagName(tagName);
+
+			Boolean result = tagService.updateTag(loginUserId, tag);
+			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
+			resultMap.put("result", result);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (TagServiceException e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
+	}
 
 	//@formatter:off
 	/**
