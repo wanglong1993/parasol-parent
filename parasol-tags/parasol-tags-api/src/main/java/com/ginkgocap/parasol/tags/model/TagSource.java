@@ -36,6 +36,7 @@ public class TagSource implements Serializable {
 	private long appId;// 'Source 的应用ID',
 	private long userId;// '创建TagSource的人',
 	private long sourceId; // '资源ID',
+	private String sourceTitle;// '资源标题'
 	private long sourceType; // '资源类型 知识、人脉',
 	private long createAt; // '更新时间',
 
@@ -108,6 +109,15 @@ public class TagSource implements Serializable {
 	public void setCreateAt(long createAt) {
 		this.createAt = createAt;
 	}
+	
+	@Column(name = "sourceTitle")
+	public String getSourceTitle() {
+		return sourceTitle;
+	}
+
+	public void setSourceTitle(String sourceTitle) {
+		this.sourceTitle = sourceTitle;
+	}
 
 	@Transient //不持久化
 	public String getTagName() {
@@ -117,9 +127,10 @@ public class TagSource implements Serializable {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
+	
 	@Override
 	public String toString() {
-		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceType=" + sourceType + ", createAt="
+		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceTitle=" + sourceTitle + ", sourceType=" + sourceType + ", createAt="
 				+ createAt + "]";
 	}
 

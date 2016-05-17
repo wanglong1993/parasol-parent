@@ -14,6 +14,7 @@ CREATE TABLE `tb_tag_source` (
   `appId` bigint(20) NOT NULL COMMENT 'Source 的应用ID',
   `userId` bigint(20) NOT NULL COMMENT '创建TagSource的人',
   `sourceId` bigint(20) NOT NULL COMMENT '资源ID',
+  `sourceTitle` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '资源title',
   `sourceType` bigint(20) DEFAULT 0  COMMENT '资源类型 知识、人脉',
   `createAt` bigint(20) DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`),
