@@ -333,7 +333,6 @@ public class FileController extends BaseControl {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
 			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
-			
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(files);
 			// 3.创建页面显示数据项的过滤器
