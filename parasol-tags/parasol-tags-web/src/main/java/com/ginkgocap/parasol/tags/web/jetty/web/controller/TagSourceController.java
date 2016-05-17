@@ -129,6 +129,39 @@ public class TagSourceController extends BaseControl {
 		}
 		return null;
 	}
+	
+	/**
+	 * 3.根据标签获取资源数量
+	 * curl -i "http://localhost:8081/tags/source/getSourceCountByTag?appKey=1&userId=111&tagId=1&start=0&count=10"
+	 * @param fileds
+	 * @param debug
+	 * @param tagId
+	 * @return
+	 */
+	@RequestMapping(path = "/tags/source/getSourceCountByTag", method = { RequestMethod.GET })
+	public MappingJacksonValue getSourceCountByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId) {
+		//@formatter:on
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			// 1.查询后台服务
+			Integer resCount = tagsSourceService.countTagSourcesByAppIdTagId(loginAppId, tagId);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(resCount);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (TagSourceServiceException e) {
+			e.printStackTrace(System.err);
+		}
+		return null;
+	}
 
 	//@formatter:off
 	/**
