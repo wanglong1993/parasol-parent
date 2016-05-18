@@ -189,6 +189,7 @@ public class UserController extends BaseControl {
 	 * @return MappingJacksonValue
 	 * http://www.jsjtt.com/java/Javakuangjia/67.html
 	 */
+    @Deprecated
 	@RequestMapping(path = { "/user/user/register1" }, method = { RequestMethod.POST })
 	public MappingJacksonValue register1(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "type",required = true) int type
