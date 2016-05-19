@@ -133,6 +133,8 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 
 		}
 		oldTag.setTagName(tag.getTagName());
+		//TagType must same with old
+		tag.setTagType(oldTag.getTagType());
 
 		try {
 			this.updateEntity(tag);
@@ -140,7 +142,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 			e.printStackTrace(System.err);
 			throw new TagServiceException(e);
 		}
-		return false;
+		return true;
 	}
 
 	@Override
