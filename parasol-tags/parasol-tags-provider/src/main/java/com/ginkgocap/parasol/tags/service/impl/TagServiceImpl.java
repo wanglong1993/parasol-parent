@@ -117,7 +117,8 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	}
 
 	@Override
-	public boolean updateTag(Long userId, Tag tag) throws TagServiceException {
+	public boolean 
+(Long userId, Tag tag) throws TagServiceException {
 		ServiceError.assertPopertiesIsNullForTag("id");
 		ServiceError.assertPopertiesIsNullForTag("tagName");
 		ServiceError.assertUserIdIsNull(userId);
@@ -134,7 +135,6 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		}
 		oldTag.setTagName(tag.getTagName());
 		//TagType must same with old
-		System.out.println("Update Tag: by [appId:" + tag.getAppId() + ",tagId:" + tag.getId() + ", tagType:" + oldTag.getTagType() + "]");
 		tag.setTagType(oldTag.getTagType());
 
 		try {
@@ -176,7 +176,6 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 					for (Tag tag : tags) {
 						if (tag != null && ObjectUtils.equals(tag.getUserId(), userId)) {
 							result.add(tag);
-							System.out.println("get TagList: [appId:" + tag.getAppId() + ", tagId:" + tag.getId() + ", tagType:" + tag.getTagType() + "]");
 						}
 					}
 				}

@@ -53,6 +53,7 @@ public class TagSourceController extends BaseControl {
 	private static final String parameterDebug = "debug";
 	private static final String parameterTagId = "tagId";
 	private static final String parameterSourceId = "sourceId";
+	private static final String parameterSourceTitle = "sourceTitle";
 	private static final String parameterSourceType = "sourceType";
 	private static final String parameterTagSourceId = "id";
 	private static final String parameterCount = "count";
@@ -178,6 +179,7 @@ public class TagSourceController extends BaseControl {
 	public MappingJacksonValue createTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagsId,
 			@RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
+			@RequestParam(name = TagSourceController.parameterSourceTitle, required = true) String sourceTitle,
 			@RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType) throws TagSourceServiceException {
 		//@formatter:on
 		Long loginAppId = LoginUserContextHolder.getAppKey();
@@ -189,6 +191,7 @@ public class TagSourceController extends BaseControl {
 			source.setUserId(loginUserId);
 			source.setTagId(tagsId);
 			source.setSourceId(sourceId);
+			source.setSourceTitle(sourceTitle);
 			source.setSourceType(sourceType);
 
 			Long id = tagsSourceService.createTagSource(source);
