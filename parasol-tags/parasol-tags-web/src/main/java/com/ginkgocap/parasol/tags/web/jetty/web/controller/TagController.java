@@ -222,6 +222,7 @@ public class TagController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // id',
+			filter.add("tagType"); // tagType',
 			filter.add("tagName"); // Tag名称
 		}
 
