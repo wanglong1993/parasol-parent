@@ -189,8 +189,9 @@ public class UserController extends BaseControl {
 	 * @return MappingJacksonValue
 	 * http://www.jsjtt.com/java/Javakuangjia/67.html
 	 */
-	@RequestMapping(path = { "/user/user/register" }, method = { RequestMethod.POST })
-	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response
+    @Deprecated
+	@RequestMapping(path = { "/user/user/register1" }, method = { RequestMethod.POST })
+	public MappingJacksonValue register1(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "type",required = true) int type
 			,@RequestParam(name = "code",required = true) String code
 			,@RequestParam(name = "passport",required = true) String passport
@@ -440,6 +441,178 @@ public class UserController extends BaseControl {
 		}
 	}
 
+	/**
+	 * 用户注册
+	 * @param type 1.邮箱注册,2.手机注册
+	 * @param code 手机验证码
+	 * @param passport 为邮箱和手机号
+	 * @param password 用户密码
+	 * @param userType 0.个人用户,1.组织用户
+	 * @throws Exception
+	 * @return MappingJacksonValue
+	 * http://www.jsjtt.com/java/Javakuangjia/67.html
+	 */
+	@RequestMapping(path = { "/user/user/register" }, method = { RequestMethod.POST })
+	public MappingJacksonValue register(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "type",required = true) int type
+			,@RequestParam(name = "code",required = true) String code
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "password",required = true) String password
+			,@RequestParam(name = "userType",required = true) String userType
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		UserBasic userBasic= null;
+		UserExt userExt= null;
+		List<UserInterestIndustry> list = null;
+		User user=null;
+		String ip=getIpAddr(request);
+		Long id=0l;
+		Long appId =0l;
+		try {
+				boolean exists=userLoginRegisterService.passportIsExist(passport);
+				if(exists){
+					if(type==1)resultMap.put( "message", Prompt.email_already_exists);
+					if(type==2)resultMap.put( "message", Prompt.mobile_already_exists);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				//个人用户组织用户邮箱注册
+				if((type==1 && userType.equals("0")) ||(type==1 && userType.equals("1"))){
+					if(!isEmail(passport)){
+						resultMap.put( "message", Prompt.email_format_is_not_correct);
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
+					}
+				}
+				if(StringUtils.isEmpty(code)){
+					resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				//个人用户手机和邮箱注册
+				if((type==2 || type==1) && userType.equals("0")){
+					if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
+						resultMap.put( "message", Prompt.code_is_not_right);
+						resultMap.put( "status", 0);
+						return new MappingJacksonValue(resultMap);
+					}
+				}
+				if(StringUtils.isEmpty(password)){
+					resultMap.put( "message", Prompt.passowrd_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(password.length()<6){
+					resultMap.put( "message", Prompt.password_length_must_be_greater_than_or_equal_to_6);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userLoginRegister= new UserLoginRegister();
+				userLoginRegister.setPassport(passport);
+				byte[] bt = Base64.decode(password);
+				String salt=userLoginRegisterService.setSalt();
+				password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
+				userLoginRegister.setSalt(salt);
+				userLoginRegister.setPassword(password);
+				userLoginRegister.setUsetType(new Byte(userType));
+				userLoginRegister.setIp(ip);
+				userLoginRegister.setSource(appId.toString());
+				userLoginRegister.setCtime(System.currentTimeMillis());
+				userLoginRegister.setUtime(System.currentTimeMillis());
+				if(type==1)userLoginRegister.setEmail(passport);
+				if(type==2)userLoginRegister.setMobile((passport));
+				id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
+				//个人用户邮箱注册
+				if((type==1 && userType.equals("0"))){
+					/**
+					 * 添加集成环信注册用户
+					 */
+					if (id > 1) {
+						final String huanxinParam = String.valueOf(id);
+						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
+							@Override
+							public void run() {
+								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
+							}
+						});
+					}
+					//向万能插座发送消息
+					user = new User();
+					user.setUserLoginRegister(userLoginRegister);
+					user.setUserBasic(userBasic);
+					user.setUserExt(userExt);
+					user.setListUserInterestIndustry(list);
+					defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
+					resultMap.put( "id", id);
+					resultMap.put( "status", 1);
+					return new MappingJacksonValue(resultMap);
+				}
+				//个人用手机注册
+				if(type==2 && userType.equals("0")){
+					/**
+					 * 添加集成环信注册用户
+					 */
+					if (id > 1) {
+						final String huanxinParam = String.valueOf(id);
+						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
+							@Override
+							public void run() {
+								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
+							}
+						});
+					}
+					//用户设置
+					UserConfig userConfig =new UserConfig();
+					userConfig.setUserId(id);
+					userConfig.setHomePageVisible(new Byte("2"));
+					userConfig.setEvaluateVisible(new Byte("2"));
+					userConfig.setAutosave(new Byte("0"));
+					userConfigerService.createUserConfig(userConfig);
+					userLoginRegisterService.deleteIdentifyingCode(passport);
+					//向万能插座发送消息
+					user = new User();
+					user.setUserLoginRegister(userLoginRegister);
+					user.setUserBasic(userBasic);
+					user.setUserExt(userExt);
+					user.setListUserInterestIndustry(list);
+					defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
+					resultMap.put( "id", id);
+					resultMap.put( "status", 1);
+					return new MappingJacksonValue(resultMap);
+				}
+				//组织用户邮箱注册
+				if(type==1 && userType.equals("1")){
+					/**
+					 * 添加集成环信注册用户
+					 */
+					if (id > 1) {
+						final String huanxinParam = String.valueOf(id);
+						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
+							@Override
+							public void run() {
+								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
+							}
+						});
+					}
+					resultMap.put( "id", id);
+					resultMap.put( "status", 1);
+					return new MappingJacksonValue(resultMap);
+				}
+				
+				resultMap.put("message", Prompt.paramter_type_or_userType_error);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			//异常失败回滚
+			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
+			logger.info("注册失败:"+passport);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	
+	
 	/**
 	 * 获取用户资料
 	 * 
