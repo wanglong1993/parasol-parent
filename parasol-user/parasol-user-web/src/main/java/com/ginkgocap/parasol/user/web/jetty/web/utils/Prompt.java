@@ -15,6 +15,7 @@ public final class Prompt {
 	public static final  String passport_is_not_exists="手机或邮箱不存在";
 	public static final  String userId_is_null_or_empty_please_first_authentication_and_get_access_token="请先oauth认证获取用户access_token";
 	public static final  String passport_is_not_exists_in_UserLoginRegister="用户登录信息中不存在该手机号或邮箱";
+	public static final  String user_is_not_exists_in_UserLoginRegister="用户不存在";
 	public static final  String friendId_is_not_exists_in_UserLoginRegister="好友id在用户登录信息中不存在";
 	public static final  String has_been_add_this_friendly_please_waiting_for_him_to_agree="你已经添加该好友，请等待对方同意";
 	public static final  String he_s_already_a_good_friend_of_yours_cannot_repeat_add_him="该用户已经是你的好友，请不要重复添加";
@@ -63,6 +64,7 @@ public final class Prompt {
 	public static final  String mobile_type_is_not_correcct="手机验证码类型mobiletype值只能为1或2";
 	public static final  String findpwd_email_type_is_not_correcct="找回密码邮箱验证码类型emailtype值只能为2或4";
 	public static final  String register_email_type_is_not_correcct="注册邮箱验证码类型emailtype值只能为0或1";
+	public static final  String user_perfectionInfo_is_failed="完善用户信息失败";
 	
 	
 
