@@ -134,7 +134,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		}
 		oldTag.setTagName(tag.getTagName());
 		//TagType must same with old
-		logger.info("Update Tag: by [appId:" + tag.getAppId() + ",tagId:" + tag.getId() + ", tagType:" + oldTag.getTagType() + "]");
+		System.out.println("Update Tag: by [appId:" + tag.getAppId() + ",tagId:" + tag.getId() + ", tagType:" + oldTag.getTagType() + "]");
 		tag.setTagType(oldTag.getTagType());
 
 		try {
