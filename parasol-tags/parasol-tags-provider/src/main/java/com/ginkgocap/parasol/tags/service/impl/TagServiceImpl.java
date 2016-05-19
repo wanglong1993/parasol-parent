@@ -176,6 +176,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 					for (Tag tag : tags) {
 						if (tag != null && ObjectUtils.equals(tag.getUserId(), userId)) {
 							result.add(tag);
+							System.out.println("get TagList: [appId:" + tag.getAppId() + ", tagId:" + tag.getId() + ", tagType:" + tag.getTagType() + "]");
 						}
 					}
 				}
