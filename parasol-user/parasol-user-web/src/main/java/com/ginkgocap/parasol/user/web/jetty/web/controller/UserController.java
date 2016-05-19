@@ -442,6 +442,103 @@ public class UserController extends BaseControl {
 	}
 
 	/**
+	 * 完善个人用户信息
+	 * @picId 个人或组织LOGOID
+	 * @param name 昵称,企业全称
+	 * @param phone 手机号
+	 * @param email 邮箱
+	 * @param companyName 所在公司
+	 * @throws Exception
+	 * @return MappingJacksonValue
+	 */
+	@RequestMapping(path = { "/user/user/perfectionInfo" }, method = { RequestMethod.POST })
+	public MappingJacksonValue perfectionInfo(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "picId",required = false) Long picId
+			,@RequestParam(name = "name",required = true) String name
+			,@RequestParam(name = "email",required = false) String email
+			,@RequestParam(name = "mobile",required = false) String mobile
+			,@RequestParam(name = "companyName",required = false) String companyName
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		UserBasic userBasic= null;
+		Long appId =0l;
+		Long userId=0L;
+		Long userBasicId=0L;
+		boolean bl=false;
+		try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				appId = LoginUserContextHolder.getAppKey();
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+				if(ObjectUtils.isEmpty(userLoginRegister)){
+					resultMap.put( "message", Prompt.user_is_not_exists_in_UserLoginRegister);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(!StringUtils.isEmpty(email))userLoginRegister.setEmail(email);
+				if(!StringUtils.isEmpty(mobile))userLoginRegister.setMobile(mobile);
+				bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
+				if(bl==false){
+					resultMap.put("message", Prompt.user_perfectionInfo_is_failed);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userBasic=userBasicService.getUserBasic(userId);
+				if(ObjectUtils.isEmpty(userBasic)){
+					userBasic=new UserBasic();
+					userBasic.setName(name);
+					userBasic.setCompanyName(companyName);
+					userBasic.setPicId(picId);
+					userBasic.setStatus(new Byte("1"));
+					userBasic.setSex(new Byte("1"));
+					userBasic.setUserId(userId);
+					userBasic.setAuth(new Byte("1"));
+					userBasicId=userBasicService.createUserBasic(userBasic);
+					if(userBasicId==null && userBasicId<=0l){
+						resultMap.put("message", Prompt.user_perfectionInfo_is_failed);
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+					resultMap.put( "status", 1);
+					return new MappingJacksonValue(resultMap);
+				}else{
+					userBasic.setName(name);
+					userBasic.setCompanyName(companyName);
+					userBasic.setPicId(picId);
+					if(userBasic.getSex().intValue()!=1 && userBasic.getSex().intValue()!=2 && userBasic.getSex().intValue()!=0)userBasic.setSex(new Byte("1"));
+					if(userBasic.getStatus().intValue()!=1 && userBasic.getStatus().intValue()!=2 && userBasic.getStatus().intValue()!=0)userBasic.setStatus(new Byte("1"));
+					if(userBasic.getAuth().intValue()!=1 && userBasic.getAuth().intValue()!=2 && userBasic.getAuth().intValue()!=0)userBasic.setAuth(new Byte("1"));
+					bl=userBasicService.updateUserBasic(userBasic);
+					if(bl==false){
+						resultMap.put("message", Prompt.user_perfectionInfo_is_failed);
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);
+					}
+					resultMap.put( "status", 1);
+					return new MappingJacksonValue(resultMap);
+				}
+
+		}catch (Exception e ){
+			//异常失败回滚
+			if(userId!=null && userId>0L)userLoginRegisterService.realDeleteUserLoginRegister(userId);
+			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
+			logger.info("用户Id"+userId+"完善信息失败:");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}    
+    
+	/**
 	 * 用户注册
 	 * @param type 1.邮箱注册,2.手机注册
 	 * @param code 手机验证码
@@ -599,7 +696,6 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 1);
 					return new MappingJacksonValue(resultMap);
 				}
-				
 				resultMap.put("message", Prompt.paramter_type_or_userType_error);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
