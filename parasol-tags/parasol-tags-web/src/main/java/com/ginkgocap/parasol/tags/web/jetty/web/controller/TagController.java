@@ -153,6 +153,7 @@ public class TagController extends BaseControl {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Tag tag = new Tag();
+			tag.setId(tagId);
 			tag.setAppId(loginAppId);
 			tag.setUserId(loginUserId);
 			tag.setTagName(tagName);
