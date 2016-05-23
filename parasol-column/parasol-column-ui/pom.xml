@@ -252,6 +252,11 @@
 				<artifactId>httpclient</artifactId>
 				<version>4.3.6</version>
 			</dependency>
+			<dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-entire-api</artifactId>
+			<version>5.6.3</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>parasol-column-ui</finalName>
