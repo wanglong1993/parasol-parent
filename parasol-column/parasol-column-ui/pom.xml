@@ -312,7 +312,7 @@
 		<plugins>
 
 			<!-- compiler插件, 设定JDK版本 -->
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
@@ -321,7 +321,7 @@
 					<target>1.7</target>
 					<showWarnings>true</showWarnings>
 				</configuration>
-			</plugin>
+			</plugin> -->
 
 			<!-- test插件, 增大内存且仅测试名称为*Test的类 -->
 			<plugin>
@@ -478,7 +478,7 @@
 					<scanIntervalSeconds>2</scanIntervalSeconds>
 					<connectors>
 						<connector implementation="org.mortbay.jetty.bio.SocketConnector">
-							<port>81</port>
+							<port>8021</port>
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>
