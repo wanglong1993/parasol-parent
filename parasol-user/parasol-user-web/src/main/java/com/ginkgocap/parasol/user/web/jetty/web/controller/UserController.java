@@ -539,17 +539,13 @@ public class UserController extends BaseControl {
 		}
 	}    
 	/**
-	 * 用户感兴趣的标签
-	 * @picId 个人或组织LOGOID
-	 * @param name 昵称,企业全称
-	 * @param phone 手机号
-	 * @param email 邮箱
-	 * @param companyName 所在公司
+	 * 修改和创建感兴趣的标签
+	 * @param tagIds 标签ID字符串，以逗号分隔
 	 * @throws Exception
 	 * @return MappingJacksonValue
 	 */
 	@RequestMapping(path = { "/user/user/createIterestedTag" }, method = { RequestMethod.POST })
-	public MappingJacksonValue interestedTag(HttpServletRequest request,HttpServletResponse response
+	public MappingJacksonValue createInterestedTag(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "tagIds",required = true) String tagIds
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -599,7 +595,74 @@ public class UserController extends BaseControl {
 			logger.info(e.getStackTrace());
 			throw e;
 		}
-	}    
+	}
+
+	/**
+	 * 修改绑定的邮箱和手机
+	 * @param passport 为邮箱和手机号
+	 * @param code 验证码
+	 * @param source  来源的appkey
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/updatePassport" }, method = { RequestMethod.POST })
+	public MappingJacksonValue updatePassport(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "code",required = true) String code
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		UserOrganBasic userOrganBasic=null;
+		Long appId =0l;
+		Long userId=0L;
+		boolean bl=false;
+		String code2=null;
+			try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				appId = LoginUserContextHolder.getAppKey();
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+				if(userLoginRegister==null){
+					resultMap.put("message", Prompt.passport_is_not_exists);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				code2=userLoginRegisterService.getIdentifyingCode(passport);
+				if(StringUtils.isEmpty(code2)){
+					resultMap.put("message", Prompt.identifying_code_has_experied_);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
+					userLoginRegister.setPassport(passport);
+					bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
+					if(bl==false){
+						resultMap.put("message", Prompt.update_passport_is_failed);
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);	
+					}
+				}else{
+					resultMap.put("message", Prompt.code_is_not_right);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				resultMap.put("message", Prompt.update_passport_is_successed);
+				resultMap.put("status",1);
+				return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("修改邮箱或手机失败:"+userId);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
     
 	/**
 	 * 用户注册
@@ -1076,7 +1139,7 @@ public class UserController extends BaseControl {
 	/**
 	 * 申请添加好友
 	 * @param userId  当前用户ID
-	 * @param friendId 要添加的好友的用户ID
+	 * @param friendIds 要添加的好友的用户ID,ID是以逗号分隔的字符串
 	 * @param content 添加用户时发送的消息.
 	 * @param appId 来源应用id.
 	 * @param status 申请状态.
@@ -1084,14 +1147,17 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/applyToAddFriendly" }, method = { RequestMethod.POST })
 	public MappingJacksonValue applyToAddFriendly(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "friendId",required = true) Long friendId
-			,@RequestParam(name = "content",required = true) String content
+			,@RequestParam(name = "friendIds",required = true) String friendIds
+			,@RequestParam(name = "content",required = false) String content
 			,@RequestParam(name = "status",required = true) String status
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserFriendly userFriendly=null;
 		Long userId=null;
 		Long appId=null;
+		List<Long> listFriendsid=new ArrayList<Long>();
+		String[] tempsarray=null;
+		Long id=null;
 		try {
 			userId = LoginUserContextHolder.getUserId();
 			appId=LoginUserContextHolder.getAppKey();
@@ -1110,34 +1176,192 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			if(userLoginRegisterService.getUserLoginRegister(friendId)==null){
-				resultMap.put("message", Prompt.friendId_is_not_exists_in_UserLoginRegister);
+			if(StringUtils.isEmpty(friendIds)){
+				resultMap.put("message", Prompt.friendIds_is_empty);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			userFriendly=new UserFriendly();
-			userFriendly.setUserId(userId);
-			userFriendly.setFriendId(friendId);
-			userFriendly.setStatus(new Byte(status));
-			userFriendly.setContent(content);
-			userFriendly.setAppId(appId);
-			UserFriendly uf=userFriendlyService.getFriendly(userId ,friendId);
-			if(uf!=null && uf.getStatus().intValue()==0){
-				resultMap.put("message", Prompt.has_been_add_this_friendly_please_waiting_for_him_to_agree);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
+			tempsarray=friendIds.split(",");
+			for (int i = 0; i < tempsarray.length; i++) {
+				id=new Long(tempsarray[i]);
+				if(userLoginRegisterService.getUserLoginRegister(id)!=null){
+					listFriendsid.add(id);
+				}
 			}
-			if(uf!=null && uf.getStatus().intValue()==1){
-				resultMap.put("message", Prompt.he_s_already_a_good_friend_of_yours_cannot_repeat_add_him);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
+			for (Long friendId : listFriendsid) {
+				userFriendly=new UserFriendly();
+				userFriendly.setUserId(userId);
+				userFriendly.setFriendId(friendId);
+				userFriendly.setStatus(new Byte(status));
+				userFriendly.setContent(StringUtils.isEmpty(content)==true?"你好":content);
+				userFriendly.setAppId(appId);
+				UserFriendly uf=userFriendlyService.getFriendly(userId ,friendId);
+				if(uf!=null && uf.getStatus().intValue()==0){
+					resultMap.put("message", Prompt.has_been_add_this_friendly_please_waiting_for_him_to_agree);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(uf!=null && uf.getStatus().intValue()==1){
+					resultMap.put("message", Prompt.he_s_already_a_good_friend_of_yours_cannot_repeat_add_him);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userFriendlyService.createUserFriendly(userFriendly,true);
 			}
-			userFriendlyService.createUserFriendly(userFriendly,true);
 			resultMap.put("message", Prompt.apply_to_add_friendly_successed);
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
-			logger.info("添加好友"+friendId+"失败");
+			logger.info("添加好友"+friendIds+"失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 获取申请添加当前用户为好友的申请列表
+	 * @param appId 来源应用id.
+	 * @param status 申请状态.
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getApplyToAddFriendly" }, method = { RequestMethod.POST })
+	public MappingJacksonValue getApplyToAddFriendly(HttpServletRequest request,HttpServletResponse response
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		Long appId=null;
+		List<UserFriendly> listFriends=null;
+		Long id=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			appId=LoginUserContextHolder.getAppKey();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			listFriends=new ArrayList<UserFriendly>();
+			listFriends=userFriendlyService.getApplyFriendlyList(userId);
+			resultMap.put("message", Prompt.apply_to_add_friendly_successed);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取申请添加当前用户为好友的申请列表:"+userId+"失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 添加我的好友到目录或标签
+	 * @param userId  当前用户ID
+	 * @param friendIds 要添加的好友的用户ID,ID是以逗号分隔的字符串
+	 * @param appId 来源应用id.
+	 * @param status 申请状态.
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/addFriendlyToDirectoryOrTag" }, method = { RequestMethod.POST })
+	public MappingJacksonValue addFriendlyToDirectoryOrTag(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "friendIds",required = true) String friendIds
+			,@RequestParam(name = "directoryId",required = false) Long directoryId
+			,@RequestParam(name = "tagId",required = false) Long tagId
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserOrgPerCusRel userOrgPerCusRel=null;
+		Long userId=null;
+		Long appId=null;
+		List<Long> listFriendsid=new ArrayList<Long>();
+		List<UserOrgPerCusRel> userOrgPerCusRelList=null;
+		String[] tempsarray=null;
+		Long id=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			appId=LoginUserContextHolder.getAppKey();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(StringUtils.isEmpty(directoryId)){
+				resultMap.put("message", Prompt.directoryId_is_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(StringUtils.isEmpty(tagId)){
+				resultMap.put("message", Prompt.tagId_is_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(ObjectUtils.isEmpty(friendIds)){
+				resultMap.put("message", Prompt.friendIds_is_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			tempsarray=friendIds.split(",");
+			for (int i = 0; i < tempsarray.length; i++) {
+				id=new Long(tempsarray[i]);
+				if(userLoginRegisterService.getUserLoginRegister(id)!=null){
+					listFriendsid.add(id);
+				}
+			}
+			userOrgPerCusRelList=new ArrayList<UserOrgPerCusRel>();
+			for (Long friendId : listFriendsid) {
+				userOrgPerCusRel=userOrgPerCusRelService.getUserOrgPerCusRel(userId, friendId);
+				if(!ObjectUtils.isEmpty(userOrgPerCusRel!=null)){
+					userOrgPerCusRel.setDirectoryId(directoryId);
+					userOrgPerCusRel.setTagId(tagId);
+					userOrgPerCusRelList.add(userOrgPerCusRel);
+				}
+				userOrgPerCusRelService.updateUserOrgPerCusRelList(userOrgPerCusRelList);
+			}
+			resultMap.put("message", Prompt.apply_to_add_friendly_successed);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("添加我的好友到目录或标签"+friendIds+"失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 修改用户备注名
+	 * @param userId  当前用户ID
+	 * @param friendId 好友的ID
+	 * @param appId 来源应用id.
+	 * @param status 申请状态.
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/updateFriendlyName" }, method = { RequestMethod.POST })
+	public MappingJacksonValue updateFriendlyName(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "friendId",required = true) Long friendId
+			,@RequestParam(name = "name",required = false) String name
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>(); 
+		Long userId=null;
+		Long appId=null;
+		Long id=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			appId=LoginUserContextHolder.getAppKey();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userOrgPerCusRelService.updateName(userId, friendId, name);
+			resultMap.put("message", Prompt.apply_to_add_friendly_successed);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("修改用户备注名"+friendId+"失败");
 			logger.info(e.getStackTrace());
 			throw e;
 		}

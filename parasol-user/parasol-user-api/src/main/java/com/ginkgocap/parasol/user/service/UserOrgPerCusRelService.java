@@ -19,6 +19,13 @@ public interface UserOrgPerCusRelService {
 	 * @throws UserOrgPerCusRelServiceException
 	 */
 	public Long createUserOrgPerCusRel(UserOrgPerCusRel userOrgPerCusRel) throws UserOrgPerCusRelServiceException; 
+	/**
+	 * 修改用户好友人脉组织客户关系
+	 * @param userOrgPerCusRel 
+	 * @return Long
+	 * @throws UserOrgPerCusRelServiceException
+	 */
+	public boolean updateUserOrgPerCusRelList(List<UserOrgPerCusRel> userOrgPerCusRelList) throws UserOrgPerCusRelServiceException; 
 	
 
 	/**

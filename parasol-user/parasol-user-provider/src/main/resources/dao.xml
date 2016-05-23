@@ -114,7 +114,11 @@
  		<!-- 通过好友friendId查找id --> 
           <map name="UserFriendly_Map_FriendId"
                  sqlitem="select id from tb_user_friendly where friend_id=? and user_id=?"
-                 sqlType="hsql" keyProperty="friendId,userId" valueProperty="id"  update="true"/>                                 	                 			
+                 sqlType="hsql" keyProperty="friendId,userId" valueProperty="id"  update="true"/>     
+        <!-- 通过用户id查找申请和用户做好友的列表 --> 
+		  <list name="UserFriendly_List_Friendly_UserId"
+                 sqlitem="select id from tb_user_friendly where user_id =? and status=0 order by utime desc"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>                                             	                 			
 		</object>
 		<object name="com.ginkgocap.parasol.user.model.UserLoginThird" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">

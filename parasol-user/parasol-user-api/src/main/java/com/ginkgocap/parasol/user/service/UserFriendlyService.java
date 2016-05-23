@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.user.service;
 
+import java.util.List;
+
 import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
 import com.ginkgocap.parasol.user.model.UserFriendly;
 
@@ -43,6 +45,12 @@ public interface UserFriendlyService {
 	 * @throws UserFriendlyServiceException
 	 */
 	public UserFriendly getFriendly(Long userId,Long friendId) throws UserFriendlyServiceException;	
+	/**
+	 * 获取申请添加当前用户为好友的申请列表
+	 * @param userId
+	 * @throws UserFriendlyServiceException
+	 */
+	public List<UserFriendly> getApplyFriendlyList(Long userId) throws UserFriendlyServiceException;	
 	
 	/**
 	 * 通过主键删除

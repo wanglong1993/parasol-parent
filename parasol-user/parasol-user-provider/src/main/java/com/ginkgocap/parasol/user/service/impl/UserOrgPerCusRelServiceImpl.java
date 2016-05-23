@@ -175,5 +175,20 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 			throw new UserOrgPerCusRelServiceException(e);
 		}
 	}
+
+	@Override
+	public boolean updateUserOrgPerCusRelList(List<UserOrgPerCusRel> userOrgPerCusRelList)throws UserOrgPerCusRelServiceException {
+		boolean bl=false;
+		if(userOrgPerCusRelList==null || userOrgPerCusRelList.size()==0)return false;
+		try {
+			bl=updateEntitys(userOrgPerCusRelList);
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserOrgPerCusRelServiceException(e);
+		}
+		return bl;
+	}
 	
 }

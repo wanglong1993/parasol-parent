@@ -65,6 +65,12 @@ public final class Prompt {
 	public static final  String findpwd_email_type_is_not_correcct="找回密码邮箱验证码类型emailtype值只能为2或4";
 	public static final  String register_email_type_is_not_correcct="注册邮箱验证码类型emailtype值只能为0或1";
 	public static final  String user_perfectionInfo_is_failed="完善用户信息失败";
+	public static final  String update_passport_is_failed="修改绑定邮箱或手机失败";
+	public static final  String update_passport_is_successed="修改成功";
+	public static final  String identifying_code_has_experied_="验证码不存在或已经过期";
+	public static final  String friendIds_is_empty="好友ID不能为空，且ID是以逗号分隔的字符串";
+	public static final  String directoryId_is_empty="目录id不能为空";
+	public static final  String tagId_is_empty="标签id不能为空";
 	
 	
 
