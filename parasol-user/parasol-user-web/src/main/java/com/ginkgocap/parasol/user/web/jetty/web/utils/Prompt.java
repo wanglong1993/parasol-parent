@@ -15,6 +15,7 @@ public final class Prompt {
 	public static final  String passport_is_not_exists="手机或邮箱不存在";
 	public static final  String userId_is_null_or_empty_please_first_authentication_and_get_access_token="请先oauth认证获取用户access_token";
 	public static final  String passport_is_not_exists_in_UserLoginRegister="用户登录信息中不存在该手机号或邮箱";
+	public static final  String gid_is_exists_in_UserLoginRegister="金桐号已经存在";
 	public static final  String user_is_not_exists_in_UserLoginRegister="用户不存在";
 	public static final  String friendId_is_not_exists_in_UserLoginRegister="好友id在用户登录信息中不存在";
 	public static final  String has_been_add_this_friendly_please_waiting_for_him_to_agree="你已经添加该好友，请等待对方同意";

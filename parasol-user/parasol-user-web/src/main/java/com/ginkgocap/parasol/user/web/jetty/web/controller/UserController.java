@@ -1230,7 +1230,9 @@ public class UserController extends BaseControl {
 		Long userId=null;
 		Long appId=null;
 		List<UserFriendly> listFriends=null;
+		List<UserBasic> listUserBasic=null;
 		Long id=null;
+		UserBasic userBasic=null;
 		try {
 			userId = LoginUserContextHolder.getUserId();
 			appId=LoginUserContextHolder.getAppKey();
@@ -1241,8 +1243,60 @@ public class UserController extends BaseControl {
 			}
 			listFriends=new ArrayList<UserFriendly>();
 			listFriends=userFriendlyService.getApplyFriendlyList(userId);
-			resultMap.put("message", Prompt.apply_to_add_friendly_successed);
+			listUserBasic=new ArrayList<UserBasic>();
+			for (UserFriendly userFriendly : listFriends) {
+				userBasic=userBasicService.getUserBasic(userFriendly.getFriendId());
+				if(!ObjectUtils.isEmpty(userBasic)){
+					userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
+					listUserBasic.add(userBasic);
+				}
+			}
 			resultMap.put("status",1);
+			resultMap.put("listUserBasic",listUserBasic);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取申请添加当前用户为好友的申请列表:"+userId+"失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 设置金桐号
+	 * @param gid 金桐号.
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getApplyToAddFriendly" }, method = { RequestMethod.POST })
+	public MappingJacksonValue getApplyToAddFriendly(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "gid",required = true) String gid
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		Long appId=null;
+		UserLoginRegister userLoginRegister=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			appId=LoginUserContextHolder.getAppKey();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegisterByGid(gid);
+			if(userLoginRegister!=null){
+				resultMap.put("message", Prompt.gid_is_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister.setGid(gid);
+			userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
+			resultMap.put("status",1);
+			resultMap.put("message", Prompt.update_passport_is_successed);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("获取申请添加当前用户为好友的申请列表:"+userId+"失败");

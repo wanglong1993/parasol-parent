@@ -19,6 +19,10 @@
           <map name="UserLoginRegister_Map_Passport"
                  sqlitem="select id from tb_user_login_register where passport=? "
                  sqlType="hsql" keyProperty="passport" valueProperty="id"  update="true"/>
+ 		<!-- 通过金桐号查找用户id是否存在 --> 
+          <map name="UserLoginRegister_Map_Gid"
+                 sqlitem="select id from tb_user_login_register where gid=? "
+                 sqlType="hsql" keyProperty="gid" valueProperty="id"  update="true"/>
         <!-- 通过mobile查找用户id是否存在 --> 
           <map name="UserLoginRegister_Map_Mobile"
                  sqlitem="select id from tb_user_login_register where mobile=? "

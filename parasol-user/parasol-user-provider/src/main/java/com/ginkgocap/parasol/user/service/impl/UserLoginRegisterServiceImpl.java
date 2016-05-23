@@ -45,6 +45,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private Cache cache;
 	
 	private static final String USER_LOGIN_REGISTER_MAP_PASSPORT = "UserLoginRegister_Map_Passport"; 
+	private static final String USER_LOGIN_REGISTER_MAP_GID = "UserLoginRegister_Map_Gid"; 
 	private static final String USER_LOGIN_REGISTER_MAP_MOBILE = "UserLoginRegister_Map_Mobile"; 
 	private static final String USER_LOGIN_REGISTER_MAP_EMAIL = "UserLoginRegister_Map_Email"; 
 	private static final String USER_LOGIN_REGISTER_MAP_USER_NAME = "UserLoginRegister_Map_User_Name"; 
@@ -424,5 +425,25 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	@Override
 	public boolean deleteIdentifyingCode(String passport)throws UserLoginRegisterServiceException {
 		return cache.remove(passport);
+	}
+	@Override
+	public UserLoginRegister getUserLoginRegisterByGid(String gid)throws UserLoginRegisterServiceException {
+		try {
+			if(StringUtils.isEmpty(gid)) throw new UserLoginRegisterServiceException("gid is null or empty.");
+			UserLoginRegister userLoginRegister=null;
+			//根据passport查找id
+			Long id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_GID,gid);
+			//根据id查找实体
+			if(id!=null && id>0l){	
+				userLoginRegister=getEntity(id);
+				return userLoginRegister;
+			}
+			return null;
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
 	}
 }
