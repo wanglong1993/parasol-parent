@@ -117,8 +117,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	}
 
 	@Override
-	public boolean 
-(Long userId, Tag tag) throws TagServiceException {
+	public boolean updateTag(Long userId, Tag tag) throws TagServiceException {
 		ServiceError.assertPopertiesIsNullForTag("id");
 		ServiceError.assertPopertiesIsNullForTag("tagName");
 		ServiceError.assertUserIdIsNull(userId);
