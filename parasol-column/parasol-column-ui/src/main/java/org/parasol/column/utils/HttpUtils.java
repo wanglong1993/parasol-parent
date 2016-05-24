@@ -2,6 +2,7 @@ package org.parasol.column.utils;
 
 import java.io.IOException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
@@ -43,6 +44,47 @@ public class HttpUtils {
 			}
 			try {
 				if(client!=null) client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	public static String sendPost(String url,String content,String type,Map<String,String> headers) {
+		CloseableHttpClient client = null;
+		CloseableHttpResponse resp = null;
+		try {
+			client = HttpClients.createDefault();
+			HttpPost post = new HttpPost(url);
+			post.addHeader("Content-type",type);
+			for(String key:headers.keySet()){
+				post.addHeader(key, headers.get(key));
+			}
+			StringEntity entity = new StringEntity(content, ContentType.create(type, "UTF-8"));
+			post.setEntity(entity);
+			resp = client.execute(post);
+			int statusCode = resp.getStatusLine().getStatusCode();
+			if(statusCode>=200&&statusCode<300) {
+				String str = EntityUtils.toString(resp.getEntity(),"utf-8");
+				return str;
+			}
+		} catch (UnsupportedCharsetException e) {
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(client!=null) client.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				if(resp!=null) resp.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

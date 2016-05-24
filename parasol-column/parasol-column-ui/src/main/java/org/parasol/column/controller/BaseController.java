@@ -26,9 +26,9 @@ public class BaseController {
 	public Long getUserId(HttpServletRequest request){
 		User user=this.getUser(request);
 		Long uid=0l;
-		/*if(user!=null){
-			uid=user.getUserLoginRegister().getId();
-		}*/
+		if(user!=null){
+			uid=user.getId();
+		}
 		return uid;
 	}
 	
