@@ -1265,8 +1265,8 @@ public class UserController extends BaseControl {
 	 * @param gid 金桐号.
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/getApplyToAddFriendly" }, method = { RequestMethod.POST })
-	public MappingJacksonValue getApplyToAddFriendly(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/user/user/setGid" }, method = { RequestMethod.POST })
+	public MappingJacksonValue setGid(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "gid",required = true) String gid
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
