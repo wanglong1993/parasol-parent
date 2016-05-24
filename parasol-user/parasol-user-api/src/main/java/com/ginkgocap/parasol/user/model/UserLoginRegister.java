@@ -91,6 +91,7 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.ctime = ctime;
 		this.utime = utime;
 		this.ip = ip;
+		this.gid = gid;
 	}
 
 	public UserLoginRegister(long id, String passport, String mobile,
@@ -109,6 +110,7 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.ctime = ctime;
 		this.utime = utime;
 		this.ip = ip;
+		this.gid = gid;
 	}
 
 	@Id
