@@ -30,7 +30,11 @@
 	http://www.springframework.org/schema/integration/stream/spring-integration-stream-2.1.xsd 
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
-	<dubbo:reference id="columnCustomService" interface="org.parasol.column.service.ColumnCustomService"  version="1.0.1"/>
-	<dubbo:reference id="columnSelfService" interface="org.parasol.column.service.ColumnSelfService"  version="1.0.1"/>
-	<dubbo:reference id="columnSysService" interface="org.parasol.column.service.ColumnSysService"  version="1.0.1"/>
+	
+    <dubbo:application name="${column.dubbo.application.name}" />
+    <!-- 
+    <dubbo:protocol name="${column.dubbo.protocol.name}" port="${column.dubbo.protocol.port}" />
+     -->
+    <dubbo:registry address="${column.dubbo.registry.address}" protocol="${column.dubbo.protocol.name}"/>
+    <dubbo:consumer timeout="10000" check="false" />
 </beans>

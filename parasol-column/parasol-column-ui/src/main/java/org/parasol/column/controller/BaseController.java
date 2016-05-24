@@ -5,9 +5,9 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.json.JSONObject;
+import com.ginkgocap.ywxt.user.model.User;
 
-import com.ginkgocap.parasol.user.model.User;
+import net.sf.json.JSONObject;
 
 
 
@@ -26,9 +26,9 @@ public class BaseController {
 	public Long getUserId(HttpServletRequest request){
 		User user=this.getUser(request);
 		Long uid=0l;
-		if(user!=null){
+		/*if(user!=null){
 			uid=user.getUserLoginRegister().getId();
-		}
+		}*/
 		return uid;
 	}
 	

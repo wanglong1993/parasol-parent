@@ -21,6 +21,7 @@
 	http://www.springframework.org/schema/data/jpa/spring-jpa-1.2.xsd">
 	<context:component-scan base-package="org.parasol.column">
 	</context:component-scan>
+	<import resource="classpath:column-dubbo-config.xml" />
 	<import resource="classpath:column-dubbo-consumer.xml" />
 	<!-- <import resource="classpath:requirement-dubbo-consumer.xml" /> -->
 	<!-- <import resource="classpath:applicationContext_log.xml"/> -->
@@ -31,7 +32,7 @@
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="locations">
 			<list>
-				<value>classpath:conf/dubbo.properties</value>
+				<value>classpath:application.properties</value>
 			</list>
 		</property>
 	</bean>

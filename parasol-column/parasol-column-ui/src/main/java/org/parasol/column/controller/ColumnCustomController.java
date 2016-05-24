@@ -7,20 +7,16 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.parasol.column.entity.ColumnCustom;
 import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.service.ColumnCustomService;
 import org.parasol.column.utils.JsonUtils;
 import org.parasol.column.vo.ColumnVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ginkgocap.parasol.user.model.User;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
 
@@ -28,7 +24,8 @@ import com.gintong.frame.util.dto.InterfaceResult;
 @RequestMapping("/columncustom")
 public class ColumnCustomController extends BaseController {
 	
-	@Resource(name="columnCustomService")
+//	@Resource(name="columnCustomService")
+	@Autowired
 	private ColumnCustomService ccs;
 	
 	@RequestMapping(value="/showColumn",method = RequestMethod.POST)

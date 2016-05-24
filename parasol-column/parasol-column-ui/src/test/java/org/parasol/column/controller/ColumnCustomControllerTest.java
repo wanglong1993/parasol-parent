@@ -99,4 +99,11 @@ public class ColumnCustomControllerTest {
 		System.out.println(resp);
 	}
 */
+	@Test
+	public void testShowColumn(){
+		String jsonStr="{\"pid\":\"0\"}";
+		String url="http://localhost:8022/columncustom/showColumn";
+//		String resp=HttpUtils.sendJsonPost(url, jsonStr);
+//		System.out.println(resp);
+	}
 }
