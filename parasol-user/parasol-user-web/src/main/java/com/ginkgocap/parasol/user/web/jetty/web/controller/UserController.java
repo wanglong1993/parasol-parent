@@ -713,14 +713,14 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-				//个人用户手机和邮箱注册
-				if((type==2 || type==1) && userType.equals("0")){
+				//验证code
+//				if((type==2 || type==1) && userType.equals("0")){
 					if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
 						resultMap.put( "message", Prompt.code_is_not_right);
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
 					}
-				}
+//				}
 				if(StringUtils.isEmpty(password)){
 					resultMap.put( "message", Prompt.passowrd_cannot_be_null_or_empty);
 					resultMap.put( "status", 0);
