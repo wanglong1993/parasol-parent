@@ -479,6 +479,11 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
+				if(StringUtils.isEmpty(name)){
+					resultMap.put( "message", "用户昵称不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
 				userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
 				if(ObjectUtils.isEmpty(userLoginRegister)){
 					resultMap.put( "message", Prompt.user_is_not_exists_in_UserLoginRegister);
@@ -525,7 +530,7 @@ public class UserController extends BaseControl {
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
-					resultMap.put( "status", 1);
+					resultMap.put("status", 1);
 					return new MappingJacksonValue(resultMap);
 				}
 
@@ -3108,6 +3113,8 @@ public class UserController extends BaseControl {
 //					}
 //				}
 			}
+			userLoginRegister.setUtime(System.currentTimeMillis());
+			userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
 			JSONObject json=getAccessToken(request,passport,password,appid==null?client_id:appid,appsecret==null?client_secret:appsecret,GRANT_TYPE);
 			if(json==null){
 				resultMap.put( "message", Prompt.get_access_token_is_null);
