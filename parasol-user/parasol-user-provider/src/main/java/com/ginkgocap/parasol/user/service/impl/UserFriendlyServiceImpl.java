@@ -33,6 +33,7 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 	private static int error_uesrId_is_not_exists = 1004;	
 	private static int error_FriendId_is_not_exists = 1005;	
 	private static final String UserFriendly_Map_FriendId = "UserFriendly_Map_FriendId"; 
+	private static final String UserFriendly_List_Friendly_UserId = "UserFriendly_List_Friendly_UserId"; 
 	private static Logger logger = Logger.getLogger(UserFriendlyServiceImpl.class);
 	@Override
 	public Long createUserFriendly(UserFriendly userFriendly,boolean isSendMessage)throws UserFriendlyServiceException {
@@ -132,6 +133,22 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 			Long id =(Long) getMapId(UserFriendly_Map_FriendId, new Object[]{userId,friendId});
 			if(id!=null) return getEntity(id);
 			else return null;
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserFriendlyServiceException(e);
+		}
+	}
+	@Override
+	public List<UserFriendly> getApplyFriendlyList(Long userId)throws UserFriendlyServiceException {
+		List<UserFriendly> list =null;
+		List<Long> ids =null;
+		try {
+			ids =getIds(UserFriendly_List_Friendly_UserId, new Object[]{userId});
+			if(ids==null || ids.size()==0 )return null;
+			list=getEntityByIds(ids);
+			return list;
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
 				e.printStackTrace(System.err);

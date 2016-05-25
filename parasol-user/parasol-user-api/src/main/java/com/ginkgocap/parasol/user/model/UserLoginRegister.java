@@ -71,6 +71,10 @@ public class UserLoginRegister implements java.io.Serializable {
 	 * 用户IP.
 	 */
 	private String ip;
+	/**
+	 * 金桐号.
+	 */
+	private String gid;
 
 	public UserLoginRegister() {
 	}
@@ -87,6 +91,7 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.ctime = ctime;
 		this.utime = utime;
 		this.ip = ip;
+		this.gid = gid;
 	}
 
 	public UserLoginRegister(long id, String passport, String mobile,
@@ -105,6 +110,7 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.ctime = ctime;
 		this.utime = utime;
 		this.ip = ip;
+		this.gid = gid;
 	}
 
 	@Id
@@ -217,6 +223,14 @@ public class UserLoginRegister implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	@Column(name = "gid")
+	public String getGid() {
+		return gid;
+	}
+
+	public void setGid(String gid) {
+		this.gid = gid;
 	}
 
 }

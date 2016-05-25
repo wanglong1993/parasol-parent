@@ -27,7 +27,11 @@ public class UserWorkHistory implements java.io.Serializable {
 	/**
 	 * 单位名称.
 	 */
-	private String incName;
+	private String name;
+	/**
+	 * 部门
+	 */
+	private String department;
 	/**
 	 * 职务.
 	 */
@@ -44,10 +48,6 @@ public class UserWorkHistory implements java.io.Serializable {
 	 * 描述.
 	 */
 	private String description;
-	/**
-	 * 好友可见 1.公开，2.好友可见.
-	 */
-	private Byte isVisible;
 	/**
 	 * 创建时间.
 	 */
@@ -86,14 +86,24 @@ public class UserWorkHistory implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "inc_name")
-	public String getIncName() {
-		return this.incName;
+	@Column(name = "name")
+	public String getName() {
+		return this.name;
 	}
 
-	public void setIncName(String incName) {
-		this.incName = incName;
+	public void setName(String name) {
+		this.name = name;
 	}
+	@Column(name = "department")
+	public String getDepartment() {
+		return department;
+	}
+
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
 
 	@Column(name = "position")
 	public String getPosition() {
@@ -129,15 +139,6 @@ public class UserWorkHistory implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@Column(name = "is_visible")
-	public Byte getIsVisible() {
-		return this.isVisible;
-	}
-
-	public void setIsVisible(Byte isVisible) {
-		this.isVisible = isVisible;
 	}
 
 	@Column(name = "ctime")

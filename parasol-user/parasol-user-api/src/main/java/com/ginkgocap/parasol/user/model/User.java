@@ -11,13 +11,11 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private UserLoginRegister userLoginRegister;
 	private UserBasic userBasic;
-	private UserExt userExt;
 	private List<UserInterestIndustry> listUserInterestIndustry;
 	private UserInfo userInfo;
-	private UserContactWay userContactWay;
+	private UserContact userContactWay;
 	private List<UserEducationHistory> listUserEducationHistory;
 	private List<UserWorkHistory> listUserWorkHistory;
-	private UserOrgPerCusRel userOrgPerCusRel;
 	private List<UserDefined> listUserDefined;
 	
 	public UserLoginRegister getUserLoginRegister() {
@@ -32,29 +30,17 @@ public class User implements Serializable {
 	public void setUserBasic(UserBasic userBasic) {
 		this.userBasic = userBasic;
 	}
-	public UserExt getUserExt() {
-		return userExt;
-	}
-	public void setUserExt(UserExt userExt) {
-		this.userExt = userExt;
-	}
 	public UserInfo getUserInfo() {
 		return userInfo;
 	}
 	public void setUserInfo(UserInfo userInfo) {
 		this.userInfo = userInfo;
 	}
-	public UserContactWay getUserContactWay() {
+	public UserContact getUserContactWay() {
 		return userContactWay;
 	}
-	public void setUserContactWay(UserContactWay userContactWay) {
+	public void setUserContactWay(UserContact userContactWay) {
 		this.userContactWay = userContactWay;
-	}
-	public UserOrgPerCusRel getUserOrgPerCusRel() {
-		return userOrgPerCusRel;
-	}
-	public void setUserOrgPerCusRel(UserOrgPerCusRel userOrgPerCusRel) {
-		this.userOrgPerCusRel = userOrgPerCusRel;
 	}
 	public List<UserInterestIndustry> getListUserInterestIndustry() {
 		return listUserInterestIndustry;

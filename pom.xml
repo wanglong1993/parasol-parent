@@ -36,7 +36,7 @@
 			<url>http://192.168.101.89:8081/nexus/content/groups/public</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 				<checksumPolicy>ignore</checksumPolicy>
 			</snapshots>
 			<releases>

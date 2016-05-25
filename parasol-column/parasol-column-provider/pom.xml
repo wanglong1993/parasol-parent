@@ -540,7 +540,7 @@
 				<dubbo.application.name>columndubboprovider</dubbo.application.name>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
-				<dubbo.protocol.port>8812</dubbo.protocol.port>
+				<dubbo.protocol.port>8816</dubbo.protocol.port>
 				<!-- 应用端的挂载配置路径 -->
 				<linux.mount.path>/webserver/upload/column</linux.mount.path>
 				<webserver.path>/root/apache-tomcat-6.0.36/webapps</webserver.path>

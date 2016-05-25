@@ -27,9 +27,9 @@ public class UserDefined implements java.io.Serializable {
 	 */
 	private Long userId;
 	/**
-	 * 自定义模块名.
+	 * 应用id
 	 */
-	private String userDefinedModel;
+	private Long appId;
 	/**
 	 * 自定义字段名.
 	 */
@@ -64,19 +64,6 @@ public class UserDefined implements java.io.Serializable {
 		this.ip = ip;
 	}
 
-	public UserDefined(Long id, Long userId, String userDefinedModel,
-			String userDefinedFiled, String userDefinedValue, Long ctime,
-			Long utime, String ip) {
-		this.id = id;
-		this.userId = userId;
-		this.userDefinedModel = userDefinedModel;
-		this.userDefinedFiled = userDefinedFiled;
-		this.userDefinedValue = userDefinedValue;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
-
 	@Id
 	@GeneratedValue(generator = "id")
 	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
@@ -96,15 +83,6 @@ public class UserDefined implements java.io.Serializable {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
-	}
-
-	@Column(name = "user_defined_model")
-	public String getUserDefinedModel() {
-		return this.userDefinedModel;
-	}
-
-	public void setUserDefinedModel(String userDefinedModel) {
-		this.userDefinedModel = userDefinedModel;
 	}
 
 	@Column(name = "user_defined_filed")

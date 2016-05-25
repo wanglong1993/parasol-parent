@@ -176,6 +176,12 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public boolean getEmail(String email) throws UserLoginRegisterServiceException;
+	/**
+	 * 查找金桐号
+	 * @param gid
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public UserLoginRegister getUserLoginRegisterByGid(String gid) throws UserLoginRegisterServiceException; 
 
 	
 

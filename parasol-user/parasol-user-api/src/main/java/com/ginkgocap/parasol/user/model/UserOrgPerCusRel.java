@@ -48,6 +48,14 @@ public class UserOrgPerCusRel implements java.io.Serializable {
 	 * 成为好友时间.
 	 */
 	private Long utime;
+	/**
+	 * 目录ID.
+	 */
+	private Long directoryId;
+	/**
+	 * 标签ID.
+	 */
+	private Long tagId;
 
 	public UserOrgPerCusRel() {
 	}
@@ -139,6 +147,22 @@ public class UserOrgPerCusRel implements java.io.Serializable {
 
 	public void setUtime(Long utime) {
 		this.utime = utime;
+	}
+	@Column(name = "directoryId")
+	public Long getDirectoryId() {
+		return directoryId;
+	}
+
+	public void setDirectoryId(Long directoryId) {
+		this.directoryId = directoryId;
+	}
+	@Column(name = "tagId")
+	public Long getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(Long tagId) {
+		this.tagId = tagId;
 	}
 
 }
