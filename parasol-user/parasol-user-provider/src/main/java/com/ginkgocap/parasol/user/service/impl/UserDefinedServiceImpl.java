@@ -1,91 +1,85 @@
 package com.ginkgocap.parasol.user.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
-import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.user.exception.UserDefinedServiceException;
 import com.ginkgocap.parasol.user.model.UserDefined;
-import com.ginkgocap.parasol.user.service.UserDefinedService;
+import com.ginkgocap.parasol.user.service.Common2Service;
 @Service("userDefinedService")
-public class UserDefinedServiceImpl extends BaseService<UserDefined> implements UserDefinedService {
-	private static final String USER_DEFINED_LIST_USERID = "UserDefined_List_UserId";
-	private static Logger logger = Logger.getLogger(UserDefinedServiceImpl.class);
-	
-	/**
-	 * 检查数据
-	 * @param list
-	 * @return
-	 * @throws UserDefinedServiceException
-	 */
-	private List<UserDefined> checkValidity(List<UserDefined> list)throws UserDefinedServiceException{
-		if(list==null || list.size()==0) throw new UserDefinedServiceException("UserDefined is null");
-		for (UserDefined userDefined : list) {
-			if(userDefined.getUserId()==null ||userDefined.getUserId()<=0l) throw new UserDefinedServiceException("userId must be a value");
-			if(StringUtils.isEmpty(userDefined.getIp())) throw new UserDefinedServiceException("ip is null or empty");
-			if(userDefined.getCtime()==null ||userDefined.getCtime()<=0l)userDefined.setCtime(System.currentTimeMillis());
-			if(userDefined.getUtime()==null ||userDefined.getUtime()<=0l)userDefined.setUtime(System.currentTimeMillis());
-		}
-		return list;
-	}
-	 
-	@Override
-	public List<UserDefined> createUserDefinedByList(List<UserDefined> list,Long userId) throws UserDefinedServiceException {
-		try {
-			checkValidity(list);
-			//删除以前的
-			deleteEntityByIds(getIdList(userId));
-			List<UserDefined> userDefineds=saveEntitys(list);
-			if(userDefineds==null || userDefineds.size()==0) throw new UserDefinedServiceException("createUserDefinedByList failed.");
-			return userDefineds;
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserDefinedServiceException(e);
-		}
+public class UserDefinedServiceImpl extends BaseService<UserDefined> implements Common2Service<UserDefined> {
+	private UserDefined checkValidity(UserDefined userDefined,int type)throws Exception {
+		if(userDefined==null) throw new Exception("UserDefined can not be null.");
+		if(userDefined.getUserId()<0l) throw new Exception("The value of userId is null or empty.");
+		if(type!=0)
+		if(getObject(userDefined.getId())==null)throw new Exception("userId not exists in UserDefined");
+//		if(StringUtils.isEmpty(userBasic.getName()))throw new UserBasicServiceException("The value of  name is null or empty.");
+		if(userDefined.getCtime()==null) userDefined.setCtime(System.currentTimeMillis());
+		if(userDefined.getUtime()==null) userDefined.setUtime(System.currentTimeMillis());
+		if(type==1)userDefined.setUtime(System.currentTimeMillis());
+		return userDefined;
 	}
 	@Override
-	public List<Long> getIdList(Long userId) throws UserDefinedServiceException {
-		try {
-			if((userId==null || userId<=0l)) return ListUtils.EMPTY_LIST;
-			return getIds(USER_DEFINED_LIST_USERID,userId);
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserDefinedServiceException(e);
-		}
-	}
-	@Override
-	public boolean realDeleteUserDefinedList(List<Long> list)throws UserDefinedServiceException {
-		try {
-			if(list==null || list.size()==0) return false;
-			return deleteEntityByIds(list);
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserDefinedServiceException(e);
-		}
+	public Long createObject(UserDefined object) throws Exception {
+		Long id= (Long)this.saveEntity(this.checkValidity(object, 0));
+		if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
+		else throw new Exception("创建用户联系失败！ ");
 	}
 
 	@Override
-	public List<UserDefined> getIdList(List<Long> ids)throws UserDefinedServiceException {
-		try {
-			if(ids==null || ids.size()==0) return Collections.EMPTY_LIST;
-			return getEntityByIds(ids);
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserDefinedServiceException(e);
-		}
+	public Boolean updateObject(UserDefined objcet) throws Exception {
+		if(updateEntity(checkValidity(objcet,1)))return true;
+		else return false;
 	}
+
+	@Override
+	public UserDefined getObject(Long id) throws Exception {
+		if(id==null || id<=0l)throw new Exception("id is null or empty");
+		UserDefined UserDefined =getEntity(id);
+		return UserDefined;
+	}
+
+	@Override
+	public List<UserDefined> getObjects(List<Long> ids) throws Exception {
+		if(ids==null || ids.size()<=0)throw new Exception("ids is null or empty");
+		List<UserDefined> UserDefineds =this.getEntityByIds(ids);
+		return UserDefineds;
+	}
+
+	@Override
+	public Boolean deleteObject(Long id) throws Exception {
+		if(id==null || id<=0l)throw new Exception("id is null or empty");
+		return this.deleteEntity(id);
+	}
+	@Override
+	public List<UserDefined> createObjects(List<UserDefined> objects)
+			throws Exception {
+		if(objects==null || objects.size()<=0) return null;
+		for(UserDefined UserDefined : objects){
+			this.checkValidity(UserDefined, 0);
+		}
+		return this.saveEntitys(objects);
+	}
+	@Override
+	public List<UserDefined> getObjectsByUserId(Long userId) throws Exception {
+		if(userId==null || userId<=0l)throw new Exception("id is null or empty");
+		List<Long> ids = this.getIds("UserDefined_List_UserId", userId);
+		return this.getEntityByIds(ids);
+	}
+	@Override
+	public Boolean deleteObjects(List<Long> ids) throws Exception {
+		if(ids==null || ids.size()<=0)throw new Exception("ids is null or empty");
+		return this.deleteEntityByIds(ids);
+	}
+	@Override
+	public Boolean updateObjects(List<UserDefined> objects) throws Exception {
+		if(objects==null || objects.size()<=0) return true;
+		for(UserDefined UserDefined : objects){
+			this.checkValidity(UserDefined, 1);
+		}
+		return this.updateEntitys(objects);
+	}
+
 }

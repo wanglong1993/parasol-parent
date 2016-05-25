@@ -23,6 +23,30 @@ public class UserInfo implements java.io.Serializable {
 	 */
 	private Long userId;
 	/**
+	 * 国家
+	 */
+	private String birthPlaceCountryName;
+	/**
+	 * 民族
+	 */
+	private String nation;
+	/**
+	 * 信仰
+	 */
+	private String faith;
+	/**
+	 * 血型
+	 */
+	private String bloodtype;
+	/**
+	 * 婚姻状况
+	 */
+	private String marriaged;
+	/**
+	 * 语言
+	 */
+	private String language;
+	/**
 	 * 出生日期。.
 	 */
 	private String birthday;
@@ -50,19 +74,7 @@ public class UserInfo implements java.io.Serializable {
 	 * 县.
 	 */
 	private String countyName;
-	/**
-	 * 兴趣爱好.
-	 */
-	private String interests;
-	/**
-	 * 擅长技能.
-	 */
-	private String skills;
 	
-	/**
-	 * 好友可见 1.公开，2.好友可见.
-	 */
-	private Byte isVisible;
 	/**
 	 * 创建时间.
 	 */
@@ -126,34 +138,66 @@ public class UserInfo implements java.io.Serializable {
 		this.countyId = countyId;
 	}
 
-	public String getInterests() {
-		return interests;
+	@Column(name = "birthPlaceCountryName")
+	public String getBirthPlaceCountryName() {
+		return birthPlaceCountryName;
 	}
 
 
-	public void setInterests(String interests) {
-		this.interests = interests;
+	public void setBirthPlaceCountryName(String birthPlaceCountryName) {
+		this.birthPlaceCountryName = birthPlaceCountryName;
+	}
+
+	@Column(name = "nation")
+	public String getNation() {
+		return nation;
 	}
 
 
-	public String getSkills() {
-		return skills;
+	public void setNation(String nation) {
+		this.nation = nation;
+	}
+
+	@Column(name = "faith")
+	public String getFaith() {
+		return faith;
 	}
 
 
-	public void setSkills(String skills) {
-		this.skills = skills;
+	public void setFaith(String faith) {
+		this.faith = faith;
+	}
+
+	@Column(name = "bloodtype")
+	public String getBloodtype() {
+		return bloodtype;
 	}
 
 
-	@Column(name = "is_visible")
-	public Byte getIsVisible() {
-		return this.isVisible;
+	public void setBloodtype(String bloodtype) {
+		this.bloodtype = bloodtype;
 	}
 
-	public void setIsVisible(Byte isVisible) {
-		this.isVisible = isVisible;
+	@Column(name = "marriaged")
+	public String getMarriaged() {
+		return marriaged;
 	}
+
+
+	public void setMarriaged(String marriaged) {
+		this.marriaged = marriaged;
+	}
+
+	@Column(name = "language")
+	public String getLanguage() {
+		return language;
+	}
+
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
 
 	@Column(name = "ctime")
 	public Long getCtime() {

@@ -23,6 +23,10 @@ public class UserBasic implements java.io.Serializable {
 	 */
 	private Long userId;
 	/**
+	 * 应用好
+	 */
+	private Long appId;
+	/**
 	 * 若为组织则为全称，不可更改；若为个人则为昵称，不可修改。.
 	 */
 	private String name;
@@ -31,25 +35,50 @@ public class UserBasic implements java.io.Serializable {
 	 */
 	private Byte sex;
 	/**
+	 * 省市id
+	 */
+	private long provinceId;
+	/**
+	 * 省名称
+	 */
+	private String provinceName;
+	/**
+	 * 城市id
+	 */
+	private long cityId;
+	/**
+	 * 市名称
+	 */
+	private String cityName;
+	/**
+	 * 县id
+	 */
+	private long countyId;
+	/**
+	 * 县名称
+	 */
+	private String countyName;
+	
+	/**
 	 * 公司.
 	 */
 	private String companyName;
+	/**
+	 * 职位
+	 */
+	private String companyJob;
 	/**
 	 * 用户头像.
 	 */
 	private Long picId;
 	/**
-	 * 是否验证邮箱,1,验证,0,未验证
+	 * 姓名手写字母
 	 */
-	private Byte auth;	
+	private String nameFirst;
 	/**
-	 * 手机号或邮箱.
+	 * 姓名全拼
 	 */
-	private String passport;
-	/**
-	 * 1：正常；0：锁定；-1：注销 ；2： 删除.
-	 */
-	private Byte status;
+	private String nameIndexAll;
 	/**
 	 * 简拼音.
 	 */
@@ -66,6 +95,17 @@ public class UserBasic implements java.io.Serializable {
 	 * 
 	 */
 	private String picPath;
+	
+	private String ip;
+	
+	@Column(name="ip",length=16)
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
 	
 	public UserBasic() {
 	}
@@ -128,35 +168,6 @@ public class UserBasic implements java.io.Serializable {
 	}
 
 
-	@Column(name = "passport", unique = true, length = 50)
-	public String getPassport() {
-		return this.passport;
-	}
-
-	public void setPassport(String passport) {
-		this.passport = passport;
-	}
-	
-	@Column(name = "auth", nullable = false)
-	public Byte getAuth() {
-		return auth;
-	}
-
-
-	public void setAuth(Byte auth) {
-		this.auth = auth;
-	}
-
-
-	@Column(name = "status", nullable = false)
-	public Byte getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(Byte status) {
-		this.status = status;
-	}
-
 	@Column(name = "nameIndex", length = 20)
 	public String getNameIndex() {
 		return this.nameIndex;
@@ -184,5 +195,106 @@ public class UserBasic implements java.io.Serializable {
 	public void setUtime(Long utime) {
 		this.utime = utime;
 	}
+
+	@Column(name = "province_id", length = 19)
+	public long getProvinceId() {
+		return provinceId;
+	}
+
+
+	public void setProvinceId(long provinceId) {
+		this.provinceId = provinceId;
+	}
+
+	@Transient
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	@Column(name = "city_id", length = 19)
+	public long getCityId() {
+		return cityId;
+	}
+
+
+	public void setCityId(long cityId) {
+		this.cityId = cityId;
+	}
+
+	@Transient
+	public String getCityName() {
+		return cityName;
+	}
+
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	@Column(name = "county_id", length = 19)
+	public long getCountyId() {
+		return countyId;
+	}
+
+
+	public void setCountyId(long countyId) {
+		this.countyId = countyId;
+	}
+
+	@Transient
+	public String getCountyName() {
+		return countyName;
+	}
+
+
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
+
+	@Column(name = "company_job", length = 50)
+	public String getCompanyJob() {
+		return companyJob;
+	}
+
+
+	public void setCompanyJob(String companyJob) {
+		this.companyJob = companyJob;
+	}
+
+	@Column(name = "nameFirst", length =20)
+	public String getNameFirst() {
+		return nameFirst;
+	}
+
+
+	public void setNameFirst(String nameFirst) {
+		this.nameFirst = nameFirst;
+	}
+
+	@Column(name = "nameIndexAll", length = 50)
+	public String getNameIndexAll() {
+		return nameIndexAll;
+	}
+
+
+	public void setNameIndexAll(String nameIndexAll) {
+		this.nameIndexAll = nameIndexAll;
+	}
+	
+	public Long getAppId() {
+		return appId;
+	}
+
+	@Column(name = "appId", length = 19)
+	public void setAppId(Long appId) {
+		this.appId = appId;
+	}
+	
+	
 
 }

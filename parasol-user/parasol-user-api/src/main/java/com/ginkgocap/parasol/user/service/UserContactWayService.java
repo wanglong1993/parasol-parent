@@ -3,7 +3,7 @@ package com.ginkgocap.parasol.user.service;
 import java.util.List;
 
 import com.ginkgocap.parasol.user.exception.UserContactWayServiceException;
-import com.ginkgocap.parasol.user.model.UserContactWay;
+import com.ginkgocap.parasol.user.model.UserContact;
 
 /**
  * 操作用户联系方式接口定义
@@ -17,7 +17,7 @@ public interface UserContactWayService {
 	 * @return Long
 	 * @throws UserContactWayServiceException
 	 */
-	public Long createUserContactWay(UserContactWay userContactWay) throws UserContactWayServiceException; 
+	public Long createUserContactWay(UserContact userContactWay) throws UserContactWayServiceException; 
 	
 
 	/**
@@ -26,7 +26,7 @@ public interface UserContactWayService {
 	 * @return boolean
 	 * @throws UserContactWayServiceException 
 	 */
-	public boolean updateUserContactWay(UserContactWay userContactWay) throws UserContactWayServiceException; 
+	public boolean updateUserContactWay(UserContact userContactWay) throws UserContactWayServiceException; 
 
 	/**
 	 * 根据id获取用户联系方式
@@ -34,7 +34,7 @@ public interface UserContactWayService {
 	 * @return userContactWay
 	 * @throws UserContactWayServiceException 
 	 */
-	public UserContactWay getUserContactWay(Long id) throws UserContactWayServiceException; 
+	public UserContact getUserContactWay(Long id) throws UserContactWayServiceException; 
 	
 	/**
 	 * 根据id列表获取用户联系方式列表
@@ -42,7 +42,7 @@ public interface UserContactWayService {
 	 * @return List
 	 * @throws UserContactWayServiceException
 	 */
-	public List<UserContactWay> getUserContactWayList(List<Long> ids) throws UserContactWayServiceException;	
+	public List<UserContact> getUserContactWayList(List<Long> ids) throws UserContactWayServiceException;	
 	
 	/**
 	 * 根据id真删除用户联系方式
