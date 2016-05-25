@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.directory.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
@@ -294,6 +295,32 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			} else {
 				return null;
 			}
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectoryServiceException(e);
+		}
+	}
+	
+	@Override
+	public List<Directory> getDirectoryList(Long appId, Long userId, List<Long> ids) throws DirectoryServiceException {
+		ServiceError.assertAppIdForDirectory(appId);
+		ServiceError.assertUserIdForDirectory(userId);
+		if (ids == null || ids.size() <= 0) {
+			return null;
+		}
+		List<Directory> directoryList = null;
+		try {
+			directoryList = getEntityByIds(ids);
+			List<Directory> result = new ArrayList<Directory>(directoryList.size());
+			if (!CollectionUtils.isNotEmpty(directoryList)) {
+				for (Directory directory : directoryList) {
+					//userId = -1,For the case: if get others public resource that contain these tags;
+					if (userId.intValue() == -1 || (ObjectUtils.equals(directory.getAppId(), appId) && ObjectUtils.equals(directory.getUserId(), userId))) {
+						result.add(directory);
+					}
+				}
+			}
+			return result;
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new DirectoryServiceException(e);
