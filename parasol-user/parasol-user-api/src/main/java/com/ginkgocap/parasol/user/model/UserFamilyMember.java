@@ -1,4 +1,7 @@
 package com.ginkgocap.parasol.user.model;
+
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -6,18 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-
-/**
- * 用户自定义
- */
 @Entity
-@Table(name = "tb_user_defined", catalog = "parasol_user")
-public class UserDefined implements java.io.Serializable {
-
+@Table(name = "tb_user_family_member", catalog = "parasol_user")
+public class UserFamilyMember implements Serializable{
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 61431291379283127L;
+	private static final long serialVersionUID = 5468179185810824123L;
 	/**
 	 * 主键.
 	 */
@@ -31,13 +30,21 @@ public class UserDefined implements java.io.Serializable {
 	 */
 	private Long appId;
 	/**
-	 * 自定义字段名.
+	 * 关系.
 	 */
-	private String userDefinedFiled;
+	private String relation;
 	/**
-	 * 自定义字段内容.
+	 * 名称.
 	 */
-	private String userDefinedValue;
+	private String name;
+	/**
+	 * 联系方式.
+	 */
+	private String contact;
+	/**
+	 * 职业
+	 */
+	private String profession;
 	/**
 	 * 创建时间.
 	 */
@@ -50,19 +57,6 @@ public class UserDefined implements java.io.Serializable {
 	 * 用户IP.
 	 */
 	private String ip;
-
-	public UserDefined() {
-	}
-
-	public UserDefined(Long id, Long userId, String userDefinedValue, Long ctime,
-			Long utime, String ip) {
-		this.id = id;
-		this.userId = userId;
-		this.userDefinedValue = userDefinedValue;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
 
 	@Id
 	@GeneratedValue(generator = "id")
@@ -84,26 +78,47 @@ public class UserDefined implements java.io.Serializable {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-
-	@Column(name = "user_defined_filed")
-	public String getUserDefinedFiled() {
-		return this.userDefinedFiled;
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
 	}
 
-	public void setUserDefinedFiled(String userDefinedFiled) {
-		this.userDefinedFiled = userDefinedFiled;
+	public void setAppId(Long appId) {
+		this.appId = appId;
+	}
+	@Column(name = "relation")
+	public String getRelation() {
+		return relation;
 	}
 
-	@Column(name = "user_defined_value", nullable = false, length = 1)
-	public String getUserDefinedValue() {
-		return this.userDefinedValue;
+	public void setRelation(String relation) {
+		this.relation = relation;
+	}
+	@Column(name = "name")
+	public String getName() {
+		return name;
 	}
 
-	public void setUserDefinedValue(String userDefinedValue) {
-		this.userDefinedValue = userDefinedValue;
+	public void setName(String name) {
+		this.name = name;
+	}
+	@Column(name = "contact")
+	public String getContact() {
+		return contact;
 	}
 
-	
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
+	@Column(name = "profession")
+	public String getProfession() {
+		return profession;
+	}
+
+	public void setProfession(String profession) {
+		this.profession = profession;
+	}
+
 	@Column(name = "ctime", nullable = false, length = 19)
 	public Long getCtime() {
 		return this.ctime;
@@ -131,5 +146,4 @@ public class UserDefined implements java.io.Serializable {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
-
 }

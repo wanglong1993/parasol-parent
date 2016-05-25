@@ -12,7 +12,7 @@ import org.junit.Assert;
 import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.user.model.UserBasic;
-import com.ginkgocap.parasol.user.model.UserContactWay;
+import com.ginkgocap.parasol.user.model.UserContact;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserContactWayService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
@@ -54,7 +54,7 @@ public class UserContactWayServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testUpdateUserContactWay(){
 		try {
-			UserContactWay userContactWay = userContactWayService.getUserContactWay(3953254564364289l);
+			UserContact userContactWay = userContactWayService.getUserContactWay(3953254564364289l);
 			boolean bl =userContactWayService.updateUserContactWay(userContactWay);
 			Assert.assertTrue(bl);
 		} catch (Exception e) {
@@ -67,7 +67,7 @@ public class UserContactWayServiceTest  extends TestBase implements Test  {
 	@org.junit.Test
 	public void testGetUserContactWay(){
 		try {
-			UserContactWay list = userContactWayService.getUserContactWay(3953254564364289l);
+			UserContact list = userContactWayService.getUserContactWay(3953254564364289l);
 			Assert.assertTrue(list==null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -81,7 +81,7 @@ public class UserContactWayServiceTest  extends TestBase implements Test  {
 		try {
 			List<Long> ids=new ArrayList<Long>();
 			ids.add(1l);
-			List<UserContactWay> list = userContactWayService.getUserContactWayList(ids);
+			List<UserContact> list = userContactWayService.getUserContactWayList(ids);
 			Assert.assertTrue(list.size()>0);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,9 +91,9 @@ public class UserContactWayServiceTest  extends TestBase implements Test  {
 	 * 初始化用户联系方式信息对象
 	 * @return userLoginRegister
 	 */
-	public UserContactWay setUserContactWay(Long userId){
+	public UserContact setUserContactWay(Long userId){
 		try {
-			UserContactWay userContactWay = new UserContactWay();
+			UserContact userContactWay = new UserContact();
 			userContactWay.setUserId(userId);
 			userContactWay.setCellphone("13716687903");
 			userContactWay.setEmail("51022036@qq.com");
