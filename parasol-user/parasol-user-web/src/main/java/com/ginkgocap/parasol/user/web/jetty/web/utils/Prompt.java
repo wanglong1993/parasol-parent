@@ -72,7 +72,7 @@ public final class Prompt {
 	public static final  String identifying_code_has_experied_="验证码不存在或已经过期";
 	public static final  String friendIds_is_empty="好友ID不能为空，且ID是以逗号分隔的字符串";
 	public static final  String directoryId_is_empty="目录id不能为空";
-	public static final  String tagId_is_empty="标签id不能为空";
+	public static final  String tagId_is_empty="标签id不能为空"; 
 	
 	
 
