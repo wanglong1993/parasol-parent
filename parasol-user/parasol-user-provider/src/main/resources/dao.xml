@@ -52,24 +52,24 @@
                  sqlType="hsql" keyProperty="firstIndustryId" valueProperty="userId"  update="false"/>
 		</object>
 		
-		<object name="com.ginkgocap.parasol.user.model.UserExt" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+		<!-- <object name="com.ginkgocap.parasol.user.model.UserExt" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
-        <!-- 通过地区县id查找用户id列表 --> 
+        通过地区县id查找用户id列表 
 		  <list name="UserExt_List_Id_CountyId"
                  sqlitem="select user_id from tb_user_ext where county_id =? order by utime desc"
                  sqlType="hsql" keyProperty="countyId" valueProperty="userId"  update="false"/>
-        <!-- 通过地区省id查找用户id列表 --> 
+        通过地区省id查找用户id列表 
 		  <list name="UserExt_List_Id_ProvinceId"
                  sqlitem="select user_id from tb_user_ext where province_id =? order by utime desc"
                  sqlType="hsql" keyProperty="provinceId" valueProperty="userId"  update="false"/>                 			
-        <!-- 通过第三级行业ID查找用户id列表 --> 
+        通过第三级行业ID查找用户id列表 
 		  <list name="UserExt_List_Id_ThirdIndustryId"
                  sqlitem="select user_id from tb_user_ext where third_industry_id =? order by utime desc"
                  sqlType="hsql" keyProperty="thirdIndustryId" valueProperty="userId"  update="false"/>                 			
-		</object>
+		</object> -->
 		<object name="com.ginkgocap.parasol.user.model.UserFriendly" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
