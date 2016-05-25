@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.user.model.ModelType;
@@ -31,33 +32,33 @@ import com.ginkgocap.parasol.user.service.UserWorkHistoryService;
 import com.ginkgocap.parasol.user.utils.BeanUtil;
 @Service("userInfoOperateService")
 public class UserInfoOperateServiceImpl implements UserInfoOperateService {
-	@Autowired
+	@Resource
 	private UserBasicService userBasicService;
-	@Autowired
+	@Resource
 	private UserAttachmentService userAttachmentService;
-	@Autowired
+	@Resource
 	private UserContactServiceImpl userContactService;
-	@Autowired 
+	@Resource 
 	private UserDefinedService userDefinedService;
-	@Autowired
+	@Resource
 	private UserDefinedTemplateService userDefinedTemplateService;
-	@Autowired 
+	@Resource 
 	private UserDescriptionService userDescriptionService;
-	@Autowired
+	@Resource
 	private UserEducationHistoryService userEducationHistoryService;
-	@Autowired
+	@Resource
 	private UserFriendlyService userFriendlyService;
-	@Autowired
+	@Resource
 	private UserInfoService userInfoService;
-	@Autowired
+	@Resource
 	private UserInterestingService userInterestingService;
-	@Autowired
+	@Resource
 	private UserSkillService userSkillService;
-	@Autowired
+	@Resource
 	private UserTemplateModelService userTemplateModelService;
-	@Autowired
+	@Resource
 	private UserTemplateService userTemplateService;
-	@Autowired
+	@Resource
 	private UserWorkHistoryService userWorkHistoryService;
 	//用户自定义
 	public final static String USERDIFINE="UD";

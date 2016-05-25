@@ -7,9 +7,9 @@ import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.user.model.UserDefined;
-import com.ginkgocap.parasol.user.service.Common2Service;
+import com.ginkgocap.parasol.user.service.UserDefinedService;
 @Service("userDefinedService")
-public class UserDefinedServiceImpl extends BaseService<UserDefined> implements Common2Service<UserDefined> {
+public class UserDefinedServiceImpl extends BaseService<UserDefined> implements UserDefinedService {
 	private UserDefined checkValidity(UserDefined userDefined,int type)throws Exception {
 		if(userDefined==null) throw new Exception("UserDefined can not be null.");
 		if(userDefined.getUserId()<0l) throw new Exception("The value of userId is null or empty.");

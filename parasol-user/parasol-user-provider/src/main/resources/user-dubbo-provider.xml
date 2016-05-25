@@ -38,10 +38,10 @@
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserOrganBasicService" ref="userOrganBasicService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserOrgPerCusRelService" ref="userOrgPerCusRelService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserLoginThirdService" ref="userLoginThirdService" version="2.0.0" timeout="3000000" />
-    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserExtService" ref="userExtService" version="2.0.0" timeout="3000000" />
+    <!-- <dubbo:service interface="com.ginkgocap.parasol.user.service.UserExtService" ref="userExtService" version="2.0.0" timeout="3000000" /> -->
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserOrganExtService" ref="userOrganExtService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserDefinedService" ref="userDefinedService" version="2.0.0" timeout="3000000" />
-    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserContactWayService" ref="userContactWayService" version="2.0.0" timeout="3000000" />
+   <!--  <dubbo:service interface="com.ginkgocap.parasol.user.service.UserContactWayService" ref="userContactWayService" version="2.0.0" timeout="3000000" /> -->
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserEducationHistoryService" ref="userEducationHistoryService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserInfoService" ref="userInfoService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserWorkHistoryService" ref="userWorkHistoryService" version="2.0.0" timeout="3000000" />
