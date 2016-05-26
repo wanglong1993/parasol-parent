@@ -12,7 +12,7 @@ public interface UserInfoOperateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String,Long> saveInfo(Map<ModelType,Map<String,Object>> param) throws Exception;
+	public boolean saveInfo(Map<Integer,Map<String,Object>> param) throws Exception;
 	/**
 	 * 获取模块信息，分模块获取
 	 * @param userId

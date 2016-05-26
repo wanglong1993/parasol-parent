@@ -65,22 +65,29 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 	//系统默认
 	public final static String DEFAULT = "OS";
 	
+	
 	@Override
-	public Map<String, Long> saveInfo(Map<ModelType, Map<String, Object>> param)
+	public boolean saveInfo(Map<Integer, Map<String, Object>> param)
 			throws Exception {
 		if(param==null) throw new Exception("请求模块参数不能为空！");
-		Set<ModelType> keys = param.keySet();
-		for(ModelType modelType : keys){
-			switch(modelType.getValue()){
-			   case 1:
+		Set<Integer> keys = param.keySet();
+//		Map<String, Object> entitys =
+		for(Integer modelType : keys){
+			switch(modelType){
+			   case ModelType.UB :
 			   		Map<String, Object> entitys =  param.get(modelType);
 			   		UserBasic ub= (UserBasic)BeanUtil.map2bean(entitys, UserBasic.class);
 			   		userBasicService.createObject(ub);
 			   		break;
+			   case ModelType.UC :
+			   		entitys =  param.get(modelType);
+//			   		UserBasic ub= (UserBasic)BeanUtil.map2bean(entitys, UserBasic.class);
+//			   		userBasicService.createObject(ub);
+			   		break;
 			
 			}
 		}
-		return null;
+		return true;
 	}
 
 	@Override
