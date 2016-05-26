@@ -25,6 +25,13 @@ public interface Common2Service<T> extends CommonService<T> {
 	 * @throws Exception
 	 */
 	public Boolean deleteObjects(List<Long> ids) throws Exception;
+	/**
+	 * 根据用户批量删除
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public Boolean deleteObjectsByUserId(Long userId) throws Exception;
 	
 	/**
 	 * 批量更新

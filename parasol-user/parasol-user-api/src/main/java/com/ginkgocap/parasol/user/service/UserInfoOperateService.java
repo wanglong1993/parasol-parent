@@ -12,22 +12,22 @@ public interface UserInfoOperateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean saveInfo(Map<Integer,Map<String,Object>> param) throws Exception;
+	public boolean saveInfo(Map<Integer,Object> param) throws Exception;
 	/**
 	 * 获取模块信息，分模块获取
 	 * @param userId
-	 * @param types 一组模块
+	 * @param models 一组模块
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<ModelType,Map<String,Object>> getInfo(Long userId,ModelType[] types) throws Exception;
+	public Map<String,Object> getInfo(Long userId,Integer[] models) throws Exception;
 	/**
 	 * 修改用户的信息，分模块修改。
 	 * @param param
 	 * @return
 	 * @throws Exception
 	 */
-	public Boolean updateInfo(Map<ModelType,Map<String,Object>> param) throws Exception;
+	public Boolean updateInfo(Map<Integer, Object> param) throws Exception;
 	/**
 	 * 直接删除模块信息
 	 * @param userId
@@ -35,7 +35,7 @@ public interface UserInfoOperateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Boolean deleteInfo(Long userId,ModelType[] types) throws Exception;
+	public Boolean deleteInfo(Long userId,List<Integer> modelType) throws Exception;
 	/**
 	 * 获取模板，包括用户自定义模板和系统默认模板。
 	 * @param userId

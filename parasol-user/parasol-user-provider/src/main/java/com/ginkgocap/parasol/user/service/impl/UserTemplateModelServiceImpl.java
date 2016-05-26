@@ -76,5 +76,11 @@ public class UserTemplateModelServiceImpl extends BaseService<UserTemplateModel>
 		return this.getEntityByIds(ids);
 	}
 
+	@Override
+	public Boolean deleteObjectsByUserId(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 		
 }

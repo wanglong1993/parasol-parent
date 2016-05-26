@@ -84,5 +84,12 @@ public class UserAttachmentServiceImpl extends BaseService<UserAttachment> imple
 		}
 		return this.updateEntitys(objects);
 	}
+	
+	@Override
+	public Boolean deleteObjectsByUserId(Long userId) throws Exception {
+		if(userId==null) throw new Exception("userId is null or empty");
+		this.deleteList("UserAttachment_List_UserId", userId);
+		return true;
+	}
 
 }

@@ -81,5 +81,10 @@ public class UserDefinedTemplateServiceImpl extends BaseService<UserDefinedTempl
 		}
 		return this.updateEntitys(objects);
 	}
+	@Override
+	public Boolean deleteObjectsByUserId(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
