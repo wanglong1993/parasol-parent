@@ -1,9 +1,8 @@
 package com.ginkgocap.parasol.user.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 
 /**
  * Created by xutlong on 2016/5/24.
@@ -21,7 +20,9 @@ public class UserBlackList {
     private String ip;
 
     @Id
-    @Column(name = "id", unique = false, nullable = false)
+    @GeneratedValue(generator = "id")
+    @GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
+    @Column(name = "id")
     public Long getId() {
         return id;
     }

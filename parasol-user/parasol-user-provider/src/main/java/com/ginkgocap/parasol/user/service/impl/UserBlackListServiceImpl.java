@@ -6,6 +6,7 @@ import com.ginkgocap.parasol.user.exception.UserBlackListServiceException;
 import com.ginkgocap.parasol.user.model.UserBlackList;
 import com.ginkgocap.parasol.user.service.UserBlackListService;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 /**
  * Created by xutlong on 2016/5/24.
  */
+@Service("userBlackListService")
 public class UserBlackListServiceImpl extends BaseService implements UserBlackListService {
 
     private static Logger logger = Logger.getLogger(UserBlackListServiceImpl.class);
