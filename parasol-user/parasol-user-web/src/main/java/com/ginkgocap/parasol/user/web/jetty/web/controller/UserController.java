@@ -498,17 +498,15 @@ public class UserController extends BaseControl {
 					resultMap.put("status",0);
 					return new MappingJacksonValue(resultMap);
 				}
-				userBasic=userBasicService.getUserBasic(userId);
+				userBasic=userBasicService.getObject(userId);
 				if(ObjectUtils.isEmpty(userBasic)){
 					userBasic=new UserBasic();
 					userBasic.setName(name);
 					userBasic.setCompanyName(companyName);
 					userBasic.setPicId(picId);
-					userBasic.setStatus(new Byte("1"));
 					userBasic.setSex(new Byte("1"));
 					userBasic.setUserId(userId);
-					userBasic.setAuth(new Byte("1"));
-					userBasicId=userBasicService.createUserBasic(userBasic);
+					userBasicId=userBasicService.createObject(userBasic);
 					if(userBasicId==null && userBasicId<=0l){
 						resultMap.put("message", Prompt.user_perfectionInfo_is_failed);
 						resultMap.put("status",0);
@@ -522,9 +520,7 @@ public class UserController extends BaseControl {
 					userBasic.setPicId(picId);
 					userBasic.setUserId(userId);
 					if(userBasic.getSex().intValue()!=1 && userBasic.getSex().intValue()!=2 && userBasic.getSex().intValue()!=0)userBasic.setSex(new Byte("1"));
-					if(userBasic.getStatus().intValue()!=1 && userBasic.getStatus().intValue()!=2 && userBasic.getStatus().intValue()!=0)userBasic.setStatus(new Byte("1"));
-					if(userBasic.getAuth().intValue()!=1 && userBasic.getAuth().intValue()!=2 && userBasic.getAuth().intValue()!=0)userBasic.setAuth(new Byte("1"));
-					bl=userBasicService.updateUserBasic(userBasic);
+					bl=userBasicService.updateObject(userBasic);
 					if(bl==false){
 						resultMap.put("message", Prompt.user_perfectionInfo_is_failed);
 						resultMap.put("status",0);
@@ -537,7 +533,7 @@ public class UserController extends BaseControl {
 		}catch (Exception e ){
 			//异常失败回滚
 			if(userId!=null && userId>0L)userLoginRegisterService.realDeleteUserLoginRegister(userId);
-			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
+			if(userBasicId!=null && userBasicId>0l)userBasicService.deleteObject(userBasicId);
 			logger.info("用户Id"+userId+"完善信息失败:");
 			logger.info(e.getStackTrace());
 			throw e;
@@ -691,7 +687,7 @@ public class UserController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
 		UserBasic userBasic= null;
-		UserExt userExt= null;
+		UserExt userExt= null;//有问题
 		List<UserInterestIndustry> list = null;
 		User user=null;
 		String ip=getIpAddr(request);
@@ -769,7 +765,7 @@ public class UserController extends BaseControl {
 					user = new User();
 					user.setUserLoginRegister(userLoginRegister);
 					user.setUserBasic(userBasic);
-					user.setUserExt(userExt);
+//					user.setUserExt(userExt);
 					user.setListUserInterestIndustry(list);
 					defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
 					resultMap.put( "id", id);
@@ -917,7 +913,7 @@ public class UserController extends BaseControl {
 //				mappingJacksonValue.setFilters(filterProvider);
 			}
 			if(userLoginRegister.getUsetType().intValue()==0){
-				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+				userBasic=userBasicService.getObject(userLoginRegister.getId());
 				userExt=userExtService.getUserExt(userLoginRegister.getId());
 				resultMap.put("userLoginRegister", userLoginRegister);
 				List<Long> ids=userDefinedService.getIdList(userLoginRegister.getId());
@@ -1250,7 +1246,7 @@ public class UserController extends BaseControl {
 			listFriends=userFriendlyService.getApplyFriendlyList(userId);
 			listUserBasic=new ArrayList<UserBasic>();
 			for (UserFriendly userFriendly : listFriends) {
-				userBasic=userBasicService.getUserBasic(userFriendly.getFriendId());
+				userBasic=userBasicService.getObject(userFriendly.getFriendId()); //有问题
 				if(!ObjectUtils.isEmpty(userBasic)){
 					userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
 					listUserBasic.add(userBasic);
@@ -1550,7 +1546,7 @@ public class UserController extends BaseControl {
 				}
 				//检查个人好友是否存在
 				if(userLoginRegisterFriend.getUsetType().intValue()==0){
-					userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
+					userBasic=userBasicService.getObject(userLoginRegisterFriend.getId());
 					if(userBasic==null){
 						resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
 						resultMap.put("status",0);
@@ -1597,7 +1593,7 @@ public class UserController extends BaseControl {
 					userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					//添加对方的个人好友
 					if(userLoginRegister.getUsetType().intValue()==0){
-						userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+						userBasic=userBasicService.getObject(userLoginRegister.getId());
 						if(userBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
 							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
@@ -1648,7 +1644,7 @@ public class UserController extends BaseControl {
 					userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 					//添加对方的个人好友
 					if(userLoginRegister.getUsetType().intValue()==0){
-						userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+						userBasic=userBasicService.getObject(userLoginRegister.getId());
 						if(userBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
 							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
@@ -1757,7 +1753,7 @@ public class UserController extends BaseControl {
 			}
 			//检查个人好友是否存在
 			if(userLoginRegisterFriend.getUsetType().intValue()==0){
-				userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
+				userBasic=userBasicService.getObject(userLoginRegisterFriend.getId());
 				if(userBasic==null){
 					resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
 					resultMap.put("status",0);
@@ -1804,7 +1800,7 @@ public class UserController extends BaseControl {
 				userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 				//添加对方的个人好友
 				if(userLoginRegister.getUsetType().intValue()==0){
-					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+					userBasic=userBasicService.getObject(userLoginRegister.getId());
 					if(userBasic==null){
 						userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
 						if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
@@ -1851,7 +1847,7 @@ public class UserController extends BaseControl {
 				userOrgPerCusRelId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
 				//添加对方的个人好友
 				if(userLoginRegister.getUsetType().intValue()==0){
-					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+					userBasic=userBasicService.getObject(userLoginRegister.getId());
 					if(userBasic==null){
 						userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
 						if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
@@ -1948,7 +1944,7 @@ public class UserController extends BaseControl {
 			}
 			//检查个人好友是否存在
 			if(userLoginRegisterFriend.getUsetType().intValue()==0){
-				userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
+				userBasic=userBasicService.getObject(userLoginRegisterFriend.getId());
 				if(userBasic==null){
 					resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
 					resultMap.put("status",0);
@@ -2077,7 +2073,7 @@ public class UserController extends BaseControl {
 			}
 			//检查个人好友是否存在
 			if(userLoginRegisterFriend.getUsetType().intValue()==0){
-				userBasic=userBasicService.getUserBasic(userLoginRegisterFriend.getId());
+				userBasic=userBasicService.getObject(userLoginRegisterFriend.getId());
 				if(userBasic==null){
 					resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
 					resultMap.put("status",0);
@@ -2345,7 +2341,7 @@ public class UserController extends BaseControl {
 			}
 			//修改个人
 			if(userLoginRegister.getUsetType().intValue()==0){
-				userBasic= userBasicService.getUserBasic(userId);
+				userBasic= userBasicService.getObject(userId);
 				if(userBasic==null){
 					resultMap.put( "message", Prompt.userId_is_not_exist_in_UserBasic);
 					resultMap.put( "status", 0);
@@ -2876,7 +2872,7 @@ public class UserController extends BaseControl {
 			}
 			//修改个人
 			if(userLoginRegister.getUsetType().intValue()==0){
-				userBasic= userBasicService.getUserBasic(userId);
+				userBasic= userBasicService.getObject(userId);
 				if(userBasic==null){
 					resultMap.put( "message", Prompt.userId_is_not_exist_in_UserBasic);
 					resultMap.put( "status", 0);
@@ -3097,7 +3093,7 @@ public class UserController extends BaseControl {
 			
 			if(isEmail(passport)){
 //				if(userLoginRegister.getUsetType().intValue()==0){
-//					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+//					userBasic=userBasicService.getObject(userLoginRegister.getId());
 //					if(userBasic==null){
 //						resultMap.put( "message", Prompt.userId_is_not_exist_in_UserBasic);
 //						resultMap.put( "status", 0);
@@ -3333,7 +3329,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(userLoginRegister.getUsetType().intValue()==0){
-					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+					userBasic=userBasicService.getObject(userLoginRegister.getId());
 					if(userBasic==null){
 						resultMap.put("message", Prompt.email_is_not_exists_in_UserBasic);
 						resultMap.put("status",0);
@@ -3730,7 +3726,7 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-				List<UserExt> list=userExtService.getUserExtListByProvinceId(start, count, provinceId);
+				List<UserExt> list=userExtService.getUserExtListByProvinceId(start, count, provinceId);//有问题
 				if(list==null || list.size()==0){
 					resultMap.put( "status", 0);
 					resultMap.put("message", Prompt.not_found_userId_list);
@@ -3740,7 +3736,7 @@ public class UserController extends BaseControl {
 				for (UserExt userExt : list) {
 					if(userExt!=null)ids.add(userExt.getUserId());
 				}
-				List<UserBasic> list2 = userBasicService.getUserBasecList(ids);
+				List<UserBasic> list2 = userBasicService.getObjects(ids);
 				resultMap.put( "status", 1);
 				resultMap.put( "list", list2);
 				return new MappingJacksonValue(resultMap);
@@ -3793,7 +3789,7 @@ public class UserController extends BaseControl {
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
-			List<UserExt> list=userExtService.getUserListByThirdIndustryId(start, count, thirdIndustryId);
+			List<UserExt> list=userExtService.getUserListByThirdIndustryId(start, count, thirdIndustryId);//有问题
 			if(list==null || list.size()==0){
 				resultMap.put( "status", 0);
 				resultMap.put("message", Prompt.not_found_userId_list);
@@ -3803,7 +3799,7 @@ public class UserController extends BaseControl {
 			for (UserExt userExt : list) {
 				if(userExt!=null)ids.add(userExt.getUserId());
 			}
-			List<UserBasic> list2 = userBasicService.getUserBasecList(ids);
+			List<UserBasic> list2 = userBasicService.getObjects(ids);//有问题
 			resultMap.put( "status", 1);
 			resultMap.put( "list", list2);
 			return new MappingJacksonValue(resultMap);
