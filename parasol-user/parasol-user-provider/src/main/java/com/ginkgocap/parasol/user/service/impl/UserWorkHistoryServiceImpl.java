@@ -26,6 +26,13 @@ public class UserWorkHistoryServiceImpl extends BaseService<UserWorkHistory> imp
 		if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
 		else throw new Exception("创建失败！ ");
 	}
+	
+	@Override
+	public Boolean deleteObjectsByUserId(Long userId) throws Exception {
+		if(userId==null) throw new Exception("userId is null or empty");
+		this.deleteList("UserWorkHistory_List_UserId", userId);
+		return true;
+	}
 
 	@Override
 	public Boolean updateObject(UserWorkHistory objcet) throws Exception {

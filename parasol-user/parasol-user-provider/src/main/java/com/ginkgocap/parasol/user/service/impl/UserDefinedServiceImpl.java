@@ -81,5 +81,12 @@ public class UserDefinedServiceImpl extends BaseService<UserDefined> implements 
 		}
 		return this.updateEntitys(objects);
 	}
+	@Override
+	public Boolean deleteObjectsByUserId(Long userId) throws Exception {
+		if(userId==null) throw new Exception("userId is null or empty");
+		this.deleteList("UserDefined_List_UserId", userId);
+		return true;
+	}
+
 
 }

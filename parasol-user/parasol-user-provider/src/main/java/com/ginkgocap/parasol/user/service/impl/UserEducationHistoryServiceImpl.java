@@ -80,5 +80,11 @@ public class UserEducationHistoryServiceImpl extends BaseService<UserEducationHi
 		}
 		return this.updateEntitys(objects);
 	}
+	@Override
+	public Boolean deleteObjectsByUserId(Long userId) throws Exception {
+		if(userId==null) throw new Exception("userId is null or empty");
+		this.deleteList("UserEducationHistory_List_UserId", userId);
+		return true;
+	}
 
 }
