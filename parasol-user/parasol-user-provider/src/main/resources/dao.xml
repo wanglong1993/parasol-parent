@@ -236,7 +236,16 @@
 			</dbStrategy>
 			<list name="UserBlack_List_UserId"
 				  sqlitem="select id from tb_user_blacklist where user_id=? and appId = ?"
-				  sqlType="hsql" keyProperty="user_id,appId" valueProperty="id"  update="true"/>
+				  sqlType="hsql" keyProperty="userId,appId" valueProperty="id"  update="true"/>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserBlackList" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+			<list name="UserBlack_List_UserId_BlackListId"
+				  sqlitem="select id from tb_user_blacklist where user_id=? and blackUserId = ? and appId = ?"
+				  sqlType="hsql" keyProperty="userId,blackUserId,appId" valueProperty="id"  update="true"/>
 		</object>
 	</route>
 </dal>

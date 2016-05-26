@@ -9,7 +9,8 @@ import com.ginkgocap.parasol.user.service.UserBlackListService;
 import org.apache.log4j.Logger;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xutlong on 2016/5/24.
@@ -42,57 +43,90 @@ public class UserBlackListServiceImpl extends BaseService implements UserBlackLi
 
     @Override
     public long save(UserBlackList userBlack) throws UserBlackListServiceException {
-        if (null == userBlack) {
-            logger.error("userBlackList can not be null");
-            throw new UserBlackListServiceException("userBlackList is can not be null");
-        } else {
-            try {
-                Long id = (Long) saveEntity(checkValidity(userBlack, 0));
-                if(!ObjectUtils.isEmpty(id) && id > 0l)
-                    return id;
-            } catch (BaseServiceException e) {
-                if (logger.isDebugEnabled()) {
-                    e.printStackTrace(System.err);
-                }
-                throw new UserBlackListServiceException(e);
+        try {
+            Long id = (Long) saveEntity(checkValidity(userBlack, 0));
+            if (!ObjectUtils.isEmpty(id) && id > 0l) {
+                return id;
+            } else {
+                throw new UserBlackListServiceException("creat userBlackList failed!");
             }
+        } catch (BaseServiceException e) {
+            if (logger.isDebugEnabled()) {
+                e.printStackTrace(System.err);
+            }
+            throw new UserBlackListServiceException(e);
+        }
+    }
+
+    @Override
+    public Boolean delete(Long id) throws Exception{
+        if (id == null || id <= 0l)
+            throw new Exception("id is null or empty");
+        return this.deleteEntity(id);
+    }
+
+    @Override
+    public List<UserBlackList> getBlackListPageUtilByUserId(long userId, int pageIndex, int pageSize, Long appId) throws UserBlackListServiceException {
+        List<UserBlackList> userBlackListLists = null;
+        try {
+            userBlackListLists = this.getSubEntitys("UserBlack_List_UserId",pageIndex,pageSize,userId,appId);
+        } catch (BaseServiceException e) {
+            logger.error("get userBlackList failed");
+            e.printStackTrace();
+            throw new UserBlackListServiceException("get userBlackList failed");
+        }
+        return userBlackListLists;
+    }
+
+    @Override
+    public boolean isBlackUser(long blackUserId, long userId, long appId) throws UserBlackListServiceException {
+        try {
+            List<UserBlackList> userBlackLists = this.getEntitys("UserBlack_List_UserId_BlackListId",userId,blackUserId,appId);
+            return userBlackLists.size() > 0 ? false : true;
+        } catch (BaseServiceException e) {
+            logger.error("isBlackList is failed!");
+            if (logger.isDebugEnabled()) {
+                e.printStackTrace(System.err);
+            }
+            throw new UserBlackListServiceException(e);
         }
 
-        return 0;
     }
 
-    @Override
-    public void delete(long id) {
-
-    }
-
-    @Override
-    public Map<String, Object> getBlackListPageUtilByUserId(long userId, int pageIndex, int pageSize) {
-        return null;
-    }
-
-    @Override
-    public boolean isBlackUser(long blackUserId, long userId) {
-        return false;
-    }
-
+    /*
     @Override
     public boolean isBlackRelation(long userId, long toUserId) {
         return false;
+    }*/
+
+    @Override
+    public Boolean deleteUserBlack(String ids) throws UserBlackListServiceException {
+        try {
+            List<Long> ls = new ArrayList<Long>();
+            if (!ObjectUtils.isEmpty(ids)) {
+                // 传递的需要批量删除的id 用String传递，中间用逗号分隔
+                String[] idList = ids.split(",");
+                for (int i = 0; i < idList.length; i++) {
+                    ls.add(Long.valueOf(idList[i]));
+                }
+            }
+            return this.deleteEntityByIds(ls);
+        } catch (BaseServiceException e) {
+            e.printStackTrace();
+            throw new UserBlackListServiceException("Batch delete BlackLists failed!");
+        }
     }
 
     @Override
-    public void deleteUserBlack(long userId, String blackUserId) {
+    public UserBlackList getUserBlackList(Long id) throws UserBlackListServiceException {
+        try {
+            UserBlackList blackLidt = (UserBlackList)this.getEntity(id);
+            return blackLidt;
+        } catch (BaseServiceException e) {
+            e.printStackTrace();
+            logger.error("get balcklist failed!");
+            throw new UserBlackListServiceException("get balcklist failed!");
+        }
 
-    }
-
-    @Override
-    public void saveUserBlack(long userId, String blackUserId) {
-
-    }
-
-    @Override
-    public UserBlackList getUserBlackList(Long id) {
-        return null;
     }
 }

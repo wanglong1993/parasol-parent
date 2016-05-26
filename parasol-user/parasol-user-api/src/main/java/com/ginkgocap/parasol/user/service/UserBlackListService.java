@@ -4,7 +4,7 @@ import com.ginkgocap.parasol.user.exception.UserBlackListServiceException;
 import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
 import com.ginkgocap.parasol.user.model.UserBlackList;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by xutlong on 2016/5/24.
@@ -13,14 +13,14 @@ import java.util.Map;
 public interface UserBlackListService {
     public long save(UserBlackList userBlack) throws UserBlackListServiceException, UserConfigServiceException;
 
-    public void delete(long id);
+    public Boolean delete(Long id) throws Exception;
 
     /**得到自己的黑名单列表
      * @param userId
      * @return
      * @author wfl
      */
-    public Map<String,Object> getBlackListPageUtilByUserId(long userId, int pageIndex, int pageSize);
+    public List<UserBlackList> getBlackListPageUtilByUserId(long userId, int pageIndex, int pageSize, Long appId) throws UserBlackListServiceException;
 
     /**
      * blackUserId 是否在userId的拉黑列表中
@@ -29,7 +29,7 @@ public interface UserBlackListService {
      * @return
      * @author wfl
      */
-    public boolean isBlackUser(long blackUserId ,long userId);
+    public boolean isBlackUser(long blackUserId ,long userId, long appId) throws UserBlackListServiceException, UserConfigServiceException;
 
     /**
      * 判断用户userId和toUserId是否存在黑名单关系
@@ -38,23 +38,15 @@ public interface UserBlackListService {
      * @return
      * @author wfl
      */
-    public boolean isBlackRelation(long userId ,long toUserId);
+    /*
+    public boolean isBlackRelation(long userId ,long toUserId);*/
 
     /**
      * 把用户blackUserId 从 用户为userId的黑名单中移出
-     * @param userId
-     * @param blackUserId 多个id，以','隔开
+     * @param ids
      * @author wfl
      */
-    public void deleteUserBlack(long userId ,String blackUserId);
-
-    /**
-     * 把用户blackUserId 加入用户为userId的黑名单中
-     * @param userId
-     * @param blackUserId 多个id，以','隔开
-     * @author wfl
-     */
-    public void saveUserBlack(long userId ,String blackUserId);
+    public Boolean deleteUserBlack(String ids) throws UserBlackListServiceException;
 
     /**
      * 根据用户Id获取黑名单
@@ -63,5 +55,5 @@ public interface UserBlackListService {
      * @param id
      * @return
      */
-    public UserBlackList getUserBlackList(Long id);
+    public UserBlackList getUserBlackList(Long id) throws UserBlackListServiceException;
 }
