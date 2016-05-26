@@ -1,7 +1,6 @@
 package com.ginkgocap.parasol.user.service;
 
 import com.ginkgocap.parasol.user.exception.UserBlackListServiceException;
-import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
 import com.ginkgocap.parasol.user.model.UserBlackList;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
  * 用户黑名单表
  */
 public interface UserBlackListService {
-    public long save(UserBlackList userBlack) throws UserBlackListServiceException, UserConfigServiceException;
+    public long save(UserBlackList userBlack) throws UserBlackListServiceException;
 
     public Boolean delete(Long id) throws Exception;
 
@@ -29,7 +28,7 @@ public interface UserBlackListService {
      * @return
      * @author wfl
      */
-    public boolean isBlackUser(long blackUserId ,long userId, long appId) throws UserBlackListServiceException, UserConfigServiceException;
+    public boolean isBlackUser(long blackUserId ,long userId, long appId) throws UserBlackListServiceException;
 
     /**
      * 判断用户userId和toUserId是否存在黑名单关系

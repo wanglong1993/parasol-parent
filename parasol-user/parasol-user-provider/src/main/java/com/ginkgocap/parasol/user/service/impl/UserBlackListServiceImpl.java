@@ -3,7 +3,6 @@ package com.ginkgocap.parasol.user.service.impl;
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.user.exception.UserBlackListServiceException;
-import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
 import com.ginkgocap.parasol.user.model.UserBlackList;
 import com.ginkgocap.parasol.user.service.UserBlackListService;
 import org.apache.log4j.Logger;
