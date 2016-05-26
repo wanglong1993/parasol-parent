@@ -16,7 +16,7 @@ import java.util.List;
  * Created by xutlong on 2016/5/24.
  */
 @Service("userBlackListService")
-public class UserBlackListServiceImpl extends BaseService implements UserBlackListService {
+public class UserBlackListServiceImpl extends BaseService<UserBlackList> implements UserBlackListService {
 
     private static Logger logger = Logger.getLogger(UserBlackListServiceImpl.class);
 
