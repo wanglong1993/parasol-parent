@@ -38,14 +38,13 @@
     <dubbo:reference id="userOrganBasicService" interface="com.ginkgocap.parasol.user.service.UserOrganBasicService" version="2.0.0"/>
     <dubbo:reference id="userOrgPerCusRelService" interface="com.ginkgocap.parasol.user.service.UserOrgPerCusRelService" version="2.0.0"/>
     <dubbo:reference id="userLoginThirdService" interface="com.ginkgocap.parasol.user.service.UserLoginThirdService" version="2.0.0"/>
-    <dubbo:reference id="userExtService" interface="com.ginkgocap.parasol.user.service.UserExtService" version="2.0.0"/>
     <dubbo:reference id="userOrganExtService" interface="com.ginkgocap.parasol.user.service.UserOrganExtService" version="2.0.0"/>
     <dubbo:reference id="userDefinedService" interface="com.ginkgocap.parasol.user.service.UserDefinedService" version="2.0.0"/>
-    <dubbo:reference id="userContactWayService" interface="com.ginkgocap.parasol.user.service.UserContactWayService" version="2.0.0"/>
+    <dubbo:reference id="userContactService" interface="com.ginkgocap.parasol.user.service.UserContactService" version="2.0.0"/>
     <dubbo:reference id="userEducationHistoryService" interface="com.ginkgocap.parasol.user.service.UserEducationHistoryService" version="2.0.0"/>
     <dubbo:reference id="userInfoService" interface="com.ginkgocap.parasol.user.service.UserInfoService" version="2.0.0"/>
     <dubbo:reference id="userWorkHistoryService" interface="com.ginkgocap.parasol.user.service.UserWorkHistoryService" version="2.0.0"/>
     <dubbo:reference id="userConfigerService" interface="com.ginkgocap.parasol.user.service.UserConfigerService" version="2.0.0"/>
     <dubbo:reference id="userBlackListService" interface="com.ginkgocap.parasol.user.service.UserBlackListService" version="2.0.0"/>
-
+	<dubbo:reference id="userInfoOperateService" interface="com.ginkgocap.parasol.user.service.UserInfoOperateService" version="2.0.0"/>
 </beans>
