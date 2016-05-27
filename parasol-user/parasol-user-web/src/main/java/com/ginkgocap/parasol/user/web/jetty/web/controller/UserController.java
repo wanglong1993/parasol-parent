@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -402,7 +403,9 @@ public class UserController extends BaseControl {
 		ByteArrayOutputStream out=null;
 			try {
 				if(!StringUtils.isEmpty(id))
-				out =QRCode.from(id).to(ImageType.PNG).stream();
+				out =QRCode.from(id).to(ImageType.PNG).withSize(140, 140).stream();
+				else
+				out =QRCode.from(UUID.randomUUID().toString()).to(ImageType.PNG).withSize(140, 140).stream();
 	            response.setContentType("image/png");  
 	            response.setContentLength(out.size());  
 	            OutputStream outStream = response.getOutputStream();  
