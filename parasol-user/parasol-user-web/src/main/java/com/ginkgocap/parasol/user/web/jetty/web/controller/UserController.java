@@ -403,9 +403,9 @@ public class UserController extends BaseControl {
 		ByteArrayOutputStream out=null;
 			try {
 				if(!StringUtils.isEmpty(id))
-				out =QRCode.from(id).to(ImageType.PNG).withSize(140, 140).stream();
+				out =QRCode.from(id).to(ImageType.PNG).withSize(250, 250).stream();
 				else
-				out =QRCode.from(UUID.randomUUID().toString()).to(ImageType.PNG).withSize(140, 140).stream();
+				out =QRCode.from(UUID.randomUUID().toString()).to(ImageType.PNG).withSize(250, 250).stream();
 	            response.setContentType("image/png");  
 	            response.setContentLength(out.size());  
 	            OutputStream outStream = response.getOutputStream();  
