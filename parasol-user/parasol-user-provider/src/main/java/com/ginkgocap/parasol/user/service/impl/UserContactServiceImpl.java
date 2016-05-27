@@ -15,7 +15,7 @@ public class UserContactServiceImpl extends BaseService<UserContact> implements
 		if(userContact==null) throw new Exception("userContact can not be null.");
 		if(userContact.getUserId()<0l) throw new Exception("The value of userId is null or empty.");
 		if(type!=0)
-		if(getObject(userContact.getId())==null)throw new Exception("userId not exists in UserContact");
+		if(getObject(userContact.getId())==null)throw new Exception("id not exists in UserContact");
 //		if(StringUtils.isEmpty(userBasic.getName()))throw new UserBasicServiceException("The value of  name is null or empty.");
 		if(userContact.getCtime()==null) userContact.setCtime(System.currentTimeMillis());
 		if(userContact.getUtime()==null) userContact.setUtime(System.currentTimeMillis());

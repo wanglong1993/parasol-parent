@@ -139,7 +139,7 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
           <list name="UserContact_List_UserId"
-                 sqlitem="select id from tb_user_Contact where user_id=?"
+                 sqlitem="select id from tb_user_contact where user_id=?"
                  sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
 		</object>
 		<object name="com.ginkgocap.parasol.user.model.UserAttachment" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
@@ -148,7 +148,7 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
           <list name="UserAttachment_List_UserId"
-                 sqlitem="select id from tb_user_UserAttachment where user_id=?"
+                 sqlitem="select id from tb_user_attachment where user_id=?"
                  sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
 		</object>
 				<object name="com.ginkgocap.parasol.user.model.UserDefined" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">

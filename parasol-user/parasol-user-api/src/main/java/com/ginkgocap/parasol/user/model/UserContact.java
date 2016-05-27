@@ -3,6 +3,7 @@ package com.ginkgocap.parasol.user.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -81,6 +82,7 @@ public class UserContact implements java.io.Serializable {
 	}
 
 	@Id
+	@GeneratedValue(generator = "id")
 	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
 	@Column(name = "id", unique = true, nullable = false)
 	public long getId() {

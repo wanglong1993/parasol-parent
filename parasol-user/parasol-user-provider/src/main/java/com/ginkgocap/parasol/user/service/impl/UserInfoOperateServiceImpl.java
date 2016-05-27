@@ -330,51 +330,39 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 
 	@Override
 	public Boolean deleteInfo(Long userId, List<Integer> modelTypes) throws Exception {
-		/*if(modelType==null){
-			
-		}
+		if(modelTypes==null) return true;
 		for(Integer modelType : modelTypes){
 			switch(modelType){
 			   case ModelType.UB :
 			   		userBasicService.deleteObject(userId);
 			   		continue;
 			   case ModelType.UC :
-				   	userContactService.deleteObjects(ids);
+				   	userContactService.deleteObjectsByUserId(userId);
 			   		continue;
 			   case ModelType.UD :
-			   		entitys =  param.get(modelType);
-			   		updateDefined(entitys);
+				   	userDefinedService.deleteObjectsByUserId(userId);
 			   		continue;
 			   case ModelType.UDN :
-			   		entitys =  param.get(modelType);
-			   		UserDescription userDescription = (UserDescription)entitys;
-			   		userDescriptionService.updateObject(userDescription);
+			   		userDescriptionService.deleteObject(userId);
 			   		continue;
 			   case ModelType.UEH :
-			   		entitys =  param.get(modelType);
-			   		updateEducationHistory(entitys);
+				    userEducationHistoryService.deleteObjectsByUserId(userId);
 			   		continue;
 			   case ModelType.UFM :
-			   		entitys =  param.get(modelType);
-			   		updateFamilyMember(entitys);
+				   	userFamilyMemberService.deleteObjectsByUserId(userId);
 			   		continue;
 			   case ModelType.UIO :
-			   		entitys =  param.get(modelType);
-			   		UserInfo  userInfo= (UserInfo)entitys;
-			   		userInfoService.updateObject(userInfo);
+			   		userInfoService.deleteObject(userId);
 			   		continue;
 			   case ModelType.US :
-			   		entitys =  param.get(modelType);
-			   		UserSkill  userSkill= (UserSkill)entitys;
-			   		userSkillService.updateObject(userSkill);
+			   		userSkillService.deleteObject(userId);
 			   		continue;
 			   case ModelType.UWH :
-			   		entitys =  param.get(modelType);
-			   		updateWorkHistory(entitys);
+				   	userWorkHistoryService.deleteObjectsByUserId(userId);
 			   		continue;
 			}
-		}*/
-		return null;
+		}
+		return true;
 	}
 
 	@Override
