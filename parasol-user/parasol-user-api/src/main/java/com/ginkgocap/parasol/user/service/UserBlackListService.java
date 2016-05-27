@@ -55,4 +55,13 @@ public interface UserBlackListService {
      * @return
      */
     public UserBlackList getUserBlackList(Long id) throws UserBlackListServiceException;
+
+    /**
+     * 获取用户黑名单总数
+     * @param userId
+     * @date 2016-05-27
+     * @author xutlong
+     * @return
+     */
+    public int getUserBlackListCount(Long userId) throws UserBlackListServiceException;
 }
