@@ -304,7 +304,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 	@Override
 	public List<Directory> getDirectoryList(Long appId, Long userId, List<Long> ids) throws DirectoryServiceException {
 		ServiceError.assertAppIdForDirectory(appId);
-		ServiceError.assertUserIdForDirectory(userId);
 		if (ids == null || ids.size() <= 0) {
 			return null;
 		}
