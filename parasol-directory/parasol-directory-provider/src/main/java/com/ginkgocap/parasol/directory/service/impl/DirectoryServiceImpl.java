@@ -311,7 +311,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		try {
 			directoryList = getEntityByIds(ids);
 			List<Directory> result = new ArrayList<Directory>(directoryList.size());
-			if (!CollectionUtils.isNotEmpty(directoryList)) {
+			if (CollectionUtils.isNotEmpty(directoryList)) {
 				for (Directory directory : directoryList) {
 					//userId = -1,For the case: if get others public resource that contain these tags;
 					if (userId.intValue() == -1 || (ObjectUtils.equals(directory.getAppId(), appId) && ObjectUtils.equals(directory.getUserId(), userId))) {
