@@ -10,7 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "tb_user_blacklist", catalog = "parasol_user")
-public class UserBlackList {
+public class UserBlackList implements java.io.Serializable{
     private Long id;
     private Long userId;
     private Long blackUserId;
