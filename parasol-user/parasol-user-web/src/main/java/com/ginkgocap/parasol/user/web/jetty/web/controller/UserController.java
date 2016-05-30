@@ -475,7 +475,7 @@ public class UserController extends BaseControl {
 				System.out.println("afterTime="+afterTime);
 				long currentTime=0l;
 				while(getOk){
-					Thread.sleep(10); 
+					Thread.sleep(5000); 
 					currentTime=System.currentTimeMillis();
 					System.out.println("currentTime="+currentTime);
 					long t=currentTime-afterTime;
