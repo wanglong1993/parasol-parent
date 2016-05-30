@@ -400,13 +400,12 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/getQrcode" }, method = { RequestMethod.GET })
 	public void getQrcode(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "id",required = false) String id
+			,@RequestParam(name = "id",required =true) String id
 			,@RequestParam(name = "type",required = false ,defaultValue ="3") int type
 			)throws Exception{
 		int width=0;
 		int height=0;
 		String uuid=null;
-		Map<String, Object> resultMap = new HashMap<String, Object>();
 		ByteArrayOutputStream out=null;
 			try {
 				if(type==1)width=height=90;
@@ -425,14 +424,31 @@ public class UserController extends BaseControl {
 	            outStream.write(out.toByteArray());  
 	            outStream.flush();  
 	            outStream.close();
-	            Cookie c1 = new Cookie("qrid",uuid);
-	            c1.setMaxAge(60);
-	            response.addCookie(c1);
-	            response.setHeader("qrid", uuid);
-	            response.getWriter().print("ok");
 				userLoginRegisterService.setCache(uuid, "1", 1 * 60 * 1);
 		}catch (Exception e ){
 			logger.info("生成登录二维码和绑定组织二级码失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 获取二维码扫描登录ID
+	 * @param id 组织id
+	 * @param type 二维码尺寸类型
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getQrcodeId" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getQrcodeId(HttpServletRequest request,HttpServletResponse response
+			)throws Exception{
+		String uuid=null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			uuid=UUID.randomUUID().toString();
+			resultMap.put( "status", 1);
+			resultMap.put( "qrid", uuid);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取二维码扫描登录ID失败");
 			logger.info(e.getStackTrace());
 			throw e;
 		}
@@ -445,11 +461,15 @@ public class UserController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/user/user/getLoginByQrcode" }, method = { RequestMethod.POST })
-	public MappingJacksonValue getQrcodeId(HttpServletRequest request,HttpServletResponse response
+	public MappingJacksonValue getLoginByQrcode(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "id",required = true) String id
+			,@RequestParam(name = "timeout",required = true ,defaultValue ="60000") int timeout
 			)throws Exception{
 		Long appId =0l;
 		Long userId=0L;
+		String message=null;
+		String passport=null;
+		String password=null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 			try {
 				userId = LoginUserContextHolder.getUserId();
@@ -469,19 +489,33 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-				Object value=userLoginRegisterService.getCache(id);
-				if(ObjectUtils.isEmpty(value)){
-					resultMap.put( "message", "二维码已经过期！");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
+				Object value=null;
+				boolean getOk=true;
+				long afterTime = System.currentTimeMillis()+1*60*1000;
+				long currentTime=0l;
+				while(getOk){
+					Thread.sleep(3000); 
+					currentTime=System.currentTimeMillis();
+					long t=currentTime-afterTime;
+					System.out.println("ttttt="+t);
+					if(t>=0){
+						resultMap.put( "status", 0);
+						resultMap.put( "message", "请求超时！");
+						getOk=false;
+					}
+					value=userLoginRegisterService.getCache(id);
+					if(!ObjectUtils.isEmpty(value)){
+						if(!value.toString().equals("1")){
+							getOk=false;
+							resultMap.put( "status", 1);
+							System.out.println("value="+value.toString());
+							passport=value.toString().split(",")[0];
+							password=value.toString().split(",")[1];
+							resultMap.put( "passport", passport);
+							resultMap.put( "password", password);
+						}
+					}
 				}
-				if(value.toString().equals("1")){
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				resultMap.put( "status", 1);
-				resultMap.put( "passport", value.toString().split(",")[0]);
-				resultMap.put( "password", value.toString().split(",")[1]);
 				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("获取二维码对应的用户名密码失败！");
