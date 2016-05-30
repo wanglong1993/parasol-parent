@@ -507,7 +507,7 @@ public class UserController extends BaseControl {
 						getOk=false;
 					}
 					value=userLoginRegisterService.getCache(id);
-					System.out.println("value="+value.toString());
+					System.out.println("value="+value+",id="+id);
 					if(!ObjectUtils.isEmpty(value)){
 						if(!value.toString().equals("1")){
 							getOk=false;
