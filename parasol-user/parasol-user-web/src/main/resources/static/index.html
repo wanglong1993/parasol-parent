@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Demo page</title>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script>
+var qrid="";
+$.ajax({  
+      type:'GET',  
+      url:"http://api.test.gintong.com/user/user/getQrcodeId",
+	  dataType:'json',
+      success:function(data){  
+           if( data.status =="1" ){  
+             // alert(data.qrid);
+			 qrid=data.qrid
+			  console.log(data.qrid)
+			  $(".tt").attr("src", "http://api.test.gintong.com/user/user/getQrcode?id="+qrid); 
+			  $.ajax({  
+				  type:'GET',  
+				  url:"http://api.test.gintong.com/user/user/getLoginByQrcode",
+				  dataType:'json',
+				  data:{'id':qrid,'timeout':'30000'},
+				  success:function(data){
+						if(data.status==0)alert(data.message);
+						if(data.status==1)alert(data.passport+","+data.password+","+data.message);
+				  },
+				  error: function(XMLHttpRequest, textStatus, errorThrown){
+					if(textStatus=='timeout'){
+						alert("对不起，连接超时");
+					}
+				  },
+				  complete : function(XMLHttpRequest,textStatus){ 
+					if(textStatus=='timeout'){
+						alert("很抱歉，连接超时");
+					}
+				  }			
+			 });
+            }  
+      },
+	  error: function(){
+				alert('Error1');
+			},
+ });
+</script>
+</head>
+<body>
+<div id="output"><img class="tt" src=""></div>
+<p>
+
+</p>
+</body>
+</html>
