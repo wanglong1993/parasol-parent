@@ -460,35 +460,15 @@ public class UserController extends BaseControl {
 	 * @param password 密码
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/getLoginByQrcode" }, method = { RequestMethod.POST })
+	@RequestMapping(path = { "/user/user/getLoginByQrcode" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getLoginByQrcode(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "id",required = true) String id
 			,@RequestParam(name = "timeout",required = true ,defaultValue ="60000") int timeout
 			)throws Exception{
-		Long appId =0l;
-		Long userId=0L;
-		String message=null;
 		String passport=null;
 		String password=null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 			try {
-				userId = LoginUserContextHolder.getUserId();
-				if(userId==null){
-					resultMap.put("message", Prompt.userId_is_null_or_empty);
-					resultMap.put("status",0);
-					return new MappingJacksonValue(resultMap);
-				}
-				appId = LoginUserContextHolder.getAppKey();
-				if(ObjectUtils.isEmpty(appId)){
-					resultMap.put( "message", "appId不能为空！");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				if(ObjectUtils.isEmpty(appId)){
-					resultMap.put( "message", "appId不能为空！");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
 				Object value=null;
 				boolean getOk=true;
 				long afterTime = System.currentTimeMillis()+1*60*1000;
