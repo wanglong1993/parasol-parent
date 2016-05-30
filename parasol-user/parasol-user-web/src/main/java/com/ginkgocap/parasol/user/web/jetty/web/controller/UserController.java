@@ -408,6 +408,7 @@ public class UserController extends BaseControl {
 		String uuid=null;
 		ByteArrayOutputStream out=null;
 			try {
+				System.out.println("cache="+userLoginRegisterService.setCache(uuid, "1", 1 * 30 * 1)+",,uuid="+uuid);
 				if(type==1)width=height=90;
 				if(type==2)width=height=140;
 				if(type==3)width=height=250;
@@ -424,7 +425,6 @@ public class UserController extends BaseControl {
 	            outStream.write(out.toByteArray());  
 	            outStream.flush();  
 	            outStream.close();
-	            System.out.println("cache="+userLoginRegisterService.setCache(uuid, "1", 1 * 30 * 1));
 		}catch (Exception e ){
 			logger.info("生成登录二维码和绑定组织二级码失败");
 			logger.info(e.getStackTrace());
