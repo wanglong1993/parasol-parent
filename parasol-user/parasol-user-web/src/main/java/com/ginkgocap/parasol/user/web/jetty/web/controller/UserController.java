@@ -431,35 +431,13 @@ public class UserController extends BaseControl {
 		}
 	}
 	/**
-	 * 获取缓存的qrid
+	 * 获取二维码扫描登录ID
 	 * @param id 组织id
 	 * @param type 二维码尺寸类型
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/user/user/getQrcodeId" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getQrcodeId(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "id",required =true) String id
-			)throws Exception{
-		String uuid=null;
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		try {
-			resultMap.put( "status", 1);
-			resultMap.put( "qrid", userLoginRegisterService.getCache(id));
-			return new MappingJacksonValue(resultMap);
-		}catch (Exception e ){
-			logger.info("获取缓存的qrid失败");
-			logger.info(e.getStackTrace());
-			throw e;
-		}
-	}
-	/**
-	 * 获取二维码扫描登录ID
-	 * @param id 组织id
-	 * @param type 二维码尺寸类型
-	 * @throws Exception
-	 */
-	@RequestMapping(path = { "/user/user/getQrId" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getQrId(HttpServletRequest request,HttpServletResponse response
 			)throws Exception{
 		String uuid=null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -468,6 +446,27 @@ public class UserController extends BaseControl {
 			userLoginRegisterService.setCache(uuid, "1", 1 * 60 * 1);
 			resultMap.put( "status", 1);
 			resultMap.put( "qrid", uuid);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取二维码扫描登录ID失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 获取缓存的二维码扫描登录ID
+	 * @param id 组织id
+	 * @param type 二维码尺寸类型
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getQrId" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getQrId(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "id",required =true) String id
+			)throws Exception{
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			resultMap.put( "status", 1);
+			resultMap.put( "qrid", userLoginRegisterService.getCache(id));
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("获取二维码扫描登录ID失败");
