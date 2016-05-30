@@ -510,6 +510,7 @@ public class UserController extends BaseControl {
 						if(!value.toString().equals("1")){
 							getOk=false;
 							resultMap.put( "status", 1);
+							resultMap.put( "message", "请求成功");
 							System.out.println("value="+value.toString());
 							passport=value.toString().split(",")[0];
 							password=value.toString().split(",")[1];
