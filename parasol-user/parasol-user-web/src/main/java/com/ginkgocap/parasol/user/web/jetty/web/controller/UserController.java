@@ -424,6 +424,7 @@ public class UserController extends BaseControl {
 	            outStream.write(out.toByteArray());  
 	            outStream.flush();  
 	            outStream.close();
+	            userLoginRegisterService.setCache(uuid, "1", 1 * 30 * 1);
 		}catch (Exception e ){
 			logger.info("生成登录二维码和绑定组织二级码失败");
 			logger.info(e.getStackTrace());
@@ -443,7 +444,6 @@ public class UserController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			uuid=UUID.randomUUID().toString();
-			userLoginRegisterService.setCache(uuid, "1", 1 * 30 * 1);
 			resultMap.put( "status", 1);
 			resultMap.put( "qrid", uuid);
 			return new MappingJacksonValue(resultMap);
