@@ -489,11 +489,10 @@ public class UserController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 			try {
 				Object value=null;
-				boolean getOk=true;
 				long afterTime = System.currentTimeMillis()+timeout;
 				System.out.println("afterTime="+afterTime);
 				long currentTime=0l;
-				while(getOk){
+				while(true){
 					Thread.sleep(5000); 
 					currentTime=System.currentTimeMillis();
 					System.out.println("currentTime="+currentTime);
@@ -502,25 +501,11 @@ public class UserController extends BaseControl {
 					if(t>=0){
 						resultMap.put( "status", 0);
 						resultMap.put( "message", "请求超时！");
-						getOk=false;
-						value=userLoginRegisterService.getCache(id);
-						if(!ObjectUtils.isEmpty(value)){
-							if(!value.toString().equals("1")){
-								getOk=false;
-								resultMap.put( "status", 1);
-								resultMap.put( "message", "请求成功");
-								System.out.println("value="+value+",id="+id);
-								passport=value.toString().split(",")[0];
-								password=value.toString().split(",")[1];
-								resultMap.put( "passport", passport);
-								resultMap.put( "password", password);
-							}
-						}
+						break;
 					}
 					value=userLoginRegisterService.getCache(id);
 					if(!ObjectUtils.isEmpty(value)){
 						if(!value.toString().equals("1")){
-							getOk=false;
 							resultMap.put( "status", 1);
 							resultMap.put( "message", "请求成功");
 							System.out.println("value="+value+",id="+id);
@@ -528,6 +513,7 @@ public class UserController extends BaseControl {
 							password=value.toString().split(",")[1];
 							resultMap.put( "passport", passport);
 							resultMap.put( "password", password);
+							break;
 						}
 					}
 				}
