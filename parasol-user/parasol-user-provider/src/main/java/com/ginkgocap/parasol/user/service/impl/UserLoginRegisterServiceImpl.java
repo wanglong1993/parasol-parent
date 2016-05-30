@@ -451,4 +451,16 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			throw new UserLoginRegisterServiceException(e);
 		}
 	}
+	@Override
+	public boolean setCache(String key, Object value, int expireTime)throws UserLoginRegisterServiceException {
+		boolean bl =false;
+		String key2=cache.getCacheHelper().buildKey(CacheModule.REGISTER, key);
+		bl = cache.set(key2, expireTime, value);
+		return bl;
+	}
+	@Override
+	public Object getCache(String key) throws UserLoginRegisterServiceException {
+		Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, key));
+		return value!=null?value:null;
+	}
 }
