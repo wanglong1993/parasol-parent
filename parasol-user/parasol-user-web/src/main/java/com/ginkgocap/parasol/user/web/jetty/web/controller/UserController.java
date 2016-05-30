@@ -498,6 +498,7 @@ public class UserController extends BaseControl {
 						}
 					}
 				}
+				System.out.println("over="+111111111);
 				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("获取二维码对应的用户名密码失败！");
