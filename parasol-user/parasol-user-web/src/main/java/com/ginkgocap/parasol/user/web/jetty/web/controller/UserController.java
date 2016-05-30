@@ -472,10 +472,12 @@ public class UserController extends BaseControl {
 				Object value=null;
 				boolean getOk=true;
 				long afterTime = System.currentTimeMillis()+1*60*1000;
+				System.out.println("afterTime="+afterTime);
 				long currentTime=0l;
 				while(getOk){
-					Thread.sleep(3000); 
+					Thread.sleep(10); 
 					currentTime=System.currentTimeMillis();
+					System.out.println("currentTime="+currentTime);
 					long t=currentTime-afterTime;
 					System.out.println("ttttt="+t);
 					if(t>=0){
