@@ -424,9 +424,30 @@ public class UserController extends BaseControl {
 	            outStream.write(out.toByteArray());  
 	            outStream.flush();  
 	            outStream.close();
-				userLoginRegisterService.setCache(uuid, "1", 1 * 60 * 1);
 		}catch (Exception e ){
 			logger.info("生成登录二维码和绑定组织二级码失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 获取缓存的qrid
+	 * @param id 组织id
+	 * @param type 二维码尺寸类型
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getQrcodeId" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getQrcodeId(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "id",required =true) String id
+			)throws Exception{
+		String uuid=null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			resultMap.put( "status", 1);
+			resultMap.put( "qrid", userLoginRegisterService.getCache(id));
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取缓存的qrid失败");
 			logger.info(e.getStackTrace());
 			throw e;
 		}
@@ -437,13 +458,14 @@ public class UserController extends BaseControl {
 	 * @param type 二维码尺寸类型
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/getQrcodeId" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getQrcodeId(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/user/user/getQrId" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getQrId(HttpServletRequest request,HttpServletResponse response
 			)throws Exception{
 		String uuid=null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			uuid=UUID.randomUUID().toString();
+			userLoginRegisterService.setCache(uuid, "1", 1 * 60 * 1);
 			resultMap.put( "status", 1);
 			resultMap.put( "qrid", uuid);
 			return new MappingJacksonValue(resultMap);
@@ -471,7 +493,7 @@ public class UserController extends BaseControl {
 			try {
 				Object value=null;
 				boolean getOk=true;
-				long afterTime = System.currentTimeMillis()+1*60*1000;
+				long afterTime = System.currentTimeMillis()+timeout;
 				System.out.println("afterTime="+afterTime);
 				long currentTime=0l;
 				while(getOk){
