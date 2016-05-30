@@ -501,6 +501,19 @@ public class UserController extends BaseControl {
 					if(t>=0){
 						resultMap.put( "status", 0);
 						resultMap.put( "message", "请求超时！");
+						value=userLoginRegisterService.getCache(id);
+						if(!ObjectUtils.isEmpty(value)){
+							if(!value.toString().equals("1")){
+								resultMap.put( "status", 1);
+								resultMap.put( "message", "请求成功");
+								System.out.println("value="+value+",id="+id);
+								passport=value.toString().split(",")[0];
+								password=value.toString().split(",")[1];
+								resultMap.put( "passport", passport);
+								resultMap.put( "password", password);
+								break;
+							}
+						}
 						break;
 					}
 					value=userLoginRegisterService.getCache(id);
