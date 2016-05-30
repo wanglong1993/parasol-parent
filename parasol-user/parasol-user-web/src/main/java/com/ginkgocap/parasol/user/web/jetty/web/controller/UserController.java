@@ -420,11 +420,11 @@ public class UserController extends BaseControl {
 				out =QRCode.from(uuid).to(ImageType.PNG).withSize(width,height).stream();
 	            response.setContentType("image/png");  
 	            response.setContentLength(out.size());  
-	            OutputStream outStream = response.getOutputStream();  
+	            OutputStream outStream = response.getOutputStream();
 	            outStream.write(out.toByteArray());  
 	            outStream.flush();  
 	            outStream.close();
-	            userLoginRegisterService.setCache(uuid, "1", 1 * 30 * 1);
+	            System.out.println("cache="+userLoginRegisterService.setCache(uuid, "1", 1 * 30 * 1));
 		}catch (Exception e ){
 			logger.info("生成登录二维码和绑定组织二级码失败");
 			logger.info(e.getStackTrace());
