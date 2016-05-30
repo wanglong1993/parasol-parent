@@ -149,7 +149,7 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
 			return null;
 		}
 		try {
-			return getEntitys(LIST_ASSOCIATE_ID_APPID_SOURCEID, sourceId);
+			return getEntitys(LIST_ASSOCIATE_ID_APPID_SOURCEID, new Object []{appId,  sourceId});
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new AssociateServiceException(e);
