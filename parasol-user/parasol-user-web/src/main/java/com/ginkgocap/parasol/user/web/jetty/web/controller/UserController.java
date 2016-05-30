@@ -523,28 +523,28 @@ public class UserController extends BaseControl {
 		Long userId=0L;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 			try {
-				userId = LoginUserContextHolder.getUserId();
-				if(userId==null){
-					resultMap.put("message", Prompt.userId_is_null_or_empty);
-					resultMap.put("status",0);
-					return new MappingJacksonValue(resultMap);
-				}
-				appId = LoginUserContextHolder.getAppKey();
-				if(ObjectUtils.isEmpty(appId)){
-					resultMap.put( "message", "appId不能为空！");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				if(ObjectUtils.isEmpty(passport)){
-					resultMap.put( "message", "通行证不能为空！");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				if(ObjectUtils.isEmpty(password)){
-					resultMap.put( "message", "密码不能为空！");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
+//				userId = LoginUserContextHolder.getUserId();
+//				if(userId==null){
+//					resultMap.put("message", Prompt.userId_is_null_or_empty);
+//					resultMap.put("status",0);
+//					return new MappingJacksonValue(resultMap);
+//				}
+//				appId = LoginUserContextHolder.getAppKey();
+//				if(ObjectUtils.isEmpty(appId)){
+//					resultMap.put( "message", "appId不能为空！");
+//					resultMap.put( "status", 0);
+//					return new MappingJacksonValue(resultMap);
+//				}
+//				if(ObjectUtils.isEmpty(passport)){
+//					resultMap.put( "message", "通行证不能为空！");
+//					resultMap.put( "status", 0);
+//					return new MappingJacksonValue(resultMap);
+//				}
+//				if(ObjectUtils.isEmpty(password)){
+//					resultMap.put( "message", "密码不能为空！");
+//					resultMap.put( "status", 0);
+//					return new MappingJacksonValue(resultMap);
+//				}
 				Object value=userLoginRegisterService.getCache(id);
 				if(ObjectUtils.isEmpty(value)){
 					resultMap.put( "message", "二维码已经过期！");
