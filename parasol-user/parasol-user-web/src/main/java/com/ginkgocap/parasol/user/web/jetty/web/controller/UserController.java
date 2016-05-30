@@ -405,26 +405,21 @@ public class UserController extends BaseControl {
 			)throws Exception{
 		int width=0;
 		int height=0;
-		String uuid=null;
 		ByteArrayOutputStream out=null;
 			try {
-				System.out.println("cache="+userLoginRegisterService.setCache(uuid, "1", 1 * 30 * 1)+",,uuid="+uuid);
 				if(type==1)width=height=90;
 				if(type==2)width=height=140;
 				if(type==3)width=height=250;
 				if(type==4)width=height=300;
 				if(type==4)width=height=400;
-				uuid=UUID.randomUUID().toString();
-				if(!StringUtils.isEmpty(id))
 				out =QRCode.from(id).to(ImageType.PNG).withSize(width,height).stream();
-				else
-				out =QRCode.from(uuid).to(ImageType.PNG).withSize(width,height).stream();
 	            response.setContentType("image/png");  
 	            response.setContentLength(out.size());  
 	            OutputStream outStream = response.getOutputStream();
 	            outStream.write(out.toByteArray());  
 	            outStream.flush();  
 	            outStream.close();
+	            System.out.println("cache="+userLoginRegisterService.setCache(id, "1", 1 * 30 * 1)+",,id="+id);
 		}catch (Exception e ){
 			logger.info("生成登录二维码和绑定组织二级码失败");
 			logger.info(e.getStackTrace());
