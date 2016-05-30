@@ -497,7 +497,7 @@ public class UserController extends BaseControl {
 					currentTime=System.currentTimeMillis();
 					System.out.println("currentTime="+currentTime);
 					long t=currentTime-afterTime;
-					System.out.println("ttttt="+t);
+					System.out.println("ttttt="+t+",,,threadname="+Thread.currentThread().getName());
 					if(t>=0){
 						resultMap.put( "status", 0);
 						resultMap.put( "message", "请求超时！");
