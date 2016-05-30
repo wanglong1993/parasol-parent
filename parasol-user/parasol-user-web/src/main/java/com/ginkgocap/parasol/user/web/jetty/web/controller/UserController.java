@@ -1,10 +1,6 @@
 package com.ginkgocap.parasol.user.web.jetty.web.controller;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +13,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -402,7 +399,7 @@ public class UserController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/user/user/getQrcode" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getQrcode(HttpServletRequest request,HttpServletResponse response
+	public void getQrcode(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "id",required = false) String id
 			,@RequestParam(name = "type",required = false ,defaultValue ="3") int type
 			)throws Exception{
@@ -428,10 +425,11 @@ public class UserController extends BaseControl {
 	            outStream.write(out.toByteArray());  
 	            outStream.flush();  
 	            outStream.close();
-				resultMap.put("id", uuid);
-				resultMap.put("status",1);
+	            Cookie c1 = new Cookie("qrid",uuid);
+	            c1.setMaxAge(60);
+	            response.addCookie(c1);
+	            response.getWriter().print("ok");
 				userLoginRegisterService.setCache(uuid, "1", 1 * 60 * 1);
-				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("生成登录二维码和绑定组织二级码失败");
 			logger.info(e.getStackTrace());
