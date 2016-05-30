@@ -15,12 +15,16 @@
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
+			                  
+           <list name="List_Associate_Id_AppId_SourceId"
+                  sqlitem="select id from tb_associate where appId=? and sourceId=?"
+                  sqlType="hsql" keyProperty="appId,sourceId" valueProperty="id"/>
 
            <!-- 查询一个资源下有多少关联 --> 
            <list name="List_Associate_Id_AppId_SourceTypeId_SourceId"
                   sqlitem="select id from tb_associate where appId=? and sourceTypeId=? and sourceId=?"
                   sqlType="hsql" keyProperty="appId,sourceTypeId,sourceId" valueProperty="id"/>
-                  
+
 		</object>
 		
 		<object name="com.ginkgocap.parasol.associate.model.AssociateType" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">
