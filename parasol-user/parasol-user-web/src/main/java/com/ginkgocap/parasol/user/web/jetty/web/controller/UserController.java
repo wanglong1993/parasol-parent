@@ -443,7 +443,7 @@ public class UserController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			uuid=UUID.randomUUID().toString();
-			userLoginRegisterService.setCache(uuid, "1", 1 * 60 * 1);
+			userLoginRegisterService.setCache(uuid, "1", 1 * 30 * 1);
 			resultMap.put( "status", 1);
 			resultMap.put( "qrid", uuid);
 			return new MappingJacksonValue(resultMap);
@@ -484,7 +484,7 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/getLoginByQrcode" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getLoginByQrcode(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "id",required = true) String id
-			,@RequestParam(name = "timeout",required = true ,defaultValue ="60000") int timeout
+			,@RequestParam(name = "timeout",required = true ,defaultValue ="30000") int timeout
 			)throws Exception{
 		String passport=null;
 		String password=null;
@@ -578,7 +578,7 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-				if(!userLoginRegisterService.setCache(id, passport+","+password, 1 * 60 * 1)){
+				if(!userLoginRegisterService.setCache(id, passport+","+password, 1 * 30 * 1)){
 					resultMap.put( "message", Prompt.Operation_failed);
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
