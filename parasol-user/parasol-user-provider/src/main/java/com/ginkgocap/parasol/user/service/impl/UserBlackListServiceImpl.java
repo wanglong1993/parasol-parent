@@ -130,4 +130,17 @@ public class UserBlackListServiceImpl extends BaseService<UserBlackList> impleme
         }
 
     }
+
+    @Override
+    public int getUserBlackListCount(Long userId) throws UserBlackListServiceException {
+        try {
+            int count = this.countEntitys("UserBlack_List_UserId_count",userId);
+            return count;
+        }  catch (BaseServiceException e) {
+            logger.error("获取Count失败！");
+            e.printStackTrace();
+            throw new UserBlackListServiceException("获取Count失败！");
+        }
+    }
+
 }

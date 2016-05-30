@@ -69,6 +69,7 @@ public final class Prompt {
 	public static final  String update_passport_is_failed="修改绑定邮箱或手机失败";
 	public static final  String update_passport_is_successed="修改成功";
 	public static final  String Operation_succeeded="操作成功";
+	public static final  String Operation_failed="操作失败";
 	public static final  String identifying_code_has_experied_="验证码不存在或已经过期";
 	public static final  String friendIds_is_empty="好友ID不能为空，且ID是以逗号分隔的字符串";
 	public static final  String directoryId_is_empty="目录id不能为空";

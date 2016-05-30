@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.user.web.jetty.web.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,12 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.glxn.qrgen.QRCode;
+import net.glxn.qrgen.image.ImageType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -161,280 +167,6 @@ public class UserController extends BaseControl {
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
 
-	/**
-	 * 用户注册
-	 * @param type 1.邮箱注册,2.手机注册
-	 * @param code 手机验证码
-	 * @param passport 为邮箱和手机号
-	 * @param password 用户密码
-	 * @param userType 0.个人用户,1.组织用户
-	 * @param firstIndustryIds 一级行业ID数组
-	 * @param name 昵称,企业全称
-	 * @param source  来源的appkey
-	 * @param shortName 企业简称
-	 * @picId 个人或组织LOGOID
-	 * @param businessLicencePicId 企业执照图片ID
-	 * @param stockCode 股票代码
-	 * @param orgType 组织类型
-	 * @param companyContactsMobile 组织联系人电话
-	 * @param companyContacts   组织联系人
-	 * @param idcardFrontPicId   组织联系人身份证正面照片id
-	 * @param idcardBackPicId  联系人身份证背面照片id
-	 * @throws Exception
-	 * @return MappingJacksonValue
-	 * http://www.jsjtt.com/java/Javakuangjia/67.html
-	 */
-    @Deprecated
-	@RequestMapping(path = { "/user/user/register1" }, method = { RequestMethod.POST })
-	public MappingJacksonValue register1(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "type",required = true) int type
-			,@RequestParam(name = "code",required = true) String code
-			,@RequestParam(name = "passport",required = true) String passport
-			,@RequestParam(name = "password",required = true) String password
-			,@RequestParam(name = "userType",required = true) String userType
-			,@RequestParam(name = "firstIndustryIds", required = false) Long[] firstIndustryIds
-			,@RequestParam(name = "name",required = false) String name
-			,@RequestParam(name = "shortName",required = false) String shortName
-			,@RequestParam(name = "picId",required = false) Long picId
-			,@RequestParam(name = "businessLicencePicId",required = false) Long businessLicencePicId
-			,@RequestParam(name = "stockCode",required = false) String stockCode
-			,@RequestParam(name = "orgType",required = false) String orgType
-			,@RequestParam(name = "companyContactsMobile",required = false) String companyContactsMobile
-			,@RequestParam(name = "companyContacts",required = false) String companyContacts
-			,@RequestParam(name = "idcardFrontPicId",required = false) Long idcardFrontPicId
-			,@RequestParam(name = "idcardBackPicId",required = false) Long idcardBackPicId
-			)throws Exception {
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		UserLoginRegister userLoginRegister= null;
-		UserOrganBasic userOrganBasic= null;
-		UserOrganExt userOrganExt= null;
-		UserBasic userBasic= null;
-//		UserExt userExt= null;
-		UserInterestIndustry userInterestIndustry= null;
-		List<UserInterestIndustry> list = null;
-		User user=null;
-		String ip=getIpAddr(request);
-		Long userBasicId=0l;
-		Long userExtId=0l;
-		Long userOrganBasicId=0l;
-		Long userOrganExtId=0l;
-		Long id=0l;
-		Long appId =0l;
-		try {
-				boolean exists=userLoginRegisterService.passportIsExist(passport);
-				if(exists){
-					if(type==1)resultMap.put( "message", Prompt.email_already_exists);
-					if(type==2)resultMap.put( "message", Prompt.mobile_already_exists);
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				//个人用户组织用户邮箱注册
-				if((type==1 && userType.equals("0")) ||(type==1 && userType.equals("1"))){
-					if(!isEmail(passport)){
-						resultMap.put( "message", Prompt.email_format_is_not_correct);
-						resultMap.put( "status", 0);
-						return new MappingJacksonValue(resultMap);
-					}
-				}
-				if(StringUtils.isEmpty(code)){
-					resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				//个人用户手机和邮箱注册
-				if((type==2 || type==1) && userType.equals("0")){
-					if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
-						resultMap.put( "message", Prompt.code_is_not_right);
-						resultMap.put( "status", 0);
-						return new MappingJacksonValue(resultMap);
-					}
-				}
-				if(StringUtils.isEmpty(password)){
-					resultMap.put( "message", Prompt.passowrd_cannot_be_null_or_empty);
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				if(password.length()<6){
-					resultMap.put( "message", Prompt.password_length_must_be_greater_than_or_equal_to_6);
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				userLoginRegister= new UserLoginRegister();
-				userLoginRegister.setPassport(passport);
-				byte[] bt = Base64.decode(password);
-				String salt=userLoginRegisterService.setSalt();
-				password=userLoginRegisterService.setSha256Hash(salt, new String(bt));
-				userLoginRegister.setSalt(salt);
-				userLoginRegister.setPassword(password);
-				userLoginRegister.setUsetType(new Byte(userType));
-				userLoginRegister.setIp(ip);
-				userLoginRegister.setSource(appId.toString());
-				userLoginRegister.setCtime(System.currentTimeMillis());
-				userLoginRegister.setUtime(System.currentTimeMillis());
-				if(type==1)userLoginRegister.setEmail(passport);
-				if(type==2)userLoginRegister.setMobile((passport));
-				id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
-				//个人用户邮箱注册
-				if((type==1 && userType.equals("0"))){
-					userBasic= new UserBasic();
-					userBasic.setName(name);
-					userBasic.setPicId(picId);
-//					userBasic.setStatus(new Byte("1"));
-					userBasic.setSex(new Byte("1"));
-					userBasic.setUserId(id);
-//					userBasic.setAuth(new Byte("1"));
-//					userBasicId=userBasicService.createUserBasic(userBasic);
-//					userExt=new UserExt();
-//					userExt.setName(name);
-//					userExt.setShortName(name);
-//					userExt.setIp(ip);
-//					userExt.setUserId(id);
-//					userExtId=userExtService.createUserExt(userExt);
-					userLoginRegisterService.deleteIdentifyingCode(passport);
-					/**
-					 * 添加集成环信注册用户
-					 */
-					if (id > 1) {
-						final String huanxinParam = String.valueOf(id);
-						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
-							@Override
-							public void run() {
-								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
-							}
-						});
-					}
-					//向万能插座发送消息
-					user = new User();
-					user.setUserLoginRegister(userLoginRegister);
-					user.setUserBasic(userBasic);
-//					user.setUserExt(userExt);
-					user.setListUserInterestIndustry(list);
-					defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
-					resultMap.put( "id", id);
-					resultMap.put( "status", 1);
-					return new MappingJacksonValue(resultMap);
-				}
-				//个人用手机注册
-				if(type==2 && userType.equals("0")){
-					userBasic= new UserBasic();
-					userBasic.setName(name);
-//					userBasic.setPassport(passport);
-					userBasic.setPicId(picId);
-//					userBasic.setStatus(new Byte("1"));
-					userBasic.setSex(new Byte("1"));
-					userBasic.setUserId(id);
-//					userBasic.setAuth(new Byte("1"));
-					userBasicId=userBasicService.createObject(userBasic);
-					/*userExt=new UserExt();
-					userExt.setName(name);
-					userExt.setShortName(name);
-					userExt.setIp(ip);
-					userExt.setUserId(id);
-					userExtId=userExtService.createUserExt(userExt);*/
-					list =new ArrayList<UserInterestIndustry>();
-					if(firstIndustryIds!=null && firstIndustryIds.length>0){
-						for (Long firstIndustryId : firstIndustryIds) {
-							userInterestIndustry= new UserInterestIndustry();
-							userInterestIndustry.setUserId(id);
-							userInterestIndustry.setFirstIndustryId(firstIndustryId);
-							userInterestIndustry.setIp(ip);
-							list.add(userInterestIndustry);
-							list=userInterestIndustryService.createUserInterestIndustryByList(list, id);
-						}
-					}
-					/**
-					 * 添加集成环信注册用户
-					 */
-					if (id > 1) {
-						final String huanxinParam = String.valueOf(id);
-						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
-							@Override
-							public void run() {
-								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
-							}
-						});
-					}
-					//用户设置
-					UserConfig userConfig =new UserConfig();
-					userConfig.setUserId(id);
-					userConfig.setHomePageVisible(new Byte("2"));
-					userConfig.setEvaluateVisible(new Byte("2"));
-					userConfig.setAutosave(new Byte("0"));
-					userConfigerService.createUserConfig(userConfig);
-					userLoginRegisterService.deleteIdentifyingCode(passport);
-					//向万能插座发送消息
-					user = new User();
-					user.setUserLoginRegister(userLoginRegister);
-					user.setUserBasic(userBasic);
-//					user.setUserExt(userExt);
-					user.setListUserInterestIndustry(list);
-					defaultMessageService.sendMessage(TopicType.OPEN_USER_TOPIC, FlagType.USER_SAVE, GsonUtils.objectToString(user));
-					resultMap.put( "id", id);
-					resultMap.put( "status", 1);
-					return new MappingJacksonValue(resultMap);
-				}
-				//组织用户邮箱注册
-				if(type==1 && userType.equals("1")){
-					userOrganBasic= new UserOrganBasic();
-					userOrganBasic.setPicId(picId);
-					userOrganBasic.setUserId(id);
-					userOrganBasic.setName(name);
-					userOrganBasic.setAuth(new Byte("1"));
-					userOrganBasic.setStatus(new Byte("1"));
-					userOrganBasicId=userOrganBasicService.createUserOrganBasic(userOrganBasic);
-					userOrganExt= new UserOrganExt();
-					userOrganExt.setShortName(shortName);
-					userOrganExt.setName(name);
-					userOrganExt.setStockCode(stockCode);
-					userOrganExt.setOrgType(orgType);
-					userOrganExt.setBusinessLicencePicId(businessLicencePicId);
-					userOrganExt.setIdcardFrontPicId(idcardFrontPicId);
-					userOrganExt.setIdcardBackPicId(idcardBackPicId);
-					userOrganExt.setCompanyContacts(companyContacts);
-					userOrganExt.setCompanyContactsMobile(companyContactsMobile);
-					userOrganExt.setIp(ip);
-					userOrganExt.setUserId(id);
-					userOrganExtId=userOrganExtService.createUserOrganExt(userOrganExt);
-					userLoginRegisterService.deleteIdentifyingCode(passport);
-					/**
-					 * 添加集成环信注册用户
-					 */
-					if (id > 1) {
-						final String huanxinParam = String.valueOf(id);
-						ThreadPoolUtils.getExecutorService().execute(new Runnable() {
-							@Override
-							public void run() {
-								HuanxinUtils.addUser(huanxinParam, huanxinParam,CLASS_NAME);
-							}
-						});
-					}
-					resultMap.put( "id", id);
-					resultMap.put( "status", 1);
-					return new MappingJacksonValue(resultMap);
-				}
-				
-				resultMap.put("message", Prompt.paramter_type_or_userType_error);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-		}catch (Exception e ){
-			//异常失败回滚
-			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
-//			if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
-//			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
-			if(userOrganExtId!=null && userOrganExtId>0l)userOrganExtService.realDeleteUserOrganExt(userOrganExtId);
-			if(userOrganBasicId!=null && userOrganBasicId>0l)userOrganBasicService.realDeleteUserOrganBasic(userOrganBasicId);
-			if(list!=null && list.size()>=0){
-				List<Long> listIds=new ArrayList<Long>();
-				for (UserInterestIndustry userInterestIndustry2 : list) {
-					listIds.add(userInterestIndustry2.getId());
-				}
-				userInterestIndustryService.realDeleteUserInterestIndustryList(listIds);
-			}
-			logger.info("注册失败:"+passport);
-			logger.info(e.getStackTrace());
-			throw e;
-		}
-	}
 
 	/**
 	 * 完善个人用户信息
@@ -659,7 +391,167 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}	
-    
+ 
+	/**
+	 * 生成登录二维码和绑定组织二维码
+	 * @param id 组织id
+	 * @param type 二维码尺寸类型
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getQrcode" }, method = { RequestMethod.GET })
+	public void getQrcode(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "id",required = false) String id
+			,@RequestParam(name = "type",required = false ,defaultValue ="3") int type
+			)throws Exception{
+		int width=0;
+		int height=0;
+		String uuid=null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		ByteArrayOutputStream out=null;
+			try {
+				if(type==1)width=height=90;
+				if(type==2)width=height=140;
+				if(type==3)width=height=250;
+				if(type==4)width=height=300;
+				if(type==4)width=height=400;
+				uuid=UUID.randomUUID().toString();
+				if(!StringUtils.isEmpty(id))
+				out =QRCode.from(id).to(ImageType.PNG).withSize(width,height).stream();
+				else
+				out =QRCode.from(uuid).to(ImageType.PNG).withSize(width,height).stream();
+	            response.setContentType("image/png");  
+	            response.setContentLength(out.size());  
+	            OutputStream outStream = response.getOutputStream();  
+	            outStream.write(out.toByteArray());  
+	            outStream.flush();  
+	            outStream.close();
+	            Cookie c1 = new Cookie("qrid",uuid);
+	            c1.setMaxAge(60);
+	            response.addCookie(c1);
+	            response.setHeader("qrid", uuid);
+	            response.getWriter().print("ok");
+				userLoginRegisterService.setCache(uuid, "1", 1 * 60 * 1);
+		}catch (Exception e ){
+			logger.info("生成登录二维码和绑定组织二级码失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 获取二维码对应的用户名密码
+	 * @param id id
+	 * @param passport 邮箱或者手机号
+	 * @param password 密码
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getLoginByQrcode" }, method = { RequestMethod.POST })
+	public MappingJacksonValue getQrcodeId(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "id",required = true) String id
+			)throws Exception{
+		Long appId =0l;
+		Long userId=0L;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+			try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				appId = LoginUserContextHolder.getAppKey();
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				Object value=userLoginRegisterService.getCache(id);
+				if(ObjectUtils.isEmpty(value)){
+					resultMap.put( "message", "二维码已经过期！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(value.toString().equals("1")){
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				resultMap.put( "status", 1);
+				resultMap.put( "passport", value.toString().split(",")[0]);
+				resultMap.put( "password", value.toString().split(",")[1]);
+				return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取二维码对应的用户名密码失败！");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
+	 * 设置登录二维码对应的用户名密码
+	 * @param id id
+	 * @param passport 邮箱或者手机号
+	 * @param password 密码
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/setLoginForQrcode" }, method = { RequestMethod.POST })
+	public MappingJacksonValue setLoginForQrcode(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "id",required = true) String id
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "password",required = true ) String password
+			)throws Exception{
+		Long appId =0l;
+		Long userId=0L;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+			try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				appId = LoginUserContextHolder.getAppKey();
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(ObjectUtils.isEmpty(passport)){
+					resultMap.put( "message", "通行证不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(ObjectUtils.isEmpty(password)){
+					resultMap.put( "message", "密码不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				Object value=userLoginRegisterService.getCache(id);
+				if(ObjectUtils.isEmpty(value)){
+					resultMap.put( "message", "二维码已经过期！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(!userLoginRegisterService.setCache(id, passport+","+password, 1 * 60 * 1)){
+					resultMap.put( "message", Prompt.Operation_failed);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				resultMap.put( "status", 1);
+				return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("设置登录二维码对应的用户名密码失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
 	/**
 	 * 用户注册
 	 * @param type 1.邮箱注册,2.手机注册

@@ -65,6 +65,11 @@ public class UserBlackListServiceTest extends TestBase implements Test {
     @org.junit.Test
     public void testGetUserBlackList() throws UserBlackListServiceException {
         UserBlackList blackList = userBlackListService.getUserBlackList(3979438585020424L);
-        System.out.println("id:" + blackList.getId() + " userId:" + blackList.getUserId() + " balckUserId:" + blackList.getBlackUserId());
+        System.out.println("id:" + blackList.getId());
+    }
+
+    @org.junit.Test
+    public void testGetUserBlackListCount() throws UserBlackListServiceException {
+        System.out.println(userBlackListService.getUserBlackListCount(123L));
     }
 }
