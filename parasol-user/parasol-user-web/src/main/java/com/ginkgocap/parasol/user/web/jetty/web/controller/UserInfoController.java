@@ -93,7 +93,7 @@ public class UserInfoController extends BaseControl {
 		try {
 			Boolean result = userInfoOperateService.updateInfo(paramMap);
 		} catch (Exception e) {
-			
+			System.out.println("错了");
 		}
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
