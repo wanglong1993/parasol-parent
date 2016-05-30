@@ -428,6 +428,7 @@ public class UserController extends BaseControl {
 	            Cookie c1 = new Cookie("qrid",uuid);
 	            c1.setMaxAge(60);
 	            response.addCookie(c1);
+	            response.setHeader("qrid", uuid);
 	            response.getWriter().print("ok");
 				userLoginRegisterService.setCache(uuid, "1", 1 * 60 * 1);
 		}catch (Exception e ){
