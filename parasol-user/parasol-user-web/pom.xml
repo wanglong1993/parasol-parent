@@ -306,7 +306,7 @@
 				<dfs.gintong.com>http://192.168.101.148/</dfs.gintong.com>
 				<imservice.url>http://192.168.101.41:4446</imservice.url>
 				<client_id>1</client_id>
-				<client_secret>88aec17e1857ca1341ee6b16b0b75aef</client_secret>
+				<client_secret>2db7c5148a86b59ea285529a41ef84cb</client_secret>
 			</properties>
 		</profile>
 		<profile>

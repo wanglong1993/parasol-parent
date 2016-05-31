@@ -302,7 +302,7 @@ public class UserController extends BaseControl {
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
-			if(StringUtils.isEmpty(tagIds))careTagIds=tagIds.split(",");
+			if(!StringUtils.isEmpty(tagIds))careTagIds=tagIds.split(",");
 			list=new ArrayList<UserInterestIndustry>();
 			if(careTagIds!=null && careTagIds.length>0){
 				for (String tagId : careTagIds) {
