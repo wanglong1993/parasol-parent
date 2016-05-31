@@ -187,7 +187,12 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 			   case ModelType.UB :
 			   		entitys =  param.get(modelType);
 			   		UserBasic userBasic = (UserBasic)entitys;
-			   		userBasicService.updateObject(userBasic);
+			   		if(userBasicService.getObject(userBasic.getUserId())!=null){
+			   			userBasicService.updateObject(userBasic);
+			   		}else{
+			   			userBasicService.createObject(userBasic);
+			   		}
+			   		
 			   		continue;
 			   case ModelType.UC :
 			   		entitys =  param.get(modelType);
@@ -200,7 +205,11 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 			   case ModelType.UDN :
 			   		entitys =  param.get(modelType);
 			   		UserDescription userDescription = (UserDescription)entitys;
-			   		userDescriptionService.updateObject(userDescription);
+			   		if(userDescriptionService.getObject(userDescription.getUserId())!=null){
+			   			userDescriptionService.updateObject(userDescription);
+			   		}else{
+			   			userDescriptionService.createObject(userDescription);
+			   		}
 			   		continue;
 			   case ModelType.UEH :
 			   		entitys =  param.get(modelType);
@@ -213,12 +222,20 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 			   case ModelType.UIO :
 			   		entitys =  param.get(modelType);
 			   		UserInfo  userInfo= (UserInfo)entitys;
-			   		userInfoService.updateObject(userInfo);
+			   		if(userInfoService.getObject(userInfo.getUserId())!=null){
+			   			userInfoService.updateObject(userInfo);
+			   		}else{
+			   			userInfoService.createObject(userInfo);
+			   		}
 			   		continue;
 			   case ModelType.US :
 			   		entitys =  param.get(modelType);
 			   		UserSkill  userSkill= (UserSkill)entitys;
-			   		userSkillService.updateObject(userSkill);
+			   		if(userSkillService.getObject(userSkill.getUserId())!=null){
+			   			userSkillService.updateObject(userSkill);
+			   		}else{
+			   			userSkillService.createObject(userSkill);
+			   		}
 			   		continue;
 			   case ModelType.UWH :
 			   		entitys =  param.get(modelType);

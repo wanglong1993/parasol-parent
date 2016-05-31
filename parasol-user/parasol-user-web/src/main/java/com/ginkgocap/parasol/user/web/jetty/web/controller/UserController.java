@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -392,32 +393,209 @@ public class UserController extends BaseControl {
 	}	
  
 	/**
-	 * 生成登录二维码和绑定组织二级码
+	 * 生成登录二维码和绑定组织二维码
 	 * @param id 组织id
+	 * @param type 二维码尺寸类型
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/user/user/getQrcode" }, method = { RequestMethod.GET })
 	public void getQrcode(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "id",required = false) String id
-			)throws Exception {
+			,@RequestParam(name = "id",required =true) String id
+			,@RequestParam(name = "type",required = false ,defaultValue ="3") int type
+			)throws Exception{
+		int width=0;
+		int height=0;
 		ByteArrayOutputStream out=null;
 			try {
-				if(!StringUtils.isEmpty(id))
-				out =QRCode.from(id).to(ImageType.PNG).withSize(250, 250).stream();
-				else
-				out =QRCode.from(UUID.randomUUID().toString()).to(ImageType.PNG).withSize(250, 250).stream();
+				if(type==1)width=height=90;
+				if(type==2)width=height=140;
+				if(type==3)width=height=250;
+				if(type==4)width=height=300;
+				if(type==4)width=height=400;
+				out =QRCode.from(id).to(ImageType.PNG).withSize(width,height).stream();
 	            response.setContentType("image/png");  
 	            response.setContentLength(out.size());  
-	            OutputStream outStream = response.getOutputStream();  
+	            OutputStream outStream = response.getOutputStream();
 	            outStream.write(out.toByteArray());  
 	            outStream.flush();  
-	            outStream.close();  
+	            outStream.close();
+	            System.out.println("cache="+userLoginRegisterService.setCache(id, "1", 1 * 30 * 1)+",,id="+id);
 		}catch (Exception e ){
 			logger.info("生成登录二维码和绑定组织二级码失败");
 			logger.info(e.getStackTrace());
 			throw e;
 		}
-	}		
+	}
+	/**
+	 * 获取二维码扫描登录ID
+	 * @param id 组织id
+	 * @param type 二维码尺寸类型
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getQrcodeId" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getQrcodeId(HttpServletRequest request,HttpServletResponse response
+			)throws Exception{
+		String uuid=null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			uuid=UUID.randomUUID().toString();
+			resultMap.put( "status", 1);
+			resultMap.put( "qrid", uuid);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取二维码扫描登录ID失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 获取缓存的二维码扫描登录ID
+	 * @param id 二维码id
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getQrId" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getQrId(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "id",required =true) String id
+			)throws Exception{
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			resultMap.put( "qrid", userLoginRegisterService.getCache(id));
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取二维码扫描登录ID失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 获取二维码对应的用户名密码
+	 * @param id id
+	 * @param passport 邮箱或者手机号
+	 * @param password 密码
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getLoginByQrcode" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getLoginByQrcode(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "id",required = true) String id
+			,@RequestParam(name = "timeout",required = true ,defaultValue ="30000") int timeout
+			)throws Exception{
+		String passport=null;
+		String password=null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+			try {
+				Object value=null;
+				long afterTime = System.currentTimeMillis()+timeout;
+				System.out.println("afterTime="+afterTime);
+				long currentTime=0l;
+				while(true){
+					Thread.sleep(5000); 
+					currentTime=System.currentTimeMillis();
+					System.out.println("currentTime="+currentTime);
+					long t=currentTime-afterTime;
+					System.out.println("ttttt="+t+",,,threadname="+Thread.currentThread().getName());
+					if(t>=0){
+						resultMap.put( "status", 0);
+						resultMap.put( "message", "请求超时！");
+						value=userLoginRegisterService.getCache(id);
+						if(!ObjectUtils.isEmpty(value)){
+							if(!value.toString().equals("1")){
+								resultMap.put( "status", 1);
+								resultMap.put( "message", "请求成功");
+								System.out.println("value="+value+",id="+id);
+								passport=value.toString().split(",")[0];
+								password=value.toString().split(",")[1];
+								resultMap.put( "passport", passport);
+								resultMap.put( "password", password);
+								break;
+							}
+						}
+						break;
+					}
+					value=userLoginRegisterService.getCache(id);
+					if(!ObjectUtils.isEmpty(value)){
+						if(!value.toString().equals("1")){
+							resultMap.put( "status", 1);
+							resultMap.put( "message", "请求成功");
+							System.out.println("value="+value+",id="+id);
+							passport=value.toString().split(",")[0];
+							password=value.toString().split(",")[1];
+							resultMap.put( "passport", passport);
+							resultMap.put( "password", password);
+							break;
+						}
+					}
+				}
+				System.out.println("over="+111111111);
+				return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取二维码对应的用户名密码失败！");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
+	 * 设置登录二维码对应的用户名密码
+	 * @param id id
+	 * @param passport 邮箱或者手机号
+	 * @param password 密码
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/setLoginForQrcode" }, method = { RequestMethod.POST })
+	public MappingJacksonValue setLoginForQrcode(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "id",required = true) String id
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "password",required = true ) String password
+			)throws Exception{
+		Long appId =0l;
+		Long userId=0L;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+			try {
+//				userId = LoginUserContextHolder.getUserId();
+//				if(userId==null){
+//					resultMap.put("message", Prompt.userId_is_null_or_empty);
+//					resultMap.put("status",0);
+//					return new MappingJacksonValue(resultMap);
+//				}
+//				appId = LoginUserContextHolder.getAppKey();
+//				if(ObjectUtils.isEmpty(appId)){
+//					resultMap.put( "message", "appId不能为空！");
+//					resultMap.put( "status", 0);
+//					return new MappingJacksonValue(resultMap);
+//				}
+//				if(ObjectUtils.isEmpty(passport)){
+//					resultMap.put( "message", "通行证不能为空！");
+//					resultMap.put( "status", 0);
+//					return new MappingJacksonValue(resultMap);
+//				}
+//				if(ObjectUtils.isEmpty(password)){
+//					resultMap.put( "message", "密码不能为空！");
+//					resultMap.put( "status", 0);
+//					return new MappingJacksonValue(resultMap);
+//				}
+				Object value=userLoginRegisterService.getCache(id);
+				if(ObjectUtils.isEmpty(value)){
+					resultMap.put( "message", "二维码已经过期！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(!userLoginRegisterService.setCache(id, passport+","+password, 1 * 30 * 1)){
+					resultMap.put( "message", Prompt.Operation_failed);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				resultMap.put( "status", 1);
+				return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("设置登录二维码对应的用户名密码失败");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
 	/**
 	 * 用户注册
 	 * @param type 1.邮箱注册,2.手机注册
@@ -3737,5 +3915,4 @@ public class UserController extends BaseControl {
 		}
 		return ip;
 	}
-  
 }

@@ -35,8 +35,9 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
 	private final static int LEN_NAME = 50;
 	private final static int LEN_ASSOCIATES = 500;
 
+	private static String LIST_ASSOCIATE_ID_APPID_SOURCEID = "List_Associate_Id_AppId_SourceId";
 	private static String LIST_ASSOCIATE_ID_APPID_SOURCETYPEID_SOURCEID = "List_Associate_Id_AppId_SourceTypeId_SourceId"; // 查询一个应用的分类根收藏夹
-
+	
 	@Autowired
 	private AssociateTypeService associateTypeService;
 
@@ -134,6 +135,21 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
 		}
 		try {
 			return getEntity(associateId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new AssociateServiceException(e);
+		}
+	}
+	
+	@Override
+	public List<Associate> getAssociatesBySourceId(Long appId, Long userId, Long sourceId)  throws AssociateServiceException {
+		ServiceError.assertAppIdForAssociate(appId);
+		ServiceError.assertUserIdForAssociate(userId);
+		if (sourceId == null || sourceId <= 0 ) {
+			return null;
+		}
+		try {
+			return getEntitys(LIST_ASSOCIATE_ID_APPID_SOURCEID, new Object []{appId,  sourceId});
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new AssociateServiceException(e);
