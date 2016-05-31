@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.ModelType;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserContact;
@@ -39,63 +40,75 @@ public class UserInfoController extends BaseControl {
 	
 	@RequestMapping(path = { "/user/user/updateUser1" }, method = { RequestMethod.POST})
 	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response,@RequestBody String body){
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		JSONObject j = JSONObject.fromObject(body);
 		Map<Integer,Object> paramMap = new HashMap<Integer,Object>();
+		Long userId = LoginUserContextHolder.getUserId();
+		String ip = this.getIpAddr(request);
 		//用户基本信息
 		if(j.containsKey("UB")){
 			JSONObject ubJson = (JSONObject)j.get("UB");
 			UserBasic userBasic = (UserBasic) JSONObject.toBean(ubJson, UserBasic.class);
+			userBasic.setIp(ip);
 			paramMap.put(ModelType.UB, userBasic);
 		}
 		//用户 联系方式
 		if(j.containsKey("UC")){
-			assemblyUserContact(j, paramMap);
+			assemblyUserContact(j, paramMap,ip);
 		}
 		//用户自定义
 		if(j.containsKey("UD")){
-			assemblyUserDefined(j,paramMap);
+			assemblyUserDefined(j,paramMap,ip);
 		}
 		//用户描述
 		if(j.containsKey("UDN")){
 			JSONObject udnJson = (JSONObject)j.get("UDN");
 			UserDescription userDescription = (UserDescription) JSONObject.toBean(udnJson, UserDescription.class);
+			userDescription.setIp(ip);
 			paramMap.put(ModelType.UDN, userDescription);
 		}
 		//用户教育经历
 		if(j.containsKey("UEH")){
-			assemblyUserEducationHistory(j,paramMap);
+			assemblyUserEducationHistory(j,paramMap,ip);
 		}
 		//用户家庭成员
 		if(j.containsKey("UFM")){
-			assemblyUserFamilyMember(j,paramMap);
+			assemblyUserFamilyMember(j,paramMap,ip);
 		}
 		//用户兴趣爱好
 		if(j.containsKey("UIG")){
 			JSONObject uigJson = (JSONObject)j.get("UIG");
 			UserInteresting userInteresting = (UserInteresting) JSONObject.toBean(uigJson, UserInteresting.class);
+			userInteresting.setIp(ip);
 			paramMap.put(ModelType.UIG, userInteresting);
 		}
 		//用户基本信息
 		if(j.containsKey("UIO")){
 			JSONObject uioJson = (JSONObject)j.get("UIO");
 			UserInfo userInfo = (UserInfo) JSONObject.toBean(uioJson, UserInfo.class);
+			userInfo.setIp(ip);
 			paramMap.put(ModelType.UIO, userInfo);
 		}
 		//用户专业技能
 		if(j.containsKey("US")){
 			JSONObject usJson = (JSONObject)j.get("US");
 			UserSkill userSkill = (UserSkill) JSONObject.toBean(usJson, UserSkill.class);
+			userSkill.setIp(ip);
 			paramMap.put(ModelType.UIO, userSkill);
 		}
 		if(j.containsKey("UWH")){
-			assemblyUserWorkHistory(j,paramMap);
+			assemblyUserWorkHistory(j,paramMap,ip);
 		}
 		try {
 			Boolean result = userInfoOperateService.updateInfo(paramMap);
 		} catch (Exception e) {
-			System.out.println("错了");
+			logger.error(e.getMessage());
+			logger.error(body);
+			resultMap.put("message", e.getMessage());
+			resultMap.put("status",0);
 		}
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("message", "设置成功！");
+		resultMap.put("status",0);
 		
 		return new MappingJacksonValue(resultMap);
 	}
@@ -106,7 +119,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserContact(JSONObject j, Map<Integer, Object> paramMap) {
+	private void assemblyUserContact(JSONObject j, Map<Integer, Object> paramMap,String ip) {
 		Map<String,List<UserContact>> userContactMap = new HashMap<String,List<UserContact>>();
 		JSONObject ubJson = (JSONObject)j.get("UC");
 		if(ubJson.containsKey("delete")){
@@ -122,6 +135,9 @@ public class UserInfoController extends BaseControl {
 		if(ubJson.containsKey("add")){
 			JSONArray addJson = ubJson.getJSONArray("add");
 			List<UserContact> userContacts = (List<UserContact>)JSONArray.toCollection(addJson, UserContact.class);
+			for(UserContact userContact:userContacts){
+				userContact.setIp(ip);
+			}
 			userContactMap.put("add", userContacts);
 		}
 		paramMap.put(ModelType.UC, userContactMap);
@@ -132,7 +148,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserDefined(JSONObject j, Map<Integer, Object> paramMap) {
+	private void assemblyUserDefined(JSONObject j, Map<Integer, Object> paramMap,String ip) {
 		Map<String,List<UserDefined>> userMap = new HashMap<String,List<UserDefined>>();
 		JSONObject udJson = (JSONObject)j.get("UD");
 		if(udJson.containsKey("delete")){
@@ -148,6 +164,9 @@ public class UserInfoController extends BaseControl {
 		if(udJson.containsKey("add")){
 			JSONArray addJson = udJson.getJSONArray("add");
 			List<UserDefined> userDefineds = (List<UserDefined>)JSONArray.toCollection(addJson, UserDefined.class);
+			for(UserDefined userDefined:userDefineds){
+				userDefined.setIp(ip);
+			}
 			userMap.put("add", userDefineds);
 		}
 		paramMap.put(ModelType.UD, userMap);
@@ -158,7 +177,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserEducationHistory(JSONObject j, Map<Integer, Object> paramMap) {
+	private void assemblyUserEducationHistory(JSONObject j, Map<Integer, Object> paramMap,String ip) {
 		Map<String,List<UserEducationHistory>> userMap = new HashMap<String,List<UserEducationHistory>>();
 		JSONObject uehJson = (JSONObject)j.get("UEH");
 		if(uehJson.containsKey("delete")){
@@ -174,6 +193,9 @@ public class UserInfoController extends BaseControl {
 		if(uehJson.containsKey("add")){
 			JSONArray addJson = uehJson.getJSONArray("add");
 			List<UserEducationHistory> userEducationHistorys = (List<UserEducationHistory>)JSONArray.toCollection(addJson, UserEducationHistory.class);
+			for(UserEducationHistory userEducationHistory:userEducationHistorys){
+				userEducationHistory.setIp(ip);
+			}
 			userMap.put("add", userEducationHistorys);
 		}
 		paramMap.put(ModelType.UEH, userMap);
@@ -185,7 +207,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserFamilyMember(JSONObject j, Map<Integer, Object> paramMap) {
+	private void assemblyUserFamilyMember(JSONObject j, Map<Integer, Object> paramMap,String ip) {
 		Map<String,List<UserFamilyMember>> userMap = new HashMap<String,List<UserFamilyMember>>();
 		JSONObject ufmJson = (JSONObject)j.get("UFM");
 		if(ufmJson.containsKey("delete")){
@@ -201,6 +223,9 @@ public class UserInfoController extends BaseControl {
 		if(ufmJson.containsKey("add")){
 			JSONArray addJson = ufmJson.getJSONArray("add");
 			List<UserFamilyMember> userFamilyMembers = (List<UserFamilyMember>)JSONArray.toCollection(addJson, UserFamilyMember.class);
+			for(UserFamilyMember userFamilyMember:userFamilyMembers){
+				userFamilyMember.setIp(ip);
+			}
 			userMap.put("add", userFamilyMembers);
 		}
 		paramMap.put(ModelType.UFM, userMap);
@@ -211,7 +236,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserWorkHistory(JSONObject j, Map<Integer, Object> paramMap) {
+	private void assemblyUserWorkHistory(JSONObject j, Map<Integer, Object> paramMap,String ip) {
 		Map<String,List<UserWorkHistory>> userMap = new HashMap<String,List<UserWorkHistory>>();
 		JSONObject uwhJson = (JSONObject)j.get("UWH");
 		if(uwhJson.containsKey("delete")){
@@ -227,11 +252,13 @@ public class UserInfoController extends BaseControl {
 		if(uwhJson.containsKey("add")){
 			JSONArray addJson = uwhJson.getJSONArray("add");
 			List<UserWorkHistory> userWorkHistorys = (List<UserWorkHistory>)JSONArray.toCollection(addJson, UserWorkHistory.class);
+			for(UserWorkHistory userWorkHistory:userWorkHistorys){
+				userWorkHistory.setIp(ip);
+			}
 			userMap.put("add", userWorkHistorys);
 		}
 		paramMap.put(ModelType.UWH, userMap);
 	}
-	
 	
 	/**
 	 * 获取用户资料
@@ -240,122 +267,37 @@ public class UserInfoController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/user/user/getUserDetail1" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "userId",required = true) long userId)throws Exception {
-		/*Map<String, Object> resultMap = new HashMap<String, Object>();
-		UserLoginRegister userLoginRegister= null;
-		UserOrganBasic userOrganBasic= null;
-		UserOrganExt userOrganExt= null;
-		UserBasic userBasic= null;
-//		UserExt userExt= null;
-		List<UserDefined> list=null;
-		UserInfo userInfo= null;
-//		UserContactWay userContactWay= null;
-		List<UserWorkHistory> listUserWorkHistory = null;
-		List<UserEducationHistory> listUserEducationHistory = null;
-		List<UserInterestIndustry> listUserInterestIndustry = null;
-		List<TagSource> listTagSource=null;
-		List<DirectorySource> listDirectorySource=null;
-		Map<AssociateType, List<Associate>> map=null;
-		Long userId=null;
-		Long appId =0l;
-		MappingJacksonValue mappingJacksonValue = null;
+	public MappingJacksonValue getUserDetail(@RequestParam(name = "userId",required = true) long userId,@RequestParam(name = "userId",required = true) int isFull,@RequestBody String body) {
+		Integer[] modelTypes = null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		if(body!=null){
+			JSONObject j = JSONObject.fromObject(body);
+			if(j.containsKey("models")){
+				JSONArray modelsJson = j.getJSONArray("models");
+				modelTypes = new Integer[modelsJson.size()];
+				List<String> modelsList = (List<String>)modelsJson.toCollection(modelsJson, String.class);
+				int size = modelsList.size();
+				for(int i =0;i<size;i++){
+					modelTypes[i]=ModelType.getModelType(modelsList.get(i));
+				}
+			}else{
+				resultMap.put("message", "models的值不能为空！");
+				resultMap.put("status",0);
+			}
+		}else{
+			modelTypes = ModelType.MODELS;
+		}
+		
 		try {
-			userId = LoginUserContextHolder.getUserId();
-			if(userId==null){
-				resultMap.put("message", Prompt.userId_is_null_or_empty);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			appId = LoginUserContextHolder.getAppKey();
-			if(ObjectUtils.isEmpty(appId)){
-				resultMap.put( "message", "appId不能为空！");
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}			
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
-			if(userLoginRegister==null){
-				resultMap.put("message", Prompt.passport_is_not_exists);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(userLoginRegister.getUsetType().intValue()==1){
-				userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
-				userOrganExt=userOrganExtService.getUserOrganExt(userLoginRegister.getId());
-//				List<Long> ids=userDefinedService.getIdList(userLoginRegister.getId());
-//				if(ids!=null && ids.size()!=0)list=userDefinedService.getIdList(ids);
-				if(!ObjectUtils.isEmpty(userOrganBasic)){
-					if(!StringUtils.isEmpty(userOrganBasic.getPicPath())){
-						userOrganBasic.setPicPath(dfsGintongCom+userOrganBasic.getPicPath());
-					}
-				}
-				if(!ObjectUtils.isEmpty(userOrganExt)){
-					if(!StringUtils.isEmpty(userOrganExt.getBusinessLicencePicPath())){
-						userOrganExt.setBusinessLicencePicPath(dfsGintongCom+userOrganExt.getBusinessLicencePicPath());
-					}
-					if(!StringUtils.isEmpty(userOrganExt.getIdcardFrontPicPath())){
-						userOrganExt.setIdcardFrontPicPath(dfsGintongCom+userOrganExt.getIdcardFrontPicPath());
-					}
-					if(!StringUtils.isEmpty(userOrganExt.getIdcardBackPicPath())){
-						userOrganExt.setIdcardBackPicPath(dfsGintongCom+userOrganExt.getIdcardBackPicPath());
-					}
-				}
-				resultMap.put("userLoginRegister", userLoginRegister);
-				resultMap.put("userOrganBasic", userOrganBasic);
-				resultMap.put("userOrganExt", userOrganExt);
-				resultMap.put("userDefinedList", list);
-				resultMap.put("status",1);
-				mappingJacksonValue = new MappingJacksonValue(resultMap);
-//				SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
-//				mappingJacksonValue.setFilters(filterProvider);
-			}
-			if(userLoginRegister.getUsetType().intValue()==0){
-				userBasic=userBasicService.getObject(userLoginRegister.getId());
-//				userExt=userExtService.getUserExt(userLoginRegister.getId());
-				resultMap.put("userLoginRegister", userLoginRegister);
-//				List<Long> ids=userDefinedService.getIdList(userLoginRegister.getId());
-//				if(ids!=null && ids.size()!=0)list=userDefinedService.getIdList(ids);
-				if(!ObjectUtils.isEmpty(userBasic)){
-					if(!StringUtils.isEmpty(userBasic.getPicPath())){
-						userBasic.setPicPath(dfsGintongCom+userBasic.getPicPath());
-					}
-				}
-				listUserInterestIndustry=userInterestIndustryService.getInterestIndustryListBy(userInterestIndustryService.getIdList(userId));
-//				userInfo=userInfoService.getUserInfo(userId);
-//				userContactWay=userContactWayService.getUserContactWay(userId);
-//				listUserWorkHistory=userWorkHistoryService.getIdList(userWorkHistoryService.getIdList(userId));
-//				listUserEducationHistory=userEducationHistoryService.getIdList(userEducationHistoryService.getIdList(userId));
-				listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, userId, 1l);
-				listDirectorySource=directorySourceService.getDirectorySourcesBySourceId(userId, appId, 1, userId);
-				map=associateService.getAssociatesBy(appId, 1l, userId);
-				for ( AssociateType key  : map.keySet()) {
-					resultMap.put(key.getName(), map.get(key));
-				}
-				resultMap.put("userBasic", userBasic);
-				if(!ObjectUtils.isEmpty(userInfo))resultMap.put("userInfo", userInfo);
-				if(!ObjectUtils.isEmpty(listUserInterestIndustry))resultMap.put("listUserInterestIndustry", listUserInterestIndustry);
-//				if(!ObjectUtils.isEmpty(userContactWay))resultMap.put("userContactWay", userContactWay);
-				if(!ObjectUtils.isEmpty(listUserWorkHistory))resultMap.put("listUserWorkHistory", listUserWorkHistory);
-				if(!ObjectUtils.isEmpty(listUserEducationHistory))resultMap.put("listUserEducationHistory", listUserEducationHistory);
-				if(!ObjectUtils.isEmpty(listTagSource))resultMap.put("listTagSource", listTagSource);
-				if(!ObjectUtils.isEmpty(listDirectorySource))resultMap.put("listDirectorySource", listDirectorySource);
-				resultMap.put("userBasic", userBasic);
-//				resultMap.put("userExt", userExt);
-				resultMap.put("userDefinedList", list);
-				resultMap.put("status",1);
-				mappingJacksonValue = new MappingJacksonValue(resultMap);
-				SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
-				mappingJacksonValue.setFilters(filterProvider);
-			}
-			userLoginRegister.setPassword(null);
-			userLoginRegister.setSalt(null);
-			return mappingJacksonValue;
-		}catch (Exception e ){
-			logger.info("获取用户资料失败:"+userId);
-			logger.info(e.getStackTrace());
-			throw e;
-		}*/
-		return null;
+			Map<String,Object> info = userInfoOperateService.getInfo(userId, modelTypes);
+			resultMap.putAll(info);
+			resultMap.put("status",1);
+		} catch (Exception e) {
+			resultMap.put("message", "获取信息失败！");
+			resultMap.put("status",0);
+		}
+		
+		return new MappingJacksonValue(resultMap);
 	}
 	
 	
