@@ -10,7 +10,7 @@ import javax.persistence.Table;
  * 专业技能
  */
 @Entity
-@Table(name = "tb_user_skill", catalog = "parasol_user")
+@Table(name = "tb_user_interesting", catalog = "parasol_user")
 public class UserInteresting implements Serializable {
 	
 	/**
@@ -25,6 +25,14 @@ public class UserInteresting implements Serializable {
 	 * 应用id
 	 */
 	private Long appId;
+	/**
+	 * 0:私密,1:好友可见,2:部分好友,3:公开
+	 */
+	private int permission;
+	/**
+	 * 部分好友可见时存放好友的id，用逗号“,”隔开。
+	 */
+	private String friendIds;
 	/**
 	 * 兴趣 用逗号隔开
 	 */
@@ -86,7 +94,22 @@ public class UserInteresting implements Serializable {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
-	
+	@Column(name = "permission")
+	public int getPermission() {
+		return permission;
+	}
+
+	public void setPermission(int permission) {
+		this.permission = permission;
+	}
+	@Column(name = "friendIds")
+	public String getFriendIds() {
+		return friendIds;
+	}
+
+	public void setFriendIds(String friendIds) {
+		this.friendIds = friendIds;
+	}
 	
 
 }

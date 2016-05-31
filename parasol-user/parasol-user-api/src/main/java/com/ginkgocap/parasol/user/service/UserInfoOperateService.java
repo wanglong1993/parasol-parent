@@ -17,6 +17,7 @@ public interface UserInfoOperateService {
 	 * 获取模块信息，分模块获取
 	 * @param userId
 	 * @param models 一组模块
+	 * @param isSelf 是不是自己，不是自己的话要进行权限过滤
 	 * @return
 	 * @throws Exception
 	 */

@@ -29,6 +29,15 @@ public class UserSkill implements Serializable {
 	 * 专业技能 用逗号隔开
 	 */
 	private String skills;
+	/**
+	 * 0:私密,1:好友可见,2:部分好友,3:公开
+	 */
+	private int permission;
+	/**
+	 * 部分好友可见时存放好友的id，用逗号“,”隔开。
+	 */
+	private String friendIds;
+	
 	
 	private Long ctime;
 	
@@ -85,6 +94,21 @@ public class UserSkill implements Serializable {
 		this.ip = ip;
 	}
 	
-	
+	@Column(name = "permission")
+	public int getPermission() {
+		return permission;
+	}
+
+	public void setPermission(int permission) {
+		this.permission = permission;
+	}
+	@Column(name = "friendIds")
+	public String getFriendIds() {
+		return friendIds;
+	}
+
+	public void setFriendIds(String friendIds) {
+		this.friendIds = friendIds;
+	}
 
 }

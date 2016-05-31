@@ -75,8 +75,7 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 	public final static String USERDIFINE="UD";
 	//系统默认
 	public final static String DEFAULT = "OS";
-	
-	
+
 	@Override
 	public boolean saveInfo(Map<Integer, Object> param)
 			throws Exception {
@@ -192,7 +191,6 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 			   		}else{
 			   			userBasicService.createObject(userBasic);
 			   		}
-			   		
 			   		continue;
 			   case ModelType.UC :
 			   		entitys =  param.get(modelType);

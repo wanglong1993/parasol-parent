@@ -1,8 +1,10 @@
 package com.ginkgocap.parasol.user.web.jetty.web.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -11,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.ModelType;
@@ -37,6 +39,15 @@ public class UserInfoController extends BaseControl {
 	private static Logger logger = Logger.getLogger(UserInfoController.class);
 	@Resource
 	private UserInfoOperateService userInfoOperateService;
+	
+	//私密
+	public final static int PRIVACY = 0;
+	//好友可见
+	public final static int FRIENT = 1;
+	//部分好友
+	public final static int PARTFRIENT = 2;
+	//公开
+	public final static int OPEN = 3;
 	
 	@RequestMapping(path = { "/user/user/updateUser1" }, method = { RequestMethod.POST})
 	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response,@RequestBody String body){
@@ -266,12 +277,20 @@ public class UserInfoController extends BaseControl {
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/getUserDetail1" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getUserDetail(@RequestParam(name = "userId",required = true) long userId,@RequestParam(name = "userId",required = true) int isFull,@RequestBody String body) {
+	@RequestMapping(path = { "/user/user/getUserDetail1" }, method = { RequestMethod.POST })
+	public MappingJacksonValue getUserDetail(@RequestBody String body) {
 		Integer[] modelTypes = null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		long userId = LoginUserContextHolder.getUserId();
+		//simple=1 代表全字段返回，如果simple=0过滤掉ip 创建时间 更新时间等返回
+		long otherUserId = -1l;
+		boolean isSelf = true;
+		int simple = 0;
 		if(body!=null){
 			JSONObject j = JSONObject.fromObject(body);
+			otherUserId = j.containsKey("userId")?j.getLong("userId"):-1l;
+			isSelf=(userId==otherUserId);
+			simple = j.containsKey("simple")?j.getInt("simple"):simple;
 			if(j.containsKey("models")){
 				JSONArray modelsJson = j.getJSONArray("models");
 				modelTypes = new Integer[modelsJson.size()];
@@ -287,7 +306,6 @@ public class UserInfoController extends BaseControl {
 		}else{
 			modelTypes = ModelType.MODELS;
 		}
-		
 		try {
 			Map<String,Object> info = userInfoOperateService.getInfo(userId, modelTypes);
 			resultMap.putAll(info);
@@ -299,6 +317,267 @@ public class UserInfoController extends BaseControl {
 		
 		return new MappingJacksonValue(resultMap);
 	}
+	/**
+	 * 
+	 * 字段权限过滤
+	 * @param models
+	 */
+	public void filterPermission(Map<String,Object> models,Long userId,boolean isFriend){
+		Set<String> keys = models.keySet();
+		for(String key : keys){
+			if("UC".equals(key)){
+				filterUC(models, userId, isFriend, key);
+			}
+			if("UD".equals(key)){
+				filterUD(models, userId, isFriend, key);
+			}
+			if("UDN".equals(key)){
+				filterUDN(models, userId, isFriend, key);
+			}
+			if("UEH".equals(key)){
+				filterUEH(models, userId, isFriend, key);
+			}
+			if("UFM".equals(key)){
+				filterUFM(models, userId, isFriend, key);
+			}
+			if("UIO".equals(key)){
+				filterUIO(models, userId, isFriend, key);
+			}
+			if("UIG".equals(key)){
+				filterUIG(models, userId, isFriend, key);
+			}
+			if("US".equals(key)){
+				filterUS(models, userId, isFriend, key);
+			}
+			if("UWH".equals(key)){
+				filterUWH(models, userId, isFriend, key);
+			}
+		}
+	}
+	public final static int UIG =8;//用户兴趣爱好
+	public final static int US =9;//用户专业技能
+	public final static int UWH =10;//用户工作经历
+	
+	private void filterUWH(Map<String, Object> models, Long userId,
+			boolean isFriend, String key) {
+		List<UserWorkHistory> userWorkHistorys = (List<UserWorkHistory>)models.get(key);
+		for(UserWorkHistory userWorkHistory:userWorkHistorys){
+			int permission = userWorkHistory.getPermission();
+			switch(permission){
+			   case PRIVACY:
+				   userWorkHistorys.remove(userWorkHistory);
+			   case FRIENT:
+				   if(!isFriend) userWorkHistorys.remove(userWorkHistory);
+			   case PARTFRIENT:
+				   String friendIdsStr = userWorkHistory.getFriendIds();
+				   if(StringUtils.isEmpty(friendIdsStr)){
+					   String[] friendIds = friendIdsStr.split(",");
+					   int index = Arrays.binarySearch(friendIds, userId.toString());
+					   if(index<0){
+						   userWorkHistorys.remove(userWorkHistory);
+					   }
+				   }
+			   case OPEN:
+				   continue;
+			}
+		}
+	}
 	
 	
+	private void filterUS(Map<String, Object> models, Long userId,
+			boolean isFriend, String key) {
+		UserSkill userSkill = (UserSkill)models.get(key);
+		int permission = userSkill.getPermission();
+		switch(permission){
+		case PRIVACY:
+			models.remove(key);
+		case FRIENT:
+			if(!isFriend) models.remove(key);
+		case PARTFRIENT:
+			 String friendIdsStr = userSkill.getFriendIds();
+			   if(StringUtils.isEmpty(friendIdsStr)){
+				   String[] friendIds = friendIdsStr.split(",");
+				   int index = Arrays.binarySearch(friendIds, userId.toString());
+				   if(index<0){
+					   models.remove(key);
+				   }
+			   }
+		case OPEN:
+			   break;
+		}
+	}
+
+	private void filterUIG(Map<String, Object> models, Long userId,
+			boolean isFriend, String key) {
+		UserInteresting userInteresting = (UserInteresting)models.get(key);
+		int permission = userInteresting.getPermission();
+		switch(permission){
+		case PRIVACY:
+			models.remove(key);
+		case FRIENT:
+			if(!isFriend) models.remove(key);
+		case PARTFRIENT:
+			 String friendIdsStr = userInteresting.getFriendIds();
+			   if(StringUtils.isEmpty(friendIdsStr)){
+				   String[] friendIds = friendIdsStr.split(",");
+				   int index = Arrays.binarySearch(friendIds, userId.toString());
+				   if(index<0){
+					   models.remove(key);
+				   }
+			   }
+		case OPEN:
+			   break;
+		}
+	}
+	private void filterUIO(Map<String, Object> models, Long userId,
+			boolean isFriend, String key) {
+		UserInfo userInfo = (UserInfo)models.get(key);
+		int permission = userInfo.getPermission();
+		switch(permission){
+		case PRIVACY:
+			models.remove(key);
+		case FRIENT:
+			if(!isFriend) models.remove(key);
+		case PARTFRIENT:
+			 String friendIdsStr = userInfo.getFriendIds();
+			   if(StringUtils.isEmpty(friendIdsStr)){
+				   String[] friendIds = friendIdsStr.split(",");
+				   int index = Arrays.binarySearch(friendIds, userId.toString());
+				   if(index<0){
+					   models.remove(key);
+				   }
+			   }
+		case OPEN:
+			   break;
+		}
+	}
+	
+	private void filterUFM(Map<String, Object> models, Long userId,
+			boolean isFriend, String key) {
+		List<UserFamilyMember> userFamilyMembers = (List<UserFamilyMember>)models.get(key);
+		for(UserFamilyMember userEducationHistory:userFamilyMembers){
+			int permission = userEducationHistory.getPermission();
+			switch(permission){
+			   case PRIVACY:
+				   userFamilyMembers.remove(userEducationHistory);
+			   case FRIENT:
+				   if(!isFriend) userFamilyMembers.remove(userEducationHistory);
+			   case PARTFRIENT:
+				   String friendIdsStr = userEducationHistory.getFriendIds();
+				   if(StringUtils.isEmpty(friendIdsStr)){
+					   String[] friendIds = friendIdsStr.split(",");
+					   int index = Arrays.binarySearch(friendIds, userId.toString());
+					   if(index<0){
+						   userFamilyMembers.remove(userEducationHistory);
+					   }
+				   }
+			   case OPEN:
+				   continue;
+			}
+		}
+	}
+	
+	private void filterUEH(Map<String, Object> models, Long userId,
+			boolean isFriend, String key) {
+		List<UserEducationHistory> userEducationHistorys = (List<UserEducationHistory>)models.get(key);
+		for(UserEducationHistory userEducationHistory:userEducationHistorys){
+			int permission = userEducationHistory.getPermission();
+			switch(permission){
+			   case PRIVACY:
+				   userEducationHistorys.remove(userEducationHistory);
+			   case FRIENT:
+				   if(!isFriend) userEducationHistorys.remove(userEducationHistory);
+			   case PARTFRIENT:
+				   String friendIdsStr = userEducationHistory.getFriendIds();
+				   if(StringUtils.isEmpty(friendIdsStr)){
+					   String[] friendIds = friendIdsStr.split(",");
+					   int index = Arrays.binarySearch(friendIds, userId.toString());
+					   if(index<0){
+						   userEducationHistorys.remove(userEducationHistory);
+					   }
+				   }
+			   case OPEN:
+				   continue;
+			}
+		}
+	}
+	
+	private void filterUDN(Map<String, Object> models, Long userId,
+			boolean isFriend, String key) {
+		UserDescription userDescription = (UserDescription)models.get(key);
+		int permission = userDescription.getPermission();
+		switch(permission){
+		case PRIVACY:
+			models.remove(key);
+		case FRIENT:
+			if(!isFriend) models.remove(key);
+		case PARTFRIENT:
+			 String friendIdsStr = userDescription.getFriendIds();
+			   if(StringUtils.isEmpty(friendIdsStr)){
+				   String[] friendIds = friendIdsStr.split(",");
+				   int index = Arrays.binarySearch(friendIds, userId.toString());
+				   if(index<0){
+					   models.remove(key);
+				   }
+			   }
+		case OPEN:
+			   break;
+		}
+	}
+
+
+	private void filterUC(Map<String, Object> models, Long userId,
+			boolean isFriend, String key) {
+		List<UserContact> userContacts = (List<UserContact>)models.get(key);
+		for(UserContact userContact:userContacts){
+			int permission = userContact.getPermission();
+			switch(permission){
+			   case PRIVACY:
+				   userContacts.remove(userContact);
+			   case FRIENT:
+				   if(!isFriend) userContacts.remove(userContact);
+			   case PARTFRIENT:
+				   String friendIdsStr = userContact.getFriendIds();
+				   if(StringUtils.isEmpty(friendIdsStr)){
+					   String[] friendIds = friendIdsStr.split(",");
+					   int index = Arrays.binarySearch(friendIds, userId.toString());
+					   if(index<0){
+						   userContacts.remove(userContact);
+					   }
+				   }
+			   case OPEN:
+				   continue;
+			}
+		}
+	}
+
+
+	private void filterUD(Map<String, Object> models, Long userId,
+			boolean isFriend, String key) {
+		List<UserDefined> userDefineds = (List<UserDefined>)models.get(key);
+		for(UserDefined userDefined:userDefineds){
+			int permission = userDefined.getPermission();
+			switch(permission){
+			   case PRIVACY:
+				   userDefineds.remove(userDefined);
+			   case FRIENT:
+				   if(!isFriend) userDefineds.remove(userDefined);
+			   case PARTFRIENT:
+				   String friendIdsStr = userDefined.getFriendIds();
+				   if(StringUtils.isEmpty(friendIdsStr)){
+					   String[] friendIds = friendIdsStr.split(",");
+					   int index = Arrays.binarySearch(friendIds, userId.toString());
+					   if(index<0){
+						   userDefineds.remove(userDefined);
+					   }
+				   }
+			   case OPEN:
+				   continue;
+			}
+		}
+	}
+	
+	public boolean isFriend(long userId,long friendId){
+		return true;
+	}
 }
