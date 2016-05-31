@@ -41,6 +41,7 @@ public class UserConfigController extends BaseControl{
     @RequestMapping(path = { "/user/user/userSetHomePageVisible" }, method = { RequestMethod.POST})
     public MappingJacksonValue userSetHomePageVisible(HttpServletRequest request, HttpServletResponse response
             , @RequestParam(name = "homePageVisible",required = true) String homePageVisible
+            , @RequestParam(name = "ids", required = true) String ids
     )throws Exception {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         Long userId=null;
@@ -64,6 +65,10 @@ public class UserConfigController extends BaseControl{
             }
             userConfig.setHomePageVisible(new Byte(homePageVisible));
             userConfigerService.updateUserConfig(userConfig);
+            // 存储可见的部分好友
+            if (homePageVisible.equals("3")) {
+
+            }
             resultMap.put( "status", 1);
             resultMap.put("message", "设置成功!");
             return new MappingJacksonValue(resultMap);
