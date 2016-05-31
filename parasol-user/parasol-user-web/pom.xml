@@ -305,7 +305,7 @@
 				<email.findpwd.url.coopert>http://open.gintong.com/reset-password</email.findpwd.url.coopert>
 				<dfs.gintong.com>http://192.168.101.148/</dfs.gintong.com>
 				<imservice.url>http://192.168.101.41:4446</imservice.url>
-				<client_id>7647448850</client_id>
+				<client_id>1</client_id>
 				<client_secret>88aec17e1857ca1341ee6b16b0b75aef</client_secret>
 			</properties>
 		</profile>
