@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -526,6 +525,78 @@ public class UserController extends BaseControl {
 					}
 				}
 				System.out.println("over="+111111111);
+				return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("获取二维码对应的用户名密码失败！");
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 组织绑定一个用户
+	 * @param id 组织ID
+	 * @param passport 邮箱或者手机号
+	 * @param password 密码
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/orgBindUser" }, method = { RequestMethod.POST })
+	public MappingJacksonValue orgBindUser(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "orgId",required = true) long orgId
+			,@RequestParam(name = "passport",required = true ) String passport
+			,@RequestParam(name = "password",required = true ) String password
+			)throws Exception{
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		Long appId=null;
+		UserLoginRegister userLoginRegister=null;
+		UserLoginRegister userLoginRegister2=null;
+			try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				appId = LoginUserContextHolder.getAppKey();
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userLoginRegister2=userLoginRegisterService.getUserLoginRegister(orgId);
+				if(ObjectUtils.isEmpty(userLoginRegister2)){
+					resultMap.put("message", Prompt.orgId_is_not_exists);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(passport)){
+					resultMap.put("message", Prompt.passport_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(password)){
+					resultMap.put("message", Prompt.passowrd_cannot_be_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+				if(userLoginRegister==null){
+					resultMap.put( "message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				byte[] bt = Base64.decode(password);
+				String salt=userLoginRegister.getSalt();
+				String newpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
+				if(!userLoginRegister.getPassword().equals(newpassword)){
+					resultMap.put("message", Prompt.incorrect_password);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userLoginRegister.setOrgId(orgId);
+				userLoginRegisterService.updataUserLoginRegister(userLoginRegister2);
+				resultMap.put("message", Prompt.Operation_succeeded);
+				resultMap.put("status",1);
 				return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("获取二维码对应的用户名密码失败！");
