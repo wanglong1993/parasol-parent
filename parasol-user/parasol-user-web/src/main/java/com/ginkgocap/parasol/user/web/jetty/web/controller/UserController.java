@@ -157,6 +157,10 @@ public class UserController extends BaseControl {
     private String client_secret; 
 	@Value("${email.validate.url}")  
     private String emailValidateUrl; 	
+	@Value("${email.validate.url.gintong}")  
+	private String emailValidateUrlgintong;
+	@Value("${email.bind.url.gintong}")  
+	private String emailBindUrlgintong;	
 	@Value("${email.validate.url.coopert}")  
 	private String emailValidateUrlCoopert; 	
 	@Value("${email.findpwd.url.coopert}")  
@@ -3653,7 +3657,7 @@ public class UserController extends BaseControl {
 	}
 
 	/**
-	 * 手机和邮箱找回密码获取验证码
+	 *手机和邮箱找回密码及更改绑定手机和邮箱获取验证码
 	 * 
 	 * @param request
 	 * @return
@@ -3702,7 +3706,7 @@ public class UserController extends BaseControl {
 				if(isEmail(passport)){
 //					code=userLoginRegisterService.getIdentifyingCode(passport);
 //					if(StringUtils.isEmpty(code)){
-					if(emailtype!=2 && emailtype!=4){
+					if(emailtype!=2 && emailtype!=3 && emailtype!=4){
 						resultMap.put( "message", Prompt.findpwd_email_type_is_not_correcct);
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
@@ -3711,6 +3715,7 @@ public class UserController extends BaseControl {
 						Map<String, Object> map = new HashMap<String, Object>();
 //				        if(emailtype==4)map.put("email", emailFindpwdUrlCoopert+"?email="+passport+"&code="+code);
 				        if(emailtype==2)map.put("email", emailValidateUrl+"?email="+passport+"&code="+code);
+				        if(emailtype==3)map.put("email", emailBindUrlgintong+"?email="+passport+"&code="+code);
 				        map.put("acceptor",passport);
 				        map.put("imageRoot", "http://static.gintong.com/resources/images/v3/");
 				        map.put("code", code);
