@@ -3666,7 +3666,7 @@ public class UserController extends BaseControl {
 		}
 	}
 	/**
-	 * 修改绑定的邮箱和手机
+	 * 修改绑定的邮箱或手机
 	 * @param passport 为邮箱和手机号
 	 * @param code 验证码
 	 * @param source  来源的appkey
