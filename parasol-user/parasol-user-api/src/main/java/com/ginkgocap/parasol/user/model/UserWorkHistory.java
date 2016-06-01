@@ -21,6 +21,10 @@ public class UserWorkHistory implements java.io.Serializable {
 	 */
 	private Long id;
 	/**
+	 * 应用id
+	 */
+	private Long appId;
+	/**
 	 * 个人用户id.
 	 */
 	private Long userId;
@@ -189,6 +193,14 @@ public class UserWorkHistory implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
 	}
 
 }

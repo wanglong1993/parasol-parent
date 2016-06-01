@@ -30,6 +30,8 @@ public class UserDefined implements java.io.Serializable {
 	 * 应用id
 	 */
 	private Long appId;
+	
+
 	/**
 	 * 自定义字段名.
 	 */
@@ -154,6 +156,14 @@ public class UserDefined implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
 	}
 
 }

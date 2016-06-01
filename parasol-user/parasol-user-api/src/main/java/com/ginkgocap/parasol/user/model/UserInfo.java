@@ -23,6 +23,10 @@ public class UserInfo implements java.io.Serializable {
 	 */
 	private Long userId;
 	/**
+	 * 应用id
+	 */
+	private Long appId;
+	/**
 	 * 国家
 	 */
 	private String birthPlaceCountryName;
@@ -276,6 +280,14 @@ public class UserInfo implements java.io.Serializable {
 
 	public void setCountyName(String countyName) {
 		this.countyName = countyName;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
 	}
 
 }

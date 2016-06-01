@@ -25,6 +25,10 @@ public class UserEducationHistory implements java.io.Serializable {
 	 */
 	private Long id;
 	/**
+	 * 应用id
+	 */
+	private Long appId;
+	/**
 	 * 个人用户id.
 	 */
 	private Long userId;
@@ -217,6 +221,14 @@ public class UserEducationHistory implements java.io.Serializable {
 
 	public void setFriendIds(String friendIds) {
 		this.friendIds = friendIds;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
 	}
 	
 }
