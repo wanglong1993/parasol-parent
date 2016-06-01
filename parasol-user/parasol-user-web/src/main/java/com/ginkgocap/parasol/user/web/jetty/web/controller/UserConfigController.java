@@ -129,7 +129,7 @@ public class UserConfigController extends BaseControl{
                 resultMap.put("status",0);
                 return new MappingJacksonValue(resultMap);
         }
-            userConfig.setHomePageVisible(new Byte(evaluateVisible));
+            userConfig.setEvaluateVisible(new Byte(evaluateVisible));
             userConfigerService.updateUserConfig(userConfig);
             // 存储可见的部分好友
             if (evaluateVisible.equals("3")) {
