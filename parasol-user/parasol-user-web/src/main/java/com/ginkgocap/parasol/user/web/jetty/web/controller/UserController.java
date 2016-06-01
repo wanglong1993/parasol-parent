@@ -339,7 +339,6 @@ public class UserController extends BaseControl {
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
-		UserOrganBasic userOrganBasic=null;
 		Long appId =0l;
 		Long userId=0L;
 		boolean bl=false;
@@ -369,8 +368,19 @@ public class UserController extends BaseControl {
 					resultMap.put("status",0);
 					return new MappingJacksonValue(resultMap);
 				}
-				if(code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
-					userLoginRegister.setPassport(passport);
+				if(code.equals(code2)){
+					if(isMobileNo(passport)){
+						userLoginRegister.setMobile(passport);
+						if(isMobileNo(userLoginRegister.getPassport())){
+							userLoginRegister.setPassport(passport);
+						}
+					}
+					if(isEmail(passport)){
+						userLoginRegister.setEmail(passport);
+						if(isEmail(userLoginRegister.getPassport())){
+							userLoginRegister.setPassport(passport);
+						}
+					}
 					bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
 					if(bl==false){
 						resultMap.put("message", Prompt.update_passport_is_failed);
