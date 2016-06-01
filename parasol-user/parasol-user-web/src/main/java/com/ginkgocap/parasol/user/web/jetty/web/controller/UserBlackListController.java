@@ -177,6 +177,7 @@ public class UserBlackListController extends BaseControl{
             userBlackLists = userBlackListService.getBlackListPageUtilByUserId(userId,pageIndex,pageSize,appId);
             // 少一个count接口  需要count数目
             resultMap.put("userBlackLists",userBlackLists);
+            resultMap.put("status", 1);
             resultMap.put("pageIndex",pageIndex);
             resultMap.put("pageSize", pageSize);
             return new MappingJacksonValue(resultMap);
@@ -212,6 +213,7 @@ public class UserBlackListController extends BaseControl{
             }
             UserBlackList userBlackList = userBlackListService.getUserBlackList(id);
             resultMap.put("message","success");
+            resultMap.put("status", 1);
             resultMap.put("userblacklist",userBlackList);
             return new MappingJacksonValue(resultMap);
         }  catch (UserBlackListServiceException e) {
