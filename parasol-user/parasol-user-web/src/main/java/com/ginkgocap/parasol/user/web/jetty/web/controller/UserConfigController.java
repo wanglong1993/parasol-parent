@@ -78,6 +78,9 @@ public class UserConfigController extends BaseControl{
             // 存储可见的部分好友
             if (homePageVisible.equals("3")) {
                 userConfigConnectorService.saveOrUpdateEntitys(userId,1,appId,ids);
+            } else {
+                // 如果不是选择部分好友可见，需要删除原来设置的可见好友信息
+                userConfigConnectorService.deletes(userId,1,appId);
             }
             resultMap.put( "status", 1);
             resultMap.put("message", "设置成功!");
@@ -96,7 +99,7 @@ public class UserConfigController extends BaseControl{
      */
     @RequestMapping(path = { "/user/user/userSetEvaluateVisible" }, method = { RequestMethod.POST})
     public MappingJacksonValue userSetEvaluateVisible(HttpServletRequest request,HttpServletResponse response
-            ,@RequestParam(name = "evaluateVisible",required = true) String evaluateVisible
+            , @RequestParam(name = "evaluateVisible",required = true) String evaluateVisible
             , @RequestParam(name = "ids", required = true) String ids
     )throws Exception {
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -125,9 +128,16 @@ public class UserConfigController extends BaseControl{
                 resultMap.put("message", "用户设置不存在");
                 resultMap.put("status",0);
                 return new MappingJacksonValue(resultMap);
-            }
+        }
             userConfig.setHomePageVisible(new Byte(evaluateVisible));
             userConfigerService.updateUserConfig(userConfig);
+            // 存储可见的部分好友
+            if (evaluateVisible.equals("3")) {
+                userConfigConnectorService.saveOrUpdateEntitys(userId,2,appId,ids);
+            } else {
+                // 如果不是选择部分好友可见，需要删除原来设置的可见好友信息
+                userConfigConnectorService.deletes(userId,2,appId);
+            }
             resultMap.put( "status", 1);
             resultMap.put("message", "设置成功!");
             return new MappingJacksonValue(resultMap);

@@ -27,7 +27,7 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
 
         try {
             // 首先需要确定当前设置是否存在部分好友可见的记录
-            userConfigConnectorListCount = this.getUserConfigConnectors(userId,type);
+            userConfigConnectorListCount = this.getUserConfigConnectors(userId,type,appId);
             // 如果存在 则全部删除 重新记录
             if (null != userConfigConnectorListCount || userConfigConnectorListCount.size() > 0) {
                 this.deletes(userConfigConnectorListCount);
@@ -66,7 +66,7 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
     }
 
     @Override
-    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type) throws UserConfigConnectorServiceException {
+    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type, Long appId) throws UserConfigConnectorServiceException {
         List<UserConfigConnector> userConfigConnectors = null;
         try {
             userConfigConnectors = this.getEntitys("UserConfigConnector_List_UserId_type", userId, type);
@@ -79,7 +79,13 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
     }
 
     @Override
-    public Boolean deletes(Long userId, int type, Long appId) {
-        return null;
+    public int deletes(Long userId, int type, Long appId) throws UserConfigConnectorServiceException {
+        try {
+            return this.deleteList("UserConfigConnector_Delete_UserId_Type",userId, type, appId);
+        } catch (BaseServiceException e) {
+            logger.error("deletes friend failed!");
+            e.printStackTrace();
+            throw new UserConfigConnectorServiceException("deletes friend failed!");
+        }
     }
 }

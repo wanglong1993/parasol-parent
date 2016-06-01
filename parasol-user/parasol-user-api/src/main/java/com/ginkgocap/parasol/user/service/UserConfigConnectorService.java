@@ -36,7 +36,7 @@ public interface UserConfigConnectorService {
      * @return
      * @author wfl
      */
-    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type) throws UserConfigServiceException, UserConfigConnectorServiceException;
+    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type, Long appId) throws UserConfigServiceException, UserConfigConnectorServiceException;
 
     /**
      * 根据用户Id和类型删除保存的部分好友
@@ -45,5 +45,5 @@ public interface UserConfigConnectorService {
      * @param appId
      * @return
      */
-    public Boolean deletes(Long userId, int type, Long appId);
+    public int deletes(Long userId, int type, Long appId) throws UserConfigConnectorServiceException;
 }
