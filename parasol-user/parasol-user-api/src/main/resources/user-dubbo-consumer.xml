@@ -48,5 +48,5 @@
     <dubbo:reference id="userBlackListService" interface="com.ginkgocap.parasol.user.service.UserBlackListService" version="2.0.0"/>
 	<dubbo:reference id="userInfoOperateService" interface="com.ginkgocap.parasol.user.service.UserInfoOperateService" version="2.0.0"/>
     <dubbo:reference id="userConfigConnectorService" interface="com.ginkgocap.parasol.user.service.UserConfigConnectorService" version="2.0.0"/>
-
+	<dubbo:reference id="userTemplateOpenService" interface="com.ginkgocap.parasol.user.service.UserTemplateOpenService" version="2.0.0"/>
 </beans>

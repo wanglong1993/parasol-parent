@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.ModelType;
@@ -49,8 +50,9 @@ public class UserInfoController extends BaseControl {
 	//公开
 	public final static int OPEN = 3;
 	
+	@ResponseBody
 	@RequestMapping(path = { "/user/user/updateUser1" }, method = { RequestMethod.POST})
-	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response,@RequestBody String body){
+	public Map<String,Object> updateUser(HttpServletRequest request,HttpServletResponse response,@RequestBody String body){
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		JSONObject j = JSONObject.fromObject(body);
 		Map<Integer,Object> paramMap = new HashMap<Integer,Object>();
@@ -61,38 +63,41 @@ public class UserInfoController extends BaseControl {
 		if(j.containsKey("UB")){
 			JSONObject ubJson = (JSONObject)j.get("UB");
 			UserBasic userBasic = (UserBasic) JSONObject.toBean(ubJson, UserBasic.class);
+			userBasic.setUserId(userId);
 			userBasic.setIp(ip);
 			userBasic.setAppId(appId);
 			paramMap.put(ModelType.UB, userBasic);
 		}
 		//用户 联系方式
 		if(j.containsKey("UC")){
-			assemblyUserContact(j, paramMap,ip,appId);
+			assemblyUserContact(j, paramMap,ip,appId,userId);
 		}
 		//用户自定义
 		if(j.containsKey("UD")){
-			assemblyUserDefined(j,paramMap,ip,appId);
+			assemblyUserDefined(j,paramMap,ip,appId,userId);
 		}
 		//用户描述
 		if(j.containsKey("UDN")){
 			JSONObject udnJson = (JSONObject)j.get("UDN");
 			UserDescription userDescription = (UserDescription) JSONObject.toBean(udnJson, UserDescription.class);
+			userDescription.setUserId(userId);
 			userDescription.setIp(ip);
 			userDescription.setAppId(appId);
 			paramMap.put(ModelType.UDN, userDescription);
 		}
 		//用户教育经历
 		if(j.containsKey("UEH")){
-			assemblyUserEducationHistory(j,paramMap,ip,appId);
+			assemblyUserEducationHistory(j,paramMap,ip,appId,userId);
 		}
 		//用户家庭成员
 		if(j.containsKey("UFM")){
-			assemblyUserFamilyMember(j,paramMap,ip,appId);
+			assemblyUserFamilyMember(j,paramMap,ip,appId,userId);
 		}
 		//用户兴趣爱好
 		if(j.containsKey("UIG")){
 			JSONObject uigJson = (JSONObject)j.get("UIG");
 			UserInteresting userInteresting = (UserInteresting) JSONObject.toBean(uigJson, UserInteresting.class);
+			userInteresting.setUserId(userId);
 			userInteresting.setIp(ip);
 			userInteresting.setAppId(appId);
 			paramMap.put(ModelType.UIG, userInteresting);
@@ -101,6 +106,7 @@ public class UserInfoController extends BaseControl {
 		if(j.containsKey("UIO")){
 			JSONObject uioJson = (JSONObject)j.get("UIO");
 			UserInfo userInfo = (UserInfo) JSONObject.toBean(uioJson, UserInfo.class);
+			userInfo.setUserId(userId);
 			userInfo.setIp(ip);
 			userInfo.setAppId(appId);
 			paramMap.put(ModelType.UIO, userInfo);
@@ -109,12 +115,13 @@ public class UserInfoController extends BaseControl {
 		if(j.containsKey("US")){
 			JSONObject usJson = (JSONObject)j.get("US");
 			UserSkill userSkill = (UserSkill) JSONObject.toBean(usJson, UserSkill.class);
+			userSkill.setUserId(userId);
 			userSkill.setIp(ip);
 			userSkill.setAppId(appId);
-			paramMap.put(ModelType.UIO, userSkill);
+			paramMap.put(ModelType.US, userSkill);
 		}
 		if(j.containsKey("UWH")){
-			assemblyUserWorkHistory(j,paramMap,ip,appId);
+			assemblyUserWorkHistory(j,paramMap,ip,appId,userId);
 		}
 		try {
 			Boolean result = userInfoOperateService.updateInfo(paramMap);
@@ -123,11 +130,12 @@ public class UserInfoController extends BaseControl {
 			logger.error(body);
 			resultMap.put("message", e.getMessage());
 			resultMap.put("status",0);
+			return  resultMap;
 		}
 		resultMap.put("message", "设置成功！");
 		resultMap.put("status",0);
 		
-		return new MappingJacksonValue(resultMap);
+		return  resultMap;
 	}
 
 
@@ -136,7 +144,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserContact(JSONObject j, Map<Integer, Object> paramMap,String ip,long appId) {
+	private void assemblyUserContact(JSONObject j, Map<Integer, Object> paramMap,String ip,long appId,long userId) {
 		Map<String,List<UserContact>> userContactMap = new HashMap<String,List<UserContact>>();
 		JSONObject ubJson = (JSONObject)j.get("UC");
 		if(ubJson.containsKey("delete")){
@@ -153,6 +161,7 @@ public class UserInfoController extends BaseControl {
 			JSONArray addJson = ubJson.getJSONArray("add");
 			List<UserContact> userContacts = (List<UserContact>)JSONArray.toCollection(addJson, UserContact.class);
 			for(UserContact userContact:userContacts){
+				userContact.setUserId(userId);
 				userContact.setIp(ip);
 				userContact.setAppId(appId);
 			}
@@ -166,7 +175,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserDefined(JSONObject j, Map<Integer, Object> paramMap,String ip,long appId) {
+	private void assemblyUserDefined(JSONObject j, Map<Integer, Object> paramMap,String ip,long appId,long userId) {
 		Map<String,List<UserDefined>> userMap = new HashMap<String,List<UserDefined>>();
 		JSONObject udJson = (JSONObject)j.get("UD");
 		if(udJson.containsKey("delete")){
@@ -183,6 +192,7 @@ public class UserInfoController extends BaseControl {
 			JSONArray addJson = udJson.getJSONArray("add");
 			List<UserDefined> userDefineds = (List<UserDefined>)JSONArray.toCollection(addJson, UserDefined.class);
 			for(UserDefined userDefined:userDefineds){
+				userDefined.setUserId(userId);
 				userDefined.setIp(ip);
 				userDefined.setAppId(appId);
 			}
@@ -196,7 +206,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserEducationHistory(JSONObject j, Map<Integer, Object> paramMap,String ip,long appId) {
+	private void assemblyUserEducationHistory(JSONObject j, Map<Integer, Object> paramMap,String ip,long appId,long userId) {
 		Map<String,List<UserEducationHistory>> userMap = new HashMap<String,List<UserEducationHistory>>();
 		JSONObject uehJson = (JSONObject)j.get("UEH");
 		if(uehJson.containsKey("delete")){
@@ -213,6 +223,7 @@ public class UserInfoController extends BaseControl {
 			JSONArray addJson = uehJson.getJSONArray("add");
 			List<UserEducationHistory> userEducationHistorys = (List<UserEducationHistory>)JSONArray.toCollection(addJson, UserEducationHistory.class);
 			for(UserEducationHistory userEducationHistory:userEducationHistorys){
+				userEducationHistory.setUserId(userId);
 				userEducationHistory.setIp(ip);
 				userEducationHistory.setAppId(appId);
 			}
@@ -227,7 +238,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserFamilyMember(JSONObject j, Map<Integer, Object> paramMap,String ip,Long appId) {
+	private void assemblyUserFamilyMember(JSONObject j, Map<Integer, Object> paramMap,String ip,Long appId,long userId) {
 		Map<String,List<UserFamilyMember>> userMap = new HashMap<String,List<UserFamilyMember>>();
 		JSONObject ufmJson = (JSONObject)j.get("UFM");
 		if(ufmJson.containsKey("delete")){
@@ -244,6 +255,7 @@ public class UserInfoController extends BaseControl {
 			JSONArray addJson = ufmJson.getJSONArray("add");
 			List<UserFamilyMember> userFamilyMembers = (List<UserFamilyMember>)JSONArray.toCollection(addJson, UserFamilyMember.class);
 			for(UserFamilyMember userFamilyMember:userFamilyMembers){
+				userFamilyMember.setUserId(userId);
 				userFamilyMember.setIp(ip);
 				userFamilyMember.setAppId(appId);
 			}
@@ -257,7 +269,7 @@ public class UserInfoController extends BaseControl {
 	 * @param j
 	 * @param paramMap
 	 */
-	private void assemblyUserWorkHistory(JSONObject j, Map<Integer, Object> paramMap,String ip,Long appId) {
+	private void assemblyUserWorkHistory(JSONObject j, Map<Integer, Object> paramMap,String ip,Long appId,long userId) {
 		Map<String,List<UserWorkHistory>> userMap = new HashMap<String,List<UserWorkHistory>>();
 		JSONObject uwhJson = (JSONObject)j.get("UWH");
 		if(uwhJson.containsKey("delete")){
@@ -274,6 +286,7 @@ public class UserInfoController extends BaseControl {
 			JSONArray addJson = uwhJson.getJSONArray("add");
 			List<UserWorkHistory> userWorkHistorys = (List<UserWorkHistory>)JSONArray.toCollection(addJson, UserWorkHistory.class);
 			for(UserWorkHistory userWorkHistory:userWorkHistorys){
+				userWorkHistory.setUserId(userId);
 				userWorkHistory.setIp(ip);
 				userWorkHistory.setAppId(appId);
 			}
@@ -311,15 +324,18 @@ public class UserInfoController extends BaseControl {
 					modelTypes[i]=ModelType.getModelType(modelsList.get(i));
 				}
 			}else{
-				resultMap.put("message", "models的值不能为空！");
-				resultMap.put("status",0);
+				modelTypes = ModelType.MODELS;
 			}
 		}else{
-			modelTypes = ModelType.MODELS;
+			resultMap.put("message", "参数不能为空！");
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
 		}
 		try {
 			Map<String,Object> info = userInfoOperateService.getInfo(userId, modelTypes);
-			filterPermission(info,userId,isFriend(userId,otherUserId));
+			//若不是本人 则进行过滤
+			if(!isSelf)
+				filterPermission(info,userId,isFriend(userId,otherUserId));
 			resultMap.putAll(info);
 			resultMap.put("status",1);
 		} catch (Exception e) {

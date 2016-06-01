@@ -196,6 +196,12 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
 		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserRTemplate" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>
 		<object name="com.ginkgocap.parasol.user.model.UserTemplate" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
