@@ -2,9 +2,7 @@ package com.ginkgocap.parasol.user.service.impl;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.user.exception.UserBlackListServiceException;
 import com.ginkgocap.parasol.user.exception.UserConfigConnectorServiceException;
-import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
 import com.ginkgocap.parasol.user.model.UserConfigConnector;
 import com.ginkgocap.parasol.user.service.UserConfigConnectorService;
 import org.apache.log4j.Logger;
@@ -78,5 +76,10 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
             throw new UserConfigConnectorServiceException("getUserConfigConnectors failed!");
         }
         return userConfigConnectors;
+    }
+
+    @Override
+    public Boolean deletes(Long userId, int type, Long appId) {
+        return null;
     }
 }
