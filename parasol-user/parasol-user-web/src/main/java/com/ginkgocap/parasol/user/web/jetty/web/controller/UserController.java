@@ -533,6 +533,9 @@ public class UserController extends BaseControl {
 							resultMap.put( "password", password);
 							break;
 						}
+					}else{
+						resultMap.put( "status", 0);
+						resultMap.put( "message", "二维码已经过期！或者不存在");
 					}
 				}
 				System.out.println("over="+111111111);
@@ -656,7 +659,7 @@ public class UserController extends BaseControl {
 //				}
 				Object value=userLoginRegisterService.getCache(id);
 				if(ObjectUtils.isEmpty(value)){
-					resultMap.put( "message", "二维码已经过期！");
+					resultMap.put( "message", "二维码已经过期！或者不存在");
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
