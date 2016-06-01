@@ -25,8 +25,15 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
     public List<UserConfigConnector> saveOrUpdateEntitys(Long userId, int type, Long appId, String ids) throws UserConfigConnectorServiceException {
 
         List<UserConfigConnector> userConfigConnectorList = new ArrayList<UserConfigConnector>();
+        List<UserConfigConnector> userConfigConnectorListCount = null;
 
         try {
+            // 首先需要确定当前设置是否存在部分好友可见的记录
+            userConfigConnectorListCount = this.getUserConfigConnectors(userId,type);
+            // 如果存在 则全部删除 重新记录
+            if (null != userConfigConnectorListCount || userConfigConnectorListCount.size() > 0) {
+                this.deletes(userConfigConnectorListCount);
+            }
             String[] idList = ids.split(",");
             for (int i = 0; i < idList.length; i++) {
                 UserConfigConnector u = new UserConfigConnector();
@@ -46,7 +53,7 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
     }
 
     @Override
-    public Boolean deletes(List<UserConfigConnector> entitys) throws UserBlackListServiceException {
+    public Boolean deletes(List<UserConfigConnector> entitys) throws UserConfigConnectorServiceException {
         try {
             List<Long> ids = new ArrayList<Long>();
             for (UserConfigConnector u : entitys) {
@@ -56,19 +63,19 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
         } catch (BaseServiceException e) {
             logger.error("deletes userConfigConnector for friends failed");
             e.printStackTrace();
-            throw new UserBlackListServiceException("deletes userConfigConnector for friends failed");
+            throw new UserConfigConnectorServiceException("deletes userConfigConnector for friends failed");
         }
     }
 
     @Override
-    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type) throws UserConfigServiceException {
+    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type) throws UserConfigConnectorServiceException {
         List<UserConfigConnector> userConfigConnectors = null;
         try {
             userConfigConnectors = this.getEntitys("UserConfigConnector_List_UserId_type", userId, type);
         } catch (BaseServiceException e) {
             logger.error("getUserConfigConnectors failed!");
             e.printStackTrace();
-            throw new UserConfigServiceException("getUserConfigConnectors failed!");
+            throw new UserConfigConnectorServiceException("getUserConfigConnectors failed!");
         }
         return userConfigConnectors;
     }

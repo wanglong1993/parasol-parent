@@ -1,6 +1,8 @@
 package com.ginkgocap.parasol.user.service;
 
+import com.ginkgocap.parasol.user.exception.UserBlackListServiceException;
 import com.ginkgocap.parasol.user.exception.UserConfigConnectorServiceException;
+import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
 import com.ginkgocap.parasol.user.model.UserConfigConnector;
 
 import java.util.List;
@@ -25,7 +27,7 @@ public interface UserConfigConnectorService {
      * @return
      * @author wfl
      */
-    public Boolean deletes(List<UserConfigConnector> Entitys);
+    public Boolean deletes(List<UserConfigConnector> Entitys) throws UserBlackListServiceException, UserConfigConnectorServiceException;
 
     /**
      * 获取判断当前用户是否可见
@@ -34,6 +36,14 @@ public interface UserConfigConnectorService {
      * @return
      * @author wfl
      */
-    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type);
+    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type) throws UserConfigServiceException, UserConfigConnectorServiceException;
 
+    /**
+     * 根据用户Id和类型删除保存的部分好友
+     * @param userId
+     * @param type
+     * @param appId
+     * @return
+     */
+    public Boolean deletes(Long userId, int type, Long appId);
 }

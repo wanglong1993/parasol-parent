@@ -247,6 +247,17 @@
 				  sqlitem="select id from tb_user_blacklist where user_id=? and appId = ?"
 				  sqlType="hsql" keyProperty="userId,appId" valueProperty="id"  update="true"/>
 		</object>
+
+		<object name="com.ginkgocap.parasol.user.model.UserConfigConnector" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+
+			<list name="UserConfigConnector_List_UserId_type"
+				  sqlitem="select id from tb_user_config_connector where user_id=? and type = ?"
+				  sqlType="hsql" keyProperty="userId,type" valueProperty="id"  update="true"/>
+		</object>
 	</route>
 </dal>
 

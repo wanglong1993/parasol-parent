@@ -2,6 +2,7 @@ package com.ginkgocap.parasol.user.web.jetty.web.controller;
 
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.UserConfig;
+import com.ginkgocap.parasol.user.service.UserConfigConnectorService;
 import com.ginkgocap.parasol.user.service.UserConfigerService;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Prompt;
 import org.apache.log4j.Logger;
@@ -30,6 +31,8 @@ public class UserConfigController extends BaseControl{
 
     @Autowired
     private UserConfigerService userConfigerService;
+    @Autowired
+    private UserConfigConnectorService userConfigConnectorService;
 
 
     /**
@@ -44,12 +47,19 @@ public class UserConfigController extends BaseControl{
             , @RequestParam(name = "ids", required = true) String ids
     )throws Exception {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        Long userId=null;
+        Long userId = null;
+        Long appId = null;
         try {
             userId = LoginUserContextHolder.getUserId();
             if(userId==null){
                 resultMap.put("message", Prompt.userId_is_null_or_empty);
                 resultMap.put("status",0);
+                return new MappingJacksonValue(resultMap);
+            }
+            appId = LoginUserContextHolder.getAppKey();
+            if(ObjectUtils.isEmpty(appId)){
+                resultMap.put( "message", "appId不能为空！");
+                resultMap.put( "status", 0);
                 return new MappingJacksonValue(resultMap);
             }
             if(StringUtils.isEmpty(homePageVisible)){
@@ -67,7 +77,7 @@ public class UserConfigController extends BaseControl{
             userConfigerService.updateUserConfig(userConfig);
             // 存储可见的部分好友
             if (homePageVisible.equals("3")) {
-
+                userConfigConnectorService.saveOrUpdateEntitys(userId,1,appId,ids);
             }
             resultMap.put( "status", 1);
             resultMap.put("message", "设置成功!");
@@ -87,9 +97,11 @@ public class UserConfigController extends BaseControl{
     @RequestMapping(path = { "/user/user/userSetEvaluateVisible" }, method = { RequestMethod.POST})
     public MappingJacksonValue userSetEvaluateVisible(HttpServletRequest request,HttpServletResponse response
             ,@RequestParam(name = "evaluateVisible",required = true) String evaluateVisible
+            , @RequestParam(name = "ids", required = true) String ids
     )throws Exception {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        Long userId=null;
+        Long userId = null;
+        Long appId = null;
         try {
             userId = LoginUserContextHolder.getUserId();
             if(userId==null){
@@ -100,6 +112,12 @@ public class UserConfigController extends BaseControl{
             if(StringUtils.isEmpty(evaluateVisible)){
                 resultMap.put("message", "对我评价设置不能为空");
                 resultMap.put("status",0);
+                return new MappingJacksonValue(resultMap);
+            }
+            appId = LoginUserContextHolder.getAppKey();
+            if(ObjectUtils.isEmpty(appId)){
+                resultMap.put( "message", "appId不能为空！");
+                resultMap.put( "status", 0);
                 return new MappingJacksonValue(resultMap);
             }
             UserConfig userConfig=userConfigerService.getUserConfig(userId);
