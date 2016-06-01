@@ -201,7 +201,7 @@ public class UserController extends BaseControl {
 				}
 				appId = LoginUserContextHolder.getAppKey();
 				if(ObjectUtils.isEmpty(appId)){
-					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "message", Prompt.appId_is_empty);
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -292,7 +292,7 @@ public class UserController extends BaseControl {
 			}
 			appId = LoginUserContextHolder.getAppKey();
 			if(ObjectUtils.isEmpty(appId)){
-				resultMap.put( "message", "appId不能为空！");
+				resultMap.put( "message", Prompt.appId_is_empty);
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -314,6 +314,7 @@ public class UserController extends BaseControl {
 					list=userInterestIndustryService.createUserInterestIndustryByList(list, userId);
 				}
 			}
+			resultMap.put( "message", Prompt.Operation_succeeded);
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
 			
@@ -352,7 +353,7 @@ public class UserController extends BaseControl {
 				}
 				appId = LoginUserContextHolder.getAppKey();
 				if(ObjectUtils.isEmpty(appId)){
-					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "message", Prompt.appId_is_empty);
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -559,7 +560,7 @@ public class UserController extends BaseControl {
 				}
 				appId = LoginUserContextHolder.getAppKey();
 				if(ObjectUtils.isEmpty(appId)){
-					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "message", Prompt.appId_is_empty);
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -629,7 +630,7 @@ public class UserController extends BaseControl {
 //				}
 //				appId = LoginUserContextHolder.getAppKey();
 //				if(ObjectUtils.isEmpty(appId)){
-//					resultMap.put( "message", "appId不能为空！");
+//					resultMap.put( "message", Prompt.appId_is_empty);
 //					resultMap.put( "status", 0);
 //					return new MappingJacksonValue(resultMap);
 //				}
@@ -650,7 +651,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(ObjectUtils.isEmpty(appId)){
-					resultMap.put( "message", "appId不能为空！");
+					resultMap.put( "message", Prompt.appId_is_empty);
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
@@ -874,7 +875,7 @@ public class UserController extends BaseControl {
 			}
 			appId = LoginUserContextHolder.getAppKey();
 			if(ObjectUtils.isEmpty(appId)){
-				resultMap.put( "message", "appId不能为空！");
+				resultMap.put( "message", Prompt.appId_is_empty);
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}			
@@ -1281,6 +1282,11 @@ public class UserController extends BaseControl {
 			appId=LoginUserContextHolder.getAppKey();
 			if(userId==null){
 				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(gid.length()<5 || gid.length()>50){
+				resultMap.put("message", Prompt.gId_length_error);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
