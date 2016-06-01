@@ -324,7 +324,39 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
-
+	/**
+	 * 验证邮箱和手机验证码
+	 * 
+	 * @param passport 为邮箱和手机号
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/validateCode" }, method = { RequestMethod.GET })
+	public MappingJacksonValue validateCode(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "code",required = true) String code
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister=null;
+		try {
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
+				resultMap.put("message", Prompt.code_is_not_right);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			resultMap.put("message", Prompt.Operation_succeeded);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
 	/**
 	 * 修改绑定的邮箱和手机
 	 * @param passport 为邮箱和手机号
@@ -3383,7 +3415,8 @@ public class UserController extends BaseControl {
 			logger.info(e.getStackTrace());
 			throw e;
 		}
-	}	
+	}
+	
 	/**
 	 * 修改密码
 	 * 
