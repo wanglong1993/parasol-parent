@@ -47,4 +47,5 @@
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserConfigerService" ref="userConfigerService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserBlackListService" ref="userBlackListService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.user.service.UserInfoOperateService" ref="userInfoOperateService" version="2.0.0" timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.user.service.UserConfigConnectorService" ref="userConfigConnectorService" version="2.0.0" timeout="3000000" />
 </beans>
