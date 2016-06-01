@@ -75,6 +75,8 @@ public final class Prompt {
 	public static final  String directoryId_is_empty="目录id不能为空";
 	public static final  String tagId_is_empty="标签id不能为空"; 
 	public static final  String orgId_is_not_exists="组织不存在"; 
+	public static final  String appId_is_empty="appId不能为空！"; 
+	public static final  String gId_length_error="金桐号长度大于5且小于50"; 
 	
 	
 
