@@ -65,7 +65,7 @@ public class UserDefinedTemplateServiceImpl extends BaseService<UserDefinedTempl
 	@Override
 	public List<UserDefinedTemplate> getObjectsByUserId(Long userId) throws Exception {
 		if(userId==null || userId<=0l)throw new Exception("id is null or empty");
-		List<Long> ids = this.getIds("UserDefinedModel_List_UserId", userId);
+		List<Long> ids = this.getIds("UserDefinedTemplate_List_UserId", userId);
 		return this.getEntityByIds(ids);
 	}
 	@Override

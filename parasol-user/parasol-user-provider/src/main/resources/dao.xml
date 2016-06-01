@@ -196,6 +196,12 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
 		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserRTemplate" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>
 		<object name="com.ginkgocap.parasol.user.model.UserTemplate" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
@@ -204,7 +210,18 @@
           <list name="UserTemplate_List_UserId"
                  sqlitem="select id from tb_user_template where user_id=?"
                  sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
-		</object>	
+		</object>
+		
+		<object name="com.ginkgocap.parasol.user.model.UserDefinedTemplate" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+          <list name="UserDefinedTemplate_List_UserId"
+                 sqlitem="select id from tb_user_defined_template where user_id=?"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+		</object>
+			
 		<object name="com.ginkgocap.parasol.user.model.UserWorkHistory" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
