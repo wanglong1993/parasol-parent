@@ -38,6 +38,7 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
                 u.setUserId(userId);
                 u.setFriendId(Long.parseLong(idList[i]));
                 u.setAppId(appId);
+                u.setType(type);
                 u.setCtime(System.currentTimeMillis());
                 userConfigConnectorList.add(u);
             }

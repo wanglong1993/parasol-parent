@@ -21,6 +21,7 @@ public class UserConfigConnector implements Serializable{
     private Long userId;
     private Long appId;
     private Long friendId;
+    private int type;
     private Long ctime;
     private Long utime;
     private String ip;
@@ -103,5 +104,14 @@ public class UserConfigConnector implements Serializable{
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    @Column(name ="type")
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }
