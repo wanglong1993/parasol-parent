@@ -328,115 +328,7 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
-	/**
-	 * 验证邮箱和手机验证码
-	 * 
-	 * @param passport 为邮箱和手机号
-	 * @throws Exception
-	 */
-	@RequestMapping(path = { "/user/user/validateCode" }, method = { RequestMethod.GET })
-	public MappingJacksonValue validateCode(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "passport",required = true) String passport
-			,@RequestParam(name = "code",required = true) String code
-			)throws Exception {
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		UserLoginRegister userLoginRegister=null;
-		try {
-			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
-			if(userLoginRegister==null){
-				resultMap.put("message", Prompt.passport_is_not_exists);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
-				resultMap.put("message", Prompt.code_is_not_right);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			resultMap.put("message", Prompt.Operation_succeeded);
-			resultMap.put("status",1);
-			return new MappingJacksonValue(resultMap);
-		}catch (Exception e ){
-			logger.info(e.getStackTrace());
-			throw e;
-		}
-	}
-	/**
-	 * 修改绑定的邮箱和手机
-	 * @param passport 为邮箱和手机号
-	 * @param code 验证码
-	 * @param source  来源的appkey
-	 * @throws Exception
-	 */
-	@RequestMapping(path = { "/user/user/updatePassport" }, method = { RequestMethod.POST })
-	public MappingJacksonValue updatePassport(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "passport",required = true) String passport
-			,@RequestParam(name = "code",required = true) String code
-			)throws Exception {
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		UserLoginRegister userLoginRegister= null;
-		Long appId =0l;
-		Long userId=0L;
-		boolean bl=false;
-		String code2=null;
-			try {
-				userId = LoginUserContextHolder.getUserId();
-				if(userId==null){
-					resultMap.put("message", Prompt.userId_is_null_or_empty);
-					resultMap.put("status",0);
-					return new MappingJacksonValue(resultMap);
-				}
-				appId = LoginUserContextHolder.getAppKey();
-				if(ObjectUtils.isEmpty(appId)){
-					resultMap.put( "message", Prompt.appId_is_empty);
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
-				userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
-				if(userLoginRegister==null){
-					resultMap.put("message", Prompt.passport_is_not_exists);
-					resultMap.put("status",0);
-					return new MappingJacksonValue(resultMap);
-				}
-				code2=userLoginRegisterService.getIdentifyingCode(passport);
-				if(StringUtils.isEmpty(code2)){
-					resultMap.put("message", Prompt.identifying_code_has_experied_);
-					resultMap.put("status",0);
-					return new MappingJacksonValue(resultMap);
-				}
-				if(code.equals(code2)){
-					if(isMobileNo(passport)){
-						userLoginRegister.setMobile(passport);
-						if(isMobileNo(userLoginRegister.getPassport())){
-							userLoginRegister.setPassport(passport);
-						}
-					}
-					if(isEmail(passport)){
-						userLoginRegister.setEmail(passport);
-						if(isEmail(userLoginRegister.getPassport())){
-							userLoginRegister.setPassport(passport);
-						}
-					}
-					bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
-					if(bl==false){
-						resultMap.put("message", Prompt.update_passport_is_failed);
-						resultMap.put("status",0);
-						return new MappingJacksonValue(resultMap);	
-					}
-				}else{
-					resultMap.put("message", Prompt.code_is_not_right);
-					resultMap.put("status",0);
-					return new MappingJacksonValue(resultMap);
-				}
-				resultMap.put("message", Prompt.update_passport_is_successed);
-				resultMap.put("status",1);
-				return new MappingJacksonValue(resultMap);
-		}catch (Exception e ){
-			logger.info("修改邮箱或手机失败:"+userId);
-			logger.info(e.getStackTrace());
-			throw e;
-		}
-	}	
+	
  
 	/**
 	 * 生成登录二维码和绑定组织二维码
@@ -3740,6 +3632,115 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
+	/**
+	 * 验证绑定邮箱和手机验证码
+	 * 
+	 * @param passport 为邮箱和手机号
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/validateBindCode" }, method = { RequestMethod.GET })
+	public MappingJacksonValue validateBindCode(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "code",required = true) String code
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister=null;
+		try {
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(!code.equals(userLoginRegisterService.getIdentifyingCode(passport))){
+				resultMap.put("message", Prompt.code_is_not_right);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			resultMap.put("message", Prompt.Operation_succeeded);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	/**
+	 * 修改绑定的邮箱和手机
+	 * @param passport 为邮箱和手机号
+	 * @param code 验证码
+	 * @param source  来源的appkey
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/updatePassport" }, method = { RequestMethod.POST })
+	public MappingJacksonValue updatePassport(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			,@RequestParam(name = "code",required = true) String code
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		Long appId =0l;
+		Long userId=0L;
+		boolean bl=false;
+		String code2=null;
+			try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				appId = LoginUserContextHolder.getAppKey();
+				if(ObjectUtils.isEmpty(appId)){
+					resultMap.put( "message", Prompt.appId_is_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
+				if(userLoginRegister==null){
+					resultMap.put("message", Prompt.passport_is_not_exists);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				code2=userLoginRegisterService.getIdentifyingCode(passport);
+				if(StringUtils.isEmpty(code2)){
+					resultMap.put("message", Prompt.identifying_code_has_experied_);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(code.equals(code2)){
+					if(isMobileNo(passport)){
+						userLoginRegister.setMobile(passport);
+						if(isMobileNo(userLoginRegister.getPassport())){
+							userLoginRegister.setPassport(passport);
+						}
+					}
+					if(isEmail(passport)){
+						userLoginRegister.setEmail(passport);
+						if(isEmail(userLoginRegister.getPassport())){
+							userLoginRegister.setPassport(passport);
+						}
+					}
+					bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
+					if(bl==false){
+						resultMap.put("message", Prompt.update_passport_is_failed);
+						resultMap.put("status",0);
+						return new MappingJacksonValue(resultMap);	
+					}
+				}else{
+					resultMap.put("message", Prompt.code_is_not_right);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				resultMap.put("message", Prompt.update_passport_is_successed);
+				resultMap.put("status",1);
+				return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("修改邮箱或手机失败:"+userId);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
 	/**
 	 * 根据地区省ID获取用户列表
 	 * 
