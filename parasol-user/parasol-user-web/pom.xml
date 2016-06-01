@@ -300,6 +300,7 @@
 				<file.web.url>http://file.gintong.com/</file.web.url>
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
+				<email.bind.url.gintong>http://www.gintong.com/bind</email.bind.url.gintong>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
 				<email.validate.url.coopert>http://www.cooperts.com/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate</email.validate.url.coopert>
 				<email.findpwd.url.coopert>http://open.gintong.com/reset-password</email.findpwd.url.coopert>
@@ -321,6 +322,7 @@
 				<file.web.url>http://file.gintong.com/</file.web.url>
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
+				<email.bind.url.gintong>http://www.gintong.com/bind</email.bind.url.gintong>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
 				<email.validate.url.coopert>http://www.cooperts.com/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate</email.validate.url.coopert>
 				<email.findpwd.url.coopert>http://open.gintong.com/reset-password</email.findpwd.url.coopert>
@@ -342,6 +344,7 @@
 				<file.web.url>http://file.gintong.com/</file.web.url>
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
+				<email.bind.url.gintong>http://www.gintong.com/bind</email.bind.url.gintong>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
 				<email.validate.url.coopert>http://www.cooperts.com/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate</email.validate.url.coopert>
 				<email.findpwd.url.coopert>http://open.gintong.com/reset-password</email.findpwd.url.coopert>
