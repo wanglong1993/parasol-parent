@@ -301,19 +301,20 @@ public class UserInfoController extends BaseControl {
 	 * @param passport 为邮箱和手机号
 	 * @throws Exception
 	 */
+	@ResponseBody
 	@RequestMapping(path = { "/user/user/getUserDetail1" }, method = { RequestMethod.POST })
-	public MappingJacksonValue getUserDetail(@RequestBody String body) {
+	public Map<String,Object> getUserDetail(@RequestBody String body) {
 		Integer[] modelTypes = null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		long userId = LoginUserContextHolder.getUserId();
 		//simple=1 代表全字段返回，如果simple=0过滤掉ip 创建时间 更新时间等返回
-		long otherUserId = -1l;
+		long readUserId = -1l;
 		boolean isSelf = true;
 		int simple = 0;
 		if(body!=null){
 			JSONObject j = JSONObject.fromObject(body);
-			otherUserId = j.containsKey("userId")?j.getLong("userId"):-1l;
-			isSelf=(userId==otherUserId);
+			readUserId = j.containsKey("userId")?j.getLong("userId"):userId;
+			isSelf=(userId==readUserId);
 			simple = j.containsKey("simple")?j.getInt("simple"):simple;
 			if(j.containsKey("models")){
 				JSONArray modelsJson = j.getJSONArray("models");
@@ -329,13 +330,13 @@ public class UserInfoController extends BaseControl {
 		}else{
 			resultMap.put("message", "参数不能为空！");
 			resultMap.put("status",0);
-			return new MappingJacksonValue(resultMap);
+			return resultMap;
 		}
 		try {
-			Map<String,Object> info = userInfoOperateService.getInfo(userId, modelTypes);
+			Map<String,Object> info = userInfoOperateService.getInfo(readUserId, modelTypes);
 			//若不是本人 则进行过滤
 			if(!isSelf)
-				filterPermission(info,userId,isFriend(userId,otherUserId));
+				filterPermission(info,userId,isFriend(userId,readUserId));
 			resultMap.putAll(info);
 			resultMap.put("status",1);
 		} catch (Exception e) {
@@ -343,7 +344,7 @@ public class UserInfoController extends BaseControl {
 			resultMap.put("status",0);
 		}
 		
-		return new MappingJacksonValue(resultMap);
+		return resultMap;
 	}
 	/**
 	 * 

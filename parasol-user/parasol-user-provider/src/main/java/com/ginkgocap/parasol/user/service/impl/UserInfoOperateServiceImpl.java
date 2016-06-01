@@ -267,7 +267,7 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 		List<UserDefined> updateUserDefined = userDefinedMap.get("update");
 		userDefinedService.updateObjects(updateUserDefined);
 		List<UserDefined> addUserDefined = userDefinedMap.get("add");
-		userDefinedService.createObjects(updateUserDefined);
+		userDefinedService.createObjects(addUserDefined);
 	}
 	
 	/**
