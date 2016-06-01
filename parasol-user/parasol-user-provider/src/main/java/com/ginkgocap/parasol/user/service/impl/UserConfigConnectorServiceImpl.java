@@ -2,7 +2,9 @@ package com.ginkgocap.parasol.user.service.impl;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.user.exception.UserBlackListServiceException;
 import com.ginkgocap.parasol.user.exception.UserConfigConnectorServiceException;
+import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
 import com.ginkgocap.parasol.user.model.UserConfigConnector;
 import com.ginkgocap.parasol.user.service.UserConfigConnectorService;
 import org.apache.log4j.Logger;
@@ -34,7 +36,7 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
                 u.setCtime(System.currentTimeMillis());
                 userConfigConnectorList.add(u);
             }
-            this.saveEntitys(userConfigConnectorList);
+            userConfigConnectorList = this.saveEntitys(userConfigConnectorList);
         } catch (BaseServiceException e) {
             logger.error("add userConfigConnector firends failed!");
             e.printStackTrace();
@@ -44,12 +46,30 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
     }
 
     @Override
-    public Boolean deletes(List<UserConfigConnector> Entitys) {
-        return null;
+    public Boolean deletes(List<UserConfigConnector> entitys) throws UserBlackListServiceException {
+        try {
+            List<Long> ids = new ArrayList<Long>();
+            for (UserConfigConnector u : entitys) {
+                ids.add(u.getId());
+            }
+            return this.deleteEntityByIds(ids);
+        } catch (BaseServiceException e) {
+            logger.error("deletes userConfigConnector for friends failed");
+            e.printStackTrace();
+            throw new UserBlackListServiceException("deletes userConfigConnector for friends failed");
+        }
     }
 
     @Override
-    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type) {
-        return null;
+    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type) throws UserConfigServiceException {
+        List<UserConfigConnector> userConfigConnectors = null;
+        try {
+            userConfigConnectors = this.getEntitys("UserConfigConnector_List_UserId_type", userId, type);
+        } catch (BaseServiceException e) {
+            logger.error("getUserConfigConnectors failed!");
+            e.printStackTrace();
+            throw new UserConfigServiceException("getUserConfigConnectors failed!");
+        }
+        return userConfigConnectors;
     }
 }
