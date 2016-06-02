@@ -903,6 +903,56 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
+
+	/**
+	 * 获取用户资料
+	 * 
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserBasic" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserBasic(HttpServletRequest request,HttpServletResponse response
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		UserBasic userBasic= null;
+		Long userId=null;
+		Long appId =0l;
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			appId = LoginUserContextHolder.getAppKey();
+			if(ObjectUtils.isEmpty(appId)){
+				resultMap.put( "message", Prompt.appId_is_empty);
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}			
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userBasic=userBasicService.getObject(userId);
+				resultMap.put("userBasic", userBasic);
+				resultMap.put("userLoginRegister", userLoginRegister);
+				resultMap.put("status",1);
+				mappingJacksonValue = new MappingJacksonValue(resultMap);
+//				SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
+//				mappingJacksonValue.setFilters(filterProvider);
+			return mappingJacksonValue;
+		}catch (Exception e ){
+			logger.info("获取用户资料失败:"+userId);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}
+	
+	
 	/**
 	 * 指定显示那些字段
 	 * 
