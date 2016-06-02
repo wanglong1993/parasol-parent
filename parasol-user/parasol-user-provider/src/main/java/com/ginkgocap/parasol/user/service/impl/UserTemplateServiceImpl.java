@@ -90,7 +90,7 @@ public class UserTemplateServiceImpl extends BaseService<UserTemplate> implement
 	@Override
 	public UserTemplate selectTemplateByCode(String template_code) throws Exception {
 		UserTemplate userTemplate = null;
-		List<Long> ids = this.getIds("UserTemplate_List_default",template_code);
+		List<Long> ids = this.getIds("UserTemplate_List_code",template_code);
 		if(ids!=null){
 			Long id = ids.get(0);
 			userTemplate = this.getEntity(id);

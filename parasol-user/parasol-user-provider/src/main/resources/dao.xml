@@ -207,7 +207,7 @@
           <list name="UserTemplate_List_UserId"
                  sqlitem="select id from tb_user_template where user_id=?"
                  sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
-          <list name="UserTemplate_List_default"
+          <list name="UserTemplate_List_code"
                  sqlitem="select id from tb_user_template where template_code=?"
                  sqlType="hsql" keyProperty="template_code" valueProperty="id"  update="true"/>
 		</object>
