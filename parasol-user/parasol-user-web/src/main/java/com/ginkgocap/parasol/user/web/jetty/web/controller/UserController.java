@@ -1248,7 +1248,9 @@ public class UserController extends BaseControl {
 			}
 			resultMap.put("status",1);
 			resultMap.put("listUserBasic",listUserBasic);
-			return new MappingJacksonValue(resultMap);
+			MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(resultMap);
+			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserBasic.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("userId","name","picId","companyName")));
+			return mappingJacksonValue;
 		}catch (Exception e ){
 			logger.info("获取申请添加当前用户为好友的申请列表:"+userId+"失败");
 			logger.info(e.getStackTrace());
