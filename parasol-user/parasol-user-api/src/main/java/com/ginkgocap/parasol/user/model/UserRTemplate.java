@@ -28,7 +28,7 @@ public class UserRTemplate implements Serializable {
 	 */
 	private Long templateId;
 	
-	private String template_code;
+	private String type;
 	@Id
 	@Column(name = "user_id", unique = true)
 	public Long getUserId() {
@@ -43,6 +43,14 @@ public class UserRTemplate implements Serializable {
 	}
 	public void setTemplateId(Long templateId) {
 		this.templateId = templateId;
+	}
+	
+	@Column(name="type")
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

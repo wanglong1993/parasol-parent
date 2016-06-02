@@ -3,6 +3,8 @@ package com.ginkgocap.parasol.user.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ginkgocap.parasol.user.model.UserTemplate;
+
 public interface UserTemplateOpenService {
 	/**
 	 * 获取模板，包括用户自定义模板和系统默认模板。
@@ -25,5 +27,11 @@ public interface UserTemplateOpenService {
 	 * @param templateId
 	 * @throws Exception
 	 */
-	public void selectUserTemplate(Long userId,Long templateId) throws Exception;
+	public void selectUserTemplate(Long userId,Long templateId,String type) throws Exception;
+	/**
+	 * 查询默认模板
+	 * @throws Exception
+	 */
+	public UserTemplate selectDefaultTemplate() throws Exception;
+	
 }

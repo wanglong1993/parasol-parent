@@ -11,22 +11,19 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.ginkgocap.parasol.user.model.ModelType;
+import com.ginkgocap.parasol.user.model.UserAttachment;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserContact;
 import com.ginkgocap.parasol.user.model.UserDefined;
-import com.ginkgocap.parasol.user.model.UserDefinedTemplate;
 import com.ginkgocap.parasol.user.model.UserDescription;
 import com.ginkgocap.parasol.user.model.UserEducationHistory;
 import com.ginkgocap.parasol.user.model.UserFamilyMember;
 import com.ginkgocap.parasol.user.model.UserInfo;
 import com.ginkgocap.parasol.user.model.UserSkill;
-import com.ginkgocap.parasol.user.model.UserTemplate;
-import com.ginkgocap.parasol.user.model.UserTemplateModel;
 import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserAttachmentService;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserDefinedService;
-import com.ginkgocap.parasol.user.service.UserDefinedTemplateService;
 import com.ginkgocap.parasol.user.service.UserDescriptionService;
 import com.ginkgocap.parasol.user.service.UserEducationHistoryService;
 import com.ginkgocap.parasol.user.service.UserFamilyMemberService;
@@ -35,10 +32,7 @@ import com.ginkgocap.parasol.user.service.UserInfoOperateService;
 import com.ginkgocap.parasol.user.service.UserInfoService;
 import com.ginkgocap.parasol.user.service.UserInterestingService;
 import com.ginkgocap.parasol.user.service.UserSkillService;
-import com.ginkgocap.parasol.user.service.UserTemplateModelService;
-import com.ginkgocap.parasol.user.service.UserTemplateService;
 import com.ginkgocap.parasol.user.service.UserWorkHistoryService;
-import com.ginkgocap.parasol.user.utils.BeanUtil;
 @Service("userInfoOperateService")
 public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 	@Resource
@@ -74,6 +68,11 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 		Object entitys = null;
 		for(Integer modelType : keys){
 			switch(modelType){
+			   case ModelType.UA :
+		   		entitys =  param.get(modelType);
+		   		UserAttachment userAttachment = (UserAttachment)entitys;
+		   		userAttachmentService.createObject(userAttachment);
+		   		continue;
 			   case ModelType.UB :
 			   		entitys =  param.get(modelType);
 			   		UserBasic userBasic = (UserBasic)entitys;
@@ -131,7 +130,10 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 		if(userId==null) throw new Exception("用户ID不能为空！");
 		for(Integer modelType:models){
 			switch(modelType){
-			 case ModelType.UB :
+			   case ModelType.UA :
+		   			 returnMap.put("UA", userAttachmentService.getObject(userId));
+		   			 continue;
+			   case ModelType.UB :
 			   		returnMap.put("UB", userBasicService.getObject(userId));
 			   		continue;
 			   case ModelType.UC :
@@ -173,6 +175,15 @@ public class UserInfoOperateServiceImpl implements UserInfoOperateService {
 		Object entitys = null;
 		for(Integer modelType : keys){
 			switch(modelType){
+			  case ModelType.UA :
+			   		entitys =  param.get(modelType);
+			   		UserAttachment userAttachment = (UserAttachment)entitys;
+			   		if(userAttachmentService.getObject(userAttachment.getUserId())!=null){
+			   			userAttachmentService.updateObject(userAttachment);
+			   		}else{
+			   			userAttachmentService.createObject(userAttachment);
+			   		}
+			   		continue;
 			   case ModelType.UB :
 			   		entitys =  param.get(modelType);
 			   		UserBasic userBasic = (UserBasic)entitys;

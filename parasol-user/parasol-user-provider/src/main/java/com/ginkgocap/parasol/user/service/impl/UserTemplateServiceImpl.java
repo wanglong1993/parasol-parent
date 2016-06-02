@@ -87,4 +87,14 @@ public class UserTemplateServiceImpl extends BaseService<UserTemplate> implement
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public UserTemplate selectTemplateByCode(String template_code) throws Exception {
+		UserTemplate userTemplate = null;
+		List<Long> ids = this.getIds("UserTemplate_List_default",template_code);
+		if(ids!=null){
+			Long id = ids.get(0);
+			userTemplate = this.getEntity(id);
+		}
+		return userTemplate;
+	}
 }

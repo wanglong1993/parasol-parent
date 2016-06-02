@@ -69,7 +69,7 @@ public class UserTemplateOpenServiceImpl implements UserTemplateOpenService {
 	}
 
 	@Override
-	public void selectUserTemplate(Long userId, Long templateId)
+	public void selectUserTemplate(Long userId, Long templateId,String type)
 			throws Exception {
 		if(userId==null)
 			throw new Exception("userId is null");
@@ -78,12 +78,18 @@ public class UserTemplateOpenServiceImpl implements UserTemplateOpenService {
 		UserRTemplate userRTemplate = new UserRTemplate();
 		userRTemplate.setTemplateId(templateId);
 		userRTemplate.setUserId(userId);
+		userRTemplate.setType(type);
 		if(userRtemplateService.getObject(userId)!=null){
 			userRtemplateService.updateObject(userRTemplate);
 		}else{
 			userRtemplateService.createObject(userRTemplate);
 		}
 		
+	}
+
+	@Override
+	public UserTemplate selectDefaultTemplate() throws Exception {
+		return userTemplateService.selectTemplateByCode("default");
 	}
 	
 }
