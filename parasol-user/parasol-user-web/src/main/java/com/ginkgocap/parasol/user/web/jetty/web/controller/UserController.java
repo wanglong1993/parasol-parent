@@ -3515,7 +3515,7 @@ public class UserController extends BaseControl {
 				if(isEmail(passport)){
 //					code=userLoginRegisterService.getIdentifyingCode(passport);
 //					if(StringUtils.isEmpty(code)){
-					if(emailtype!=0 && emailtype!=1 && emailtype!=1){
+					if(emailtype!=0 && emailtype!=1 && emailtype!=5){
 						resultMap.put( "message", Prompt.register_email_type_is_not_correcct);
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
