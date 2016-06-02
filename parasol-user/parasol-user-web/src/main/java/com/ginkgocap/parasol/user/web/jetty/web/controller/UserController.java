@@ -943,7 +943,7 @@ public class UserController extends BaseControl {
 				resultMap.put("status",1);
 				mappingJacksonValue = new MappingJacksonValue(resultMap);
 //				SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
-//				mappingJacksonValue.setFilters(filterProvider);
+				mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserBasic.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("name")));
 			return mappingJacksonValue;
 		}catch (Exception e ){
 			logger.info("获取用户资料失败:"+userId);
