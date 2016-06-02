@@ -77,6 +77,9 @@ public final class Prompt {
 	public static final  String orgId_is_not_exists="组织不存在"; 
 	public static final  String appId_is_empty="appId不能为空！"; 
 	public static final  String gId_length_error="金桐号长度大于5且小于50"; 
+	public static final  String findpwd="找回密码"; 
+	public static final  String bindEmail="邮箱绑定"; 
+	public static final  String changeOldTitle="更改邮箱-验证旧邮箱"; 
 	
 	
 

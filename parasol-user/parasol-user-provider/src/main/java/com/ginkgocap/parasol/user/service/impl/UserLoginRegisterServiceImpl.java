@@ -33,6 +33,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private final  static String registerTitle = "【金桐】邮箱注册";
 	private final  static String registerCoopertTitle = "【coopert】邮箱注册";
 	private final  static String bindTitle = "【金桐】绑定邮箱";
+	private final  static String changeOldTitle = "【金桐】更改邮箱-验证旧邮箱";
 	private final  static String editPasswordTitle = "【金桐】修改密码";
 	
 	private static SecureRandomNumberGenerator ecureRandomNumberGenerator;
@@ -388,13 +389,15 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			boolean bl=false;
 			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
-			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4 && type!=5) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
+			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4 && type!=5 && type!=6 && type!=7) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
 			if(type==0) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-code-emai.ftl");
 			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerCoopertTitle, null, map, "reg-activate-emai-coopert.ftl");
 			if(type==2) bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
 			if(type==3) bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
+			if(type==7) bl= emailService.sendEmailSync(mailTo, null, changeOldTitle, null, map, "bindemail.ftl");
 			if(type==4) bl= emailService.sendEmailSync(mailTo, null, findPasswordCoopertTitle, null, map, "findpwd-email-coopert.ftl");
 			if(type==5) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-activate-emai-coopert.ftl");
+			if(type==6) bl=emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "bindemail.ftl");
 			return bl;
 		}catch (Exception e) {
 			if (logger.isDebugEnabled()) {
