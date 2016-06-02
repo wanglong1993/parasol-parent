@@ -14,8 +14,7 @@ public class UserTemplateModelServiceImpl extends BaseService<UserTemplateModel>
 	@Override
 	public List<UserTemplateModel> createObjects(List<UserTemplateModel> objects)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return this.saveEntitys(objects);
 	}
 
 	@Override

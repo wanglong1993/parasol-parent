@@ -26,29 +26,30 @@ public class UserTemplateController extends BaseControl {
 	 * @param templateId
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(path = { "/user/user/choiceTemplate" }, method = { RequestMethod.GET })
-	public MappingJacksonValue choiceTemplate(@RequestParam long templateId) {
+	public Map<String,Object> choiceTemplate(@RequestParam long templateId) {
 		Long userId = LoginUserContextHolder.getUserId();
 		Map<String,Object> returnMap = new HashMap<String,Object>();
 		if(templateId==0){
 			returnMap.put("status", 0);
 			returnMap.put("message", "templateId is not null");
-			return new MappingJacksonValue(returnMap);
+			return returnMap;
 		}
 		try {
 			userTemplateOpenService.selectUserTemplate(userId, templateId);
 		} catch (Exception e) {
 			returnMap.put("status", 0);
 			returnMap.put("message", "选定模板错误！");
-			return new MappingJacksonValue(returnMap);
+			return returnMap;
 		}
 		returnMap.put("status", 1);
 		returnMap.put("message", "选定模板成功！");
-		return new MappingJacksonValue(returnMap);
+		return returnMap;
 	}
-	
+	@ResponseBody
 	@RequestMapping(path = { "/user/user/selectTemplate" }, method = { RequestMethod.GET })
-	public MappingJacksonValue selectTemplate() {
+	public Map<String,Object> selectTemplate() {
 		Long userId = LoginUserContextHolder.getUserId();
 		Map<String,Object> returnMap = new HashMap<String,Object>();
 		try {
@@ -57,14 +58,14 @@ public class UserTemplateController extends BaseControl {
 		} catch (Exception e) {
 			returnMap.put("status", 0);
 			returnMap.put("message", "服务器内部错误！");
-			return new MappingJacksonValue(returnMap);
+			return returnMap;
 		}
 		returnMap.put("status", 1);
-		return new MappingJacksonValue(returnMap);
+		return returnMap;
 	}
-	
+	@ResponseBody
 	@RequestMapping(path = { "/user/user/selectTemplateContext" }, method = { RequestMethod.GET })
-	public MappingJacksonValue selectTemplateContext(@RequestParam(name = "type",required = true) String type,@RequestParam(name = "templateId",required = true) long templateId ) {
+	public Map<String,Object> selectTemplateContext(@RequestParam(name = "type",required = true) String type,@RequestParam(name = "templateId",required = true) long templateId ) {
 		Long userId = LoginUserContextHolder.getUserId();
 		Map<String,Object> returnMap = new HashMap<String,Object>();
 		try {
@@ -73,9 +74,9 @@ public class UserTemplateController extends BaseControl {
 		} catch (Exception e) {
 			returnMap.put("status", 0);
 			returnMap.put("message", "服务器内部错误！");
-			return new MappingJacksonValue(returnMap);
+			return returnMap;
 		}
 		returnMap.put("status", 1);
-		return new MappingJacksonValue(returnMap);
+		return returnMap;
 	}
 }
