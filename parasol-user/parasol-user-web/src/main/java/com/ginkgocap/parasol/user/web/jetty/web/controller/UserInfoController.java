@@ -15,15 +15,22 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
+import com.ginkgocap.parasol.file.model.FileIndex;
+import com.ginkgocap.parasol.file.service.FileIndexService;
+import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
+import com.ginkgocap.parasol.metadata.model.CodeRegion;
+import com.ginkgocap.parasol.metadata.service.CodeRegionService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.user.model.ModelType;
+import com.ginkgocap.parasol.user.model.UserAttachment;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserContact;
 import com.ginkgocap.parasol.user.model.UserDefined;
@@ -40,7 +47,13 @@ public class UserInfoController extends BaseControl {
 	private static Logger logger = Logger.getLogger(UserInfoController.class);
 	@Resource
 	private UserInfoOperateService userInfoOperateService;
+	@Resource
+	private FileIndexService fileIndexService;
+	@Resource
+	private CodeRegionService codeRegionService;
 	
+	@Value("${dfs.gintong.com}")  
+	private String dfsGintongCom;//图片服务器地址
 	//私密
 	public final static int PRIVACY = 0;
 	//好友可见
@@ -122,6 +135,16 @@ public class UserInfoController extends BaseControl {
 		}
 		if(j.containsKey("UWH")){
 			assemblyUserWorkHistory(j,paramMap,ip,appId,userId);
+		}
+		
+		//用户相关附件
+		if(j.containsKey("UA")){
+			JSONObject ubJson = (JSONObject)j.get("UA");
+			UserAttachment userAttachment = (UserAttachment) JSONObject.toBean(ubJson, UserAttachment.class);
+			userAttachment.setUserId(userId);
+			userAttachment.setIp(ip);
+			userAttachment.setAppId(appId);
+			paramMap.put(ModelType.UA, userAttachment);
 		}
 		try {
 			Boolean result = userInfoOperateService.updateInfo(paramMap);
@@ -334,6 +357,8 @@ public class UserInfoController extends BaseControl {
 		}
 		try {
 			Map<String,Object> info = userInfoOperateService.getInfo(readUserId, modelTypes);
+			//添充基础信息，比如图片的id转化成path，区域转化成名称
+			fillInfo(info);
 			//若不是本人 则进行过滤
 			if(!isSelf)
 				filterPermission(info,userId,isFriend(userId,readUserId));
@@ -346,6 +371,62 @@ public class UserInfoController extends BaseControl {
 		
 		return resultMap;
 	}
+	/**
+	 * 添充基础信息，比如图片的id转化成path，区域转化成名称
+	 * @param info
+	 * @throws FileIndexServiceException 
+	 * @throws CodeRegionServiceException 
+	 */
+	private void fillInfo(Map<String, Object> info) throws FileIndexServiceException, CodeRegionServiceException {
+		if(info.get("UB")!=null){
+			UserBasic userBasic = (UserBasic)info.get("UB");
+			Long picId = userBasic.getPicId();
+			if(picId!=null&&picId!=0){
+				FileIndex file = fileIndexService.getFileIndexById(picId);
+				if(file!=null){
+					String group = file.getServerHost();
+					String filePath = file.getFilePath();
+					userBasic.setPicPath(new StringBuilder().append(dfsGintongCom).append("/").append(group).append("/").append(filePath).toString());
+				}
+			}
+			Long cityId = userBasic.getCityId();
+			if(cityId!=null&&cityId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
+				userBasic.setCityName(codeRegion.getCname());
+			}
+			Long provinceId = userBasic.getProvinceId();
+			if(provinceId!=null&&provinceId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
+				userBasic.setProvinceName(codeRegion.getCname());
+			}
+			Long countyId = userBasic.getCountyId();
+			if(countyId!=null&&countyId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
+				userBasic.setCountyName(codeRegion.getCname());
+			}
+		}
+		if(info.get("UIO")!=null){
+			UserInfo userInfo = (UserInfo)info.get("UIO");
+			Long cityId = userInfo.getCityId();
+			if(cityId!=null&&cityId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
+				userInfo.setCityName(codeRegion.getCname());
+			}
+			Long provinceId = userInfo.getProvinceId();
+			if(provinceId!=null&&provinceId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
+				userInfo.setProvinceName(codeRegion.getCname());
+			}
+			Long countyId = userInfo.getCountyId();
+			if(countyId!=null&&countyId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
+				userInfo.setCountyName(codeRegion.getCname());
+			}
+		}
+		
+	}
+
+
 	/**
 	 * 
 	 * 字段权限过滤

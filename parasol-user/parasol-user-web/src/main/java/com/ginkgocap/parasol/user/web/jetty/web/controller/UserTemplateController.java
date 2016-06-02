@@ -47,6 +47,10 @@ public class UserTemplateController extends BaseControl {
 		returnMap.put("message", "选定模板成功！");
 		return returnMap;
 	}
+	/**
+	 *查询用户所有模板
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(path = { "/user/user/selectTemplate" }, method = { RequestMethod.GET })
 	public Map<String,Object> selectTemplate() {
@@ -63,6 +67,12 @@ public class UserTemplateController extends BaseControl {
 		returnMap.put("status", 1);
 		return returnMap;
 	}
+	/**
+	 * 根据模板的id获取模板内容，系统模板只获取木块信息，自定义模板获取字段和模板信息
+	 * @param type OS为心痛默认模板，UD为用户自定义模板
+	 * @param templateId
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(path = { "/user/user/selectTemplateContext" }, method = { RequestMethod.GET })
 	public Map<String,Object> selectTemplateContext(@RequestParam(name = "type",required = true) String type,@RequestParam(name = "templateId",required = true) long templateId ) {

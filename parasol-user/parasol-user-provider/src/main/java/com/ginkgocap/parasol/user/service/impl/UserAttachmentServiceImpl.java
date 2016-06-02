@@ -55,7 +55,7 @@ public class UserAttachmentServiceImpl extends BaseService<UserAttachment> imple
 		return this.deleteEntity(id);
 	}
 
-	@Override
+/*	@Override
 	public List<UserAttachment> createObjects(List<UserAttachment> objects)
 			throws Exception {
 		if(objects==null || objects.size()<=0) return null;
@@ -63,33 +63,33 @@ public class UserAttachmentServiceImpl extends BaseService<UserAttachment> imple
 			this.checkValidity(userAttachment, 0);
 		}
 		return this.saveEntitys(objects);
-	}
-	@Override
+	}*/
+/*	@Override
 	public List<UserAttachment> getObjectsByUserId(Long userId)
 			throws Exception {
 		if(userId==null || userId<=0l)throw new Exception("id is null or empty");
 		List<Long> ids = this.getIds("UserAttachment_List_UserId", userId);
 		return this.getEntityByIds(ids);
-	}
-	@Override
+	}*/
+	/*@Override
 	public Boolean deleteObjects(List<Long> ids) throws Exception {
 		if(ids==null || ids.size()<=0)throw new Exception("ids is null or empty");
 		return this.deleteEntityByIds(ids);
-	}
-	@Override
+	}*/
+	/*@Override
 	public Boolean updateObjects(List<UserAttachment> objects) throws Exception {
 		if(objects==null || objects.size()<=0) return true;
 		for(UserAttachment userAttachment : objects){
 			this.checkValidity(userAttachment, 1);
 		}
 		return this.updateEntitys(objects);
-	}
+	}*/
 	
-	@Override
+	/*@Override
 	public Boolean deleteObjectsByUserId(Long userId) throws Exception {
 		if(userId==null) throw new Exception("userId is null or empty");
 		this.deleteList("UserAttachment_List_UserId", userId);
 		return true;
-	}
+	}*/
 
 }

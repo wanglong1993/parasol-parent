@@ -31,7 +31,16 @@ public class UserAttachment implements Serializable {
 	/**
 	 * 附件
 	 */
-	private Long fileId;
+	private Long taskId;
+	
+	/**
+	 * 0:私密,1:好友可见,2:部分好友,3:公开
+	 */
+	private int permission;
+	/**
+	 * 部分好友可见时存放好友的id，用逗号“,”隔开。
+	 */
+	private String friendIds;
 	
 	private Long ctime;
 	
@@ -66,13 +75,13 @@ public class UserAttachment implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	@Column(name="fileId")
-	public Long getFileId() {
-		return fileId;
+	@Column(name="taskId")
+	public Long getTaskId() {
+		return taskId;
 	}
 
-	public void setFileId(Long fileId) {
-		this.fileId = fileId;
+	public void setTaskId(Long taskId) {
+		this.taskId = taskId;
 	}
 
 	@Column(name = "ctime")
@@ -100,7 +109,22 @@ public class UserAttachment implements Serializable {
 		this.ip = ip;
 	}
 	
-	
+	@Column(name = "permission")
+	public int getPermission() {
+		return permission;
+	}
+
+	public void setPermission(int permission) {
+		this.permission = permission;
+	}
+	@Column(name = "friendIds")
+	public String getFriendIds() {
+		return friendIds;
+	}
+
+	public void setFriendIds(String friendIds) {
+		this.friendIds = friendIds;
+	}
 
 }
 

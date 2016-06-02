@@ -14,8 +14,9 @@ public class ModelType {
 	public final static int UIG =8;//用户兴趣爱好
 	public final static int US =9;//用户专业技能
 	public final static int UWH =10;//用户工作经历
+	public final static int UA = 11;//用户相关附件
 	public static Map<String,Integer> ModelTypeMap = new HashMap<String,Integer>();
-	public static Integer[] MODELS = new Integer[10];
+	public static Integer[] MODELS = new Integer[11];
 	static{
 		ModelTypeMap.put("UB", UB);
 		ModelTypeMap.put("UC", UC);
@@ -27,6 +28,7 @@ public class ModelType {
 		ModelTypeMap.put("UIG", UIG);
 		ModelTypeMap.put("US", US);
 		ModelTypeMap.put("UWH", UWH);
+		ModelTypeMap.put("UA", UA);
 		MODELS[0]=UB;
 		MODELS[1]=UC;
 		MODELS[2]=UD;
@@ -37,6 +39,7 @@ public class ModelType {
 		MODELS[7]=UIG;
 		MODELS[8]=US;
 		MODELS[9]=UWH;
+		MODELS[10]=UA;
 	}
 	public static int getModelType(String modelKey){
 		return ModelTypeMap.get(modelKey);
