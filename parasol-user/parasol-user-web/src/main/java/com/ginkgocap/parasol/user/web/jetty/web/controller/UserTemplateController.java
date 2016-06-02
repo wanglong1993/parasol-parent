@@ -100,7 +100,7 @@ public class UserTemplateController extends BaseControl {
 	
 	/**
 	 * 直接为用户指定默认模板
-	 * @param type OS为心痛默认模板，UD为用户自定义模板
+	 * @param type OS为系统默认模板，UD为用户自定义模板
 	 * @param templateId
 	 * @return
 	 */
