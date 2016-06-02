@@ -37,7 +37,7 @@
 			</div>
 			 
 				<div class="edmText">
-					<span>${acceptor},感谢您注册coopert！<span>
+					<span>${acceptor},感谢您注册！<span>
 					<p>请您在30分钟内点击下方链接完成验证:</p>
 					<p></p>
 					<p><a href='${email}' target="_blank">${email}</a></p>
