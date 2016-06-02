@@ -6,6 +6,7 @@
 package com.ginkgocap.parasol.user.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class BeanUtil {
   }
   
   public static List<Map> getMaps(List objects,List<String> fields) throws Exception{
-	  List<Map> pList =null;
+	  List<Map> pList =new ArrayList<Map>();
 	  if(objects!=null){
 		  for(Object o:objects){
 			Map p = bean2map(o);
