@@ -169,6 +169,7 @@ public class CommentController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 * @throws CommenterviceException
 	 * @throws CodeServiceException
 	 */
@@ -177,7 +178,7 @@ public class CommentController extends BaseControl {
 	public MappingJacksonValue getCommentDetail(
 			@RequestParam(name = CommentController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = CommentController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = CommentController.parameterId, required = true) Long id ) throws CommentServiceException {
+			@RequestParam(name = CommentController.parameterId, required = true) Long id ) throws Exception {
 	// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
@@ -187,12 +188,12 @@ public class CommentController extends BaseControl {
 			if (logger.isDebugEnabled() && comment == null) {
 				logger.debug("comment is null by id " + id);
 			}
-			UserBasic ub = comment == null ? null : userBasicService.getUserBasic(comment.getUserId());
+			UserBasic ub = comment == null ? null : userBasicService.getObject(comment.getUserId());
 			if (logger.isDebugEnabled() && ub == null && comment != null) {
 				logger.debug("UserBasic is null by id " + comment.getUserId());
 			}
 			
-			UserBasic tUb = comment == null || comment.getToUserId() > 0 ? null : userBasicService.getUserBasic(comment.getToUserId());
+			UserBasic tUb = comment == null || comment.getToUserId() > 0 ? null : userBasicService.getObject(comment.getToUserId());
 
 			Map<String, Object> reusltMap = new HashMap<String, Object>();
 
@@ -222,8 +223,7 @@ public class CommentController extends BaseControl {
 	 * @return MappingJacksonValue
 	 * 
 	 * 通过对象ID查询对象的评论，查询相对于commandId位置的一定数量（count），方向（forward）的评论。
-	 * 
-	 * @throws CommentServiceException
+	 * @throws Exception 
 	 */
 	@RequestMapping(path = { "/comment/comment/getFllowSourceComments" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getFllowSourceComments(
@@ -235,7 +235,7 @@ public class CommentController extends BaseControl {
 			@RequestParam(name = CommentController.parameterForward, required = false, defaultValue="false") boolean forward,
 			@RequestParam(name = CommentController.parameterCount, required = true) int count
 
-		) throws CommentServiceException {
+		) throws Exception {
 	// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 
@@ -299,8 +299,7 @@ public class CommentController extends BaseControl {
 	 * @return MappingJacksonValue
 	 * 
 	 *         通过对象ID查询对象的评论，查询相对于commandId位置的一定数量（count），方向（forward）的评论。
-	 * 
-	 * @throws CommentServiceException
+	 * @throws Exception 
 	 */
 	@RequestMapping(path = { "/comment/comment/getPageSourceComments" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getPageSourceComments(@RequestParam(name = CommentController.parameterFields, defaultValue = "") String fileds,
@@ -308,7 +307,7 @@ public class CommentController extends BaseControl {
 			@RequestParam(name = CommentController.parameterSourceTypeId, required = true) Long sourceTypeId,
 			@RequestParam(name = CommentController.parameterSourceId, required = true) long sourceId,
 			@RequestParam(name = CommentController.parameterPage, required = false, defaultValue = "false") int page,
-			@RequestParam(name = CommentController.parameterCount, required = true) int count) throws CommentServiceException {
+			@RequestParam(name = CommentController.parameterCount, required = true) int count) throws Exception {
 		// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 
@@ -388,8 +387,9 @@ public class CommentController extends BaseControl {
 	 * 
 	 * @param userIds
 	 * @return
+	 * @throws Exception 
 	 */
-	private Map<Long, UserBasic> getUserBasics(List<Long> userIds) {
+	private Map<Long, UserBasic> getUserBasics(List<Long> userIds) throws Exception {
 		Map<Long, UserBasic> resultMap = new HashMap<Long, UserBasic>();
 		try {
 			Map<Long, Boolean> idMap = new HashMap<Long, Boolean>(userIds == null ? 1 : userIds.size());
@@ -412,7 +412,7 @@ public class CommentController extends BaseControl {
 
 			// 从user dubbo 服务上查询用户
 			if (CollectionUtils.isNotEmpty(takeUserIds)) {
-				List<UserBasic> list = userBasicService.getUserBasecList(userIds);
+				List<UserBasic> list = userBasicService.getObjects(userIds);
 				if (CollectionUtils.isNotEmpty(list)) {
 					for (UserBasic userBasic : list) {
 						if (userBasic != null) {

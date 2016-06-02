@@ -32,4 +32,5 @@
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
     <dubbo:reference id="commentService" interface="com.ginkgocap.parasol.comment.service.CommentService" version="2.0.0"/>
     <dubbo:reference id="commentTypeService" interface="com.ginkgocap.parasol.comment.service.CommentTypeService" version="2.0.0"/>
+    <dubbo:reference id="userBasicService" interface="com.ginkgocap.parasol.user.service.UserBasicService" version="2.0.0"/>
 </beans>
