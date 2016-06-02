@@ -34,13 +34,13 @@ public class UserBlackListController extends BaseControl{
 
     /**
      * 创建黑名单
-     * @param  userBlackListId 需要添加到用户黑名单的用户id
+     * @param  userblacklistid 需要添加到用户黑名单的用户id
      * @throws Exception
      * @return MappingJacksonValue
      */
     @RequestMapping(path = "/user/userblacklist/save", method = {RequestMethod.POST})
     public MappingJacksonValue saveUserBlackLsit(HttpServletRequest request, HttpServletResponse response
-        ,@RequestParam(name = "userBlackListId",required = false) Long userBlackListId)  {
+        ,@RequestParam(name = "userblacklistid",required = false) Long userblacklistid)  {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         UserBlackList userBlackListEntary = new UserBlackList();
         Long userId = null;
@@ -59,13 +59,13 @@ public class UserBlackListController extends BaseControl{
                 return new MappingJacksonValue(resultMap);
             }
             userBlackListEntary.setUserId(userId);
-            userBlackListEntary.setBlackUserId(userBlackListId);
+            userBlackListEntary.setBlackUserId(userblacklistid);
             userBlackListEntary.setAppId(appId);
             userBlackListEntary.setCtime(System.currentTimeMillis());
-            Long balcklistId = userBlackListService.save(userBlackListEntary);
+            Long blacklistId = userBlackListService.save(userBlackListEntary);
             resultMap.put("message", "success");
             resultMap.put("status", 1);
-            resultMap.put("balcklsitId",balcklistId);
+            resultMap.put("blacklistid",blacklistId);
             return new MappingJacksonValue(resultMap);
         } catch(Exception e) {
             resultMap.put("message", "创建黑名单失败！");
@@ -76,13 +76,13 @@ public class UserBlackListController extends BaseControl{
 
     /**
      * 根据Id删除黑名单
-     * @param  userblacklistId 需要添加到用户黑名单的用户id
+     * @param  userblacklistid 需要添加到用户黑名单的用户id
      * @throws Exception
      * @return MappingJacksonValue
      */
     @RequestMapping(path = {"/user/userblacklist/delete"}, method = {RequestMethod.GET})
     public MappingJacksonValue deleteUserBlackList(HttpServletRequest request, HttpServletResponse response
-            ,@RequestParam(name = "userblacklistId",required = false) Long userblacklistId) throws UserBlackListServiceException {
+            ,@RequestParam(name = "userblacklistid",required = false) Long userblacklistid) throws UserBlackListServiceException {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         Long userId = null;
         Long appId = null;
@@ -99,7 +99,7 @@ public class UserBlackListController extends BaseControl{
                 resultMap.put( "status", 0);
                 return new MappingJacksonValue(resultMap);
             }
-            Boolean sgin = userBlackListService.delete(userblacklistId);
+            Boolean sgin = userBlackListService.delete(userblacklistid);
             resultMap.put("message",sgin);
             resultMap.put("status", 1);
             return new MappingJacksonValue(resultMap);
@@ -148,15 +148,15 @@ public class UserBlackListController extends BaseControl{
 
     /**
      * 查询黑名单列表
-     * @param  pageIndex 查询开始页
-     * @param  pageSize  查询每页长度
+     * @param  start 查询开始页
+     * @param  count  查询每页长度
      * @throws Exception
      * @return MappingJacksonValue
      */
-    @RequestMapping(path = {"/user/userblacklist/getBlackListPage"}, method = {RequestMethod.GET})
+    @RequestMapping(path = {"/user/userblacklist/getblacklistpage"}, method = {RequestMethod.GET})
     public MappingJacksonValue getBlackListPageUtilByUserId(HttpServletRequest request, HttpServletResponse response
-            ,@RequestParam(name = "pageIndex",required = false) int pageIndex
-            ,@RequestParam(name = "pageSize" ,required = false) int pageSize) throws UserBlackListServiceException {
+            ,@RequestParam(name = "start",required = false) int start
+            ,@RequestParam(name = "count" ,required = false) int count) throws UserBlackListServiceException {
         Map<String,Object> resultMap = new HashMap<String, Object>();
         List<UserBlackList> userBlackLists = null;
         Long userId = null;
@@ -174,12 +174,12 @@ public class UserBlackListController extends BaseControl{
                 resultMap.put( "status", 0);
                 return new MappingJacksonValue(resultMap);
             }
-            userBlackLists = userBlackListService.getBlackListPageUtilByUserId(userId,pageIndex,pageSize,appId);
+            userBlackLists = userBlackListService.getBlackListPageUtilByUserId(userId,start,count,appId);
             // 少一个count接口  需要count数目
             resultMap.put("userBlackLists",userBlackLists);
             resultMap.put("status", 1);
-            resultMap.put("pageIndex",pageIndex);
-            resultMap.put("pageSize", pageSize);
+            resultMap.put("pageIndex",start);
+            resultMap.put("pageSize", count);
             return new MappingJacksonValue(resultMap);
         } catch (UserBlackListServiceException e) {
             throw new UserBlackListServiceException("获取黑名单列表失败！");
@@ -192,7 +192,7 @@ public class UserBlackListController extends BaseControl{
      * @throws Exception
      * @return MappingJacksonValue
      */
-    @RequestMapping(path = {"/user/userbalcklist/getEntity"}, method = {RequestMethod.GET})
+    @RequestMapping(path = {"/user/userbalcklist/getentity"}, method = {RequestMethod.GET})
     public MappingJacksonValue getUserBlackList(HttpServletRequest request, HttpServletResponse response
             ,@RequestParam(name = "id", required = false) Long id) throws UserBlackListServiceException {
         Map<String,Object> resultMap = new HashMap<String, Object>();
