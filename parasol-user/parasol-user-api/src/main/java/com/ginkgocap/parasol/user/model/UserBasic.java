@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 /**
  * 个人用户基本资料
  */
-@JsonFilter("com.ginkgocap.parasol.tags.model.TagSource")
+@JsonFilter("com.ginkgocap.parasol.user.model.UserBasic")
 @Entity
 @Table(name = "tb_user_basic", catalog = "parasol_user")
 public class UserBasic implements java.io.Serializable {
