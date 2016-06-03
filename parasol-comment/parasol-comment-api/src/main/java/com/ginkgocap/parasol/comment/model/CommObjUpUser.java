@@ -12,46 +12,28 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 
-/**
- * The persistent class for the tb_up_user database table.
- * 
- */
-@Entity
-@Table(name="tb_up_user")
-@NamedQuery(name="TbUpUser.findAll", query="SELECT t FROM TbUpUser t")
-public class UpUser implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class CommObjUpUser implements Serializable {
 
-	@Id
-	@Column(name="up_user_id")
-	private String upUserId;
-
-	@Column(name="comm_obj_id")
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7663498171612135119L;
+	private Long id;
 	private Long commObjId;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_time")
 	private Date createTime;
-
-	@Column(name="create_user_id")
 	private Long createUserId;
-
-	@Column(name="create_user_name")
 	private String createUserName;
 
-	public UpUser() {
+	public Long getId() {
+		return id;
 	}
 
-	public String getUpUserId() {
-		return this.upUserId;
-	}
-
-	public void setUpUserId(String upUserId) {
-		this.upUserId = upUserId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Long getCommObjId() {
-		return this.commObjId;
+		return commObjId;
 	}
 
 	public void setCommObjId(Long commObjId) {
@@ -59,7 +41,7 @@ public class UpUser implements Serializable {
 	}
 
 	public Date getCreateTime() {
-		return this.createTime;
+		return createTime;
 	}
 
 	public void setCreateTime(Date createTime) {
@@ -67,7 +49,7 @@ public class UpUser implements Serializable {
 	}
 
 	public Long getCreateUserId() {
-		return this.createUserId;
+		return createUserId;
 	}
 
 	public void setCreateUserId(Long createUserId) {
@@ -75,7 +57,7 @@ public class UpUser implements Serializable {
 	}
 
 	public String getCreateUserName() {
-		return this.createUserName;
+		return createUserName;
 	}
 
 	public void setCreateUserName(String createUserName) {
