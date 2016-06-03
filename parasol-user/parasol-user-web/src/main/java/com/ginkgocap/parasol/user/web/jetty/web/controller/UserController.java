@@ -1458,7 +1458,7 @@ public class UserController extends BaseControl {
 						return new MappingJacksonValue(resultMap);
 					}
 				}
-				if(uf==null)id=userFriendlyService.createUserFriendly(userFriendly,false);
+//				if(uf==null)id=userFriendlyService.createUserFriendly(userFriendly,false);
 				//添加个人好友
 				if(userLoginRegisterFriend.getUsetType().intValue()==0){
 					userOrgPerCusRel=new UserOrgPerCusRel();
