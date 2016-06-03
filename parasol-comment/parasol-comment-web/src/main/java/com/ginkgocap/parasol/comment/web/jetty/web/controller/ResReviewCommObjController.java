@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.comment.web.jetty.web.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -109,8 +110,18 @@ public class ResReviewCommObjController extends BaseControl {
 		String jsonStr=this.readJSONString(request);
 		Tipoff obj=(Tipoff)JsonUtils.jsonToBean(jsonStr,Tipoff.class);
 		obj.setCreateUserId(loginUserId);
+		obj.setAppId(loginAppId);
+		obj.setCreateTime(new Date());
 		obj=this.rrs.createTipoff(obj);
 		return obj;
 	}
 	
+	@RequestMapping(value="/commobj/commobj/listCommObjUpUser",method = RequestMethod.GET)
+	@ResponseBody
+	public List<CommObjUpUser> listCommObjUpUser(HttpServletRequest request, HttpServletResponse response,Integer resType,Long commObjId) throws Exception{
+		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginUserId = LoginUserContextHolder.getUserId();
+		List<CommObjUpUser> list=this.rrs.listUpUsers(commObjId);
+		return list;
+	}
 }

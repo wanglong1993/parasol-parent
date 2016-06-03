@@ -17,10 +17,11 @@ import javax.persistence.TemporalType;
  */
 public class Tipoff implements Serializable {
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -218590391747747080L;
+	private static final long serialVersionUID = -6657936742270887911L;
 
 	private Long appId;
 
@@ -35,9 +36,10 @@ public class Tipoff implements Serializable {
 	private Long id;
 
 	private int tipoffType;
-
-	public Tipoff() {
-	}
+	
+	private Integer resType;
+	
+	private Long resId;
 
 	public Long getAppId() {
 		return appId;
@@ -93,6 +95,22 @@ public class Tipoff implements Serializable {
 
 	public void setTipoffType(int tipoffType) {
 		this.tipoffType = tipoffType;
+	}
+
+	public Integer getResType() {
+		return resType;
+	}
+
+	public void setResType(Integer resType) {
+		this.resType = resType;
+	}
+
+	public Long getResId() {
+		return resId;
+	}
+
+	public void setResId(Long resId) {
+		this.resId = resId;
 	}
 
 

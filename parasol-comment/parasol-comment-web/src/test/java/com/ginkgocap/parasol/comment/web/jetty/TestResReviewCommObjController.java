@@ -7,6 +7,7 @@ import org.junit.Test;
 import com.ginkgocap.parasol.comment.model.CommObjType;
 import com.ginkgocap.parasol.comment.model.CommObjUpUser;
 import com.ginkgocap.parasol.comment.model.ResReviewCommObj;
+import com.ginkgocap.parasol.comment.model.Tipoff;
 import com.ginkgocap.parasol.comment.web.jetty.web.util.HttpUtils;
 import com.ginkgocap.parasol.comment.web.jetty.web.util.JsonUtils;
 
@@ -81,5 +82,20 @@ public class TestResReviewCommObjController {
 		String url="http://localhost:8091/commobj/commobj/createCommObjUpUser?access_token=e294851e-2d7a-40d3-b7db-5438c4f883c7";
 		String resp=HttpUtils.sendJsonPost(url, jsonStr);
 		System.out.println(resp);
+	}
+	
+	@Test
+	public void createTipoff() throws Exception{
+		Tipoff obj=new Tipoff();
+		obj.setCreateUserId(1l);
+		obj.setCreateUserName("小明");
+		obj.setTipoffType(1);
+		obj.setResType(2);
+		obj.setResId(112l);
+		obj.setReason("kkddk");
+		String jsonStr=JsonUtils.beanToJson(obj);
+		String url="http://localhost:8091/commobj/commobj/createTipoff?access_token=e294851e-2d7a-40d3-b7db-5438c4f883c7";
+		String resp=HttpUtils.sendJsonPost(url, jsonStr);
+		System.out.println(resp); 
 	}
 }

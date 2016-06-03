@@ -132,8 +132,9 @@ public class ResReviewCommObjServiceImpl implements ResReviewCommObjService {
 
 	@Override
 	public List<CommObjUpUser> listUpUsers(Long commObjId) throws ResReviewCommObjServiceException {
-		// TODO Auto-generated method stub
-		return null;
+		Criteria c = Criteria.where("commObjId").is(commObjId);
+	    Query query = new Query(c);
+		return this.mongoTemplate.find(query, CommObjUpUser.class, COMMOBJUPUSER);
 	}
 
 	@Override
@@ -141,6 +142,10 @@ public class ResReviewCommObjServiceImpl implements ResReviewCommObjService {
 		upUser.setCreateTime(new Date());
 		upUser.setId(Long.valueOf(MakePrimaryKey.getPrimaryKey()));
 		this.mongoTemplate.save(upUser, COMMOBJUPUSER);
+		ResReviewCommObj obj=this.findResReviewCommObjById(upUser.getCommObjId());
+		Long upTimes=obj.getUpTimes()+1;
+		obj.setUpTimes(upTimes);
+		this.updateResReviewCommObj(obj);
 		return this.findCommObjUpUserById(upUser.getId());
 	}
 
