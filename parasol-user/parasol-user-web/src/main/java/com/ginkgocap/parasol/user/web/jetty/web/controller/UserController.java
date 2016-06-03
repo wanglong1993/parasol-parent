@@ -1438,13 +1438,13 @@ public class UserController extends BaseControl {
 						return new MappingJacksonValue(resultMap);
 					}
 				}
-				//更新好友关系和创建对方的好友关系
-				userFriendly=new UserFriendly();
-				userFriendly.setUserId(userId);
-				userFriendly.setFriendId(friendId);
-				userFriendly.setStatus(new Byte(status));
-				userFriendly.setAppId(appId);
-				bl=userFriendlyService.updateStatus(userId,friendId, new Byte(status));
+				//更新好友关系
+//				userFriendly=new UserFriendly();
+//				userFriendly.setUserId(userId);
+//				userFriendly.setFriendId(friendId);
+//				userFriendly.setStatus(new Byte(status));
+//				userFriendly.setAppId(appId);
+				bl=userFriendlyService.updateStatus(friendId,userId, new Byte(status));
 				if(!bl){
 					resultMap.put("message", Prompt.update_Friendly_status_friendId_failed+ friendId+",userId:"+userId);
 					resultMap.put("status",0);
@@ -1472,7 +1472,7 @@ public class UserController extends BaseControl {
 						userBasic=userBasicService.getObject(userLoginRegister.getId());
 						if(userBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
-							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 							resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
 							resultMap.put("status",0);
@@ -1490,7 +1490,7 @@ public class UserController extends BaseControl {
 						userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
 						if(userOrganBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
-							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 							resultMap.put("message", Prompt.friendId_is_not_exists_in_UserOrganBasic);
 							resultMap.put("status",0);
@@ -1523,7 +1523,7 @@ public class UserController extends BaseControl {
 						userBasic=userBasicService.getObject(userLoginRegister.getId());
 						if(userBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
-							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 							resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
 							resultMap.put("status",0);
@@ -1541,7 +1541,7 @@ public class UserController extends BaseControl {
 						userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
 						if(userOrganBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
-							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 							resultMap.put("message", Prompt.friendId_is_not_exists_in_UserOrganBasic);
 							resultMap.put("status",0);
@@ -1569,7 +1569,7 @@ public class UserController extends BaseControl {
 			//失败回滚
 			if(bl)userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
 			messageRelationService.updateMessageRelationStatus(relationId,0);
-			if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//			if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 			if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 			if(userOrgPerCusRelFriendlyId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelFriendlyId);
 			logger.info("添加好友"+friendId+"失败");
