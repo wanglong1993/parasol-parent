@@ -1440,8 +1440,8 @@ public class UserController extends BaseControl {
 				}
 				//更新好友关系和创建对方的好友关系
 				userFriendly=new UserFriendly();
-				userFriendly.setUserId(friendId);
-				userFriendly.setFriendId(userId);
+				userFriendly.setUserId(userId);
+				userFriendly.setFriendId(friendId);
 				userFriendly.setStatus(new Byte(status));
 				userFriendly.setAppId(appId);
 				bl=userFriendlyService.updateStatus(userId,friendId, new Byte(status));
