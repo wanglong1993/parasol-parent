@@ -36,7 +36,7 @@ public class UserTemplateController extends BaseControl {
 	 */
 	@ResponseBody
 	@RequestMapping(path = { "/user/user/choiceTemplate" }, method = { RequestMethod.GET })
-	public Map<String,Object> choiceTemplate(@RequestParam(name = "type",required = true) long templateId,@RequestParam(name = "type",required = true) String type) {
+	public Map<String,Object> choiceTemplate(@RequestParam(name = "templateId",required = true) long templateId,@RequestParam(name = "type",required = true) String type) {
 		Long userId = LoginUserContextHolder.getUserId();
 		Map<String,Object> returnMap = new HashMap<String,Object>();
 		if(templateId==0){
@@ -66,10 +66,10 @@ public class UserTemplateController extends BaseControl {
 		Map<String,Object> returnMap = new HashMap<String,Object>();
 		try {
 			Map<String, List<Map>> templates = userTemplateOpenService.getTemplates(userId);
-			returnMap.put("data", templates);
+			returnMap.put("message", templates);
 		} catch (Exception e) {
 			returnMap.put("status", 0);
-			returnMap.put("message", "服务器内部错误！");
+			returnMap.put("message", "模板获取失败！");
 			return returnMap;
 		}
 		returnMap.put("status", 1);
@@ -88,10 +88,10 @@ public class UserTemplateController extends BaseControl {
 		Map<String,Object> returnMap = new HashMap<String,Object>();
 		try {
 			Map<String, List<Map>> templates = userTemplateOpenService.getModelByTemplateId(templateId, type);
-			returnMap.put("data", templates);
+			returnMap.put("message", templates);
 		} catch (Exception e) {
 			returnMap.put("status", 0);
-			returnMap.put("message", "服务器内部错误！");
+			returnMap.put("message", "获取模板内容失败！");
 			return returnMap;
 		}
 		returnMap.put("status", 1);
@@ -125,10 +125,10 @@ public class UserTemplateController extends BaseControl {
 				templateId = userRTemplate.getTemplateId();
 			}
 			Map<String, List<Map>> templates = userTemplateOpenService.getModelByTemplateId(templateId, type);
-			returnMap.put("data", templates);
+			returnMap.put("message", templates);
 		} catch (Exception e) {
 			returnMap.put("status", 0);
-			returnMap.put("message", "服务器内部错误！");
+			returnMap.put("message", "无法为用户选定模板！"+ e.getMessage());
 			return returnMap;
 		}
 		returnMap.put("status", 1);

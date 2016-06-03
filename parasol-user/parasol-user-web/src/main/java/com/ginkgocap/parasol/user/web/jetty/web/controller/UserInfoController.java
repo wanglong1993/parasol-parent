@@ -64,7 +64,7 @@ public class UserInfoController extends BaseControl {
 	public final static int OPEN = 3;
 	
 	@ResponseBody
-	@RequestMapping(path = { "/user/user/updateUser1" }, method = { RequestMethod.POST})
+	@RequestMapping(path = { "/user/user/updateUser" }, method = { RequestMethod.POST})
 	public Map<String,Object> updateUser(HttpServletRequest request,HttpServletResponse response,@RequestBody String body){
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		JSONObject j = JSONObject.fromObject(body);
@@ -325,7 +325,7 @@ public class UserInfoController extends BaseControl {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(path = { "/user/user/getUserDetail1" }, method = { RequestMethod.POST })
+	@RequestMapping(path = { "/user/user/getUserDetail" }, method = { RequestMethod.POST })
 	public Map<String,Object> getUserDetail(@RequestBody String body) {
 		Integer[] modelTypes = null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
