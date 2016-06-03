@@ -326,12 +326,12 @@ public class UserInfoController extends BaseControl {
 	 */
 	@ResponseBody
 	@RequestMapping(path = { "/user/user/getUserDetail" }, method = { RequestMethod.POST })
-	public Map<String,Object> getUserDetail(@RequestBody String body) {
+	public Map<String,Object> getUserDetail(@RequestBody(required = false) String body) {
 		Integer[] modelTypes = null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		long userId = LoginUserContextHolder.getUserId();
 		//simple=1 代表全字段返回，如果simple=0过滤掉ip 创建时间 更新时间等返回
-		long readUserId = -1l;
+		long readUserId = userId;
 		boolean isSelf = true;
 		int simple = 0;
 		if(body!=null){
@@ -351,9 +351,7 @@ public class UserInfoController extends BaseControl {
 				modelTypes = ModelType.MODELS;
 			}
 		}else{
-			resultMap.put("message", "参数不能为空！");
-			resultMap.put("status",0);
-			return resultMap;
+			modelTypes = ModelType.MODELS;
 		}
 		try {
 			Map<String,Object> info = userInfoOperateService.getInfo(readUserId, modelTypes);

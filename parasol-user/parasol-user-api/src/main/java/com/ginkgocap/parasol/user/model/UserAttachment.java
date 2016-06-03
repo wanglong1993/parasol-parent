@@ -19,7 +19,6 @@ public class UserAttachment implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2517473660791832138L;
-	private Long id;
 	/**
 	 * 用户id
 	 */
@@ -47,6 +46,7 @@ public class UserAttachment implements Serializable {
 	private Long utime;
 	
 	private String ip;
+	@Id
 	@Column(name = "user_id", unique = true)
 	public Long getUserId() {
 		return userId;
@@ -64,17 +64,7 @@ public class UserAttachment implements Serializable {
 		this.appId = appId;
 	}
 	
-	@Id
-	@GeneratedValue(generator = "id")
-	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
-	@Column(name = "id")
-	public Long getId() {
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
 	@Column(name="taskId")
 	public Long getTaskId() {
 		return taskId;
