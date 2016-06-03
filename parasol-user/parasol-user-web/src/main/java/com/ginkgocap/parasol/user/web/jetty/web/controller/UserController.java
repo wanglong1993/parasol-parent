@@ -1444,7 +1444,7 @@ public class UserController extends BaseControl {
 				userFriendly.setFriendId(friendId);
 				userFriendly.setStatus(new Byte(status));
 				userFriendly.setAppId(appId);
-				bl=userFriendlyService.updateStatus(friendId, userId, new Byte(status));
+				bl=userFriendlyService.updateStatus(userId,friendId, new Byte(status));
 				if(!bl){
 					resultMap.put("message", Prompt.update_Friendly_status_friendId_failed+ friendId+",userId:"+userId);
 					resultMap.put("status",0);
