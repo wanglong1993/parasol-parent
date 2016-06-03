@@ -16,12 +16,15 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
@@ -326,7 +329,7 @@ public class UserInfoController extends BaseControl {
 	 */
 	@ResponseBody
 	@RequestMapping(path = { "/user/user/getUserDetail" }, method = { RequestMethod.POST })
-	public Map<String,Object> getUserDetail(@RequestBody(required = false) String body) {
+	public MappingJacksonValue getUserDetail(@RequestBody(required = false) String body) {
 		Integer[] modelTypes = null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		long userId = LoginUserContextHolder.getUserId();
@@ -366,8 +369,22 @@ public class UserInfoController extends BaseControl {
 			resultMap.put("message", "获取信息失败！");
 			resultMap.put("status",0);
 		}
-		
-		return resultMap;
+		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(resultMap);
+		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+		SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime");
+		filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserInfo.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserContact.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserDescription.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserDefined.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserAttachment.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserSkill.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserEducationHistory.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserInteresting.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserWorkHistory.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserFamilyMember.class.getName(), propertyFilter);
+		mappingJacksonValue.setFilters(filterProvider);
+		return mappingJacksonValue;
 	}
 	/**
 	 * 添充基础信息，比如图片的id转化成path，区域转化成名称

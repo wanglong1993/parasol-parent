@@ -287,12 +287,12 @@ public class UserBasic implements java.io.Serializable {
 	public void setNameIndexAll(String nameIndexAll) {
 		this.nameIndexAll = nameIndexAll;
 	}
-	
+	@Column(name = "appId", length = 19)
 	public Long getAppId() {
 		return appId;
 	}
 
-	@Column(name = "appId", length = 19)
+	
 	public void setAppId(Long appId) {
 		this.appId = appId;
 	}

@@ -7,9 +7,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 个人情况
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserInfo")
 @Entity
 @Table(name = "tb_user_info", catalog = "parasol_user")
 public class UserInfo implements java.io.Serializable {

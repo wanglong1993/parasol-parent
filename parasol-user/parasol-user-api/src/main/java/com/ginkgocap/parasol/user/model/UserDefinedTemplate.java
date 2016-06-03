@@ -11,9 +11,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 /**
  * 专业技能
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserDefinedTemplate")
 @Entity
 @Table(name = "tb_user_defined_template", catalog = "parasol_user")
 public class UserDefinedTemplate implements Serializable {

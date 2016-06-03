@@ -9,9 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 /**
  * 附件
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserAttachment")
 @Entity
 @Table(name = "tb_user_attachment", catalog = "parasol_user")
 public class UserAttachment implements Serializable {

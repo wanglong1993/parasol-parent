@@ -9,9 +9,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 联系方式
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserContact")
 @Entity
 @Table(name = "tb_user_contact", catalog = "parasol_user")
 public class UserContact implements java.io.Serializable {
