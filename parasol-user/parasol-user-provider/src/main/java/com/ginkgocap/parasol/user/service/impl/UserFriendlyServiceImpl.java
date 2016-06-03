@@ -130,7 +130,7 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 	@Override
 	public UserFriendly getFriendly(Long userId, Long friendId)throws UserFriendlyServiceException {
 		try {
-			Long id =(Long) getMapId(UserFriendly_Map_FriendId, new Object[]{friendId,userId});
+			Long id =(Long) getMapId(UserFriendly_Map_FriendId, new Object[]{userId,friendId});
 			if(id!=null) return getEntity(id);
 			else return null;
 		} catch (Exception e) {
