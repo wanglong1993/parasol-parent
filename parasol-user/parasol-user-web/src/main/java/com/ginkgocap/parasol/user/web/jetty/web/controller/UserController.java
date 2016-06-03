@@ -1450,10 +1450,10 @@ public class UserController extends BaseControl {
 					resultMap.put("status",0);
 					return new MappingJacksonValue(resultMap);
 				}
-				UserFriendly uf=userFriendlyService.getFriendly(friendId,userId);
+				UserFriendly uf=userFriendlyService.getFriendly(userId,friendId);
 				if(uf!=null){
 					if(uf.getStatus().intValue()==1){
-						resultMap.put("message", userId +Prompt.is_already_a_good_friend_of_yours_cannot_repeat_add_him);
+						resultMap.put("message", friendId +Prompt.is_already_a_good_friend_of_yours_cannot_repeat_add_him);
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
@@ -1479,8 +1479,8 @@ public class UserController extends BaseControl {
 							return new MappingJacksonValue(resultMap);
 						}
 						userOrgPerCusRel=new UserOrgPerCusRel();
-						userOrgPerCusRel.setUserId(friendId);
-						userOrgPerCusRel.setFriendId(userId);
+						userOrgPerCusRel.setUserId(userId);
+						userOrgPerCusRel.setFriendId(friendId);
 						userOrgPerCusRel.setReleationType(new Byte("1"));
 						userOrgPerCusRel.setName(userBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
@@ -1497,8 +1497,8 @@ public class UserController extends BaseControl {
 							return new MappingJacksonValue(resultMap);
 						}
 						userOrgPerCusRel=new UserOrgPerCusRel();
-						userOrgPerCusRel.setUserId(friendId);
-						userOrgPerCusRel.setFriendId(userId);
+						userOrgPerCusRel.setUserId(userId);
+						userOrgPerCusRel.setFriendId(friendId);
 						userOrgPerCusRel.setReleationType(new Byte("2"));
 						userOrgPerCusRel.setName(userOrganBasic.getName());
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
@@ -1530,8 +1530,8 @@ public class UserController extends BaseControl {
 							return new MappingJacksonValue(resultMap);
 						}
 						userOrgPerCusRel=new UserOrgPerCusRel();
-						userOrgPerCusRel.setUserId(friendId);
-						userOrgPerCusRel.setFriendId(userId);
+						userOrgPerCusRel.setUserId(userId);
+						userOrgPerCusRel.setFriendId(friendId);
 						userOrgPerCusRel.setName(userBasic.getName());
 						userOrgPerCusRel.setReleationType(new Byte("1"));
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
@@ -1548,8 +1548,8 @@ public class UserController extends BaseControl {
 							return new MappingJacksonValue(resultMap);
 						}
 						userOrgPerCusRel=new UserOrgPerCusRel();
-						userOrgPerCusRel.setUserId(friendId);
-						userOrgPerCusRel.setFriendId(userId);
+						userOrgPerCusRel.setUserId(userId);
+						userOrgPerCusRel.setFriendId(friendId);
 						userOrgPerCusRel.setName(userOrganBasic.getName());
 						userOrgPerCusRel.setReleationType(new Byte("2"));
 						userOrgPerCusRelFriendlyId=userOrgPerCusRelService.createUserOrgPerCusRel(userOrgPerCusRel);
