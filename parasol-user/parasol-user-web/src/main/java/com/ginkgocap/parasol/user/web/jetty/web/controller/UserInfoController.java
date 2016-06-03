@@ -360,7 +360,7 @@ public class UserInfoController extends BaseControl {
 			//若不是本人 则进行过滤
 			if(!isSelf)
 				filterPermission(info,userId,isFriend(userId,readUserId));
-			resultMap.putAll(info);
+			resultMap.put("message",info);
 			resultMap.put("status",1);
 		} catch (Exception e) {
 			resultMap.put("message", "获取信息失败！");

@@ -16,11 +16,10 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 @Entity
 @Table(name = "tb_user_basic", catalog = "parasol_user")
 public class UserBasic implements java.io.Serializable {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3191844990568874921L;
+	private static final long serialVersionUID = 2834877048769466137L;
 	/**
 	 * 个人用户id.
 	 */
