@@ -371,7 +371,7 @@ public class UserInfoController extends BaseControl {
 		}
 		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(resultMap);
 		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-		SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime");
+		SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
 		filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
 		filterProvider.addFilter(UserInfo.class.getName(), propertyFilter);
 		filterProvider.addFilter(UserContact.class.getName(), propertyFilter);

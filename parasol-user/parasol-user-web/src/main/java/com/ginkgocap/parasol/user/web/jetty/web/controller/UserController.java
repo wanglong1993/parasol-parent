@@ -2828,20 +2828,192 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-//				List<UserExt> list=userExtService.getUserExtListByProvinceId(start, count, provinceId);//有问题
-//				if(list==null || list.size()==0){
-//					resultMap.put( "status", 0);
-//					resultMap.put("message", Prompt.not_found_userId_list);
-//					return new MappingJacksonValue(resultMap);
-//				}
-				List<Long> ids=new ArrayList<Long>();
-//				for (UserExt userExt : list) {
-//					if(userExt!=null)ids.add(userExt.getUserId());
-//				}
-				List<UserBasic> list2 = userBasicService.getObjects(ids);
+				List<UserBasic> list = userBasicService.getUserBasicListByProvinceId(start, count, provinceId);
+				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
+				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
 				resultMap.put( "status", 1);
-				resultMap.put( "list", list2);
-				return new MappingJacksonValue(resultMap);
+				resultMap.put( "list", list);
+				MappingJacksonValue jacksonValue = new MappingJacksonValue(resultMap);
+				jacksonValue.setFilters(filterProvider);
+				return jacksonValue;
+		}catch (Exception e ){
+			throw e;
+		}
+	}	
+	/**
+	 * 根据市ID获取用户列表
+	 * 
+	 * @param passport 用户通行证
+	 * @param provinceId 省ID
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserListByCityId" }, method = { RequestMethod.GET})
+	public MappingJacksonValue getUserListByCityId(HttpServletRequest request,HttpServletResponse response
+		,@RequestParam(name = "cityId",required = true) Long cityId
+		,@RequestParam(name = "start",required = true) int start
+		,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+					resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(cityId)){
+					resultMap.put( "message", "cityId is not null");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(start<0){
+					resultMap.put( "message", Prompt.start_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(count<=0){
+					resultMap.put( "message", Prompt.count_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				List<UserBasic> list = userBasicService.getUserBasicListByCityId(start, count, cityId);
+				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
+				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
+				resultMap.put( "status", 1);
+				resultMap.put( "list", list);
+				MappingJacksonValue jacksonValue = new MappingJacksonValue(resultMap);
+				jacksonValue.setFilters(filterProvider);
+				return jacksonValue;
+		}catch (Exception e ){
+			throw e;
+		}
+	}	
+	
+	/**
+	 * 根据市ID获取用户列表
+	 * 
+	 * @param passport 用户通行证
+	 * @param provinceId 省ID
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserListByCountyId" }, method = { RequestMethod.GET})
+	public MappingJacksonValue getUserListByCountyId(HttpServletRequest request,HttpServletResponse response
+		,@RequestParam(name = "countyId",required = true) Long countyId
+		,@RequestParam(name = "start",required = true) int start
+		,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+					resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(countyId)){
+					resultMap.put( "message", "countyId is not null");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(start<0){
+					resultMap.put( "message", Prompt.start_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(count<=0){
+					resultMap.put( "message", Prompt.count_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				List<UserBasic> list = userBasicService.getUserBasicListByCountyId(start, count, countyId);
+				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
+				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
+				resultMap.put( "status", 1);
+				resultMap.put( "list", list);
+				MappingJacksonValue jacksonValue = new MappingJacksonValue(resultMap);
+				jacksonValue.setFilters(filterProvider);
+				return jacksonValue;
+		}catch (Exception e ){
+			throw e;
+		}
+	}	
+	
+
+	/**
+	 * 根据用户名称模糊查询
+	 * 
+	 * @param passport 用户通行证
+	 * @param provinceId 省ID
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserListByUserName" }, method = { RequestMethod.GET})
+	public MappingJacksonValue getUserListByCountyId(HttpServletRequest request,HttpServletResponse response
+		,@RequestParam(name = "userName",required = true) String userName
+		,@RequestParam(name = "start",required = true) int start
+		,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+					resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(userName)){
+					resultMap.put( "message", "userName is not null");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(start<0){
+					resultMap.put( "message", Prompt.start_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(count<=0){
+					resultMap.put( "message", Prompt.count_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				List<UserBasic> list = userBasicService.getUserBasicListByUserName(start, count, userName);
+				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
+				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
+				resultMap.put( "status", 1);
+				resultMap.put( "list", list);
+				MappingJacksonValue jacksonValue = new MappingJacksonValue(resultMap);
+				jacksonValue.setFilters(filterProvider);
+				return jacksonValue;
 		}catch (Exception e ){
 			throw e;
 		}
@@ -2856,60 +3028,60 @@ public class UserController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/getUserListByThirdIndustryId" }, method = { RequestMethod.GET})
-	public MappingJacksonValue getUserListByThirdIndustryId(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "thirdIndustryId",required = true) Long thirdIndustryId
-			,@RequestParam(name = "start",required = true) int start
-			,@RequestParam(name = "count",required = true) int count
-			)throws Exception {
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		Long userId=null;
-		try {
-			userId = LoginUserContextHolder.getUserId();
-			if(userId==null){
-				resultMap.put("message", Prompt.userId_is_null_or_empty);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
-				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(StringUtils.isEmpty(thirdIndustryId)){
-				resultMap.put( "message", Prompt.thirdIndustryId_is_null_or_empty);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(start<0){
-				resultMap.put( "message", Prompt.start_must_be_than_zero);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(count<=0){
-				resultMap.put( "message", Prompt.count_must_be_than_zero);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-//			List<UserExt> list=userExtService.getUserListByThirdIndustryId(start, count, thirdIndustryId);//有问题
-//			if(list==null || list.size()==0){
-//				resultMap.put( "status", 0);
-//				resultMap.put("message", Prompt.not_found_userId_list);
+//	@RequestMapping(path = { "/user/user/getUserListByThirdIndustryId" }, method = { RequestMethod.GET})
+//	public MappingJacksonValue getUserListByThirdIndustryId(HttpServletRequest request,HttpServletResponse response
+//			,@RequestParam(name = "thirdIndustryId",required = true) Long thirdIndustryId
+//			,@RequestParam(name = "start",required = true) int start
+//			,@RequestParam(name = "count",required = true) int count
+//			)throws Exception {
+//		Map<String, Object> resultMap = new HashMap<String, Object>();
+//		Long userId=null;
+//		try {
+//			userId = LoginUserContextHolder.getUserId();
+//			if(userId==null){
+//				resultMap.put("message", Prompt.userId_is_null_or_empty);
+//				resultMap.put("status",0);
 //				return new MappingJacksonValue(resultMap);
 //			}
-//			List<Long> ids=new ArrayList<Long>();
-//			for (UserExt userExt : list) {
-//				if(userExt!=null)ids.add(userExt.getUserId());
+//			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+//				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
 //			}
-//			List<UserBasic> list2 = userBasicService.getObjects(ids);//有问题
-//			resultMap.put( "status", 1);
-//			resultMap.put( "list", list2);
-			return new MappingJacksonValue(resultMap);
-		}catch (Exception e ){
-			logger.info(e.getStackTrace());
-			throw e;
-		}
-	}	
+//			if(StringUtils.isEmpty(thirdIndustryId)){
+//				resultMap.put( "message", Prompt.thirdIndustryId_is_null_or_empty);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(start<0){
+//				resultMap.put( "message", Prompt.start_must_be_than_zero);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(count<=0){
+//				resultMap.put( "message", Prompt.count_must_be_than_zero);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+////			List<UserExt> list=userExtService.getUserListByThirdIndustryId(start, count, thirdIndustryId);//有问题
+////			if(list==null || list.size()==0){
+////				resultMap.put( "status", 0);
+////				resultMap.put("message", Prompt.not_found_userId_list);
+////				return new MappingJacksonValue(resultMap);
+////			}
+////			List<Long> ids=new ArrayList<Long>();
+////			for (UserExt userExt : list) {
+////				if(userExt!=null)ids.add(userExt.getUserId());
+////			}
+////			List<UserBasic> list2 = userBasicService.getObjects(ids);//有问题
+////			resultMap.put( "status", 1);
+////			resultMap.put( "list", list2);
+//			return new MappingJacksonValue(resultMap);
+//		}catch (Exception e ){
+//			logger.info(e.getStackTrace());
+//			throw e;
+//		}
+//	}	
 
 	/**
 	 * 设置用户自动保存权限

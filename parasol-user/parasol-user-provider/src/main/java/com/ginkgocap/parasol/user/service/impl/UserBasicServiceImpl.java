@@ -100,4 +100,41 @@ public class UserBasicServiceImpl extends BaseService<UserBasic> implements User
 			throw new UserBasicServiceException(e);
 		}
 	}
+
+
+	@Override
+	public List<UserBasic> getUserBasicListByProvinceId(int start, int count,
+			Long provinceId) throws Exception {
+		if(provinceId==null||provinceId<=0l) throw new UserBasicServiceException("provinceId is must grater than zero.");
+		if(start<0) throw new UserBasicServiceException("start is must grater than zero.");
+		return this.getSubEntitys("UserBasic_List_By_ProvinceId", start, count, provinceId);
+	}
+
+
+	@Override
+	public List<UserBasic> getUserBasicListByCityId(int start, int count,
+			Long cityId) throws Exception {
+		if(cityId==null||cityId<=0l) throw new UserBasicServiceException("cityId is must grater than zero.");
+		if(start<0) throw new UserBasicServiceException("start is must grater than zero.");
+		return this.getSubEntitys("UserBasic_List_By_CityId", start, count, cityId);
+	}
+
+
+	@Override
+	public List<UserBasic> getUserBasicListByCountyId(int start, int count,
+			Long countyId) throws Exception {
+		if(countyId==null||countyId<=0l) throw new UserBasicServiceException("countyId is must grater than zero.");
+		if(start<0) throw new UserBasicServiceException("start is must grater than zero.");
+		return this.getSubEntitys("UserBasic_List_By_CountyId", start, count, countyId);
+	}
+
+
+	@Override
+	public List<UserBasic> getUserBasicListByUserName(int start, int count,
+			String userName) throws Exception {
+		if(StringUtils.isEmpty(userName)) throw new UserBasicServiceException("userName is must grater than zero.");
+		if(start<0) throw new UserBasicServiceException("start is must grater than zero.");
+		return this.getSubEntitys("UserBasic_List_By_UserName", start, count, userName+"%");
+	}
+	
 }

@@ -153,6 +153,18 @@
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
+			<list name="UserBasic_List_By_ProvinceId"
+                 sqlitem="select user_id from tb_user_basic where province_id =? order by utime desc"
+                 sqlType="hsql" keyProperty="provinceId" valueProperty="userId"  update="false"/> 
+            <list name="UserBasic_List_By_CityId"
+                 sqlitem="select user_id from tb_user_basic where city_id =? order by utime desc"
+                 sqlType="hsql" keyProperty="cityId" valueProperty="userId"  update="false"/>
+            <list name="UserBasic_List_By_CountyId"
+                 sqlitem="select user_id from tb_user_basic where county_id =? order by utime desc"
+                 sqlType="hsql" keyProperty="countyId" valueProperty="userId"  update="false"/> 
+             <list name="UserBasic_List_By_UserName"
+                 sqlitem="select user_id from tb_user_basic where name like ? order by utime desc"
+                 sqlType="hsql" keyProperty="userName" valueProperty="userId"  update="false"/> 
 		</object>
 		<object name="com.ginkgocap.parasol.user.model.UserContact" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">

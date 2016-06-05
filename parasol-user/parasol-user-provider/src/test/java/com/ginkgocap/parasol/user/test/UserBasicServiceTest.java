@@ -1,21 +1,15 @@
 package com.ginkgocap.parasol.user.test;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import junit.framework.Test;
 import junit.framework.TestResult;
 
-import org.junit.Assert;
-
-import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.service.UserBasicService;
-import com.ginkgocap.parasol.user.service.UserInterestIndustryService;
-import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 
 public class UserBasicServiceTest  extends TestBase implements Test  {
-
+	@Resource
+	private UserBasicService userBasicService;
 	@Override
 	public int countTestCases() {
 		// TODO Auto-generated method stub
@@ -27,7 +21,10 @@ public class UserBasicServiceTest  extends TestBase implements Test  {
 		// TODO Auto-generated method stub
 		
 	}
-
+	@org.junit.Test
+	public void getUserBasicListByUserNameTest() throws Exception{
+		userBasicService.getUserBasicListByUserName(0, 2, "li");
+	}
 //	@Resource
 //	private UserInterestIndustryService userInterestIndustryService;
 //	@Resource
