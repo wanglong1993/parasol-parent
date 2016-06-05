@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.http.Consts;
@@ -48,11 +47,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.associate.model.Associate;
-import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateService;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
+import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
+import com.ginkgocap.parasol.file.model.FileIndex;
+import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
+import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
 import com.ginkgocap.parasol.metadata.service.CodeRegionService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
@@ -61,16 +63,11 @@ import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.parasol.user.model.User;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserConfig;
-import com.ginkgocap.parasol.user.model.UserDefined;
-import com.ginkgocap.parasol.user.model.UserEducationHistory;
 import com.ginkgocap.parasol.user.model.UserFriendly;
-import com.ginkgocap.parasol.user.model.UserInfo;
 import com.ginkgocap.parasol.user.model.UserInterestIndustry;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
-import com.ginkgocap.parasol.user.model.UserOrganExt;
-import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserConfigerService;
 import com.ginkgocap.parasol.user.service.UserDefinedService;
@@ -92,7 +89,6 @@ import com.gintong.easemob.server.comm.GsonUtils;
 import com.gintong.rocketmq.api.DefaultMessageService;
 import com.gintong.rocketmq.api.enums.FlagType;
 import com.gintong.rocketmq.api.enums.TopicType;
-import com.gintong.rocketmq.api.model.RocketSendResult;
 
 /**
  * 用户登录注册
@@ -144,7 +140,8 @@ public class UserController extends BaseControl {
 	private DefaultMessageService defaultMessageService;	
 	@Autowired
 	private CodeRegionService codeRegionService;	
-	
+	@Autowired
+	private FileIndexService fileIndexService;
 	@Value("${user.web.url}")  
     private String userWebUrl;  
 	@Value("${oauth.web.url}")  
@@ -2829,6 +2826,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				List<UserBasic> list = userBasicService.getUserBasicListByProvinceId(start, count, provinceId);
+				fillUserBasic(list);
 				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
 				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
 				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
@@ -2887,6 +2885,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				List<UserBasic> list = userBasicService.getUserBasicListByCityId(start, count, cityId);
+				fillUserBasic(list);
 				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
 				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
 				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
@@ -2946,6 +2945,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				List<UserBasic> list = userBasicService.getUserBasicListByCountyId(start, count, countyId);
+				fillUserBasic(list);
 				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
 				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
 				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
@@ -3006,6 +3006,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				List<UserBasic> list = userBasicService.getUserBasicListByUserName(start, count, userName);
+				fillUserBasic(list);
 				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
 				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
 				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
@@ -3018,6 +3019,36 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}	
+	
+	private void fillUserBasic(List<UserBasic> userBasics) throws FileIndexServiceException, CodeRegionServiceException{
+		for(UserBasic userBasic : userBasics){
+			Long picId = userBasic.getPicId();
+			if(picId!=null&&picId!=0){
+				FileIndex file = fileIndexService.getFileIndexById(picId);
+				if(file!=null){
+					String group = file.getServerHost();
+					String filePath = file.getFilePath();
+					userBasic.setPicPath(new StringBuilder().append(dfsGintongCom).append("/").append(group).append("/").append(filePath).toString());
+				}
+			}
+			Long cityId = userBasic.getCityId();
+			if(cityId!=null&&cityId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
+				userBasic.setCityName(codeRegion.getCname());
+			}
+			Long provinceId = userBasic.getProvinceId();
+			if(provinceId!=null&&provinceId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
+				userBasic.setProvinceName(codeRegion.getCname());
+			}
+			Long countyId = userBasic.getCountyId();
+			if(countyId!=null&&countyId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
+				userBasic.setCountyName(codeRegion.getCname());
+			}
+		}
+			
+	}
 	/**
 	 * 根据第三级行业ID获取用户列表
 	 * 
