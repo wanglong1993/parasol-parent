@@ -1077,7 +1077,7 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			list= userOrgPerCusRelService.getUserFriendlyList(start, count, userLoginRegister.getId());
+			list= userOrgPerCusRelService.getUserAndOrgFriendlyList(start, count, userLoginRegister.getId());
 			resultMap.put("list", list);
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
@@ -3118,20 +3118,17 @@ public class UserController extends BaseControl {
 			Long cityId = userBasic.getCityId();
 			if(cityId!=null&&cityId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
-				if(codeRegion!=null)
-					userBasic.setCityName(codeRegion.getCname());
+				userBasic.setCityName(codeRegion.getCname());
 			}
 			Long provinceId = userBasic.getProvinceId();
 			if(provinceId!=null&&provinceId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
-				if(codeRegion!=null)
-					userBasic.setProvinceName(codeRegion.getCname());
+				userBasic.setProvinceName(codeRegion.getCname());
 			}
 			Long countyId = userBasic.getCountyId();
 			if(countyId!=null&&countyId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
-				if(codeRegion!=null)
-					userBasic.setCountyName(codeRegion.getCname());
+				userBasic.setCountyName(codeRegion.getCname());
 			}
 		}
 			
