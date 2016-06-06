@@ -1077,7 +1077,7 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			list= userOrgPerCusRelService.getUserFriendlyList(start, count, userLoginRegister.getId());
+			list= userOrgPerCusRelService.getUserAndOrgFriendlyList(start, count, userLoginRegister.getId());
 			resultMap.put("list", list);
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);

@@ -75,6 +75,11 @@
 	</pluginRepositories>
 	<dependencies>
 		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-util</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 		</dependency>

@@ -74,9 +74,15 @@ public class UserBasic implements java.io.Serializable {
 	 */
 	private Long picId;
 	/**
+	 * 行业id
+	 */
+	private Long hy_id;
+	/**
 	 * 姓名手写字母
 	 */
 	private String nameFirst;
+
+
 	/**
 	 * 姓名全拼
 	 */
@@ -168,7 +174,14 @@ public class UserBasic implements java.io.Serializable {
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
 	}
+	@Column(name = "hy_id")
+	public Long getHy_id() {
+		return hy_id;
+	}
 
+	public void setHy_id(Long hy_id) {
+		this.hy_id = hy_id;
+	}
 
 	@Column(name = "nameIndex", length = 20)
 	public String getNameIndex() {
