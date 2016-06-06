@@ -50,10 +50,18 @@
 		  <list name="UserOrgPerCusRel_User_Friendly_UserId"
                  sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=1 order by utime desc"
                  sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+        <!-- 通过好友昵称搜索我的里面的个人好友列表 --> 
+		  <list name="UserOrgPerCusRel_User_Friendly_UserId_And_UserName"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=1 and name like ? order by utime desc"
+                 sqlType="hsql" keyProperty="userId,name" valueProperty="id"  update="true"/>
         <!-- 通过用户id查找用户组织好友列表 --> 
 		  <list name="UserOrgPerCusRel_Org_Friendly_UserId"
                  sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=2 order by utime desc"
                  sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+        <!-- 通过组织好友昵称查找用户组织好友列表 --> 
+		  <list name="UserOrgPerCusRel_Org_Friendly_UserId_And_UserName"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=2 and name like ? order by utime desc"
+                 sqlType="hsql" keyProperty="userId,name" valueProperty="id"  update="true"/>
  		<!-- 通过好友friendId查找id --> 
           <map name="UserOrgPerCusRel_Map_FriendId"
                  sqlitem="select id from tb_user_org_per_cus_rel where friend_id=? and user_id=?"

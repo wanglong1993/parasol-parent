@@ -962,6 +962,90 @@ public class UserController extends BaseControl {
 			logger.info(e.getStackTrace());
 			throw e;
 		}
+	}
+	/**
+	 *根据用户昵称搜索我的里面的个人好友列表
+	 * 
+	 * @param name 用户昵称
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserFriendlyListByNickname" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserFriendlyListByNickname(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true,defaultValue="20") int count
+			,@RequestParam(name = "name",required = true) String name
+			
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserOrgPerCusRel> list=null;
+		UserLoginRegister userLoginRegister=null;
+		Long userId=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			list= userOrgPerCusRelService.getUserFriendlyListByNickname(start, count, userLoginRegister.getId(),name);
+			resultMap.put("list", list);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("根据用户昵称获取用户我的里面的个人好友列表失败:"+userId);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
+	 *根据组织好友昵称搜索我的里面的组织好友列表
+	 * 
+	 * @param name 用户昵称
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getOrgFriendlyListByNickname" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getOrgFriendlyListByNickname(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true,defaultValue="20") int count
+			,@RequestParam(name = "name",required = true) String name
+			
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserOrgPerCusRel> list=null;
+		UserLoginRegister userLoginRegister=null;
+		Long userId=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			list= userOrgPerCusRelService.getOrgFriendlylListByNickname(start, count, userLoginRegister.getId(),name);
+			resultMap.put("list", list);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("根据组织好友昵称获取用户我的里面的组织好友列表失败:"+userId);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
 	}	
 	/**
 	 *根据userId获取用户通讯录个人和组织好友列表
