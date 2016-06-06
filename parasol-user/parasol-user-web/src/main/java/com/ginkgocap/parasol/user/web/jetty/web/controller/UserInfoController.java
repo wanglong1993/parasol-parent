@@ -45,6 +45,7 @@ import com.ginkgocap.parasol.user.model.UserInteresting;
 import com.ginkgocap.parasol.user.model.UserSkill;
 import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserInfoOperateService;
+import com.ginkgocap.parasol.util.PinyinUtils;
 @Controller
 public class UserInfoController extends BaseControl {
 	private static Logger logger = Logger.getLogger(UserInfoController.class);
@@ -80,6 +81,13 @@ public class UserInfoController extends BaseControl {
 			JSONObject ubJson = (JSONObject)j.get("UB");
 			UserBasic userBasic = (UserBasic) JSONObject.toBean(ubJson, UserBasic.class);
 			userBasic.setUserId(userId);
+			String name = userBasic.getName();
+			String nameAll = PinyinUtils.stringToQuanPin(name);
+			String nameIndex = PinyinUtils.stringToHeads(name);
+			String nameFirst = StringUtils.substring(nameIndex, 0, 1);
+			userBasic.setNameIndexAll(nameAll);
+			userBasic.setNameIndex(nameIndex);
+			userBasic.setNameFirst(nameFirst);
 			userBasic.setIp(ip);
 			userBasic.setAppId(appId);
 			paramMap.put(ModelType.UB, userBasic);
@@ -99,6 +107,7 @@ public class UserInfoController extends BaseControl {
 			userDescription.setUserId(userId);
 			userDescription.setIp(ip);
 			userDescription.setAppId(appId);
+			
 			paramMap.put(ModelType.UDN, userDescription);
 		}
 		//用户教育经历
@@ -407,17 +416,20 @@ public class UserInfoController extends BaseControl {
 			Long cityId = userBasic.getCityId();
 			if(cityId!=null&&cityId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
-				userBasic.setCityName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userBasic.setCityName(codeRegion.getCname());
 			}
 			Long provinceId = userBasic.getProvinceId();
 			if(provinceId!=null&&provinceId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
-				userBasic.setProvinceName(codeRegion.getCname());
+				if(codeRegion!=null)	
+					userBasic.setProvinceName(codeRegion.getCname());
 			}
 			Long countyId = userBasic.getCountyId();
 			if(countyId!=null&&countyId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
-				userBasic.setCountyName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userBasic.setCountyName(codeRegion.getCname());
 			}
 		}
 		if(info.get("UIO")!=null){
@@ -425,17 +437,20 @@ public class UserInfoController extends BaseControl {
 			Long cityId = userInfo.getCityId();
 			if(cityId!=null&&cityId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
-				userInfo.setCityName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userInfo.setCityName(codeRegion.getCname());
 			}
 			Long provinceId = userInfo.getProvinceId();
 			if(provinceId!=null&&provinceId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
-				userInfo.setProvinceName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userInfo.setProvinceName(codeRegion.getCname());
 			}
 			Long countyId = userInfo.getCountyId();
 			if(countyId!=null&&countyId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
-				userInfo.setCountyName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userInfo.setCountyName(codeRegion.getCname());
 			}
 		}
 		

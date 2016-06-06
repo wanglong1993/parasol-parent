@@ -3118,17 +3118,20 @@ public class UserController extends BaseControl {
 			Long cityId = userBasic.getCityId();
 			if(cityId!=null&&cityId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
-				userBasic.setCityName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userBasic.setCityName(codeRegion.getCname());
 			}
 			Long provinceId = userBasic.getProvinceId();
 			if(provinceId!=null&&provinceId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
-				userBasic.setProvinceName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userBasic.setProvinceName(codeRegion.getCname());
 			}
 			Long countyId = userBasic.getCountyId();
 			if(countyId!=null&&countyId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
-				userBasic.setCountyName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userBasic.setCountyName(codeRegion.getCname());
 			}
 		}
 			
