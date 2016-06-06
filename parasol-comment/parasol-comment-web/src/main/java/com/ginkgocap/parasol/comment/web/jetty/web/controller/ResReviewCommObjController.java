@@ -50,12 +50,23 @@ public class ResReviewCommObjController extends BaseControl {
 		return obj;
 	}
 	
-	@RequestMapping(value="/commobj/commobj/loadCommsForRes",method = RequestMethod.GET)
+	@RequestMapping(value="/commobj/commobj/loadCommsForRes",method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResReviewCommObj> loadCommsToRes(HttpServletRequest request, HttpServletResponse response,Integer resType,Long pid) throws Exception{
+	public List<ResReviewCommObj> loadCommsToRes(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		Long loginAppId = LoginUserContextHolder.getAppKey();
 		Long loginUserId = LoginUserContextHolder.getUserId();
-		List<ResReviewCommObj> subs=this.rrs.listSubResReviewCommObjs(pid);
+		String jsonStr=this.readJSONString(request);
+		ResReviewCommObj obj=(ResReviewCommObj)JsonUtils.jsonToBean(jsonStr,ResReviewCommObj.class);
+		List<ResReviewCommObj> subs=this.rrs.listSubCommObjsForRes(obj);
+		return subs;
+	}
+	
+	@RequestMapping(value="/commobj/commobj/loadCommsForReview",method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResReviewCommObj> loadCommsForReview(HttpServletRequest request, HttpServletResponse response,Long pid) throws Exception{
+		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginUserId = LoginUserContextHolder.getUserId();
+		List<ResReviewCommObj> subs=this.rrs.listSubCommObjsForReview(pid);
 		return subs;
 	}
 	

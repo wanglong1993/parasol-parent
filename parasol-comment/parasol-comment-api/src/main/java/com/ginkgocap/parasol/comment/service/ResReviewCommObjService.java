@@ -14,7 +14,8 @@ public interface ResReviewCommObjService {
 	ResReviewCommObj findResReviewCommObjById(Long id) throws ResReviewCommObjServiceException;
 	ResReviewCommObj createRootCommObj(ResReviewCommObj obj) throws ResReviewCommObjServiceException;
 	ResReviewCommObj findRootCommObj(ResReviewCommObj obj) throws ResReviewCommObjServiceException;
-	List<ResReviewCommObj> listSubResReviewCommObjs(Long pid) throws ResReviewCommObjServiceException;
+	List<ResReviewCommObj> listSubCommObjsForReview(Long pid) throws ResReviewCommObjServiceException;
+	List<ResReviewCommObj> listSubCommObjsForRes(ResReviewCommObj obj) throws ResReviewCommObjServiceException;
 	CommObjUpUser createCommObjUpUser(CommObjUpUser upUser) throws ResReviewCommObjServiceException;
 	CommObjUpUser findCommObjUpUserById(Long id) throws ResReviewCommObjServiceException;
 	List<CommObjUpUser> listUpUsers(Long commObjId) throws ResReviewCommObjServiceException;

@@ -122,7 +122,7 @@ public class ResReviewCommObjServiceImpl implements ResReviewCommObjService {
 	}
 
 	@Override
-	public List<ResReviewCommObj> listSubResReviewCommObjs(Long pid) throws ResReviewCommObjServiceException {
+	public List<ResReviewCommObj> listSubCommObjsForReview(Long pid) throws ResReviewCommObjServiceException {
 		Criteria criatira = new Criteria();
 		criatira.andOperator(Criteria.where("parentCommObjId").is(pid), Criteria.where("delStatus").is(false));
 	    Query query = new Query(criatira);
@@ -169,6 +169,18 @@ public class ResReviewCommObjServiceImpl implements ResReviewCommObjService {
 		Criteria c = Criteria.where("id").is(id);
 	    Query query = new Query(c);
 	    return this.mongoTemplate.findOne(query, Tipoff.class, TIPOFF);
+	}
+
+	@Override
+	public List<ResReviewCommObj> listSubCommObjsForRes(ResReviewCommObj obj) throws ResReviewCommObjServiceException {
+		Criteria criatira = new Criteria();
+		criatira.andOperator(Criteria.where("appId").is(obj.getAppId()), Criteria.where("resType").is(obj.getResType()),Criteria.where("resId").is(obj.getResId()),Criteria.where("commObjType").is(0));
+	    Query query = new Query(criatira);
+	    ResReviewCommObj root =this.mongoTemplate.findOne(query, ResReviewCommObj.class, COMMOBJCOLL);
+	    if(root!=null){
+	    	return this.listSubCommObjsForReview(root.getId());
+	    }
+	    return null;
 	}
 
 }
