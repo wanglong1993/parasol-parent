@@ -172,6 +172,8 @@ public class UserController extends BaseControl {
 	private String emailFindpwdUrlCoopert; 	
 	@Value("${dfs.gintong.com}")  
 	private String dfsGintongCom; 	
+	@Value("${vcode.url.gintong}")  
+	private String vcodeUrlGintong; 	
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
 
@@ -2134,12 +2136,16 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "password",required = true) String password
 			,@RequestParam(name = "appid",required = false) String appid
 			,@RequestParam(name = "appsecret",required = false) String appsecret
+			,@RequestParam(name = "code",required = false) String code
 			)throws Exception {
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
 		UserBasic userBasic=null;
 		UserOrganBasic userOrganBasic=null;
+		int errorTimes=0;
+		Object value=null;
+		Object vcode=null;
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(userLoginRegister==null){
@@ -2147,11 +2153,37 @@ public class UserController extends BaseControl {
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
+			value=userLoginRegisterService.getCache(passport+"_errorTimes");
+			vcode=userLoginRegisterService.getCache(passport+"_getVcode");
+			errorTimes=ObjectUtils.isEmpty(value)?0:Integer.parseInt(value.toString());
+			if(errorTimes>=3){
+				if(StringUtils.isEmpty(code)){
+					resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
+			if(ObjectUtils.isEmpty(vcode)){
+				resultMap.put( "message", Prompt.vcode_cannot_be_null_or_empty);
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(code.equals(vcode.toString())){
+				resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
 			byte[] bt = Base64.decode(password);
 			String salt=userLoginRegister.getSalt();
 			String newpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			if(!userLoginRegister.getPassword().equals(newpassword)){
+				errorTimes=errorTimes+1;
+				userLoginRegisterService.setCache(passport+"_errorTimes", errorTimes, 1 * 60 * 5);
+				if(errorTimes>=3){
+					resultMap.put("vCodeUrl", vcodeUrlGintong+"/user/user/getVcode");
+				}
 				resultMap.put("message", Prompt.incorrect_password);
+				resultMap.put("errorTimes", errorTimes);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
