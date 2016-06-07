@@ -36,7 +36,7 @@ public interface UserConfigConnectorService {
      * @return
      * @author wfl
      */
-    public List<UserConfigConnector> getUserConfigConnectors(Long userId, int type, Long appId) throws UserConfigServiceException, UserConfigConnectorServiceException;
+    public List<UserConfigConnector> getUserConfigConnectors(Long userId,int type, Long appId) throws UserConfigServiceException, UserConfigConnectorServiceException;
 
     /**
      * 根据用户Id和类型删除保存的部分好友
@@ -46,4 +46,14 @@ public interface UserConfigConnectorService {
      * @return
      */
     public int deletes(Long userId, int type, Long appId) throws UserConfigConnectorServiceException;
+
+    /**
+     * 判断当前操作用户是否可见toUserId的设置和评论等
+     * @param userId 当前操作用户
+     * @param toUserId 被查用户
+     * @param type 类型 （查看主页或者评论）
+     * @param appId
+     * @return
+     */
+    public Boolean isVisible(Long userId, Long toUserId, int type, Long appId);
 }

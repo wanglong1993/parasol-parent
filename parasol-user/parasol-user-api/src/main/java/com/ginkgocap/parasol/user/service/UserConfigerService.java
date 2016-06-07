@@ -51,6 +51,16 @@ public interface UserConfigerService {
 	 * @return Boolean
 	 * @throws UserConfigServiceException
 	 */
-	public Boolean realDeleteUserConfig(Long id) throws UserConfigServiceException;	
+	public Boolean realDeleteUserConfig(Long id) throws UserConfigServiceException;
+
+	/**
+	 * 判断当前用用户是否符合设置要求（浏览主页，发表评论）
+	 * @param userId 当前执行操作的用户的Id
+	 * @param toUserId 被浏览主页或者评论的的用户
+	 * @return
+	 * @throws UserConfigServiceException
+     */
+	public Boolean judgeConfig(Long userId, Long toUserId, int type,Long appId) throws UserConfigServiceException;
+
 
 }
