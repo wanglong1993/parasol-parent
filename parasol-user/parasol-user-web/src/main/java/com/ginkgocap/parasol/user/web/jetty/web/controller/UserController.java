@@ -2162,16 +2162,16 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-			}
-			if(ObjectUtils.isEmpty(vcode)){
-				resultMap.put( "message", Prompt.vcode_cannot_be_null_or_empty);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(code.equals(vcode.toString())){
-				resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
+				if(ObjectUtils.isEmpty(vcode)){
+					resultMap.put( "message", Prompt.vcode_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(code.equals(vcode.toString())){
+					resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
 			}
 			byte[] bt = Base64.decode(password);
 			String salt=userLoginRegister.getSalt();
