@@ -2222,7 +2222,7 @@ public class UserController extends BaseControl {
 			BufferedImage image = (BufferedImage) map.get("image");
 			String code = (String) map.get("code");
 			HttpSession hs=request.getSession();
-			userLoginRegisterService.setCache(passport+"_getVcode", code, 1 * 30 * 1);
+			userLoginRegisterService.setCache(passport+"_getVcode", code, 1 * 60 * 5);
 			ImageIO.write(image, "JPEG", response.getOutputStream());
 			response.getOutputStream().flush();
 			response.getOutputStream().close();
