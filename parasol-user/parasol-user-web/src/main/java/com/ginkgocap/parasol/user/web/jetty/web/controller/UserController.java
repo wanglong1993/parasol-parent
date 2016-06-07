@@ -2207,8 +2207,9 @@ public class UserController extends BaseControl {
 	 * @param response
 	 */
 	@RequestMapping(path = { "/user/user/getVcode" }, method = { RequestMethod.GET})
-	public void getVcode(HttpServletRequest request,
-			HttpServletResponse response) {
+	public void getVcode(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			) {
 		// 禁止缓存
 		response.reset();
 		response.setHeader("Pragma", "No-cache");
@@ -2221,8 +2222,7 @@ public class UserController extends BaseControl {
 			BufferedImage image = (BufferedImage) map.get("image");
 			String code = (String) map.get("code");
 			HttpSession hs=request.getSession();
-//			cacheManager.add(CacheType.IDENTIFY_CODE, hs.getId(), code);
-//			userLoginRegisterService.setCache(id, code, 1 * 30 * 1)
+			userLoginRegisterService.setCache(passport+"_getVcode", code, 1 * 30 * 1);
 			ImageIO.write(image, "JPEG", response.getOutputStream());
 			response.getOutputStream().flush();
 			response.getOutputStream().close();
