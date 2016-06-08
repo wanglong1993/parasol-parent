@@ -268,7 +268,7 @@
 					<include>**/application.properties</include>
 					<include>**/imService.properties</include>
 					<include>**/*.xml</include>
-					<include>**/*.keystore</include>
+					<include>**/*.jps</include>
 				</includes>
 			</resource>
 		</resources>
