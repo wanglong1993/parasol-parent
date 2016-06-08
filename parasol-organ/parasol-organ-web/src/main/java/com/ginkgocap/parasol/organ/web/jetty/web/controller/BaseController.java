@@ -2,14 +2,21 @@ package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.JsonReadUtil;
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
+import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.Encodes;
+import com.google.gson.Gson;
 import net.sf.json.JSONObject;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -115,5 +122,109 @@ public abstract class BaseController {
         } else {
             return Long.valueOf(String.valueOf(j.get(key)));
         }
+    }
+    /**
+     * 判断对象是否为null或空
+     *
+     * @param obj
+     *            return IOException
+     */
+    public static boolean isNullOrEmpty(Object obj) {
+        return Utils.isNullOrEmpty(obj);
+    }
+
+    /**
+     * 定义错误返回信息
+     *
+     * @param result
+     * @param errRespCode
+     * @param errRespMsg
+     * @return
+     * @author wangfeiliang
+     */
+    protected Map<String, Object> returnFailMSGNew(String errRespCode, String errRespMsg) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> errorResult = new HashMap<String, Object>();
+        Map<String, Object> successResult = new HashMap<String, Object>();
+
+        successResult.put("success", false);
+        errorResult.put("notifCode", errRespCode);
+        errorResult.put("notifInfo", errRespMsg);
+
+        result.put("responseData", successResult);
+        result.put("notification", errorResult);
+        return result;
+    }
+
+    /**
+     *
+     * 定义成功返回信息
+     *
+     * @param successResult
+     * @return
+     * @author haiyan
+     */
+    protected Map<String, Object> returnSuccessMSG(Map<String, Object> successResult) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> errorResult = new HashMap<String, Object>();
+
+        successResult.put("success", true);
+        errorResult.put("notifCode", "");
+        errorResult.put("notifInfo", "");
+
+        result.put("responseData", successResult);
+        result.put("notification", errorResult);
+        return result;
+    }
+
+    public void respondJson(HttpServletResponse response, Object obj) {
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            response.setHeader("Cache-Control", "no-cache");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf8");
+            // Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+            Gson gson = CommonUtil.createGson();
+            String responseJson = gson.toJson(obj);
+            byte[] data = responseJson.getBytes("utf8");
+            response.setContentLength(data.length);
+            os.write(data);
+        } catch (IOException e) {
+        } finally {
+            IOUtils.closeQuietly(os);
+        }
+    }
+
+    /**
+     * 设置金桐脑用户
+     *
+     * @param request
+     * @return
+     */
+    public User getJTNUser(HttpServletRequest request) {
+        User user = null;
+        if (null == user) {
+            user = new User();
+            user.setId(0);// 金桐脑
+            return user;
+        }
+        return user;
+    }
+
+
+    // 账号是否是组织 0:个人 1:组织
+    public boolean getUserType(long userId) {
+        User user =null;
+        if (user != null) {
+            return user.isVirtual();
+        }
+        return false;
+    }
+
+    protected User getUser(HttpServletRequest request) {
+        // 判断客户端请求方式
+
+        return null;
     }
 }
