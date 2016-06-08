@@ -27,10 +27,10 @@
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-logging:1.3.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.1.3" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.1.3" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.13" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.13" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.13" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:log4j-over-slf4j:1.7.13" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.4" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.6.4" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.6.4" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:log4j-over-slf4j:1.6.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.yaml:snakeyaml:1.16" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:1.3.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-validation:1.3.0.RELEASE" level="project" />
@@ -73,9 +73,47 @@
     <orderEntry type="library" name="Maven: jline:jline:0.9.94" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty:3.7.0.Final" level="project" />
     <orderEntry type="library" name="Maven: com.github.sgroschupf:zkclient:0.1" level="project" />
-    <orderEntry type="module" module-name="parasol-user-api" />
-    <orderEntry type="library" name="Maven: org.hibernate:hibernate-core:4.3.11.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.gintong.common:phoenix-permission-api:0.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.12" level="project" />
+    <orderEntry type="library" name="Maven: org.mybatis:mybatis-spring:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.ginkgocap.ywxt:phoenix-entire-api:5.6.3" level="project" />
+    <orderEntry type="library" name="Maven: com.ginkgocap.ywxt:phoenix-util:5.6.3" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.2" level="project" />
+    <orderEntry type="library" name="Maven: com.mortennobel:imagescaling:0.8.5" level="project" />
+    <orderEntry type="library" name="Maven: com.ginkgocap.ywxt:phoenix-cache:5.6.3" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-context-support:4.2.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-aspects:4.2.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.aspectj:aspectjweaver:1.8.7" level="project" />
+    <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.8.7" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-orm:4.2.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:4.2.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-tx:4.2.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: spy:spymemcached:2.6" level="project" />
+    <orderEntry type="library" name="Maven: com.thimbleware.jmemcached:jmemcached-core:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.netty:netty:3.2.3.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.mozilla:rhino:1.7R3" level="project" />
+    <orderEntry type="library" name="Maven: redis.clients:jedis:2.7.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-pool2:2.4.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: net.jcip:jcip-annotations:1.0" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge:pinyin4j:2.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.shiro:shiro-core:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.shiro:shiro-spring:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.shiro:shiro-web:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-jpa:1.9.1.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:1.11.1.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.ezmorph:ezmorph:1.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.0.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.hibernate:hibernate-entitymanager:4.3.11.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging-annotations:1.2.0.Beta1" level="project" />
+    <orderEntry type="library" name="Maven: org.hibernate:hibernate-core:4.3.11.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.0.b2" level="project" />
@@ -83,29 +121,42 @@
     <orderEntry type="library" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: antlr:antlr:2.7.7" level="project" />
     <orderEntry type="library" name="Maven: org.jboss:jandex:1.1.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.json-lib:json-lib:2.4" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.2" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.13" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.9.2" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-xc:1.9.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-mongodb:1.8.1.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:2.13.3" level="project" />
+    <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.mybatis.generator:mybatis-generator-core:1.3.2" level="project" />
+    <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
+    <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
+    <orderEntry type="library" name="Maven: com.gintong.frame:phoenix-frame-util:1.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.gintong.frame:phoenix-frame-cache:1.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: avalon-framework:avalon-framework:4.1.3" level="project" />
+    <orderEntry type="library" name="Maven: com.wandoulabs.jodis:jodis:0.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.curator:curator-recipes:2.7.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.curator:curator-framework:2.7.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.curator:curator-client:2.7.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:14.0.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.5.6" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib:2.2" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm:3.1" level="project" />
+    <orderEntry type="module" module-name="parasol-user-api" />
     <orderEntry type="module" module-name="parasol-directory-api" />
     <orderEntry type="module" module-name="parasol-tags-api" />
     <orderEntry type="module" module-name="parasol-associate-api" />
     <orderEntry type="module" module-name="parasol-person-api" />
     <orderEntry type="module" module-name="parasol-message-api" />
     <orderEntry type="library" name="Maven: com.ginkgocap.parasol:parasol-file-api:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.json-lib:json-lib:2.4" level="project" />
-    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.2" level="project" />
-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
-    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.ezmorph:ezmorph:1.0.6" level="project" />
     <orderEntry type="library" name="Maven: com.ginkgocap.parasol:parasol-oauth2-resource:1.0.2-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security.oauth:spring-security-oauth2:2.0.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:4.0.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:4.0.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:4.0.3.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.13" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.13" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-security:1.3.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.ginkgocap.parasol:parasol-oauth2-api:1.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.shiro:shiro-core:1.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
     <orderEntry type="library" name="Maven: javax.annotation:javax.annotation-api:1.2" level="project" />
     <orderEntry type="library" name="Maven: com.ginkgocap.ywxt:phoenix-huanxin:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jersey.media:jersey-media-json-jackson:2.22.1" level="project" />
@@ -122,8 +173,12 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.5.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.5.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.5.4" level="project" />
-    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.3.1" level="project" />
-    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.37" level="project" />
+    <orderEntry type="library" name="Maven: com.ginkgocap.ywxt:phoenix-organ-api:1.0.2-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.4" level="project" />
+    <orderEntry type="library" name="Maven: c3p0:c3p0:0.9.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty:6.1.22" level="project" />
+    <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty-util:6.1.22" level="project" />
+    <orderEntry type="library" name="Maven: org.mortbay.jetty:servlet-api:2.5-20081211" level="project" />
   </component>
 </module>
 

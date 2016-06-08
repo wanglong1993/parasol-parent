@@ -29,15 +29,40 @@
 			</list>
 		</property>
 	</bean>
-	<import resource="classpath:person-dubbo-config.xml" />
-	<import resource="classpath:person-dubbo-consumer.xml" />
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close"
+          p:driverClass="${jdbc.driverClass}"
+          p:jdbcUrl="${jdbc.url}"
+          p:user="${jdbc.username}"
+          p:password="${jdbc.password}"
+          p:initialPoolSize="${jdbc.initialPoolSize}"
+          p:minPoolSize="${jdbc.minPoolSize}"
+          p:acquireIncrement="${jdbc.acquireIncrement}"
+          p:maxPoolSize="${jdbc.maxPoolSize}"
+          p:maxIdleTime="${jdbc.maxIdleTime}"
+          p:maxStatements="${jdbc.maxStatements}"
+          p:maxStatementsPerConnection="${jdbc.maxStatementsPerConnection}"
+          p:idleConnectionTestPeriod="${jdbc.idleConnectionTestPeriod}"
+            >
+    </bean>
+
+	<import resource="classpath:organ-dubbo-config.xml" />
+    <import resource="classpath:organ-dubbo-consumer.xml" />
+    <import resource="classpath:person-dubbo-consumer.xml" />
 	<import resource="classpath:file-dubbo-consumer.xml"/>
 	<import resource="classpath:tags-dubbo-consumer.xml"/>
 	<import resource="classpath:metadata-directory-consumer.xml"/>
 	<import resource="classpath:metadata-associate-consumer.xml"/>
 	<import resource="classpath:oauth2-dubbo-consumer.xml"/>
 	<import resource="classpath:message-dubbo-consumer.xml"/>
-	<import resource="classpath:user-dubbo-consumer.xml"/>
+    <import resource="classpath:user-dubbo-consumer.xml" />
+    <import resource="classpath:permission-dubbo-consumer.xml" />
+
+
+
+
+
 	<context:component-scan base-package="com.ginkgocap.parasol.organ,com.ginkgocap.parasol.oauth2">
     </context:component-scan>
 </beans>
