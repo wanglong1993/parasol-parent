@@ -319,6 +319,10 @@
 			<list name="UserConfigConnector_Delete_UserId_Type"
 				  sqlitem="select id from tb_user_config_connector where user_id=? and type = ? and appId = ?"
 				  sqlType="hsql" keyProperty="userId,type,appId" valueProperty="id"  update="true"/>
+
+			<list name="UserConfigConnector_userId_toUserId_type_appId"
+				  sqlitem="select id from tb_user_config_connector where friendId=? and user_id=? and type = ? and appId = ?"
+				  sqlType="hsql" keyProperty="userId,toUserId,type,appId" valueProperty="id" update="true" />
 		</object>
 	</route>
 </dal>

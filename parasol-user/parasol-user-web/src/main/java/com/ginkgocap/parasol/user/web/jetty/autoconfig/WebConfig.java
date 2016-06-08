@@ -1,31 +1,24 @@
 package com.ginkgocap.parasol.user.web.jetty.autoconfig;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.Ssl;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-import ch.qos.logback.core.filter.Filter;
-
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 /**
  * 
@@ -74,7 +67,21 @@ public class WebConfig {
 		converters.add(customJackson2HttpMessageConverter());
 		// super.addDefaultHttpMessageConverters(converters);
 	}
-	
+
+	@Bean
+	public EmbeddedServletContainerCustomizer containerCustomizer() {
+	  return new EmbeddedServletContainerCustomizer() {
+	    @Override
+	    public void customize(ConfigurableEmbeddedServletContainer container) {
+	      Ssl ssl = new Ssl();
+	      //Server.jks中包含服务器私钥和证书
+	      ssl.setKeyStore("server.keystore");
+	      ssl.setKeyStorePassword("111111");
+	      container.setSsl(ssl);
+	      container.setPort(443);
+	    }
+	  };
+	}
 
 
 }

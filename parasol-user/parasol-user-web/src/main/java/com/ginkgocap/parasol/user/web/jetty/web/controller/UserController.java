@@ -1,5 +1,11 @@
 package com.ginkgocap.parasol.user.web.jetty.web.controller;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -13,8 +19,10 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
@@ -164,6 +172,8 @@ public class UserController extends BaseControl {
 	private String emailFindpwdUrlCoopert; 	
 	@Value("${dfs.gintong.com}")  
 	private String dfsGintongCom; 	
+	@Value("${vcode.url.gintong}")  
+	private String vcodeUrlGintong; 	
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
 
@@ -2126,12 +2136,16 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "password",required = true) String password
 			,@RequestParam(name = "appid",required = false) String appid
 			,@RequestParam(name = "appsecret",required = false) String appsecret
+			,@RequestParam(name = "code",required = false) String code
 			)throws Exception {
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
 		UserBasic userBasic=null;
 		UserOrganBasic userOrganBasic=null;
+		int errorTimes=0;
+		Object value=null;
+		Object vcode=null;
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(userLoginRegister==null){
@@ -2139,11 +2153,37 @@ public class UserController extends BaseControl {
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
+			value=userLoginRegisterService.getCache(passport+"_errorTimes");
+			vcode=userLoginRegisterService.getCache(passport+"_getVcode");
+			errorTimes=ObjectUtils.isEmpty(value)?0:Integer.parseInt(value.toString());
+			if(errorTimes>=3){
+				if(StringUtils.isEmpty(code)){
+					resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(ObjectUtils.isEmpty(vcode)){
+					resultMap.put( "message", Prompt.vcode_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(code.equals(vcode.toString())){
+					resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
 			byte[] bt = Base64.decode(password);
 			String salt=userLoginRegister.getSalt();
 			String newpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			if(!userLoginRegister.getPassword().equals(newpassword)){
+				errorTimes=errorTimes+1;
+				userLoginRegisterService.setCache(passport+"_errorTimes", errorTimes, 1 * 60 * 5);
+				if(errorTimes>=3){
+					resultMap.put("vCodeUrl", vcodeUrlGintong+"/user/user/getVcode");
+				}
 				resultMap.put("message", Prompt.incorrect_password);
+				resultMap.put("errorTimes", errorTimes);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -2193,7 +2233,97 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
-	
+	/**
+	 * 图形验证码
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(path = { "/user/user/getVcode" }, method = { RequestMethod.GET})
+	public void getVcode(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			) {
+		// 禁止缓存
+		response.reset();
+		response.setHeader("Pragma", "No-cache");
+		response.setHeader("Cache-Control", "No-cache");
+		response.setDateHeader("Expires", 0);
+		// 指定生成的响应是图片
+		response.setContentType("image/jpeg");
+		try {
+			Map<String, Object> map = generateValidateCode();
+			BufferedImage image = (BufferedImage) map.get("image");
+			String code = (String) map.get("code");
+			HttpSession hs=request.getSession();
+			userLoginRegisterService.setCache(passport+"_getVcode", code, 1 * 60 * 5);
+			ImageIO.write(image, "JPEG", response.getOutputStream());
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		} catch (Exception e) {
+			logger.error("生成验证码失败 " + e.toString());
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 生成颜色
+	 * @param s
+	 * @param e
+	 * @return
+	 */
+	public Color getRandColor(int s, int e) {
+		Random random = new Random();
+		if (s > 255)s = 255;
+		if (e > 255)e = 255;
+		int r = s + random.nextInt(e - s);
+		int g = s + random.nextInt(e - s);
+		int b = s + random.nextInt(e - s);
+		return new Color(r, g, b);
+	}
+	/**
+	 * 生成验证吗
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	public Map<String, Object> generateValidateCode(){
+		int width = 57;
+		int height = 23;
+		BufferedImage image = new BufferedImage(width, height,BufferedImage.TYPE_INT_RGB); // 创建BufferedImage类的对象
+		Graphics g = image.getGraphics(); // 创建Graphics类的对象
+		Graphics2D g2d = (Graphics2D) g; // 通过Graphics类的对象创建一个Graphics2D类的对象
+		Random random = new Random(); // 实例化一个Random对象
+		Font mFont = new Font("华文宋体", Font.BOLD, 30); // 通过Font构造字体
+		g.setColor(getRandColor(200, 250)); // 改变图形的当前颜色为随机生成的颜色
+		g.fillRect(0, 0, width, height); // 绘制一个填色矩形
+
+		// 画一条折线
+		BasicStroke bs = new BasicStroke(2f, BasicStroke.CAP_BUTT,BasicStroke.JOIN_BEVEL); // 创建一个供画笔选择线条粗细的对象
+		g2d.setStroke(bs); // 改变线条的粗细
+		g.setColor(Color.DARK_GRAY); // 设置当前颜色为预定义颜色中的深灰色
+		int[] xPoints = new int[3];
+		int[] yPoints = new int[3];
+		for (int j = 0; j < 3; j++) {
+			xPoints[j] = random.nextInt(width - 1);
+			yPoints[j] = random.nextInt(height - 1);
+		}
+		g.drawPolyline(xPoints, yPoints, 3);
+		// 生成并输出随机的验证文字
+		g.setFont(mFont);
+		String sRand = "";
+		int itmp = 0;
+		for (int i = 0; i < 4; i++) {
+			itmp = random.nextInt(10) + 48; // 生成0~9的数字
+			char ctmp = (char) itmp;
+			sRand += String.valueOf(ctmp);
+			Color color = new Color(20 + random.nextInt(110),20 + random.nextInt(110), 20 + random.nextInt(110));
+			g.setColor(color);
+			g.drawString(String.valueOf(ctmp),i * 14, 23);
+		}
+		g.dispose();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("image", image);
+		map.put("code", sRand);
+		return map;
+	}	
 	/**
 	 * 用户登出
 	 * 
