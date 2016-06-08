@@ -77,6 +77,16 @@ public interface TagSourceService {
 	public List<TagSource> getTagSourcesByAppIdTagId(Long appId, Long tagId, Integer iStart, Integer iCount) throws TagSourceServiceException;
 
 	/**
+	 * 根据一个应用的的TagId和SourceType查找SourceId列表 比如：根据知识的“智能硬件”标签查找TagSource对象。
+	 * 
+	 * @param appId
+	 * @param tagId
+	 * @param sourceType
+	 * @return
+	 * @throws TagSourceServiceException
+	 */
+	public List<TagSource> getTagSourcesByAppIdTagIdAndType(Long appId, Long tagId, Long sourceType, Integer iStart, Integer iCount) throws TagSourceServiceException;
+	/**
 	 * 根据一个应用的的TagId查找SourceId列表 比如：根据知识的“智能硬件”标签查找TagSource对象。
 	 * 
 	 * @param appId
