@@ -33,4 +33,5 @@
     
     <dubbo:service interface="com.ginkgocap.parasol.comment.service.CommentTypeService" ref="commentTypeService" version="2.0.0" />
     <dubbo:service interface="com.ginkgocap.parasol.comment.service.CommentService" ref="commentService" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.comment.service.ResReviewCommObjService" ref="resReviewCommObjService" version="2.0.0"/>
 </beans>

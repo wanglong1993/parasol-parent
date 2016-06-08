@@ -9,9 +9,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 工作经历
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserWorkHistory")
 @Entity
 @Table(name = "tb_user_work_history", catalog = "parasol_user")
 public class UserWorkHistory implements java.io.Serializable {

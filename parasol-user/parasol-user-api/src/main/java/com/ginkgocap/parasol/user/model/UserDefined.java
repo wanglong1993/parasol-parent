@@ -7,9 +7,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 用户自定义
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserDefined")
 @Entity
 @Table(name = "tb_user_defined", catalog = "parasol_user")
 public class UserDefined implements java.io.Serializable {

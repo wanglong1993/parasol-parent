@@ -16,7 +16,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name="tb_comm_obj")
 public class CommObj implements Serializable {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4878400708106550720L;
 
 	@Id
 	@Column(name="comm_obj_id")
@@ -42,6 +46,9 @@ public class CommObj implements Serializable {
 
 	@Column(name="up_times")
 	private Long upTimes;
+	
+	@Column(name="is_ano")
+	private Integer isAno;
 
 	public CommObj() {
 	}
@@ -108,6 +115,14 @@ public class CommObj implements Serializable {
 
 	public void setUpTimes(Long upTimes) {
 		this.upTimes = upTimes;
+	}
+
+	public Integer getIsAno() {
+		return isAno;
+	}
+
+	public void setIsAno(Integer isAno) {
+		this.isAno = isAno;
 	}
 
 }

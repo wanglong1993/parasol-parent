@@ -9,9 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 /**
  * 专业技能
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserTemplate")
 @Entity
 @Table(name = "tb_user_template", catalog = "parasol_user")
 public class UserTemplate implements Serializable {

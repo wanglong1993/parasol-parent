@@ -1,24 +1,32 @@
 package com.ginkgocap.parasol.user.service.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
+import com.ginkgocap.parasol.common.service.impl.BaseService;
+import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
+import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
+import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
+import com.ginkgocap.parasol.user.model.UserConfig;
+import com.ginkgocap.parasol.user.model.UserFriendly;
+import com.ginkgocap.parasol.user.service.UserConfigConnectorService;
+import com.ginkgocap.parasol.user.service.UserConfigerService;
+import com.ginkgocap.parasol.user.service.UserFriendlyService;
+import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
-import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.user.exception.UserConfigServiceException;
-import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
-import com.ginkgocap.parasol.user.model.UserConfig;
-import com.ginkgocap.parasol.user.service.UserConfigerService;
-import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
+import javax.annotation.Resource;
+import java.util.List;
 @Service("userConfigerService")
 public class UserConfigerServiceImpl extends BaseService<UserConfig> implements UserConfigerService  {
+
 	@Resource
 	private UserLoginRegisterService userLoginRegisterService;
+	@Resource
+	private UserFriendlyService userFriendlyService;
+	@Resource
+	private UserConfigConnectorService userConfigConnectorService;
+
 	private static Logger logger = Logger.getLogger(UserConfigerServiceImpl.class);
 	/**
 	 * 检查数据
@@ -102,5 +110,44 @@ public class UserConfigerServiceImpl extends BaseService<UserConfig> implements 
 			}
 			throw new UserConfigServiceException(e);
 		}
+	}
+
+	@Override
+	public Boolean judgeConfig(Long userId, Long toUserId, int type, Long appId) throws UserConfigServiceException {
+		// 1、被查看用户是否设置了不被查看的权限
+		UserConfig userConfig = this.getUserConfig(toUserId);
+		Byte u = 1;
+		// 查看主页权限
+		if (type == 1) {
+			u = userConfig.getHomePageVisible();
+			// 是否可以评论
+		} else if (type == 2) {
+			u = userConfig.getEvaluateVisible();
+		}
+		if (u == 1) {
+			return false;
+		} else if (u == 2) {
+			return true;
+		} else if (u == 3) {
+			// 查询当前操作人是否被包含在可查看好友行列
+			return userConfigConnectorService.isVisible(userId,toUserId,type,appId);
+		} else {
+			// 查询当前操作人是否好友
+			UserFriendly userFriendly = null;
+			try {
+				userFriendly = userFriendlyService.getFriendly(toUserId,userId);
+				if (userFriendly == null) {
+					return false;
+				} else {
+					return true;
+				}
+			} catch (UserFriendlyServiceException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+		// 2、能够查看返回true，不被查看返回false
+		return false;
 	}
 }

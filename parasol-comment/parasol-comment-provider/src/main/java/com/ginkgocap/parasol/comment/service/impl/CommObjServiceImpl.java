@@ -18,7 +18,6 @@ public class CommObjServiceImpl extends BaseService<CommObj> implements CommObjS
 	public CommObj createCommObj(CommObj obj) throws CommObjServiceException {
 		// TODO Auto-generated method stub
 		try {
-			obj.setCommObjId(Long.valueOf(MakePrimaryKey.getPrimaryKey()));
 			obj.setCreateTime((new Date()).getTime());
 			Long id= (Long) this.saveEntity(obj);
 			return this.findCommObjById(id);

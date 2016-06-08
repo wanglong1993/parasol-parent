@@ -89,4 +89,18 @@ public class UserConfigConnectorServiceImpl extends BaseService<UserConfigConnec
             throw new UserConfigConnectorServiceException("deletes friend failed!");
         }
     }
+
+    @Override
+    public Boolean isVisible(Long userId, Long toUserId, int type, Long appId) {
+        List<UserConfigConnector> list = null;
+        try {
+            list = this.getEntitys("UserConfigConnector_userId_toUserId_type_appId",userId,toUserId,type,appId);
+            if (list.size() > 0) {
+                return true;
+            }
+        } catch (BaseServiceException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

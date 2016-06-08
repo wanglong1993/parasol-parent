@@ -22,11 +22,11 @@ public class UserConfig implements java.io.Serializable {
 	 */
 	private Long userId;
 	/**
-	 * 浏览我的主页.
+	 * 浏览我的主页.  1、仅自己可见 2、全部可见 3、部分好友可见  4 好友可见
 	 */
 	private Byte homePageVisible;
 	/**
-	 * 对我评价.
+	 * 对我评价.   1、不可以评价 2、可评价 3、部分好友可评价  4 好友可评价
 	 */
 	private Byte evaluateVisible;
 	/**

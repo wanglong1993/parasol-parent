@@ -78,7 +78,7 @@ public class UserFriendlyServiceImpl extends BaseService<UserFriendly> implement
 	public boolean updateStatus(Long userId,Long friendId, Byte status)throws UserFriendlyServiceException {
 		try {
 			if(friendId==null || friendId<=0l)throw new UserFriendlyServiceException(error_friendId_is_null,"friendId is null or empty.");
-			if(status.intValue()!=1) throw new UserFriendlyServiceException(error_status_is_error,"status must be equal to 1.");
+//			if(status.intValue()!=1) throw new UserFriendlyServiceException(error_status_is_error,"status must be equal to 1.");
 			if(userLoginRegisterService.getUserLoginRegister(userId)==null)throw new UserFriendlyServiceException(error_uesrId_is_not_exists,"userId is not exists in UserLogniRegister");
 			if(userLoginRegisterService.getUserLoginRegister(friendId)==null)throw new UserFriendlyServiceException(error_FriendId_is_not_exists,"friendId is not exists in UserLogniRegister");
 			Long id =(Long) getMapId(UserFriendly_Map_FriendId, new Object[]{friendId,userId});

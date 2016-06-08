@@ -40,6 +40,8 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 	private static final String UserOrgPerCusRel_UserAndOrg_Friendly_UserId = "UserOrgPerCusRel_UserAndOrg_Friendly_UserId"; 
 	private static final String UserOrgPerCusRel_Org_Friendly_UserId = "UserOrgPerCusRel_Org_Friendly_UserId"; 
 	private static final String UserOrgPerCusRel_User_Friendly_UserId = "UserOrgPerCusRel_User_Friendly_UserId"; 
+	private static final String UserOrgPerCusRel_User_Friendly_UserId_And_UserName = "UserOrgPerCusRel_User_Friendly_UserId_And_UserName"; 
+	private static final String UserOrgPerCusRel_Org_Friendly_UserId_And_UserName = "UserOrgPerCusRel_Org_Friendly_UserId_And_UserName"; 
 	private static final String UserOrgPerCusRel_Map_FriendId = "UserOrgPerCusRel_Map_FriendId"; 
 	private static Logger logger = Logger.getLogger(UserOrgPerCusRelServiceImpl.class);
 	
@@ -189,6 +191,30 @@ public class UserOrgPerCusRelServiceImpl extends BaseService<UserOrgPerCusRel> i
 			throw new UserOrgPerCusRelServiceException(e);
 		}
 		return bl;
+	}
+
+	@Override
+	public List<UserOrgPerCusRel> getUserFriendlyListByNickname(int start,int count, Long userId, String name)throws UserOrgPerCusRelServiceException {
+		try {
+			return getEntityByIds(getIds(UserOrgPerCusRel_User_Friendly_UserId_And_UserName, start, count, new Object[]{userId,name}));
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserOrgPerCusRelServiceException(e);
+		}
+	}
+
+	@Override
+	public List<UserOrgPerCusRel> getOrgFriendlylListByNickname(int start,int count, Long userId, String name)throws UserOrgPerCusRelServiceException {
+		try {
+			return getEntityByIds(getIds(UserOrgPerCusRel_Org_Friendly_UserId_And_UserName, start, count, new Object[]{userId,name}));
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserOrgPerCusRelServiceException(e);
+		}
 	}
 	
 }

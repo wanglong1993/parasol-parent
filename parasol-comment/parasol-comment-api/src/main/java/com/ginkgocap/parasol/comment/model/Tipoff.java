@@ -15,46 +15,42 @@ import javax.persistence.TemporalType;
  * The persistent class for the tb_tipoff database table.
  * 
  */
-@Entity
-@Table(name="tb_tipoff")
-@NamedQuery(name="TbTipoff.findAll", query="SELECT t FROM TbTipoff t")
 public class Tipoff implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Column(name="comm_obj_id")
-	private Long commObjId;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_time")
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6657936742270887911L;
+
+	private Long appId;
+
 	private Date createTime;
 
-	@Column(name="create_user_id")
 	private Long createUserId;
 
-	@Column(name="create_user_name")
 	private String createUserName;
 
 	private String reason;
 
-	@Column(name="tipoff_id")
-	private Long tipoffId;
+	private Long id;
 
-	@Column(name="tipoff_type")
 	private int tipoffType;
+	
+	private Integer resType;
+	
+	private Long resId;
 
-	public Tipoff() {
+	public Long getAppId() {
+		return appId;
 	}
 
-	public Long getCommObjId() {
-		return this.commObjId;
-	}
-
-	public void setCommObjId(Long commObjId) {
-		this.commObjId = commObjId;
+	public void setAppId(Long appId) {
+		this.appId = appId;
 	}
 
 	public Date getCreateTime() {
-		return this.createTime;
+		return createTime;
 	}
 
 	public void setCreateTime(Date createTime) {
@@ -62,7 +58,7 @@ public class Tipoff implements Serializable {
 	}
 
 	public Long getCreateUserId() {
-		return this.createUserId;
+		return createUserId;
 	}
 
 	public void setCreateUserId(Long createUserId) {
@@ -70,7 +66,7 @@ public class Tipoff implements Serializable {
 	}
 
 	public String getCreateUserName() {
-		return this.createUserName;
+		return createUserName;
 	}
 
 	public void setCreateUserName(String createUserName) {
@@ -78,27 +74,44 @@ public class Tipoff implements Serializable {
 	}
 
 	public String getReason() {
-		return this.reason;
+		return reason;
 	}
 
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
 
-	public Long getTipoffId() {
-		return this.tipoffId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setTipoffId(Long tipoffId) {
-		this.tipoffId = tipoffId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public int getTipoffType() {
-		return this.tipoffType;
+		return tipoffType;
 	}
 
 	public void setTipoffType(int tipoffType) {
 		this.tipoffType = tipoffType;
 	}
+
+	public Integer getResType() {
+		return resType;
+	}
+
+	public void setResType(Integer resType) {
+		this.resType = resType;
+	}
+
+	public Long getResId() {
+		return resId;
+	}
+
+	public void setResId(Long resId) {
+		this.resId = resId;
+	}
+
 
 }

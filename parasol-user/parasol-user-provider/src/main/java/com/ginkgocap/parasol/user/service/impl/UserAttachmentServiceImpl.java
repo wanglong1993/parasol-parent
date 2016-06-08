@@ -15,7 +15,6 @@ public class UserAttachmentServiceImpl extends BaseService<UserAttachment> imple
 		if(userAttachment==null) throw new Exception("UserAttachment can not be null.");
 		if(userAttachment.getUserId()<0l) throw new Exception("The value of userId is null or empty.");
 		if(type!=0)
-		if(getObject(userAttachment.getId())==null)throw new Exception("userId not exists in UserAttachment");
 //		if(StringUtils.isEmpty(userBasic.getName()))throw new UserBasicServiceException("The value of  name is null or empty.");
 		if(userAttachment.getCtime()==null) userAttachment.setCtime(System.currentTimeMillis());
 		if(userAttachment.getUtime()==null) userAttachment.setUtime(System.currentTimeMillis());

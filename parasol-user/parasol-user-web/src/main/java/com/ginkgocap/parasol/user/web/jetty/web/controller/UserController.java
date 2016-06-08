@@ -1,5 +1,11 @@
 package com.ginkgocap.parasol.user.web.jetty.web.controller;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -13,12 +19,13 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.http.Consts;
@@ -48,11 +55,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.associate.model.Associate;
-import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateService;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
+import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
+import com.ginkgocap.parasol.file.model.FileIndex;
+import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
+import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
 import com.ginkgocap.parasol.metadata.service.CodeRegionService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
@@ -61,16 +71,11 @@ import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.parasol.user.model.User;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserConfig;
-import com.ginkgocap.parasol.user.model.UserDefined;
-import com.ginkgocap.parasol.user.model.UserEducationHistory;
 import com.ginkgocap.parasol.user.model.UserFriendly;
-import com.ginkgocap.parasol.user.model.UserInfo;
 import com.ginkgocap.parasol.user.model.UserInterestIndustry;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserOrgPerCusRel;
 import com.ginkgocap.parasol.user.model.UserOrganBasic;
-import com.ginkgocap.parasol.user.model.UserOrganExt;
-import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserBasicService;
 import com.ginkgocap.parasol.user.service.UserConfigerService;
 import com.ginkgocap.parasol.user.service.UserDefinedService;
@@ -92,7 +97,6 @@ import com.gintong.easemob.server.comm.GsonUtils;
 import com.gintong.rocketmq.api.DefaultMessageService;
 import com.gintong.rocketmq.api.enums.FlagType;
 import com.gintong.rocketmq.api.enums.TopicType;
-import com.gintong.rocketmq.api.model.RocketSendResult;
 
 /**
  * 用户登录注册
@@ -144,7 +148,8 @@ public class UserController extends BaseControl {
 	private DefaultMessageService defaultMessageService;	
 	@Autowired
 	private CodeRegionService codeRegionService;	
-	
+	@Autowired
+	private FileIndexService fileIndexService;
 	@Value("${user.web.url}")  
     private String userWebUrl;  
 	@Value("${oauth.web.url}")  
@@ -167,6 +172,8 @@ public class UserController extends BaseControl {
 	private String emailFindpwdUrlCoopert; 	
 	@Value("${dfs.gintong.com}")  
 	private String dfsGintongCom; 	
+	@Value("${vcode.url.gintong}")  
+	private String vcodeUrlGintong; 	
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
 
@@ -965,6 +972,90 @@ public class UserController extends BaseControl {
 			logger.info(e.getStackTrace());
 			throw e;
 		}
+	}
+	/**
+	 *根据用户昵称搜索我的里面的个人好友列表
+	 * 
+	 * @param name 用户昵称
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserFriendlyListByNickname" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserFriendlyListByNickname(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true,defaultValue="20") int count
+			,@RequestParam(name = "name",required = true) String name
+			
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserOrgPerCusRel> list=null;
+		UserLoginRegister userLoginRegister=null;
+		Long userId=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			list= userOrgPerCusRelService.getUserFriendlyListByNickname(start, count, userLoginRegister.getId(),name);
+			resultMap.put("list", list);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("根据用户昵称获取用户我的里面的个人好友列表失败:"+userId);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
+	/**
+	 *根据组织好友昵称搜索我的里面的组织好友列表
+	 * 
+	 * @param name 用户昵称
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getOrgFriendlyListByNickname" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getOrgFriendlyListByNickname(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true,defaultValue="20") int count
+			,@RequestParam(name = "name",required = true) String name
+			
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserOrgPerCusRel> list=null;
+		UserLoginRegister userLoginRegister=null;
+		Long userId=null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			list= userOrgPerCusRelService.getOrgFriendlylListByNickname(start, count, userLoginRegister.getId(),name);
+			resultMap.put("list", list);
+			resultMap.put("status",1);
+			return new MappingJacksonValue(resultMap);
+		}catch (Exception e ){
+			logger.info("根据组织好友昵称获取用户我的里面的组织好友列表失败:"+userId);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
 	}	
 	/**
 	 *根据userId获取用户通讯录个人和组织好友列表
@@ -996,7 +1087,7 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			list= userOrgPerCusRelService.getUserFriendlyList(start, count, userLoginRegister.getId());
+			list= userOrgPerCusRelService.getUserAndOrgFriendlyList(start, count, userLoginRegister.getId());
 			resultMap.put("list", list);
 			resultMap.put("status",1);
 			return new MappingJacksonValue(resultMap);
@@ -1438,13 +1529,13 @@ public class UserController extends BaseControl {
 						return new MappingJacksonValue(resultMap);
 					}
 				}
-				//更新好友关系和创建对方的好友关系
-				userFriendly=new UserFriendly();
-				userFriendly.setUserId(userId);
-				userFriendly.setFriendId(friendId);
-				userFriendly.setStatus(new Byte(status));
-				userFriendly.setAppId(appId);
-				bl=userFriendlyService.updateStatus(friendId, userId, new Byte(status));
+				//更新好友关系
+//				userFriendly=new UserFriendly();
+//				userFriendly.setUserId(userId);
+//				userFriendly.setFriendId(friendId);
+//				userFriendly.setStatus(new Byte(status));
+//				userFriendly.setAppId(appId);
+				bl=userFriendlyService.updateStatus(friendId,userId, new Byte(status));
 				if(!bl){
 					resultMap.put("message", Prompt.update_Friendly_status_friendId_failed+ friendId+",userId:"+userId);
 					resultMap.put("status",0);
@@ -1453,12 +1544,12 @@ public class UserController extends BaseControl {
 				UserFriendly uf=userFriendlyService.getFriendly(friendId,userId);
 				if(uf!=null){
 					if(uf.getStatus().intValue()==1){
-						resultMap.put("message", userId +Prompt.is_already_a_good_friend_of_yours_cannot_repeat_add_him);
+						resultMap.put("message", friendId +Prompt.is_already_a_good_friend_of_yours_cannot_repeat_add_him);
 						resultMap.put("status",0);
 						return new MappingJacksonValue(resultMap);
 					}
 				}
-				if(uf==null)id=userFriendlyService.createUserFriendly(userFriendly,false);
+//				if(uf==null)id=userFriendlyService.createUserFriendly(userFriendly,false);
 				//添加个人好友
 				if(userLoginRegisterFriend.getUsetType().intValue()==0){
 					userOrgPerCusRel=new UserOrgPerCusRel();
@@ -1472,7 +1563,7 @@ public class UserController extends BaseControl {
 						userBasic=userBasicService.getObject(userLoginRegister.getId());
 						if(userBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
-							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 							resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
 							resultMap.put("status",0);
@@ -1490,7 +1581,7 @@ public class UserController extends BaseControl {
 						userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
 						if(userOrganBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
-							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 							resultMap.put("message", Prompt.friendId_is_not_exists_in_UserOrganBasic);
 							resultMap.put("status",0);
@@ -1523,7 +1614,7 @@ public class UserController extends BaseControl {
 						userBasic=userBasicService.getObject(userLoginRegister.getId());
 						if(userBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
-							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 							resultMap.put("message", Prompt.friendId_is_not_exists_in_UserBasic);
 							resultMap.put("status",0);
@@ -1541,7 +1632,7 @@ public class UserController extends BaseControl {
 						userOrganBasic=userOrganBasicService.getUserOrganBasic(userLoginRegister.getId());
 						if(userOrganBasic==null){
 							userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
-							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//							if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 							if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 							resultMap.put("message", Prompt.friendId_is_not_exists_in_UserOrganBasic);
 							resultMap.put("status",0);
@@ -1569,7 +1660,7 @@ public class UserController extends BaseControl {
 			//失败回滚
 			if(bl)userFriendlyService.updateStatus(userId, friendId, new Byte("0"));
 			messageRelationService.updateMessageRelationStatus(relationId,0);
-			if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
+//			if(id!=null || id>0l)userFriendlyService.realDeleteUserFriendly(id);
 			if(userOrgPerCusRelId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelId);
 			if(userOrgPerCusRelFriendlyId>0l)userOrgPerCusRelService.realDeleteUserOrgPerCusRel(userOrgPerCusRelFriendlyId);
 			logger.info("添加好友"+friendId+"失败");
@@ -2045,12 +2136,16 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "password",required = true) String password
 			,@RequestParam(name = "appid",required = false) String appid
 			,@RequestParam(name = "appsecret",required = false) String appsecret
+			,@RequestParam(name = "code",required = false) String code
 			)throws Exception {
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
 		UserBasic userBasic=null;
 		UserOrganBasic userOrganBasic=null;
+		int errorTimes=0;
+		Object value=null;
+		Object vcode=null;
 		try {
 			userLoginRegister=userLoginRegisterService.getUserLoginRegister(passport);
 			if(userLoginRegister==null){
@@ -2058,11 +2153,37 @@ public class UserController extends BaseControl {
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
+			value=userLoginRegisterService.getCache(passport+"_errorTimes");
+			vcode=userLoginRegisterService.getCache(passport+"_getVcode");
+			errorTimes=ObjectUtils.isEmpty(value)?0:Integer.parseInt(value.toString());
+			if(errorTimes>=3){
+				if(StringUtils.isEmpty(code)){
+					resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(ObjectUtils.isEmpty(vcode)){
+					resultMap.put( "message", Prompt.vcode_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(code.equals(vcode.toString())){
+					resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+			}
 			byte[] bt = Base64.decode(password);
 			String salt=userLoginRegister.getSalt();
 			String newpassword=userLoginRegisterService.setSha256Hash(salt, new String(bt));
 			if(!userLoginRegister.getPassword().equals(newpassword)){
+				errorTimes=errorTimes+1;
+				userLoginRegisterService.setCache(passport+"_errorTimes", errorTimes, 1 * 60 * 5);
+				if(errorTimes>=3){
+					resultMap.put("vCodeUrl", vcodeUrlGintong+"/user/user/getVcode");
+				}
 				resultMap.put("message", Prompt.incorrect_password);
+				resultMap.put("errorTimes", errorTimes);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
@@ -2112,7 +2233,97 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
-	
+	/**
+	 * 图形验证码
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(path = { "/user/user/getVcode" }, method = { RequestMethod.GET})
+	public void getVcode(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "passport",required = true) String passport
+			) {
+		// 禁止缓存
+		response.reset();
+		response.setHeader("Pragma", "No-cache");
+		response.setHeader("Cache-Control", "No-cache");
+		response.setDateHeader("Expires", 0);
+		// 指定生成的响应是图片
+		response.setContentType("image/jpeg");
+		try {
+			Map<String, Object> map = generateValidateCode();
+			BufferedImage image = (BufferedImage) map.get("image");
+			String code = (String) map.get("code");
+			HttpSession hs=request.getSession();
+			userLoginRegisterService.setCache(passport+"_getVcode", code, 1 * 60 * 5);
+			ImageIO.write(image, "JPEG", response.getOutputStream());
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		} catch (Exception e) {
+			logger.error("生成验证码失败 " + e.toString());
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 生成颜色
+	 * @param s
+	 * @param e
+	 * @return
+	 */
+	public Color getRandColor(int s, int e) {
+		Random random = new Random();
+		if (s > 255)s = 255;
+		if (e > 255)e = 255;
+		int r = s + random.nextInt(e - s);
+		int g = s + random.nextInt(e - s);
+		int b = s + random.nextInt(e - s);
+		return new Color(r, g, b);
+	}
+	/**
+	 * 生成验证吗
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	public Map<String, Object> generateValidateCode(){
+		int width = 57;
+		int height = 23;
+		BufferedImage image = new BufferedImage(width, height,BufferedImage.TYPE_INT_RGB); // 创建BufferedImage类的对象
+		Graphics g = image.getGraphics(); // 创建Graphics类的对象
+		Graphics2D g2d = (Graphics2D) g; // 通过Graphics类的对象创建一个Graphics2D类的对象
+		Random random = new Random(); // 实例化一个Random对象
+		Font mFont = new Font("华文宋体", Font.BOLD, 30); // 通过Font构造字体
+		g.setColor(getRandColor(200, 250)); // 改变图形的当前颜色为随机生成的颜色
+		g.fillRect(0, 0, width, height); // 绘制一个填色矩形
+
+		// 画一条折线
+		BasicStroke bs = new BasicStroke(2f, BasicStroke.CAP_BUTT,BasicStroke.JOIN_BEVEL); // 创建一个供画笔选择线条粗细的对象
+		g2d.setStroke(bs); // 改变线条的粗细
+		g.setColor(Color.DARK_GRAY); // 设置当前颜色为预定义颜色中的深灰色
+		int[] xPoints = new int[3];
+		int[] yPoints = new int[3];
+		for (int j = 0; j < 3; j++) {
+			xPoints[j] = random.nextInt(width - 1);
+			yPoints[j] = random.nextInt(height - 1);
+		}
+		g.drawPolyline(xPoints, yPoints, 3);
+		// 生成并输出随机的验证文字
+		g.setFont(mFont);
+		String sRand = "";
+		int itmp = 0;
+		for (int i = 0; i < 4; i++) {
+			itmp = random.nextInt(10) + 48; // 生成0~9的数字
+			char ctmp = (char) itmp;
+			sRand += String.valueOf(ctmp);
+			Color color = new Color(20 + random.nextInt(110),20 + random.nextInt(110), 20 + random.nextInt(110));
+			g.setColor(color);
+			g.drawString(String.valueOf(ctmp),i * 14, 23);
+		}
+		g.dispose();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("image", image);
+		map.put("code", sRand);
+		return map;
+	}	
 	/**
 	 * 用户登出
 	 * 
@@ -2828,24 +3039,230 @@ public class UserController extends BaseControl {
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
-//				List<UserExt> list=userExtService.getUserExtListByProvinceId(start, count, provinceId);//有问题
-//				if(list==null || list.size()==0){
-//					resultMap.put( "status", 0);
-//					resultMap.put("message", Prompt.not_found_userId_list);
-//					return new MappingJacksonValue(resultMap);
-//				}
-				List<Long> ids=new ArrayList<Long>();
-//				for (UserExt userExt : list) {
-//					if(userExt!=null)ids.add(userExt.getUserId());
-//				}
-				List<UserBasic> list2 = userBasicService.getObjects(ids);
+				List<UserBasic> list = userBasicService.getUserBasicListByProvinceId(start, count, provinceId);
+				fillUserBasic(list);
+				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
+				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
 				resultMap.put( "status", 1);
-				resultMap.put( "list", list2);
-				return new MappingJacksonValue(resultMap);
+				resultMap.put( "list", list);
+				MappingJacksonValue jacksonValue = new MappingJacksonValue(resultMap);
+				jacksonValue.setFilters(filterProvider);
+				return jacksonValue;
 		}catch (Exception e ){
 			throw e;
 		}
 	}	
+	/**
+	 * 根据市ID获取用户列表
+	 * 
+	 * @param passport 用户通行证
+	 * @param provinceId 省ID
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserListByCityId" }, method = { RequestMethod.GET})
+	public MappingJacksonValue getUserListByCityId(HttpServletRequest request,HttpServletResponse response
+		,@RequestParam(name = "cityId",required = true) Long cityId
+		,@RequestParam(name = "start",required = true) int start
+		,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+					resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(cityId)){
+					resultMap.put( "message", "cityId is not null");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(start<0){
+					resultMap.put( "message", Prompt.start_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(count<=0){
+					resultMap.put( "message", Prompt.count_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				List<UserBasic> list = userBasicService.getUserBasicListByCityId(start, count, cityId);
+				fillUserBasic(list);
+				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
+				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
+				resultMap.put( "status", 1);
+				resultMap.put( "list", list);
+				MappingJacksonValue jacksonValue = new MappingJacksonValue(resultMap);
+				jacksonValue.setFilters(filterProvider);
+				return jacksonValue;
+		}catch (Exception e ){
+			throw e;
+		}
+	}	
+	
+	/**
+	 * 根据市ID获取用户列表
+	 * 
+	 * @param passport 用户通行证
+	 * @param provinceId 省ID
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserListByCountyId" }, method = { RequestMethod.GET})
+	public MappingJacksonValue getUserListByCountyId(HttpServletRequest request,HttpServletResponse response
+		,@RequestParam(name = "countyId",required = true) Long countyId
+		,@RequestParam(name = "start",required = true) int start
+		,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+					resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(countyId)){
+					resultMap.put( "message", "countyId is not null");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(start<0){
+					resultMap.put( "message", Prompt.start_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(count<=0){
+					resultMap.put( "message", Prompt.count_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				List<UserBasic> list = userBasicService.getUserBasicListByCountyId(start, count, countyId);
+				fillUserBasic(list);
+				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
+				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
+				resultMap.put( "status", 1);
+				resultMap.put( "list", list);
+				MappingJacksonValue jacksonValue = new MappingJacksonValue(resultMap);
+				jacksonValue.setFilters(filterProvider);
+				return jacksonValue;
+		}catch (Exception e ){
+			throw e;
+		}
+	}	
+	
+
+	/**
+	 * 根据用户名称模糊查询
+	 * 
+	 * @param passport 用户通行证
+	 * @param provinceId 省ID
+	 * @param start 开始位置 0为起始位置
+	 * @param count 每页多少个
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserListByUserName" }, method = { RequestMethod.GET})
+	public MappingJacksonValue getUserListByCountyId(HttpServletRequest request,HttpServletResponse response
+		,@RequestParam(name = "userName",required = true) String userName
+		,@RequestParam(name = "start",required = true) int start
+		,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long userId=null;
+		try {
+				userId = LoginUserContextHolder.getUserId();
+				if(userId==null){
+					resultMap.put("message", Prompt.userId_is_null_or_empty);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+					resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+					resultMap.put("status",0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(StringUtils.isEmpty(userName)){
+					resultMap.put( "message", "userName is not null");
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(start<0){
+					resultMap.put( "message", Prompt.start_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				if(count<=0){
+					resultMap.put( "message", Prompt.count_must_be_than_zero);
+					resultMap.put( "status", 0);
+					return new MappingJacksonValue(resultMap);
+				}
+				List<UserBasic> list = userBasicService.getUserBasicListByUserName(start, count, userName);
+				fillUserBasic(list);
+				SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+				SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
+				filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
+				resultMap.put( "status", 1);
+				resultMap.put( "list", list);
+				MappingJacksonValue jacksonValue = new MappingJacksonValue(resultMap);
+				jacksonValue.setFilters(filterProvider);
+				return jacksonValue;
+		}catch (Exception e ){
+			throw e;
+		}
+	}	
+	
+	private void fillUserBasic(List<UserBasic> userBasics) throws FileIndexServiceException, CodeRegionServiceException{
+		for(UserBasic userBasic : userBasics){
+			Long picId = userBasic.getPicId();
+			if(picId!=null&&picId!=0){
+				FileIndex file = fileIndexService.getFileIndexById(picId);
+				if(file!=null){
+					String group = file.getServerHost();
+					String filePath = file.getFilePath();
+					userBasic.setPicPath(new StringBuilder().append(dfsGintongCom).append("/").append(group).append("/").append(filePath).toString());
+				}
+			}
+			Long cityId = userBasic.getCityId();
+			if(cityId!=null&&cityId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
+				userBasic.setCityName(codeRegion.getCname());
+			}
+			Long provinceId = userBasic.getProvinceId();
+			if(provinceId!=null&&provinceId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
+				userBasic.setProvinceName(codeRegion.getCname());
+			}
+			Long countyId = userBasic.getCountyId();
+			if(countyId!=null&&countyId!=0){
+				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
+				userBasic.setCountyName(codeRegion.getCname());
+			}
+		}
+			
+	}
 	/**
 	 * 根据第三级行业ID获取用户列表
 	 * 
@@ -2856,60 +3273,60 @@ public class UserController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/getUserListByThirdIndustryId" }, method = { RequestMethod.GET})
-	public MappingJacksonValue getUserListByThirdIndustryId(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "thirdIndustryId",required = true) Long thirdIndustryId
-			,@RequestParam(name = "start",required = true) int start
-			,@RequestParam(name = "count",required = true) int count
-			)throws Exception {
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		Long userId=null;
-		try {
-			userId = LoginUserContextHolder.getUserId();
-			if(userId==null){
-				resultMap.put("message", Prompt.userId_is_null_or_empty);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
-				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(StringUtils.isEmpty(thirdIndustryId)){
-				resultMap.put( "message", Prompt.thirdIndustryId_is_null_or_empty);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(start<0){
-				resultMap.put( "message", Prompt.start_must_be_than_zero);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(count<=0){
-				resultMap.put( "message", Prompt.count_must_be_than_zero);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-//			List<UserExt> list=userExtService.getUserListByThirdIndustryId(start, count, thirdIndustryId);//有问题
-//			if(list==null || list.size()==0){
-//				resultMap.put( "status", 0);
-//				resultMap.put("message", Prompt.not_found_userId_list);
+//	@RequestMapping(path = { "/user/user/getUserListByThirdIndustryId" }, method = { RequestMethod.GET})
+//	public MappingJacksonValue getUserListByThirdIndustryId(HttpServletRequest request,HttpServletResponse response
+//			,@RequestParam(name = "thirdIndustryId",required = true) Long thirdIndustryId
+//			,@RequestParam(name = "start",required = true) int start
+//			,@RequestParam(name = "count",required = true) int count
+//			)throws Exception {
+//		Map<String, Object> resultMap = new HashMap<String, Object>();
+//		Long userId=null;
+//		try {
+//			userId = LoginUserContextHolder.getUserId();
+//			if(userId==null){
+//				resultMap.put("message", Prompt.userId_is_null_or_empty);
+//				resultMap.put("status",0);
 //				return new MappingJacksonValue(resultMap);
 //			}
-//			List<Long> ids=new ArrayList<Long>();
-//			for (UserExt userExt : list) {
-//				if(userExt!=null)ids.add(userExt.getUserId());
+//			if(userLoginRegisterService.getUserLoginRegister(userId)==null){
+//				resultMap.put("message", Prompt.passport_is_not_exists_in_UserLoginRegister);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
 //			}
-//			List<UserBasic> list2 = userBasicService.getObjects(ids);//有问题
-//			resultMap.put( "status", 1);
-//			resultMap.put( "list", list2);
-			return new MappingJacksonValue(resultMap);
-		}catch (Exception e ){
-			logger.info(e.getStackTrace());
-			throw e;
-		}
-	}	
+//			if(StringUtils.isEmpty(thirdIndustryId)){
+//				resultMap.put( "message", Prompt.thirdIndustryId_is_null_or_empty);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(start<0){
+//				resultMap.put( "message", Prompt.start_must_be_than_zero);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(count<=0){
+//				resultMap.put( "message", Prompt.count_must_be_than_zero);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+////			List<UserExt> list=userExtService.getUserListByThirdIndustryId(start, count, thirdIndustryId);//有问题
+////			if(list==null || list.size()==0){
+////				resultMap.put( "status", 0);
+////				resultMap.put("message", Prompt.not_found_userId_list);
+////				return new MappingJacksonValue(resultMap);
+////			}
+////			List<Long> ids=new ArrayList<Long>();
+////			for (UserExt userExt : list) {
+////				if(userExt!=null)ids.add(userExt.getUserId());
+////			}
+////			List<UserBasic> list2 = userBasicService.getObjects(ids);//有问题
+////			resultMap.put( "status", 1);
+////			resultMap.put( "list", list2);
+//			return new MappingJacksonValue(resultMap);
+//		}catch (Exception e ){
+//			logger.info(e.getStackTrace());
+//			throw e;
+//		}
+//	}	
 
 	/**
 	 * 设置用户自动保存权限

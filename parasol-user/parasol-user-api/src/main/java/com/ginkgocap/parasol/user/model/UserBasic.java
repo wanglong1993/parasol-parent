@@ -16,11 +16,10 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 @Entity
 @Table(name = "tb_user_basic", catalog = "parasol_user")
 public class UserBasic implements java.io.Serializable {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3191844990568874921L;
+	private static final long serialVersionUID = 2834877048769466137L;
 	/**
 	 * 个人用户id.
 	 */
@@ -75,9 +74,15 @@ public class UserBasic implements java.io.Serializable {
 	 */
 	private Long picId;
 	/**
+	 * 行业id
+	 */
+	private Long hy_id;
+	/**
 	 * 姓名手写字母
 	 */
 	private String nameFirst;
+
+
 	/**
 	 * 姓名全拼
 	 */
@@ -169,7 +174,14 @@ public class UserBasic implements java.io.Serializable {
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
 	}
+	@Column(name = "hy_id")
+	public Long getHy_id() {
+		return hy_id;
+	}
 
+	public void setHy_id(Long hy_id) {
+		this.hy_id = hy_id;
+	}
 
 	@Column(name = "nameIndex", length = 20)
 	public String getNameIndex() {
@@ -288,12 +300,12 @@ public class UserBasic implements java.io.Serializable {
 	public void setNameIndexAll(String nameIndexAll) {
 		this.nameIndexAll = nameIndexAll;
 	}
-	
+	@Column(name = "appId", length = 19)
 	public Long getAppId() {
 		return appId;
 	}
 
-	@Column(name = "appId", length = 19)
+	
 	public void setAppId(Long appId) {
 		this.appId = appId;
 	}

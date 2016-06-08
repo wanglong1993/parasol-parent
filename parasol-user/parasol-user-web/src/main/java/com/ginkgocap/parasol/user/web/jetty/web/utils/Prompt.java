@@ -5,6 +5,7 @@ public final class Prompt {
 	public static final  String mobile_already_exists="手机号已经存在";
 	public static final  String email_format_is_not_correct="邮箱格式不正确";
 	public static final  String code_cannot_be_null_or_empty="验证码不能为空";
+	public static final  String vcode_cannot_be_null_or_empty="缓存图片验证码为空或者已经过期";
 	public static final  String code_is_not_right="验证码不正确";
 	public static final  String passowrd_cannot_be_null_or_empty="密码不能为空";
 	public static final  String password_length_must_be_greater_than_or_equal_to_6="密码长度须大于或等6位";

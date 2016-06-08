@@ -6,9 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 /**
  * 专业技能
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserInteresting")
 @Entity
 @Table(name = "tb_user_interesting", catalog = "parasol_user")
 public class UserInteresting implements Serializable {

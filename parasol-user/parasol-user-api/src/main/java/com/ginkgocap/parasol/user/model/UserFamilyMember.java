@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
+@JsonFilter("com.ginkgocap.parasol.user.model.UserFamilyMember")
 @Entity
 @Table(name = "tb_user_family_member", catalog = "parasol_user")
 public class UserFamilyMember implements Serializable{

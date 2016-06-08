@@ -16,12 +16,15 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
@@ -42,6 +45,7 @@ import com.ginkgocap.parasol.user.model.UserInteresting;
 import com.ginkgocap.parasol.user.model.UserSkill;
 import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserInfoOperateService;
+import com.ginkgocap.parasol.util.PinyinUtils;
 @Controller
 public class UserInfoController extends BaseControl {
 	private static Logger logger = Logger.getLogger(UserInfoController.class);
@@ -77,6 +81,13 @@ public class UserInfoController extends BaseControl {
 			JSONObject ubJson = (JSONObject)j.get("UB");
 			UserBasic userBasic = (UserBasic) JSONObject.toBean(ubJson, UserBasic.class);
 			userBasic.setUserId(userId);
+			String name = userBasic.getName();
+			String nameAll = PinyinUtils.stringToQuanPin(name);
+			String nameIndex = PinyinUtils.stringToHeads(name);
+			String nameFirst = StringUtils.substring(nameIndex, 0, 1);
+			userBasic.setNameIndexAll(nameAll);
+			userBasic.setNameIndex(nameIndex);
+			userBasic.setNameFirst(nameFirst);
 			userBasic.setIp(ip);
 			userBasic.setAppId(appId);
 			paramMap.put(ModelType.UB, userBasic);
@@ -96,6 +107,7 @@ public class UserInfoController extends BaseControl {
 			userDescription.setUserId(userId);
 			userDescription.setIp(ip);
 			userDescription.setAppId(appId);
+			
 			paramMap.put(ModelType.UDN, userDescription);
 		}
 		//用户教育经历
@@ -326,12 +338,12 @@ public class UserInfoController extends BaseControl {
 	 */
 	@ResponseBody
 	@RequestMapping(path = { "/user/user/getUserDetail" }, method = { RequestMethod.POST })
-	public Map<String,Object> getUserDetail(@RequestBody String body) {
+	public MappingJacksonValue getUserDetail(@RequestBody(required = false) String body) {
 		Integer[] modelTypes = null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		long userId = LoginUserContextHolder.getUserId();
 		//simple=1 代表全字段返回，如果simple=0过滤掉ip 创建时间 更新时间等返回
-		long readUserId = -1l;
+		long readUserId = userId;
 		boolean isSelf = true;
 		int simple = 0;
 		if(body!=null){
@@ -351,9 +363,7 @@ public class UserInfoController extends BaseControl {
 				modelTypes = ModelType.MODELS;
 			}
 		}else{
-			resultMap.put("message", "参数不能为空！");
-			resultMap.put("status",0);
-			return resultMap;
+			modelTypes = ModelType.MODELS;
 		}
 		try {
 			Map<String,Object> info = userInfoOperateService.getInfo(readUserId, modelTypes);
@@ -362,14 +372,28 @@ public class UserInfoController extends BaseControl {
 			//若不是本人 则进行过滤
 			if(!isSelf)
 				filterPermission(info,userId,isFriend(userId,readUserId));
-			resultMap.putAll(info);
+			resultMap.put("message",info);
 			resultMap.put("status",1);
 		} catch (Exception e) {
 			resultMap.put("message", "获取信息失败！");
 			resultMap.put("status",0);
 		}
-		
-		return resultMap;
+		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(resultMap);
+		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+		SimpleBeanPropertyFilter propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("userId","ip","utime","appId");
+		filterProvider.addFilter(UserBasic.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserInfo.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserContact.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserDescription.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserDefined.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserAttachment.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserSkill.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserEducationHistory.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserInteresting.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserWorkHistory.class.getName(), propertyFilter);
+		filterProvider.addFilter(UserFamilyMember.class.getName(), propertyFilter);
+		mappingJacksonValue.setFilters(filterProvider);
+		return mappingJacksonValue;
 	}
 	/**
 	 * 添充基础信息，比如图片的id转化成path，区域转化成名称
@@ -392,17 +416,20 @@ public class UserInfoController extends BaseControl {
 			Long cityId = userBasic.getCityId();
 			if(cityId!=null&&cityId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
-				userBasic.setCityName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userBasic.setCityName(codeRegion.getCname());
 			}
 			Long provinceId = userBasic.getProvinceId();
 			if(provinceId!=null&&provinceId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
-				userBasic.setProvinceName(codeRegion.getCname());
+				if(codeRegion!=null)	
+					userBasic.setProvinceName(codeRegion.getCname());
 			}
 			Long countyId = userBasic.getCountyId();
 			if(countyId!=null&&countyId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
-				userBasic.setCountyName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userBasic.setCountyName(codeRegion.getCname());
 			}
 		}
 		if(info.get("UIO")!=null){
@@ -410,17 +437,20 @@ public class UserInfoController extends BaseControl {
 			Long cityId = userInfo.getCityId();
 			if(cityId!=null&&cityId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(cityId);
-				userInfo.setCityName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userInfo.setCityName(codeRegion.getCname());
 			}
 			Long provinceId = userInfo.getProvinceId();
 			if(provinceId!=null&&provinceId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(provinceId);
-				userInfo.setProvinceName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userInfo.setProvinceName(codeRegion.getCname());
 			}
 			Long countyId = userInfo.getCountyId();
 			if(countyId!=null&&countyId!=0){
 				CodeRegion codeRegion = codeRegionService.getCodeRegionById(countyId);
-				userInfo.setCountyName(codeRegion.getCname());
+				if(codeRegion!=null)
+					userInfo.setCountyName(codeRegion.getCname());
 			}
 		}
 		
