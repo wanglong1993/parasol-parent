@@ -60,7 +60,6 @@
     <import resource="classpath:permission-dubbo-consumer.xml" />
 
     <import resource="classpath:knowledge-dubbo-consumer.xml" />
-    <import resource="classpath:person-dubbo-consumer.xml" />
 
 
 
