@@ -1,29 +1,30 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
+import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
-import com.ginkgocap.parasol.organ.web.jetty.web.utils.JsonReadUtil;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
-import com.ginkgocap.ywxt.user.model.User;
-import com.ginkgocap.ywxt.util.Encodes;
-import com.google.gson.Gson;
+import com.ginkgocap.parasol.user.model.UserBasic;
+import com.ginkgocap.parasol.user.service.UserBasicService;
 import net.sf.json.JSONObject;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ * Created by jbqiu on 2016/6/10.
+ * controller 基类
  */
 public abstract class BaseController {
 	private static Logger logger = Logger.getLogger(BaseController.class);
 
+    @Autowired
+    private UserBasicService userBasicService;
     /**
      * 获取head中的json参数串
      *
@@ -33,12 +34,12 @@ public abstract class BaseController {
      *
      */
     public String getJsonParamStr(HttpServletRequest request) throws IOException {
-        String result = JsonReadUtil.getJsonIn(request);
+        String result = Utils.getJsonIn(request);
         return result;
     }
 
     public JSONObject convertJson(HttpServletRequest request) throws IOException {
-        String result = JsonReadUtil.getJsonIn(request);
+        String result = Utils.getJsonIn(request);
         if (StringUtils.isEmpty(result))
             return null;
         JSONObject json = null;
@@ -123,6 +124,33 @@ public abstract class BaseController {
             return Long.valueOf(String.valueOf(j.get(key)));
         }
     }
+
+    protected UserBasic getUser(HttpServletRequest request) {
+        UserBasic userBasic=null;
+        Long loginUserId = LoginUserContextHolder.getUserId();
+
+        try {
+           userBasic= userBasicService.getObject(loginUserId);
+        }catch(Exception e){
+            //throw e;
+        }
+        return  userBasic;
+    }
+    /**
+     * 设置金桐脑用户
+     *
+     * @param request
+     * @return
+     */
+    public UserBasic getJTNUser(HttpServletRequest request) {
+        UserBasic user = getUser(request);
+        if (null == user) {
+            user = new UserBasic();
+            user.setUserId(0l);
+            return user;
+        }
+        return user;
+    }
     /**
      * 判断对象是否为null或空
      *
@@ -177,54 +205,25 @@ public abstract class BaseController {
         return result;
     }
 
-    public void respondJson(HttpServletResponse response, Object obj) {
-        OutputStream os = null;
-        try {
-            os = response.getOutputStream();
-            response.setHeader("Cache-Control", "no-cache");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("utf8");
-            // Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-            Gson gson = CommonUtil.createGson();
-            String responseJson = gson.toJson(obj);
-            byte[] data = responseJson.getBytes("utf8");
-            response.setContentLength(data.length);
-            os.write(data);
-        } catch (IOException e) {
-        } finally {
-            IOUtils.closeQuietly(os);
-        }
-    }
-
     /**
-     * 设置金桐脑用户
+     * 讲notification统一包装起来
      *
-     * @param request
-     * @return
+     * @param model
+     *            ： 讲要返回给客户端的model对象
+     * @param responseDataMap
+     *            协议的消息体部分， 对应 responseData
+     * @param notificationMap
+     *            协议的消息部分， 对应 notification
      */
-    public User getJTNUser(HttpServletRequest request) {
-        User user = null;
-        if (null == user) {
-            user = new User();
-            user.setId(0);// 金桐脑
-            return user;
+    public Map<String, Object> genRespBody(Map<String, Object> responseDataMap, Map<String, Object> notificationMap) {
+        if (notificationMap == null) {
+            notificationMap = new HashMap<String, Object>();
+            notificationMap.put("notifCode", "");
+            notificationMap.put("notifInfo", "");
         }
-        return user;
-    }
-
-
-    // 账号是否是组织 0:个人 1:组织
-    public boolean getUserType(long userId) {
-        User user =null;
-        if (user != null) {
-            return user.isVirtual();
-        }
-        return false;
-    }
-
-    protected User getUser(HttpServletRequest request) {
-        // 判断客户端请求方式
-
-        return null;
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("responseData", responseDataMap);
+        model.put("notification", notificationMap);
+        return model;
     }
 }

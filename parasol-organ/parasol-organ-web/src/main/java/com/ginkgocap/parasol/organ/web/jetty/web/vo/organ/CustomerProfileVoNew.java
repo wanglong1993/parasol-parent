@@ -1,19 +1,21 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.vo.organ;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.ginkgocap.ywxt.organ.model.Area;
 import com.ginkgocap.ywxt.organ.model.JsonObj;
 import com.ginkgocap.ywxt.organ.model.profile.CustomerPersonalLine;
 import com.ginkgocap.ywxt.organ.model.profile.CustomerPersonalPlate;
 import com.ginkgocap.ywxt.organ.model.profile.CustomerPhone;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 客户vo
+ */
 
 public class CustomerProfileVoNew implements Serializable {
 

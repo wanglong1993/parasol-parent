@@ -1,15 +1,15 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.utils;
 
-import com.ginkgocap.parasol.organ.web.jetty.web.model.mobile.InvestKeyword;
-import com.ginkgocap.parasol.organ.web.jetty.web.model.mobile.MoneyType;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-/** @Description:  工具类   
+/** @Description:  工具类
  * @Author:       qinguochao  
  * @CreateDate:  2014-4-18   
  * @Version:      [v1.0]
@@ -65,50 +65,7 @@ public class Utils {
 		return true;
     }
 	
-	/**
-	 * 币种转换
-	 * @param cur
-	 * @return
-	 */
-	public static InvestKeyword curToInvestKeyword(String cur){
-		InvestKeyword investKeyword=null;
-		if(cur!=null){
-			//获取类型
-			String moneyTypeTag [] =new String[]{"CNY", "USD", "EUR", "GBP", "RUB",
-					"HKD", "JPY", "MOP", "KRW", "THB",
-					"MYR", "TWD", "SGD", "NZD", "CHF",
-					"DKK", "NOK", "SEK", "CAD", "IDR",
-					"PHP", "AUD"};
-			String moneyTypeName [] = new String[] {"人民币", "美元", "欧元", "英国镑", "俄罗斯卢布", 
-					"港币", "日元", "澳门元", "韩国元", "泰国铢",
-					"马来西亚林吉特", "台湾新台币", "新加坡元", "新西兰元", "瑞士法郎",
-					"丹麥克朗", "挪威克朗", "瑞典克朗", "加拿大元", "印尼卢比",
-					"菲律宾比索", "澳大利亚元"};
-			 for(int i = 0; i < moneyTypeTag.length; i++) {
-				if(cur.equals(moneyTypeTag[i])){
-					investKeyword=new InvestKeyword();
-					MoneyType mt =new MoneyType();
-					mt.setTag(moneyTypeTag[i]);
-					mt.setName(moneyTypeName[i]);
-					investKeyword.setMoneyType(mt);
-					break;
-				}
-			}
-			 if(null==investKeyword){
-				 for(int i = 0; i < moneyTypeName.length; i++) {
-						if(cur.equals(moneyTypeName[i])){
-							investKeyword=new InvestKeyword();
-							MoneyType mt =new MoneyType();
-							mt.setTag(moneyTypeTag[i]);
-							mt.setName(moneyTypeName[i]);
-							investKeyword.setMoneyType(mt);
-							break;
-						}
-					}
-			 }
-		}
-		return investKeyword;
-	}
+
 	
 	/**
 	 * douyou
@@ -154,6 +111,112 @@ public class Utils {
 		htmlsb.append("</div></body></html>");
 		return htmlsb.toString();
 	}
-	
-	
+
+    public static String  arraysToString(Object[] arrays){
+        String str="";
+        if(arrays!=null&&arrays.length>0){
+            int len=arrays.length;
+            for(int i=0;i<len;i++){
+                if(i!=len-1){
+                    str=str+arrays[i]+",";
+                }else{
+                    str=str+arrays[i];
+                }
+            }
+        }
+        return str;
+    }
+
+    public static String  listToString(List<String> arrays){
+        String str="";
+        if(arrays!=null&&arrays.size()>0){
+            int len=arrays.size();
+            for(int i=0;i<len;i++){
+                if(i!=len-1){
+                    str=str+arrays.get(i)+",";
+                }else{
+                    str=str+arrays.get(i);
+                }
+            }
+        }
+        return str;
+    }
+
+    public static List<Long> listStringTolong(List<String> arrays){
+        List<Long> list=new ArrayList<Long>();
+        if(arrays!=null&&arrays.size()>0){
+            for(String array:arrays){
+                list.add(Long.parseLong(array));
+            }
+        }
+        return list;
+    }
+
+    public static String alterImageUrl(String imageUrl){
+        String url="";
+        imageUrl= StringUtils.trimToEmpty(imageUrl);
+        if(!"".equals(imageUrl)){
+            int l=imageUrl.lastIndexOf(".com");
+            if(imageUrl.indexOf("http://")>-1&&l>-1){
+                url=imageUrl.substring(l+4);
+            }else{
+                url=imageUrl;
+            }
+            if(url.startsWith(":")){
+                int r=url.indexOf("/");
+                if(r>-1)
+                    url=url.substring(r);
+            }
+        }
+        return url;
+    }
+
+    public static Date StringToDate(String str) throws ParseException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//小写的mm表示的是分钟
+        Date date=sdf.parse(str);
+        return date;
+    }
+
+    public static void main(String[] args) {
+        String url="http://file.dev.gintong.com/http://file.dev.gintong.com:81/avtiv/defalut.jpg";
+        String url2=":81/avtiv/defalut.jpg";
+        System.out.println(alterImageUrl(url));
+    }
+
+    /**
+     * 获取json字符串
+     * @param request
+     * @return
+     * @throws java.io.IOException
+     */
+    public static String getJsonIn(HttpServletRequest request) throws IOException {
+        String requestJson=(String)request.getAttribute("requestJson");
+        if(requestJson==null){
+            return "";
+        }
+        return requestJson;
+    }
+
+    public static Integer valInt(JSONObject j, String key) throws IOException {
+        Object o = j.get(key);
+        if (o != null) {
+            return Integer.parseInt(o + "");
+        }
+
+        return null;
+    }
+
+    public static Long valLong(JSONObject j, String key) {
+        Object o = j.get(key);
+        if (o != null) {
+            try {
+                String val = o + "";
+                Long l;
+                l = Long.parseLong(val);
+                return l;
+            } catch (Exception e) {
+            }
+        }
+        return null;
+    }
 }

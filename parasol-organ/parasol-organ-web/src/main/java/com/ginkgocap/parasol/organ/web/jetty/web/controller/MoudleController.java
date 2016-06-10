@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ginkgocap.parasol.organ.web.jetty.web.controller.BaseController;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,10 +27,14 @@ import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.template.MoudleService;
 import com.ginkgocap.ywxt.organ.service.template.OrganTemplateService;
 import com.ginkgocap.ywxt.organ.service.template.TemplateService;
-import com.ginkgocap.ywxt.user.model.User;
+
+/**
+ * Created by jbqiu on 2016/6/10.
+ * controller 模快controller
+ */
 @Controller
-@RequestMapping("/org")
-public class MoudleController extends BaseController {
+@RequestMapping("/organ")
+public class MoudleController extends BaseController{
 
 	 public final Logger logger=LoggerFactory.getLogger(getClass());
 	 
@@ -42,7 +45,7 @@ public class MoudleController extends BaseController {
 	
 	    	//保存或修改  模块
 	    @ResponseBody
-		@RequestMapping(value = "/moudle/saveMoudle.json", method = RequestMethod.POST)
+		@RequestMapping(value = "/moudle/saveMoudle", method = RequestMethod.POST)
 		public Map<String, Object> saveMoudle(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:moudle/saveMoudle.json");
@@ -72,7 +75,7 @@ public class MoudleController extends BaseController {
 	    
 	 	//保存或修改  模块
 	    @ResponseBody
-		@RequestMapping(value = "/moudle/deleteMoudle.json", method = RequestMethod.POST)
+		@RequestMapping(value = "/moudle/deleteMoudle", method = RequestMethod.POST)
 		public Map<String, Object> delteMoudle(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:org/moudle/delteMoudle.json");

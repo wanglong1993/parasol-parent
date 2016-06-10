@@ -45,10 +45,6 @@
         <eclipse.useProjectReferences>false</eclipse.useProjectReferences>
         <skip_maven_deploy>false</skip_maven_deploy>
         <jackson.databind>2.3.2</jackson.databind>
-
-        <entire.version>5.6.3</entire.version>
-        <person.version>1.0.2</person.version>
-        <knowledge.version>2.1.0</knowledge.version>
 	</properties>
 	<repositories>
 	    <repository>
@@ -186,17 +182,8 @@
 			<artifactId>zkclient</artifactId>
 			<version>0.1</version>
 		</dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.1.30</version>
-        </dependency>
+
 		<!-- business -->
-        <dependency>
-            <groupId>com.gintong.common</groupId>
-            <artifactId>phoenix-permission-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-user-api</artifactId>
@@ -277,33 +264,6 @@
             <version>${organization.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.ginkgocap.ywxt</groupId>
-            <artifactId>phoenix-person-api</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ginkgocap.ywxt</groupId>
-            <artifactId>phoenix-entire-api</artifactId>
-            <version>${entire.version}</version>
-        </dependency>
-        <dependency>
-            <artifactId>phoenix-knowledge-api</artifactId>
-            <groupId>com.ginkgocap.ywxt</groupId>
-            <!-- <version>app-1.0.0-SNAPSHOT</version> -->
-            <version>${knowledge.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.ginkgocap.ywxt</groupId>
-                    <artifactId>phoenix-entire-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.7.2</version>
-        </dependency>
         <!-- jdbc start -->
         <dependency>
             <groupId>commons-dbcp</groupId>
@@ -419,6 +379,38 @@
                 <jdbc.username>zhangwei</jdbc.username>
                 <!-- 数据库访问密码 -->
                 <jdbc.password>zhangwei</jdbc.password>
+
+
+                <!-- nfs地址 -->
+                <nfs.home>/webserver/upload/</nfs.home>
+                <!-- nginx上传的地址 -->
+                <nginx.root>http://file.dev.gintong.com/</nginx.root>
+
+                <!-- dev sso 192.168.101.18:80 -->
+                <sso.host>http://sso.dev.gintong.com:1111</sso.host>
+                <!-- 本地项目地址 -->
+                <cloudweb.host>http://cloud.dev.gintong.com:8084</cloudweb.host>
+                <web.url>http://localhost:8080</web.url>
+                <business.url>http://we.qatest.gintong.com:1111</business.url>
+                <!-- windows与linux下载openoffice与swftools的执行文件目录 -->
+                <openoffice.exe>D:/JavaDev/openoffice.org 3</openoffice.exe>
+                <libreoffice.exe>D:/JavaDev/libreoffice 4.0</libreoffice.exe>
+                <swftools.exe>/usr/local/bin/pdf2swf</swftools.exe>
+                <!-- 社区链接页面 首页 投资 融资 -->
+                <web.index>http://server.gintong.com:2222</web.index>
+                <!-- 热门访问地址 -->
+                <knowledge.data.pushUrl>http://192.168.101.14:4453/</knowledge.data.pushUrl>
+                <konwledge.query.hot.url>http://192.168.101.14:4453/</konwledge.query.hot.url>
+                <konwledge.query.comment.url>http://192.168.101.14:4453/</konwledge.query.comment.url>
+                <knowledge.query.tag.url>http://192.168.101.53:8090</knowledge.query.tag.url>
+                <!-- 关联资源访问地址 -->
+                <bigdata.query.host>http://192.168.101.9:8090</bigdata.query.host>
+                <ecosphere.query.host>http://192.168.170.192:19998 </ecosphere.query.host>
+                <new.query.host>http://192.168.101.14:8090</new.query.host>
+                <bigData.url>http://192.168.101.9:8090/</bigData.url>
+                <knowledge.url.create>http://192.168.101.110:8001/depoapp/</knowledge.url.create>
+                <imservice.url>http://localhost:3333/ImServer</imservice.url>
+                <baidu.push.user.url>http://192.168.120.144:8080/ImServer/mobile/im/userChannel/</baidu.push.user.url>
 			</properties>
 		</profile>
 		<profile>

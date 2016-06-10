@@ -46,9 +46,24 @@
           p:idleConnectionTestPeriod="${jdbc.idleConnectionTestPeriod}"
             >
     </bean>
+    <bean id="mobileRpe" class="com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer"
+          init-method="init">
+        <property name="nfsHome" value="${nfs.home}" />
+        <property name="imagesRoot" value="${images.root}" />
+        <property name="webUrl" value="${web.url}" />
+        <property name="bigdataQueryHost" value="${bigdata.query.host}" />
+        <property name="ecosphereQueryHost" value="${ecosphere.query.host}" />
+        <property name="newQueryHost" value="${new.query.host}" />
+        <property name="nginxRoot" value="${nginx.root}" />
+        <property name="konwledgeQueryHotUrl" value="${konwledge.query.hot.url}" />
+        <property name="konwledgeQueryCommentUrl" value="${konwledge.query.comment.url}" />
+        <property name="knowledgeQueryTagUrl" value="${knowledge.query.tag.url}" />
+
+
+    </bean>
 
 	<import resource="classpath:organ-dubbo-config.xml" />
-    <import resource="classpath:organ-dubbo-consumer.xml" />
+   <import resource="classpath:organ-dubbo-consumer.xml" />
     <import resource="classpath:person-dubbo-consumer.xml" />
 	<import resource="classpath:file-dubbo-consumer.xml"/>
 	<import resource="classpath:tags-dubbo-consumer.xml"/>
@@ -57,14 +72,12 @@
 	<import resource="classpath:oauth2-dubbo-consumer.xml"/>
 	<import resource="classpath:message-dubbo-consumer.xml"/>
     <import resource="classpath:user-dubbo-consumer.xml" />
-    <import resource="classpath:permission-dubbo-consumer.xml" />
 
-    <import resource="classpath:knowledge-dubbo-consumer.xml" />
-
+    <import resource="classpath:organization-dubbo-consumer.xml" />
 
 
 
 
-	<context:component-scan base-package="com.ginkgocap.parasol.organ,com.ginkgocap.parasol.oauth2">
+	<context:component-scan base-package="com.ginkgocap.parasol.organ,com.ginkgocap.parasol.oauth2,com.ginkgocap.ywxt.organ">
     </context:component-scan>
 </beans>

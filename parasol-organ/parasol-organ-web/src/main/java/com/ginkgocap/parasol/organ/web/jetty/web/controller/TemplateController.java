@@ -1,16 +1,9 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.alibaba.fastjson.JSON;
+import com.ginkgocap.ywxt.organ.model.template.Template;
+import com.ginkgocap.ywxt.organ.service.template.TemplateService;
 import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
-import com.ginkgocap.ywxt.organ.model.template.OrganTemplate;
-import com.ginkgocap.ywxt.organ.model.template.Template;
-import com.ginkgocap.ywxt.organ.service.template.OrganTemplateService;
-import com.ginkgocap.ywxt.organ.service.template.TemplateService;
-import com.ginkgocap.ywxt.user.model.User;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+/**
+ * Created by jbqiu on 2016/6/10.
+ * controller 组织模板controller
+ */
 @Controller
-@RequestMapping("/org")
+@RequestMapping("/organ")
 public class TemplateController extends BaseController{
 
 	 public final Logger logger=LoggerFactory.getLogger(getClass());
@@ -36,7 +33,7 @@ public class TemplateController extends BaseController{
 	
 	    //根据ID 查询模板
 	    @ResponseBody
-		@RequestMapping(value = "/template/findTempleById.json", method = RequestMethod.POST)
+		@RequestMapping(value = "/template/findTempleById", method = RequestMethod.POST)
 		public Map<String, Object> findTempleById(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:org/template/findTempleById.json");
@@ -72,7 +69,7 @@ public class TemplateController extends BaseController{
 	   
 	    //根据Id 保存或修改模板
 	    @ResponseBody
-	    @RequestMapping(value = "/template/saveTemplate.json", method = RequestMethod.POST)
+	    @RequestMapping(value = "/template/saveTemplate", method = RequestMethod.POST)
 		public Map<String, Object> saveTemplate(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:/template/saveTemplate.json");
@@ -112,7 +109,7 @@ public class TemplateController extends BaseController{
 	  
 	  //根据Id 查询模板
 	    @ResponseBody
-		@RequestMapping(value = "/template/findUserTemplateBasiInfo.json", method = RequestMethod.POST)
+		@RequestMapping(value = "/template/findUserTemplateBasiInfo", method = RequestMethod.POST)
 		public Map<String, Object> findUserTemplateBasiInfo(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("/template/findUserTemplateBasiInfo.json");
