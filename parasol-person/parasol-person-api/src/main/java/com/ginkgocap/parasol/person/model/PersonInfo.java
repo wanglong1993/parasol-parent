@@ -5,22 +5,55 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 
 /**
  * 个人情况
  */
+@JsonFilter("com.ginkgocap.parasol.person.model.PersonInfo")
 @Entity
 @Table(name = "tb_person_info", catalog = "parasol_person")
 public class PersonInfo implements java.io.Serializable {
 
+	
 	/**
 	 * 
 	 */
-	private static final Long serialVersionUID = 4089605921400987683L;
+	private static final long serialVersionUID = 4058887054390907277L;
 	/**
 	 * 个人用户id.
 	 */
 	private Long personId;
+	/**
+	 * 应用id
+	 */
+	private Long appId;
+	/**
+	 * 国家
+	 */
+	private String birthPlaceCountryName;
+	/**
+	 * 民族
+	 */
+	private String nation;
+	/**
+	 * 信仰
+	 */
+	private String faith;
+	/**
+	 * 血型
+	 */
+	private String bloodtype;
+	/**
+	 * 婚姻状况
+	 */
+	private String marriaged;
+	/**
+	 * 语言
+	 */
+	private String language;
 	/**
 	 * 出生日期。.
 	 */
@@ -30,26 +63,33 @@ public class PersonInfo implements java.io.Serializable {
 	 */
 	private Long provinceId;
 	/**
+	 * 省份.
+	 */
+	private String provinceName;
+	/**
 	 * 城市id.
 	 */
 	private Long cityId;
+	/**
+	 * 城市
+	 */
+	private String cityName;
 	/**
 	 * 县id.
 	 */
 	private Long countyId;
 	/**
-	 * 兴趣爱好.
+	 * 县.
 	 */
-	private String interests;
+	private String countyName;
 	/**
-	 * 擅长技能.
+	 * 0:私密,1:好友可见,2:部分好友,3:公开
 	 */
-	private String skills;
-	
+	private int permission;
 	/**
-	 * 好友可见 1.公开，2.好友可见.
+	 * 部分好友可见时存放好友的id，用逗号“,”隔开。
 	 */
-	private Byte isVisible;
+	private String friendIds;
 	/**
 	 * 创建时间.
 	 */
@@ -113,34 +153,81 @@ public class PersonInfo implements java.io.Serializable {
 		this.countyId = countyId;
 	}
 
-	public String getInterests() {
-		return interests;
+	@Column(name = "birthPlaceCountryName")
+	public String getBirthPlaceCountryName() {
+		return birthPlaceCountryName;
 	}
 
 
-	public void setInterests(String interests) {
-		this.interests = interests;
+	public void setBirthPlaceCountryName(String birthPlaceCountryName) {
+		this.birthPlaceCountryName = birthPlaceCountryName;
+	}
+
+	@Column(name = "nation")
+	public String getNation() {
+		return nation;
 	}
 
 
-	public String getSkills() {
-		return skills;
+	public void setNation(String nation) {
+		this.nation = nation;
+	}
+
+	@Column(name = "faith")
+	public String getFaith() {
+		return faith;
 	}
 
 
-	public void setSkills(String skills) {
-		this.skills = skills;
+	public void setFaith(String faith) {
+		this.faith = faith;
+	}
+
+	@Column(name = "bloodtype")
+	public String getBloodtype() {
+		return bloodtype;
 	}
 
 
-	@Column(name = "is_visible")
-	public Byte getIsVisible() {
-		return this.isVisible;
+	public void setBloodtype(String bloodtype) {
+		this.bloodtype = bloodtype;
 	}
 
-	public void setIsVisible(Byte isVisible) {
-		this.isVisible = isVisible;
+	@Column(name = "marriaged")
+	public String getMarriaged() {
+		return marriaged;
 	}
+
+
+	public void setMarriaged(String marriaged) {
+		this.marriaged = marriaged;
+	}
+
+	@Column(name = "language")
+	public String getLanguage() {
+		return language;
+	}
+
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+	@Column(name = "permission")
+	public int getPermission() {
+		return permission;
+	}
+
+	public void setPermission(int permission) {
+		this.permission = permission;
+	}
+	@Column(name = "friendIds")
+	public String getFriendIds() {
+		return friendIds;
+	}
+
+	public void setFriendIds(String friendIds) {
+		this.friendIds = friendIds;
+	}	
 
 	@Column(name = "ctime")
 	public Long getCtime() {
@@ -167,6 +254,44 @@ public class PersonInfo implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+
+	@Transient
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	@Transient
+	public String getCityName() {
+		return cityName;
+	}
+
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	@Transient
+	public String getCountyName() {
+		return countyName;
+	}
+
+
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
 	}
 
 }

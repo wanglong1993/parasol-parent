@@ -1,107 +1,90 @@
 package com.ginkgocap.parasol.person.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
-import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.person.exception.PersonEducationHistoryServiceException;
 import com.ginkgocap.parasol.person.model.PersonEducationHistory;
 import com.ginkgocap.parasol.person.service.PersonEducationHistoryService;
 @Service("personEducationHistoryService")
 public class PersonEducationHistoryServiceImpl extends BaseService<PersonEducationHistory> implements PersonEducationHistoryService {
-	private static final String PERSON_EDUCATION_HISTORY_LIST_PERSONID = "PersonEducationHistory_List_PersonId";
-	private static Logger logger = Logger.getLogger(PersonEducationHistoryServiceImpl.class);
-	
-	/**
-	 * 检查数据
-	 * @param list
-	 * @return
-	 * @throws PersonEducationHistoryServiceException
-	 */
-	private List<PersonEducationHistory> checkValidity(List<PersonEducationHistory> list)throws PersonEducationHistoryServiceException{
-		if(list==null || list.size()==0) throw new PersonEducationHistoryServiceException("PersonEducationHistory is null");
-		for (PersonEducationHistory userDefined : list) {
-			if(userDefined.getPersonId()==null ||userDefined.getPersonId()<=0l) throw new PersonEducationHistoryServiceException("personId must be a value");
-			if(StringUtils.isEmpty(userDefined.getIp())) throw new PersonEducationHistoryServiceException("ip is null or empty");
-			if(userDefined.getCtime()==null ||userDefined.getCtime()<=0l)userDefined.setCtime(System.currentTimeMillis());
-			if(userDefined.getUtime()==null ||userDefined.getUtime()<=0l)userDefined.setUtime(System.currentTimeMillis());
-		}
-		return list;
-	}
-	 
-	@Override
-	public List<PersonEducationHistory> createPersonEducationHistoryByList(List<PersonEducationHistory> list,Long personId) throws PersonEducationHistoryServiceException {
-		try {
-			checkValidity(list);
-			//删除以前的
-			deleteEntityByIds(getIdList(personId));
-			List<PersonEducationHistory> personEducationHistorys=saveEntitys(list);
-			if(personEducationHistorys==null || personEducationHistorys.size()==0) throw new PersonEducationHistoryServiceException("createPersonEducationHistoryByList failed.");
-			return personEducationHistorys;
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new PersonEducationHistoryServiceException(e);
-		}
+	private PersonEducationHistory checkValidity(PersonEducationHistory PersonEducationHistory,int type)throws Exception {
+		if(PersonEducationHistory==null) throw new Exception("PersonEducationHistory can not be null.");
+		if(PersonEducationHistory.getPersonId()<0l) throw new Exception("The value of userId is null or empty.");
+		if(type!=0)
+		if(getObject(PersonEducationHistory.getId())==null)throw new Exception("userId not exists in PersonEducationHistory");
+		if(PersonEducationHistory.getCtime()==null) PersonEducationHistory.setCtime(System.currentTimeMillis());
+		if(PersonEducationHistory.getUtime()==null) PersonEducationHistory.setUtime(System.currentTimeMillis());
+		if(type==1)PersonEducationHistory.setUtime(System.currentTimeMillis());
+		return PersonEducationHistory;
 	}
 	@Override
-	public List<PersonEducationHistory> updatePersonEducationHistoryByList(List<PersonEducationHistory> list,Long personId) throws PersonEducationHistoryServiceException {
-		try {
-			checkValidity(list);
-			//删除以前的
-			deleteEntityByIds(getIdList(personId));
-			List<PersonEducationHistory> personEducationHistorys=saveEntitys(list);
-			if(personEducationHistorys==null || personEducationHistorys.size()==0) throw new PersonEducationHistoryServiceException("updatePersonEducationHistoryByList failed.");
-			return personEducationHistorys;
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new PersonEducationHistoryServiceException(e);
-		}
-	}
-	@Override
-	public List<Long> getIdList(Long personId) throws PersonEducationHistoryServiceException {
-		try {
-			if((personId==null || personId<=0l)) return ListUtils.EMPTY_LIST;
-			return getIds(PERSON_EDUCATION_HISTORY_LIST_PERSONID,personId);
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new PersonEducationHistoryServiceException(e);
-		}
-	}
-	@Override
-	public boolean realDeletePersonEducationHistoryList(List<Long> list)throws PersonEducationHistoryServiceException {
-		try {
-			if(list==null || list.size()==0) return false;
-			return deleteEntityByIds(list);
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new PersonEducationHistoryServiceException(e);
-		}
+	public Long createObject(PersonEducationHistory object) throws Exception {
+		Long id= (Long)this.saveEntity(this.checkValidity(object, 0));
+		if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
+		else throw new Exception("创建失败！ ");
 	}
 
 	@Override
-	public List<PersonEducationHistory> getIdList(List<Long> ids)throws PersonEducationHistoryServiceException {
-		try {
-			if(ids==null || ids.size()==0) return Collections.EMPTY_LIST;
-			return getEntityByIds(ids);
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new PersonEducationHistoryServiceException(e);
-		}
+	public Boolean updateObject(PersonEducationHistory objcet) throws Exception {
+		if(updateEntity(checkValidity(objcet,1)))return true;
+		else return false;
 	}
+
+	@Override
+	public PersonEducationHistory getObject(Long id) throws Exception {
+		if(id==null || id<=0l)throw new Exception("id is null or empty");
+		PersonEducationHistory PersonEducationHistory =getEntity(id);
+		return PersonEducationHistory;
+	}
+
+	@Override
+	public List<PersonEducationHistory> getObjects(List<Long> ids) throws Exception {
+		if(ids==null || ids.size()<=0)throw new Exception("ids is null or empty");
+		List<PersonEducationHistory> PersonEducationHistorys =this.getEntityByIds(ids);
+		return PersonEducationHistorys;
+	}
+
+	@Override
+	public Boolean deleteObject(Long id) throws Exception {
+		if(id==null || id<=0l)throw new Exception("id is null or empty");
+		return this.deleteEntity(id);
+	}
+	@Override
+	public List<PersonEducationHistory> createObjects(List<PersonEducationHistory> objects)
+			throws Exception {
+		if(objects==null || objects.size()<=0) return null;
+		for(PersonEducationHistory PersonEducationHistory : objects){
+			this.checkValidity(PersonEducationHistory, 0);
+		}
+		return this.saveEntitys(objects);
+	}
+	@Override
+	public List<PersonEducationHistory> getObjectsByPersonId(Long userId) throws Exception {
+		if(userId==null || userId<=0l)throw new Exception("id is null or empty");
+		List<Long> ids = this.getIds("PersonEducationHistory_List_PersonId", userId);
+		return this.getEntityByIds(ids);
+	}
+	@Override
+	public Boolean deleteObjects(List<Long> ids) throws Exception {
+		if(ids==null || ids.size()<=0)throw new Exception("ids is null or empty");
+		return this.deleteEntityByIds(ids);
+	}
+	@Override
+	public Boolean updateObjects(List<PersonEducationHistory> objects) throws Exception {
+		if(objects==null || objects.size()<=0) return true;
+		for(PersonEducationHistory PersonEducationHistory : objects){
+			this.checkValidity(PersonEducationHistory, 1);
+		}
+		return this.updateEntitys(objects);
+	}
+	@Override
+	public Boolean deleteObjectsByPersonId(Long userId) throws Exception {
+		if(userId==null) throw new Exception("userId is null or empty");
+		this.deleteList("PersonEducationHistory_List_PersonId", userId);
+		return true;
+	}
+
 }
