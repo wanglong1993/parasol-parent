@@ -38,6 +38,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	private static final String LIST_ID_APPID_SOURCEID_SOURCETYPE = "List_Id_AppId_SourceId_SourceType";
 	private static final String LIST_ID_APPID_TAGID = "List_Id_AppId_TagId";
 	private static final String LIST_ID_APPID_TAGID_SOURCETYPE = "List_Id_AppId_TagId_SourceType";
+	private static final String LIST_BY_APPID_TAGID_SOURCETYPE = "List_By_AppId_TagId_SourceType";
 
 	private static int MAX_TAG = 20; // 一个资源下最多创建的标签数
 
@@ -231,7 +232,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		ServiceError.assertTagIdIsNullForTagSource(tagId);
 		ServiceError.assertAppidIsNullForTagSource(appId);
 		try {
-			return this.getSubEntitys(LIST_ID_APPID_TAGID_SOURCETYPE, iStart, iCount, appId, tagId, sourceType);
+			return this.getEntitys(LIST_BY_APPID_TAGID_SOURCETYPE, new Object[]{appId, tagId, sourceType, iStart, iCount});
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new TagSourceServiceException(e);
