@@ -2,8 +2,6 @@ package com.ginkgocap.parasol.person.service.impl;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -11,21 +9,12 @@ import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
-import com.ginkgocap.parasol.file.model.FileIndex;
-import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.person.exception.PersonBasicServiceException;
 import com.ginkgocap.parasol.person.model.PersonBasic;
 import com.ginkgocap.parasol.person.service.PersonBasicService;
-import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
-import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.util.PinyinUtils;
 @Service("personBasicService")
 public class PersonBasicServiceImpl extends BaseService<PersonBasic> implements PersonBasicService  {
-	@Resource
-	private UserLoginRegisterService userLoginRegisterService;
-	@Resource
-	private FileIndexService fileIndexService;
 	private static Logger logger = Logger.getLogger(PersonBasicServiceImpl.class);
 	/**
 	 * 检查数据
@@ -33,98 +22,111 @@ public class PersonBasicServiceImpl extends BaseService<PersonBasic> implements 
 	 * @return
 	 * @throws PersonBasicServiceException
 	 */
-	private PersonBasic checkValidity(PersonBasic personBasic,int type)throws PersonBasicServiceException,UserLoginRegisterServiceException {
+	private PersonBasic checkValidity(PersonBasic personBasic,int type)throws Exception {
 		if(personBasic==null) throw new PersonBasicServiceException("personBasic can not be null.");
-		if(personBasic.getUserId()<=0l) throw new PersonBasicServiceException("The value of userId is null or empty.");
-		if(userLoginRegisterService.getUserLoginRegister(personBasic.getUserId())==null) throw new UserLoginRegisterServiceException("userId not exists in userLoginRegister");
 		if(type!=0)
-		if(getPersonBasic(personBasic.getId())==null)throw new PersonBasicServiceException("userId not exists in personBasic");
-		if(StringUtils.isEmpty(personBasic.getName()))throw new PersonBasicServiceException("The name can't be null or empty.");
-		if(type==0){
-			if(ObjectUtils.isEmpty(personBasic.getCtime())) personBasic.setCtime(System.currentTimeMillis());
-			if(ObjectUtils.isEmpty(personBasic.getUtime())) personBasic.setUtime(System.currentTimeMillis());
-		}
+		if(getObject(personBasic.getId())==null)throw new PersonBasicServiceException("personId not exists in personBasic");
+//		if(StringUtils.isEmpty(personBasic.getName()))throw new PersonBasicServiceException("The value of  name is null or empty.");
+		if(personBasic.getSex().intValue()!=0 && personBasic.getSex().intValue()!=1 && personBasic.getSex().intValue()!=2)throw new PersonBasicServiceException("The value of sex must be 0 or 1 or 2.");
+		if(personBasic.getCtime()==null) personBasic.setCtime(System.currentTimeMillis());
+		if(personBasic.getUtime()==null) personBasic.setUtime(System.currentTimeMillis());
 		if(type==1)personBasic.setUtime(System.currentTimeMillis());
-		if(!StringUtils.isEmpty(personBasic.getName()))personBasic.setPinyin(PinyinUtils.stringToHeads(personBasic.getName()));
+		if(!StringUtils.isEmpty(personBasic.getName()))personBasic.setNameIndex(PinyinUtils.stringToHeads(personBasic.getName()));
 		return personBasic;
 	}
 	
+
 	@Override
-	public Long createPersonBasic(PersonBasic personBasic)throws PersonBasicServiceException,UserLoginRegisterServiceException{
+	public Long createObject(PersonBasic object) throws Exception {
 		try {
-			Long id=(Long)saveEntity(checkValidity(personBasic,0));
+			Long id=(Long)saveEntity(checkValidity(object,0));
 			if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
-			else throw new PersonBasicServiceException("createPersonBasic failed.");
+			else throw new PersonBasicServiceException("创建用户基本信息失败！ ");
 		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
+			logger.error("创建用户基本信息失败！", e);
 			throw new PersonBasicServiceException(e);
 		}
 	}
 
 	@Override
-	public boolean updatePersonBasic(PersonBasic personBasic)throws PersonBasicServiceException,UserLoginRegisterServiceException {
+	public Boolean updateObject(PersonBasic objcet) throws Exception {
 		try {
-			if(updateEntity(checkValidity(personBasic,1)))return true;
+			if(updateEntity(checkValidity(objcet,1)))return true;
 			else return false;
 		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
+			logger.error("更新用户基本信息失败！", e);
 			throw new PersonBasicServiceException(e);
 		}
 	}
 
 	@Override
-	public PersonBasic getPersonBasic(Long id) throws PersonBasicServiceException {
+	public PersonBasic getObject(Long id) throws Exception {
 		try {
-			if(id==null || id<=0l)throw new PersonBasicServiceException("id is null or empty");
+			if(id==null || id<=0l)throw new PersonBasicServiceException("personId is null or empty");
 			PersonBasic personBasic =getEntity(id);
-			if(!ObjectUtils.isEmpty(personBasic)){
-				try {
-					if(!ObjectUtils.isEmpty(personBasic.getPicId())){
-						FileIndex fileIndex=fileIndexService.getFileIndexById(personBasic.getPicId());
-						if(!ObjectUtils.isEmpty(fileIndex)){
-							personBasic.setPicPath(fileIndex.getServerHost()+"/"+fileIndex.getFilePath());
-						}
-					}
-				} catch (FileIndexServiceException e) {
-					e.printStackTrace();
-				}
-			}
 			return personBasic;
 		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
+			logger.error("获取用户基本信息失败！", e);
 			throw new PersonBasicServiceException(e);
 		}
 	}
 
 	@Override
-	public List<PersonBasic> getPersonBasicList(List<Long> ids)throws PersonBasicServiceException {
+	public List<PersonBasic> getObjects(List<Long> ids) throws Exception {
 		try {
-			if(ids==null || ids.size()==0)throw new PersonBasicServiceException("userIds is null or empty");
+			if(ids==null || ids.size()==0)throw new PersonBasicServiceException("personIds is null or empty");
 			return getEntityByIds(ids);
 		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
+			logger.error("批量获取用户基本信息失败！", e);
 			throw new PersonBasicServiceException(e);
 		}
 	}
 
 	@Override
-	public Boolean realDeletePersonBasic(Long id)throws PersonBasicServiceException {
+	public Boolean deleteObject(Long id) throws Exception {
 		try {
 			if(id==null || id<=0l) throw new PersonBasicServiceException("id is must grater than zero.");
 			return deleteEntity(id);
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
+			logger.error("删除用户基本信息失败！", e);
 			throw new PersonBasicServiceException(e);
 		}
 	}
+
+
+	@Override
+	public List<PersonBasic> getPersonBasicListByProvinceId(int start, int count,
+			Long provinceId) throws Exception {
+		if(provinceId==null||provinceId<=0l) throw new PersonBasicServiceException("provinceId is must grater than zero.");
+		if(start<0) throw new PersonBasicServiceException("start is must grater than zero.");
+		return this.getSubEntitys("PersonBasic_List_By_ProvinceId", start, count, provinceId);
+	}
+
+
+	@Override
+	public List<PersonBasic> getPersonBasicListByCityId(int start, int count,
+			Long cityId) throws Exception {
+		if(cityId==null||cityId<=0l) throw new PersonBasicServiceException("cityId is must grater than zero.");
+		if(start<0) throw new PersonBasicServiceException("start is must grater than zero.");
+		return this.getSubEntitys("PersonBasic_List_By_CityId", start, count, cityId);
+	}
+
+
+	@Override
+	public List<PersonBasic> getPersonBasicListByCountyId(int start, int count,
+			Long countyId) throws Exception {
+		if(countyId==null||countyId<=0l) throw new PersonBasicServiceException("countyId is must grater than zero.");
+		if(start<0) throw new PersonBasicServiceException("start is must grater than zero.");
+		return this.getSubEntitys("PersonBasic_List_By_CountyId", start, count, countyId);
+	}
+
+
+	@Override
+	public List<PersonBasic> getPersonBasicListByPersonName(int start, int count,
+			String personName) throws Exception {
+		if(StringUtils.isEmpty(personName)) throw new PersonBasicServiceException("personName is must grater than zero.");
+		if(start<0) throw new PersonBasicServiceException("start is must grater than zero.");
+		return this.getSubEntitys("PersonBasic_List_By_PersonName", start, count, personName+"%");
+	}
+	
 }

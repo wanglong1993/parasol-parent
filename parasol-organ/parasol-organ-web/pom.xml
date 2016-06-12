@@ -26,6 +26,25 @@
 		<!-- 线上版本：线上环境 -->
 		<huanxin.version>1.1.1</huanxin.version> 			
 		<main.basedir>${basedir}/../..</main.basedir>
+
+
+
+
+        <organ.version>1.0.2-SNAPSHOT</organ.version>
+        <organization.version>1.0.0</organization.version>
+        <dynamic.version>1.0.0</dynamic.version>
+        <entire.version>5.6.3</entire.version>
+        <knowledge.version>2.1.0</knowledge.version>
+        <shiro.version>1.2.0</shiro.version>
+        <h2.version>1.3.161</h2.version>
+        <slf4j.version>1.6.4</slf4j.version>
+        <selenium.version>2.12.0</selenium.version>
+        <eclipse.useProjectReferences>false</eclipse.useProjectReferences>
+        <skip_maven_deploy>true</skip_maven_deploy>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <eclipse.useProjectReferences>false</eclipse.useProjectReferences>
+        <skip_maven_deploy>false</skip_maven_deploy>
+        <jackson.databind>2.3.2</jackson.databind>
 	</properties>
 	<repositories>
 	    <repository>
@@ -231,6 +250,55 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+        <!--start-->
+
+       <dependency>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <artifactId>phoenix-organ-api</artifactId>
+            <version>${organ.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gintong</groupId>
+            <artifactId>phoenix-organization-api</artifactId>
+            <version>${organization.version}</version>
+        </dependency>
+
+        <!-- jdbc start -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>1.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>6.1.22</version>
+        </dependency>
+
+        <!-- jdbc end -->
+
+
 	</dependencies>
 	<build>
 		<resources>
@@ -275,10 +343,10 @@
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>8827</dubbo.protocol.port>-->
 
-                <dubbo.application.name>${project.artifactId}</dubbo.application.name>
-                <dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
+                <dubbo.application.name>customerdubboprovider</dubbo.application.name>
                 <dubbo.protocol.name>dubbo</dubbo.protocol.name>
-                <dubbo.protocol.port>20885</dubbo.protocol.port>
+                <dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
+                <dubbo.protocol.port>2017</dubbo.protocol.port>
                 <user.web.url>http://localhost:8089</user.web.url>
                 <upload.web.url>http://192.168.130.100:8091/file/upload</upload.web.url>
                 <file.web.url>http://file.gintong.com/</file.web.url>
@@ -293,6 +361,56 @@
                 <imservice.url>http://192.168.101.41:4446</imservice.url>
                 <client_id>1</client_id>
                 <client_secret>2db7c5148a86b59ea285529a41ef84cb</client_secret>
+
+                <!-- 数据库连接地址和数据库名 -->
+                <jdbc.url>
+                    jdbc:mysql://192.168.101.131:3306/phoenix_mobile?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.url>
+                <jdbc.cloud.url>
+                    jdbc:mysql://192.168.101.131:3306/phoenix_cloud?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.cloud.url>
+                <jdbc.user.url>
+                    jdbc:mysql://192.168.101.131:3306/phoenix_user?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.user.url>
+                <jdbc.file.url>
+                    jdbc:mysql://192.168.101.131:3306/phoenix_file?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.file.url>
+                <!-- 数据库访问帐号 -->
+                <jdbc.username>zhangwei</jdbc.username>
+                <!-- 数据库访问密码 -->
+                <jdbc.password>zhangwei</jdbc.password>
+
+
+                <!-- nfs地址 -->
+                <nfs.home>/webserver/upload/</nfs.home>
+                <!-- nginx上传的地址 -->
+                <nginx.root>http://file.dev.gintong.com/</nginx.root>
+
+                <!-- dev sso 192.168.101.18:80 -->
+                <sso.host>http://sso.dev.gintong.com:1111</sso.host>
+                <!-- 本地项目地址 -->
+                <cloudweb.host>http://cloud.dev.gintong.com:8084</cloudweb.host>
+                <web.url>http://localhost:8080</web.url>
+                <business.url>http://we.qatest.gintong.com:1111</business.url>
+                <!-- windows与linux下载openoffice与swftools的执行文件目录 -->
+                <openoffice.exe>D:/JavaDev/openoffice.org 3</openoffice.exe>
+                <libreoffice.exe>D:/JavaDev/libreoffice 4.0</libreoffice.exe>
+                <swftools.exe>/usr/local/bin/pdf2swf</swftools.exe>
+                <!-- 社区链接页面 首页 投资 融资 -->
+                <web.index>http://server.gintong.com:2222</web.index>
+                <!-- 热门访问地址 -->
+                <knowledge.data.pushUrl>http://192.168.101.14:4453/</knowledge.data.pushUrl>
+                <konwledge.query.hot.url>http://192.168.101.14:4453/</konwledge.query.hot.url>
+                <konwledge.query.comment.url>http://192.168.101.14:4453/</konwledge.query.comment.url>
+                <knowledge.query.tag.url>http://192.168.101.53:8090</knowledge.query.tag.url>
+                <!-- 关联资源访问地址 -->
+                <bigdata.query.host>http://192.168.101.9:8090</bigdata.query.host>
+                <ecosphere.query.host>http://192.168.170.192:19998 </ecosphere.query.host>
+                <new.query.host>http://192.168.101.14:8090</new.query.host>
+                <bigData.url>http://192.168.101.9:8090/</bigData.url>
+                <knowledge.url.create>http://192.168.101.110:8001/depoapp/</knowledge.url.create>
+                <imservice.url>http://localhost:3333/ImServer</imservice.url>
+                <baidu.push.user.url>http://192.168.120.144:8080/ImServer/mobile/im/userChannel/</baidu.push.user.url>
 			</properties>
 		</profile>
 		<profile>

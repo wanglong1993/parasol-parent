@@ -1,7 +1,6 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +54,7 @@ import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
  * 人脉登录注册
  */
 @RestController
-public class PersonController extends BaseControl {
+public class PersonController extends BaseController {
 	private static Logger logger = Logger.getLogger(PersonController.class);
 	@Autowired
 	private PersonBasicService personBasicService;

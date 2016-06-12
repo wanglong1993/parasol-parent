@@ -4,142 +4,149 @@ package com.ginkgocap.parasol.person.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.Transient;
-
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
- * 人脉基本资料
+ * 个人用户基本资料
  */
+@JsonFilter("com.ginkgocap.parasol.person.model.PersonBasic")
 @Entity
 @Table(name = "tb_person_basic", catalog = "parasol_person")
 public class PersonBasic implements java.io.Serializable {
-
 	/**
 	 * 
 	 */
-	private static final Long serialVersionUID = 613039920240381494L;
+	private static final long serialVersionUID = 8179491215672129669L;
 	/**
-	 * id.
+	 *人脉id
 	 */
 	private Long id;
 	/**
-	 * 人脉或用户对应人脉的id.
+	 * 用户id.
 	 */
-	private Long personId;
+	private Long createId;
 	/**
-	 * 1-用户;2-人脉.
+	 * 应用好
 	 */
-	private Byte personType;
+	private Long appId;
 	/**
-	 * 姓名.
+	 * 若为组织则为全称，不可更改；若为个人则为昵称，不可修改。.
 	 */
 	private String name;
 	/**
-	 * 性别:1:男;2:女;3:保密.
+	 * 性别 男：1，女：2，0：保密.
 	 */
-	private Byte gender;
+	private Byte sex;
 	/**
-	 * 姓名拼音.
+	 * 省市id
 	 */
-	private String pinyin;
+	private long provinceId;
+	/**
+	 * 省名称
+	 */
+	private String provinceName;
+	/**
+	 * 城市id
+	 */
+	private long cityId;
+	/**
+	 * 市名称
+	 */
+	private String cityName;
+	/**
+	 * 县id
+	 */
+	private long countyId;
+	/**
+	 * 县名称
+	 */
+	private String countyName;
+	
 	/**
 	 * 公司.
 	 */
-	private String company;
+	private String companyName;
 	/**
-	 * 职位.
+	 * 职位
 	 */
-	private String position;
+	private String companyJob;
 	/**
-	 * 人脉头像ID.
+	 * 用户头像.
 	 */
 	private Long picId;
 	/**
-	 * 国外的洲或国内的省id.
+	 * 行业id
 	 */
-	private Long countryId;
+	private Long hy_id;
 	/**
-	 * 国外的国家或国内的城市id.
+	 * 姓名手写字母
 	 */
-	private Long cityId;
-	/**
-	 * 县id.
-	 */
-	private Long countyId;
-	/**
-	 * 详细地址.
-	 */
-	private String address;
-	/**
-	 * 个人描述.
-	 */
-	private String remark;
-	/**
-	 * 一级职能ID
-	 */
-	private Long firstIndustryId;
-	/**
-	 * 二级职能ID
-	 */
-	private Long secondIndustryId;
-	/**
-	 * 创建人.
-	 */
-	private Long userId;
+	private String nameFirst;
 
-	private Long utime;
+
+	/**
+	 * 姓名全拼
+	 */
+	private String nameIndexAll;
+	/**
+	 * 简拼音.
+	 */
+	private String nameIndex;
 	/**
 	 * 创建时间.
 	 */
 	private Long ctime;
 	/**
-	 * 用户IP.
+	 * 修改时间.
 	 */
-	private String ip;
+	private Long utime;
 	/**
-	 * 人脉头像地址.
+	 * 
 	 */
 	private String picPath;
+	
+	private String ip;
+	
+	@Column(name="ip",length=16)
+	public String getIp() {
+		return ip;
+	}
 
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	
 	public PersonBasic() {
 	}
+
 	@Id
 	@GeneratedValue(generator = "id")
 	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
-	@Column(name = "id")
+	@Column(name = "id", unique = true, nullable = false)
 	public Long getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	@Column(name = "personId")
-	public Long getPersonId() {
-		return this.personId;
+	
+	@Column(name="create_id",length=16)
+	public Long getCreateId() {
+		return createId;
 	}
 
-	public void setPersonId(Long personId) {
-		this.personId = personId;
+	public void setCreateId(Long createId) {
+		this.createId = createId;
 	}
 
-	@Column(name = "personType")
-	public Byte getPersonType() {
-		return this.personType;
-	}
-
-	public void setPersonType(Byte personType) {
-		this.personType = personType;
-	}
-
-	@Column(name = "name", nullable = false, length = 50)
+	@Column(name = "name",  length = 100)
 	public String getName() {
 		return this.name;
 	}
@@ -148,43 +155,25 @@ public class PersonBasic implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "gender")
-	public Byte getGender() {
-		return this.gender;
+	@Column(name = "sex", nullable = false)
+	public Byte getSex() {
+		return this.sex;
 	}
 
-	public void setGender(Byte gender) {
-		this.gender = gender;
+	public void setSex(Byte sex) {
+		this.sex = sex;
 	}
 
-	@Column(name = "pinyin", length = 100)
-	public String getPinyin() {
-		return this.pinyin;
+	@Column(name = "company_name", length = 50)
+	public String getCompanyName() {
+		return this.companyName;
 	}
 
-	public void setPinyin(String pinyin) {
-		this.pinyin = pinyin;
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
-	@Column(name = "company")
-	public String getCompany() {
-		return this.company;
-	}
-
-	public void setCompany(String company) {
-		this.company = company;
-	}
-
-	@Column(name = "position")
-	public String getPosition() {
-		return this.position;
-	}
-
-	public void setPosition(String position) {
-		this.position = position;
-	}
-
-	@Column(name = "picId")
+	@Column(name = "pic_id")
 	public Long getPicId() {
 		return this.picId;
 	}
@@ -192,89 +181,35 @@ public class PersonBasic implements java.io.Serializable {
 	public void setPicId(Long picId) {
 		this.picId = picId;
 	}
-
-	@Column(name = "country")
-	public Long getCountryId() {
-		return this.countryId;
+	
+    @Transient
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setCountryId(Long countryId) {
-		this.countryId = countryId;
+
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
+	}
+	@Column(name = "hy_id")
+	public Long getHy_id() {
+		return hy_id;
 	}
 
-	@Column(name = "city")
-	public Long getCityId() {
-		return this.cityId;
+	public void setHy_id(Long hy_id) {
+		this.hy_id = hy_id;
 	}
 
-	public void setCityId(Long cityId) {
-		this.cityId = cityId;
+	@Column(name = "nameIndex", length = 20)
+	public String getNameIndex() {
+		return this.nameIndex;
 	}
 
-	@Column(name = "county")
-	public Long getCountyId() {
-		return this.countyId;
+	public void setNameIndex(String nameIndex) {
+		this.nameIndex = nameIndex;
 	}
 
-	public void setCountyId(Long countyId) {
-		this.countyId = countyId;
-	}
-
-	@Column(name = "address", length = 100)
-	public String getAddress() {
-		return this.address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	@Column(name = "remark", length = 100)
-	public String getRemark() {
-		return this.remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	@Column(name = "firstIndustryId")
-	public Long getFirstIndustryId() {
-		return this.firstIndustryId;
-	}
-
-	public void setFirstIndustryId(Long firstIndustryId) {
-		this.firstIndustryId = firstIndustryId;
-	}
-
-	@Column(name = "secondIndustryId")
-	public Long getSecondIndustryId() {
-		return this.secondIndustryId;
-	}
-
-	public void setSecondIndustryId(Long secondIndustryId) {
-		this.secondIndustryId = secondIndustryId;
-	}
-
-	@Column(name = "user_id")
-	public Long getUserId() {
-		return this.userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	@Column(name = "utime", nullable = false)
-	public Long getUtime() {
-		return this.utime;
-	}
-
-	public void setUtime(Long utime) {
-		this.utime = utime;
-	}
-
-	@Column(name = "ctime", nullable = false)
+	@Column(name = "ctime", nullable = false, length = 19)
 	public Long getCtime() {
 		return this.ctime;
 	}
@@ -283,20 +218,115 @@ public class PersonBasic implements java.io.Serializable {
 		this.ctime = ctime;
 	}
 
-	@Column(name = "ip", nullable = false, length = 15)
-	public String getIp() {
-		return this.ip;
+	
+	@Column(name = "utime", nullable = false, length = 19)
+	public Long getUtime() {
+		return this.utime;
 	}
 
-	public void setIp(String ip) {
-		this.ip = ip;
+	public void setUtime(Long utime) {
+		this.utime = utime;
 	}
+
+	@Column(name = "province_id", length = 19)
+	public long getProvinceId() {
+		return provinceId;
+	}
+
+
+	public void setProvinceId(long provinceId) {
+		this.provinceId = provinceId;
+	}
+
 	@Transient
-	public String getPicPath() {
-		return picPath;
+	public String getProvinceName() {
+		return provinceName;
 	}
-	public void setPicPath(String picPath) {
-		this.picPath = picPath;
+
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
 	}
+
+	@Column(name = "city_id", length = 19)
+	public long getCityId() {
+		return cityId;
+	}
+
+
+	public void setCityId(long cityId) {
+		this.cityId = cityId;
+	}
+
+	@Transient
+	public String getCityName() {
+		return cityName;
+	}
+
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	@Column(name = "county_id", length = 19)
+	public long getCountyId() {
+		return countyId;
+	}
+
+
+	public void setCountyId(long countyId) {
+		this.countyId = countyId;
+	}
+
+	@Transient
+	public String getCountyName() {
+		return countyName;
+	}
+
+
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
+
+	@Column(name = "company_job", length = 50)
+	public String getCompanyJob() {
+		return companyJob;
+	}
+
+
+	public void setCompanyJob(String companyJob) {
+		this.companyJob = companyJob;
+	}
+
+	@Column(name = "nameFirst", length =20)
+	public String getNameFirst() {
+		return nameFirst;
+	}
+
+
+	public void setNameFirst(String nameFirst) {
+		this.nameFirst = nameFirst;
+	}
+
+	@Column(name = "nameIndexAll", length = 50)
+	public String getNameIndexAll() {
+		return nameIndexAll;
+	}
+
+
+	public void setNameIndexAll(String nameIndexAll) {
+		this.nameIndexAll = nameIndexAll;
+	}
+	@Column(name = "appId", length = 19)
+	public Long getAppId() {
+		return appId;
+	}
+
+	
+	public void setAppId(Long appId) {
+		this.appId = appId;
+	}
+	
+	
 
 }

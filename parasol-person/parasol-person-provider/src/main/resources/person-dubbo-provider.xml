@@ -31,10 +31,12 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
     
-    <dubbo:service interface="com.ginkgocap.parasol.person.service.PersonBasicService" ref="personBasicService" version="2.0.0"  timeout="3000000" />
-    <dubbo:service interface="com.ginkgocap.parasol.person.service.PersonContactWayService" ref="personContactWayService" version="2.0.0" timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.person.service.PersonBasicService" ref="personBasicService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.person.service.PersonDefinedService" ref="personDefinedService" version="2.0.0" timeout="3000000" />
+   	<dubbo:service interface="com.ginkgocap.parasol.person.service.PersonContactService" ref="personContactService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.person.service.PersonEducationHistoryService" ref="personEducationHistoryService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.person.service.PersonInfoService" ref="personInfoService" version="2.0.0" timeout="3000000" />
     <dubbo:service interface="com.ginkgocap.parasol.person.service.PersonWorkHistoryService" ref="personWorkHistoryService" version="2.0.0" timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.person.service.PersonInfoOperateService" ref="personInfoOperateService" version="2.0.0" timeout="3000000" />
+    <dubbo:service interface="com.ginkgocap.parasol.person.service.PersonRTemplateService" ref="personRTemplateService" version="2.0.0" timeout="3000000" />
 </beans>
