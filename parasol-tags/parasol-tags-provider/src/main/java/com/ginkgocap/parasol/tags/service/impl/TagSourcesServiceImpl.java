@@ -232,6 +232,8 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		ServiceError.assertTagIdIsNullForTagSource(tagId);
 		ServiceError.assertAppidIsNullForTagSource(appId);
 		try {
+			logger.info(" appId: " + appId +  " tagId: " + tagId + " sourceType: " + sourceType);
+			System.out.println("==appId: " + appId +  " tagId: " + tagId + " sourceType: " + sourceType);
 			return this.getEntitys(LIST_BY_APPID_TAGID_SOURCETYPE, new Object[]{appId, tagId, sourceType, iStart, iCount});
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);

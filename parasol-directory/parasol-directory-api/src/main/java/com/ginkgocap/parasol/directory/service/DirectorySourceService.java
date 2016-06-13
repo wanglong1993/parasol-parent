@@ -63,6 +63,17 @@ public interface DirectorySourceService {
 	 */
 	public List<DirectorySource> getDirectorySourcesBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException;
 	
+	/**
+	 * 从资源中是查询具有目录Id的所有目录资源
+	 * Example: 一篇知识都是在什么目录下；一个文件都是在什么组织下
+	 * @param appId
+	 * @param userId
+	 * @param sourceType
+	 * @param directoryId 业务数据的Id(DirectorySource.sourceId) 
+	 * @return
+	 * @throws DirectoryServiceException
+	 */
+	public List<DirectorySource> getSourcesByDirectoryIdAndSourceType(long userId, Long appId, int sourceType, Long directoryId) throws DirectorySourceServiceException;
 	
 	/**
 	 * 改变资源所在的目录
