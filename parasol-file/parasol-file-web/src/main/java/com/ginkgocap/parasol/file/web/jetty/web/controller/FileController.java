@@ -98,10 +98,7 @@ public class FileController extends BaseControl {
 	 * 
 	 * @param fileds
 	 * @param debug
-	 * @param appId
 	 * @param file
-	 * @param userId
-	 * @param name
 	 * @return
 	 * @throws FileIndexServiceException 
 	 * @throws IOException 
@@ -181,7 +178,6 @@ public class FileController extends BaseControl {
 	 * @param appId
 	 * @param file
 	 * @param userId
-	 * @param name
 	 * @return
 	 * @throws FileIndexServiceException 
 	 * @throws IOException 
@@ -259,8 +255,6 @@ public class FileController extends BaseControl {
 	 * 通过坐标截图，生成头像，生成140*140,90*90,60*60px缩略图
 	 * @param fileds
 	 * @param debug
-	 * @param appId
-	 * @param userId
 	 * @param indexId
 	 * @param xEnd
 	 * @param yEnd
@@ -310,14 +304,12 @@ public class FileController extends BaseControl {
 			e.printStackTrace(System.err);
 			return mappingJacksonValue;
 		}
-	}	
+	}
 	
 	/**
 	 * 文件下载
 	 * @param fileds
 	 * @param debug
-	 * @param appId
-	 * @param userId
 	 * @param taskId
 	 * @return	文件索引列表
 	 * @throws FileIndexServiceException 
@@ -356,14 +348,53 @@ public class FileController extends BaseControl {
 			return mappingJacksonValue;
 		} 
 	}
+
+	/**
+	 * 根据文件索引Id获取文件
+	 * @param fileds
+	 * @param debug
+	 * @param id
+	 * @return
+	 * @throws FileIndexServiceException
+     */
+	@RequestMapping(path = { "/file/getFileIndexesById" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getFileIndexesById(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+													  @RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
+													  @RequestParam(name = FileController.parameterIndexId, required = true) String id
+	) throws FileIndexServiceException {
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			// 1.查询后台服务
+			FileIndex files = fileIndexService.getFileIndexById(Long.parseLong(id));
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(files);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			if (error != null) {
+				resultMap.put("error", error);
+			}
+			if (ObjectUtils.equals(debug, "all")) {
+				// if (e.getErrorCode() > 0 ) {
+				resultMap.put("__debug__", e.getMessage());
+				// }
+			}
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			e.printStackTrace(System.err);
+			return mappingJacksonValue;
+		}
+	}
 	
 	/**
 	 * 文件下载
 	 * @param fileds
 	 * @param debug
-	 * @param appId
-	 * @param userId
-	 * @param taskId
 	 * @return	文件索引列表
 	 * @throws FileIndexServiceException 
 	 * @throws Exception
@@ -415,9 +446,6 @@ public class FileController extends BaseControl {
 	 * 文件下载
 	 * @param fileds
 	 * @param debug
-	 * @param appId
-	 * @param userId
-	 * @param taskId
 	 * @return	文件索引列表
 	 * @throws FileIndexServiceException 
 	 * @throws Exception
