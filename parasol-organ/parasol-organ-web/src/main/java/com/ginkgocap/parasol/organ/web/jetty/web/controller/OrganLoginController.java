@@ -64,8 +64,12 @@ public class OrganLoginController extends BaseController {
             if (StringUtils.isNotBlank(requestJson)) {
                 JSONObject j = JSONObject.fromObject(requestJson);
                 OrganRegister org = JSON.parseObject(requestJson, OrganRegister.class);
-
-                //增加组织基本信息
+                //增加
+                org.setId(loginUserId);
+                org.setStatus(Constants.OrganStatus.emailNoActive.v());
+                org.setIsSwitch(0);
+                organRegisterService.insertOrganRegister(org);
+                //更新
                 result = organRegisterService.updateOrganInformation(org);
                 result.put("id", org.getId());
             }
@@ -77,41 +81,5 @@ public class OrganLoginController extends BaseController {
         return genRespBody(result, null);
     }
 
-    /**
-     * 添加组织 在用户账号 注册成功后
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
-     */
-    @ResponseBody
-    @RequestMapping(value = "/registerOrgan.json", method = RequestMethod.POST)
-    public Map<String, Object> registerOrgan(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.info("组织注册 ");
-        long userId = 0;
-
-
-        Map<String, Object> result = Maps.newHashMap();
-        try {
-            String requestJson = getJsonParamStr(request);
-
-            OrganRegister org = new OrganRegister();
-            org.setId(userId);
-            //  org.setPassword(user.getPassword());
-            //  org.setEmail(email);
-            org.setStatus(Constants.OrganStatus.emailNoActive.v());
-            org.setIsSwitch(0);
-            result = organRegisterService.insertOrganRegister(org);
-            // result.put("id", user.getId());
-
-
-        } catch (Exception e) {
-            logger.error("系统异常,请稍后再试", e);
-            return returnFailMSGNew("01", "系统异常,请稍后再试");
-        }
-
-        return genRespBody(result, null);
-    }
 
 }
