@@ -73,7 +73,7 @@ public interface DirectorySourceService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public List<DirectorySource> getSourcesByDirectoryIdAndSourceType(long userId, Long appId, int sourceType, Long directoryId) throws DirectorySourceServiceException;
+	public List<DirectorySource> getSourcesByDirectoryIdAndSourceType(int start,int size,Object... parameters) throws DirectorySourceServiceException;
 	
 	/**
 	 * 改变资源所在的目录

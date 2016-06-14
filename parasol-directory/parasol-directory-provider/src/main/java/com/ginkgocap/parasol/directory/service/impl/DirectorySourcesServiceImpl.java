@@ -130,9 +130,10 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	}
 	
 	@Override
-	public List<DirectorySource> getSourcesByDirectoryIdAndSourceType(long userId, Long appId, int sourceType, Long directoryId) throws DirectorySourceServiceException {
+	public List<DirectorySource> getSourcesByDirectoryIdAndSourceType(int start,int size,Object... parameters) throws DirectorySourceServiceException 
+	{
 		try {
-			return this.getEntitys(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_DIRECTORYID, userId, appId, sourceType, directoryId);
+			return this.getSubEntitys(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_DIRECTORYID, start, size, parameters);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new DirectorySourceServiceException(e);
