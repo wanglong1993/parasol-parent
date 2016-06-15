@@ -105,4 +105,11 @@ public interface TagSourceService {
 	 * @throws TagSourceServiceException
 	 */
 	public boolean removeTagSourcesByTagId(Long appId, Long tagId) throws TagSourceServiceException;
+	/**
+	 * 批量打标签。比如给多篇文章打标签。
+	 * @param tagSource
+	 * @return
+	 * @throws TagSourceServiceException
+	 */
+	public boolean createTagSources(List<TagSource> tagSource) throws TagSourceServiceException;
 }

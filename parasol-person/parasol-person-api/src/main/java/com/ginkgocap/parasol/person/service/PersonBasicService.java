@@ -1,56 +1,56 @@
 package com.ginkgocap.parasol.person.service;
 
 import java.util.List;
+import java.util.Map;
 
-import com.ginkgocap.parasol.person.exception.PersonBasicServiceException;
 import com.ginkgocap.parasol.person.model.PersonBasic;
-import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 
-/**
- * 操作人脉基本资料接口定义
- * 
- */
-public interface PersonBasicService {
-
+public interface PersonBasicService extends CommonService<PersonBasic> {
 	/**
-	 * 创建人脉基本信息
-	 * @param personBasic 
-	 * @return Long
-	 * @throws personBasicServiceException
+	 * 根据省id查询
+	 * @param start
+	 * @param count
+	 * @param provinceId 
+	 * @return
+	 * @throws Exception
 	 */
-	public Long createPersonBasic(PersonBasic personBasic) throws PersonBasicServiceException,UserLoginRegisterServiceException; 
-	
-
+	public List<PersonBasic> getPersonBasicListByProvinceId(int start, int count, Long provinceId) throws Exception;
 	/**
-	 * 修改人脉基本信息
-	 * @param personBasic
-	 * @return boolean
-	 * @throws personBasicServiceException 
+	 * 根据市id查询
+	 * @param start
+	 * @param count
+	 * @param provinceId 
+	 * @return
+	 * @throws Exception
 	 */
-	public boolean updatePersonBasic(PersonBasic personBasic) throws PersonBasicServiceException,UserLoginRegisterServiceException; 
-
+	public List<PersonBasic> getPersonBasicListByCityId(int start, int count, Long cityId) throws Exception;
 	/**
-	 * 根据id获取人脉基本信息
-	 * @param id
-	 * @return personBasic
-	 * @throws personBasicServiceException 
+	 * 根据县id查询
+	 * @param start
+	 * @param count
+	 * @param provinceId 
+	 * @return
+	 * @throws Exception
 	 */
-	public PersonBasic getPersonBasic(Long id) throws PersonBasicServiceException; 
-	
+	public List<PersonBasic> getPersonBasicListByCountyId(int start, int count, Long countyId) throws Exception;
 	/**
-	 * 根据id列表获取人脉基本信息列表
-	 * @param ids 
-	 * @return List
-	 * @throws personBasicServiceException
+	 * 根据用户名模糊查询
+	 * @param start
+	 * @param count
+	 * @param provinceId 
+	 * @return
+	 * @throws Exception
 	 */
-	public List<PersonBasic> getPersonBasicList(List<Long> ids) throws PersonBasicServiceException;	
-	
+	public List<PersonBasic> getPersonBasicListByPersonName(int start, int count, String userName) throws Exception;
 	/**
-	 * 根据id真删除人脉基本信息
-	 * @param id
-	 * @return Boolean
-	 * @throws personBasicServiceException
+	 * 根据用户id查询
+	 * @param start
+	 * @param count
+	 * @param createId 创建者id 
+	 * @param keyWord 关键字
+	 * @param column 要过滤的字段
+	 * @return
+	 * @throws Exception
 	 */
-	public Boolean realDeletePersonBasic(Long id) throws PersonBasicServiceException;	
-
+	public Map<String,Object> getPersonBasicListByCreateId(int start, int count, Long createId,String keyWord,String orderColumn) throws Exception;
 }

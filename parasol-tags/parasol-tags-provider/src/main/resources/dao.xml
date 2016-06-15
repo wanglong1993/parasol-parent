@@ -39,7 +39,10 @@
 		   <list name="List_Id_AppId_TagId_SourceType"
                   sqlitem="select id from tb_tag_source where appId=? and tagId=? and sourceType=?"
                   sqlType="hsql" keyProperty="appId,tagId,sourceType" valueProperty="id"  update="true"/>
-			
+
+           <list name="List_By_AppId_TagId_SourceType"
+                  sqlitem="select id from tb_tag_source where appId=? and tagId=? and sourceType=? order by createAt desc"
+                  sqlType="hsql" valueProperty="id" keyProperty="appId,tagId,sourceType,start,size" update="true"/>
 		</object>
 	</route>
 </dal>

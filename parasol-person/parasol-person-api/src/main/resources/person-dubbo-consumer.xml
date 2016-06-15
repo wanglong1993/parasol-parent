@@ -32,9 +32,11 @@
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
     <dubbo:reference id="personBasicService" interface="com.ginkgocap.parasol.person.service.PersonBasicService" version="2.0.0"/>
-    <dubbo:reference id="personContactWayService" interface="com.ginkgocap.parasol.person.service.PersonContactWayService" version="2.0.0"/>
     <dubbo:reference id="personDefinedService" interface="com.ginkgocap.parasol.person.service.PersonDefinedService" version="2.0.0"/>
+    <dubbo:reference id="personContactService" interface="com.ginkgocap.parasol.person.service.PersonContactService" version="2.0.0"/>
     <dubbo:reference id="personEducationHistoryService" interface="com.ginkgocap.parasol.person.service.PersonEducationHistoryService" version="2.0.0"/>
     <dubbo:reference id="personInfoService" interface="com.ginkgocap.parasol.person.service.PersonInfoService" version="2.0.0"/>
-    <dubbo:reference id="personWorkHistoryService" interface="com.ginkgocap.parasol.person.service.PersonWorkHistoryService" version="2.0.0"/>
+    <dubbo:reference id="PersonWorkHistoryService" interface="com.ginkgocap.parasol.person.service.PersonWorkHistoryService" version="2.0.0"/>
+	<dubbo:reference id="personInfoOperateService" interface="com.ginkgocap.parasol.person.service.PersonInfoOperateService" version="2.0.0"/>
+	<dubbo:reference id="personRTemplateService" interface="com.ginkgocap.parasol.person.service.PersonRTemplateService" version="2.0.0"/>
 </beans>

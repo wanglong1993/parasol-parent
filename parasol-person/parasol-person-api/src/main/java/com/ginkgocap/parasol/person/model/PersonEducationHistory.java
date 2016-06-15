@@ -9,9 +9,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 教育经历
  */
+@JsonFilter("com.ginkgocap.parasol.person.model.PersonEducationHistory")
 @Entity
 @Table(name = "tb_person_education_history", catalog = "parasol_person")
 public class PersonEducationHistory implements java.io.Serializable {
@@ -19,11 +22,15 @@ public class PersonEducationHistory implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final Long serialVersionUID = -3176181471395972961L;
+	private static final long serialVersionUID = -6398759931043297342L;
 	/**
 	 * 主键.
 	 */
 	private Long id;
+	/**
+	 * 应用id
+	 */
+	private Long appId;
 	/**
 	 * 个人用户id.
 	 */
@@ -33,11 +40,19 @@ public class PersonEducationHistory implements java.io.Serializable {
 	 */
 	private String school;
 	/**
+	 * 学院
+	 */
+	private String college;
+	/**
+	 * 中学、高中、本科、研究生、博士生
+	 */
+	private String educationalBackground;
+	/**
 	 * 专业.
 	 */
 	private String major;
 	/**
-	 * 学历  小学 初中 高中 中专 专科 本科 硕士 博士.
+	 * 学士 硕士 博士.
 	 */
 	private String degree;
 	/**
@@ -52,10 +67,6 @@ public class PersonEducationHistory implements java.io.Serializable {
 	 * 描述.
 	 */
 	private String description;
-	/**
-	 * 好友可见 1.公开，2.好友可见.
-	 */
-	private Byte isVisible;
 	/**
 	 * 创建时间.
 	 */
@@ -138,22 +149,13 @@ public class PersonEducationHistory implements java.io.Serializable {
 		this.endTime = endTime;
 	}
 
-	@Column(name = "description", length = 2024)
+	@Column(name = "description", length = 400)
 	public String getDescription() {
 		return this.description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@Column(name = "is_visible")
-	public Byte getIsVisible() {
-		return this.isVisible;
-	}
-
-	public void setIsVisible(Byte isVisible) {
-		this.isVisible = isVisible;
 	}
 
 	@Column(name = "ctime")
@@ -182,5 +184,29 @@ public class PersonEducationHistory implements java.io.Serializable {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
+	@Column(name = "college")
+	public String getCollege() {
+		return college;
+	}
 
+	public void setCollege(String college) {
+		this.college = college;
+	}
+	@Column(name = "educationalBackground")
+	public String getEducationalBackground() {
+		return educationalBackground;
+	}
+
+	public void setEducationalBackground(String educationalBackground) {
+		this.educationalBackground = educationalBackground;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
+	}
+	
 }

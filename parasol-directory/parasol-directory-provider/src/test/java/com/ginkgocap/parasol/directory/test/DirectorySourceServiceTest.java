@@ -54,8 +54,13 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 
 		// 应用-》分类-》根目录
 		List<Directory> rootDirectories = directoryService.getDirectorysForRoot(System_AppId, user_id, directoryType.getId());
-		Assert.assertTrue(CollectionUtils.isNotEmpty(rootDirectories));
-
+		//Assert.assertTrue(CollectionUtils.isNotEmpty(rootDirectories));
+		
+		Object[] parameter = new Object[]{user_id, System_AppId, 1, 3913468139012241L};
+		List<DirectorySource> souceList = directorySourceService.getSourcesByDirectoryIdAndSourceType(1,2, parameter);
+		Assert.assertTrue(souceList != null && souceList.size() > 0);
+		System.err.println(souceList);
+		
 		//测试创建
 		for (Directory directory : rootDirectories) {
 			Assert.assertNotNull(directory);

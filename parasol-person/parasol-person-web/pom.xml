@@ -85,6 +85,41 @@
 			<type>pom</type>
 		</dependency>
 		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-metadata-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+				<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-file-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-directory-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-tags-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-associate-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-oauth2-resource</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-util</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>
