@@ -70,11 +70,6 @@ public class PersonInfoOperateServiceImpl implements PersonInfoOperateService {
 		   		PersonAttachment personAttachment = (PersonAttachment)entitys;
 		   		personAttachmentService.createObject(personAttachment);
 		   		continue;
-			   case ModelType.UB :
-			   		entitys =  param.get(modelType);
-			   		PersonBasic personBasic = (PersonBasic)entitys;
-			   		personBasicService.createObject(personBasic);
-			   		continue;
 			   case ModelType.UC :
 			   		entitys =  param.get(modelType);
 			   		List<PersonContact> personContacts = (List<PersonContact>)entitys;

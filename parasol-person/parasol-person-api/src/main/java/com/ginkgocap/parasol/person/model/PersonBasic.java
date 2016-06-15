@@ -107,6 +107,11 @@ public class PersonBasic implements java.io.Serializable {
 	 */
 	private Long utime;
 	/**
+	 * 资源来源，0、是自己插入的，1、是保存别人的信息。
+	 */
+	private int fromType;
+
+	/**
 	 * 
 	 */
 	private String picPath;
@@ -327,6 +332,13 @@ public class PersonBasic implements java.io.Serializable {
 		this.appId = appId;
 	}
 	
-	
+	@Column(name = "fromType", length = 50)
+	public int getFromType() {
+		return fromType;
+	}
+
+	public void setFromType(int fromType) {
+		this.fromType = fromType;
+	}
 
 }

@@ -60,10 +60,10 @@ public class PersonDefined implements java.io.Serializable {
 	public PersonDefined() {
 	}
 
-	public PersonDefined(Long id, Long userId, String personDefinedValue, Long ctime,
+	public PersonDefined(Long id, Long personId, String personDefinedValue, Long ctime,
 			Long utime, String ip) {
 		this.id = id;
-		this.personId = userId;
+		this.personId = personId;
 		this.personDefinedValue = personDefinedValue;
 		this.ctime = ctime;
 		this.utime = utime;
@@ -82,7 +82,7 @@ public class PersonDefined implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "user_id", nullable = false)
+	@Column(name = "person_id", nullable = false)
 	public Long getPersonId() {
 		return this.personId;
 	}
@@ -91,7 +91,7 @@ public class PersonDefined implements java.io.Serializable {
 		this.personId = personId;
 	}
 
-	@Column(name = "user_defined_filed")
+	@Column(name = "person_defined_filed")
 	public String getPersonDefinedFiled() {
 		return this.personDefinedFiled;
 	}
@@ -100,7 +100,7 @@ public class PersonDefined implements java.io.Serializable {
 		this.personDefinedFiled = personDefinedFiled;
 	}
 
-	@Column(name = "user_defined_value", nullable = false, length = 1)
+	@Column(name = "person_defined_value", nullable = false, length = 1)
 	public String getPersonDefinedValue() {
 		return this.personDefinedValue;
 	}

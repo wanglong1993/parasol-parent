@@ -1,15 +1,25 @@
 package com.ginkgocap.parasol.person.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import junit.framework.Test;
 import junit.framework.TestResult;
+
+import org.junit.Assert;
+
+import com.ginkgocap.parasol.person.model.PersonBasic;
+import com.ginkgocap.parasol.person.service.PersonBasicService;
 
 public class PersonBasicServiceTest  extends TestBase implements Test  {
 
 //	@Resource
 //	private UserLoginRegisterService userLoginRegisterService;
-//	@Resource
-//	private PersonBasicService personBasicService;
-//	
+	@Resource
+	private PersonBasicService personBasicService;
+	
 	public int countTestCases() { 
 		return 0;  
 	}
@@ -63,7 +73,7 @@ public class PersonBasicServiceTest  extends TestBase implements Test  {
 //		try {
 //			List<Long> ids=new ArrayList<Long>();
 //			ids.add(1l);
-//			List<PersonBasic> list = personBasicService.getPersonBasicList(ids);
+//			List<PersonBasic> list = personBasicService.getPersonBasicListByCreateId(0, 2, 1l);
 //			Assert.assertTrue(list.size()>0);
 //		} catch (Exception e) {
 //			e.printStackTrace();

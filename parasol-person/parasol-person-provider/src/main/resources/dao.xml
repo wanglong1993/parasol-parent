@@ -41,8 +41,11 @@
                  sqlitem="select id from tb_person_basic where county_id =? order by utime desc"
                  sqlType="hsql" keyProperty="countyId" valueProperty="id"  update="false"/> 
              <list name="PersonBasic_List_By_PersonName"
-                 sqlitem="select person_id from tb_person_basic where name like ? order by utime desc"
+                 sqlitem="select id from tb_person_basic where name like ? order by utime desc"
                  sqlType="hsql" keyProperty="personName" valueProperty="id"  update="false"/> 
+             <list name="PersonBasic_List_By_CreateId"
+                 sqlitem="select id from tb_person_basic where create_id = ? order by utime desc"
+                 sqlType="hsql" keyProperty="createId" valueProperty="id"  update="false"/>
 		</object>
 		<object name="com.ginkgocap.parasol.person.model.PersonContact" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
