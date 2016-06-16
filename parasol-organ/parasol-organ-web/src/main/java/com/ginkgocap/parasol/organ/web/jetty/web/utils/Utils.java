@@ -176,12 +176,14 @@ public class Utils {
         Date date=sdf.parse(str);
         return date;
     }
+/*
 
     public static void main(String[] args) {
         String url="http://file.dev.gintong.com/http://file.dev.gintong.com:81/avtiv/defalut.jpg";
         String url2=":81/avtiv/defalut.jpg";
         System.out.println(alterImageUrl(url));
     }
+*/
 
     /**
      * 获取json字符串
