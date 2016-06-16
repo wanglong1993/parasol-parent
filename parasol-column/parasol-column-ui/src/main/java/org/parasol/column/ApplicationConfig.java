@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApplicationConfig {
 	
-	 /*@Bean
+	 @Bean
 	    public FilterRegistrationBean appFilterRegistration() {
 
 	        FilterRegistrationBean registration = new FilterRegistrationBean();
@@ -24,5 +24,5 @@ public class ApplicationConfig {
 	@Bean(name = "appFilter")
     public Filter appFilter() {
         return new AppFilter();
-    }*/
+    }
 }

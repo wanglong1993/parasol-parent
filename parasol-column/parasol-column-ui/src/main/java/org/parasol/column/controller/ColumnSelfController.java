@@ -52,11 +52,12 @@ public class ColumnSelfController extends BaseController {
 		Boolean b=false;
 		String jsonStr=this.readJSONString(request);
 		ColumnSelf newCol=(ColumnSelf)JsonUtils.jsonToBean(jsonStr, ColumnSelf.class);
-		if(newCol==null||StringUtils.isEmpty(newCol.getColumnname())){
+		Long uid=this.getUserId(request);
+		if(newCol==null||StringUtils.isEmpty(newCol.getColumnname())||uid.longValue()==0){
 			InterfaceResult<ColumnSelf> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
-		Long uid=this.getUserId(request);
+		
 		Long pid=0l;
 		newCol.setId(null);
 		newCol.setUserOrSystem(ColumnFlag.user.getVal());

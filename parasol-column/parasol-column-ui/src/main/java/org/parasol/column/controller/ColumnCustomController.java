@@ -51,7 +51,8 @@ public class ColumnCustomController extends BaseController {
 	public InterfaceResult<Boolean> replaceColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		String jsonStr=this.readJSONString(request);
 		List<ColumnSelf> newList=JsonUtils.jsonToList(jsonStr,ColumnSelf.class);
-		if(newList==null||newList.size()==0){
+		long uid=this.getUserId(request);
+		if(newList==null||newList.size()==0||uid==0){
 			InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
@@ -61,7 +62,6 @@ public class ColumnCustomController extends BaseController {
 			c.setParentId(0l);
 		}
 		Long pid=0l;
-		long uid=this.getUserId(request);
 		int n=this.ccs.replace(uid, newList);
 		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		Boolean b=n>0;

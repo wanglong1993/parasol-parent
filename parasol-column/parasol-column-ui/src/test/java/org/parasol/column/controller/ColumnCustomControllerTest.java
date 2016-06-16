@@ -34,7 +34,7 @@ public class ColumnCustomControllerTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void testShow(){
 //		ccs.queryListByPidAndUserId(0l, 0l);
 	}
@@ -73,7 +73,7 @@ public class ColumnCustomControllerTest {
 		System.out.println(resp);
 	}*/
 	
-	@Test
+//	@Test
 	public void testReplaceColumn() throws Exception{
 //		List<ColumnSelf> list=ccs.queryListByPidAndUserId(0l, 0l);
 //		String jsonStr=JsonUtils.beanToJson(list);
@@ -86,12 +86,11 @@ public class ColumnCustomControllerTest {
 	}
 	
 	@Test
-	public String testShowColumn(){
+	public void testShowColumn(){
 		String jsonStr="{\"pid\":\"0\"}";
 		String url="http://localhost:81/columncustom/showColumn";
 		String resp=HttpUtils.sendJsonPost(url, jsonStr);
 		System.out.println(resp);
-		return resp;
 	}
 	
 	@Test
@@ -104,11 +103,12 @@ public class ColumnCustomControllerTest {
 	@Test
 	public void testShowColumn1(){
 		String jsonStr="{\"pid\":\"0\"}";
-		String url="http://192.168.101.131:8022/columncustom/showColumn.json";
+		String url="http://localhost:8022/columncustom/showColumn.json";
 		Map<String,String> headers=new HashMap<String,String>();
-		//headers.put(", value)
-		String resp=HttpUtils.sendPost(url, jsonStr,"application/json");
-		System.out.println(resp);
-		
+		headers.put("sessionID", "8c8c2fcd-58d5-4fd0-b690-0318cf4bb657");
+		headers.put("s", "web");
+		String resp=HttpUtils.sendPost(url, jsonStr,"application/json",headers);
+		System.out.println(resp);  
 	}
+	
 }

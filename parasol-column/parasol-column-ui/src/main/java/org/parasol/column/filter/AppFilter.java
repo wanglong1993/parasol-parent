@@ -132,7 +132,7 @@ public class AppFilter implements Filter {
 			}
 		}
 
-		if (loginFlag && null == user) {
+		/*if (loginFlag && null == user) {
 			response.setCharacterEncoding("utf-8");
 			res.setHeader("errorCode", "-1");
 			try {
@@ -147,19 +147,6 @@ public class AppFilter implements Filter {
 			return;
 		}
 
-		// 敏感词过滤
-		BufferedReader reader = request.getReader();
-		String line = null;
-		StringBuffer jsonIn = new StringBuffer();
-		while ((line = reader.readLine()) != null) {
-			jsonIn.append(line);
-		}
-		String result = jsonIn.toString();
-		if (result.equals("")) {
-			result = request.getParameter("json");
-		}
-		String requestJson = result;
-		reader.close();
 
 		String sessionId = ((HttpServletRequest) request)
 				.getHeader("sessionID");
@@ -168,20 +155,10 @@ public class AppFilter implements Filter {
 		System.out.println("URL:"
 				+ ((HttpServletRequest) request).getRequestURL() + "?"
 				+ ((HttpServletRequest) request).getQueryString() + "\nUserId:"
-				+ userId + "\nSessionId:" + sessionId);
-		System.out.println("json:" + requestJson + "," + sessionId);
+				+ userId + "\nSessionId:" + sessionId);*/
 
-		if (requestJson != null && !"".equals(requestJson)) {
-			request.setAttribute("requestJson", requestJson);
-			chain.doFilter(request, response);
-			CommonUtil.setRequestIsFromWebFlag(false);
-			return;
-		} else {
-			request.setAttribute("requestJson", "{}");
-			chain.doFilter(request, response);
-			CommonUtil.setRequestIsFromWebFlag(false);
-			return;
-		}
+		chain.doFilter(request, response);
+		CommonUtil.setRequestIsFromWebFlag(false);
 	}
 
 	@Override
