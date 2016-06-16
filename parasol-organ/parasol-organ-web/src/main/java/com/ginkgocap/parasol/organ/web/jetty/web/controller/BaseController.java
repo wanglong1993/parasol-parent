@@ -126,11 +126,13 @@ public abstract class BaseController {
     }
 
     protected UserBasic getUser(HttpServletRequest request) {
-        UserBasic userBasic=null;
+        UserBasic userBasic=new UserBasic();
         Long loginUserId = LoginUserContextHolder.getUserId();
 
         try {
-           userBasic= userBasicService.getObject(loginUserId);
+            userBasic.setUserId(loginUserId);
+            userBasic.setName("name");
+         //  userBasic= userBasicService.getObject(loginUserId);
         }catch(Exception e){
             //throw e;
         }

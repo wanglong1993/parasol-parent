@@ -8,7 +8,7 @@ import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.OrganProfileVo;
 import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.parasol.user.model.UserConfig;
 import com.ginkgocap.parasol.user.model.UserFriendly;
-import com.ginkgocap.parasol.user.service.UserBlackListService;
+//import com.ginkgocap.parasol.user.service.UserBlackListService;
 import com.ginkgocap.parasol.user.service.UserConfigerService;
 import com.ginkgocap.parasol.user.service.UserFriendlyService;
 import com.ginkgocap.ywxt.organ.model.Customer;
@@ -71,7 +71,7 @@ public class OrganController extends BaseController {
 
 	@Autowired
 	// 用户黑名单
-	private UserBlackListService userBlackService;
+	//private UserBlackListService userBlackService;
 	@Resource
 	private UserConfigerService userConfigService;
 	@Autowired
@@ -245,17 +245,18 @@ public class OrganController extends BaseController {
             OrganProfileVo organProfileVo = new OrganProfileVo();
 			// 查看组织对应的用户个人设置 看其主页是否允许查看
 			UserConfig uc = userConfigService.getUserConfig(organId);
+
 			if (uc != null) {
 				if (uc.getHomePageVisible() == null)
 					uc.setHomePageVisible(new Byte("2"));
                 organProfileVo.setUserConfig(uc.getHomePageVisible());
 			}
             //看是否是对方的黑名单
-			boolean isblack = userBlackService.isBlackUser(loginUserId, customer_temp.getUserId(),0l);
+			/*boolean isblack = userBlackService.isBlackUser(loginUserId, customer_temp.getUserId(),0l);
             organProfileVo.setBlack(isblack);// 黑名单关系
 			if (isblack) {
 				return returnFailMSGNew("01", "请查看其它组织");
-			}
+			}*/
             organProfileVo.setLoginUserId(loginUserId);
 
             //组织可以收藏吗？？？
@@ -353,11 +354,11 @@ public class OrganController extends BaseController {
                 organProfileVo.setUserConfig(uc.getHomePageVisible());
             }
             //看是否是对方的黑名单
-            boolean isblack = userBlackService.isBlackUser(loginUserId, customer_temp.getUserId(), 0l);
+          /*  boolean isblack = userBlackService.isBlackUser(loginUserId, customer_temp.getUserId(), 0l);
             organProfileVo.setBlack(isblack);// 黑名单关系
             if (isblack) {
                 return returnFailMSGNew("01", "请查看其它组织");
-            }
+            }*/
                 organProfileVo.setLoginUserId(loginUserId);
                 //组织可以收藏吗？？？
                 // 新增是否收藏
