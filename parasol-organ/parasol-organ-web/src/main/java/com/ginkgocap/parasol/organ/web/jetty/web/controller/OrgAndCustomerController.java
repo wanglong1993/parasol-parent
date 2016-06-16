@@ -42,6 +42,7 @@ import com.ginkgocap.ywxt.organ.service.tag.RCustomerTagService;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.JsonUtil;
 import com.ginkgocap.ywxt.util.PageUtil;
+import com.gintong.common.phoenix.permission.entity.PermissionQuery;
 
 
 /**
@@ -410,9 +411,13 @@ public class OrgAndCustomerController  extends BaseController {
 				    Long appId = 1l;  
 	                if(!custermIds.isEmpty()){
 	                  for (Long custermId : custermIds) {
+						  PermissionQuery p=new PermissionQuery();
+						  p.setResId(custermId);
+						  p.setUserId(user.getUserId());
+						  p.setResType((short)5);//  5 组织
 	                       if("1".equals(type)){
 								   simpleCustomerService.deleteByIds(custermIds);
-								   customerService.deleteCustomerByCustomerId(custermId);
+								   customerService.deleteCustomerByCustomerId(custermId,p);
 							}else if("2".equals(type)){
 								 Map map = new HashMap();
 								 map.put("custermId", custermId);
