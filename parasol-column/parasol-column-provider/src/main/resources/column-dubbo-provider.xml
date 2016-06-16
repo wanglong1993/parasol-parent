@@ -33,11 +33,7 @@
 	
 	<dubbo:monitor protocol="registry" />
     <dubbo:application name="${dubbo.application.name}" />
-	<dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}"
-		threadpool="${column.dubbo.protocol.threadpool}" threads="${column.dubbo.protocol.threads}"
-		queues="${column.dubbo.protocol.queues}" buffer="${column.dubbo.protocol.buffer}"
-		accepts="${column.dubbo.protocol.accepts}" accesslog="${column.dubbo.protocol.accesslog}"
-		payload="${column.dubbo.protocol.payload}" heartbeat="${column.dubbo.protocol.heartbeat}" />
+	<dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />
     <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
     <dubbo:service  interface="org.parasol.column.service.ColumnCustomService" ref="columnCustomService" version="1.0.1"/>
     <dubbo:service  interface="org.parasol.column.service.ColumnSelfService" ref="columnSelfService" version="1.0.1"/>
