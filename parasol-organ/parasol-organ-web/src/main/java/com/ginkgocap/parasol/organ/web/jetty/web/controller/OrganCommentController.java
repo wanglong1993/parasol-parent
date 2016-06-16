@@ -48,7 +48,7 @@ public class OrganCommentController  extends BaseController{
  	 * @author zbb
  	 */
  	@ResponseBody
- 	@RequestMapping(value="/saveComment.json",method=RequestMethod.POST)
+ 	@RequestMapping(value="/saveComment",method=RequestMethod.POST)
  	public Map<String, Object> saveComment(HttpServletRequest request,
  			HttpServletResponse response) throws IOException {
  		String requestJson = getJsonParamStr(request);
@@ -96,7 +96,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/deleteComment.json",method=RequestMethod.POST)
+	@RequestMapping(value="/deleteComment",method=RequestMethod.POST)
 	public Map<String, Object> deleteComment(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -133,7 +133,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/selectComment.json",method=RequestMethod.POST)
+	@RequestMapping(value="/selectComment",method=RequestMethod.POST)
 	public Map<String, Object> selectComment(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -189,7 +189,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/clickPraise.json",method=RequestMethod.POST)
+	@RequestMapping(value="/clickPraise",method=RequestMethod.POST)
 	public Map<String, Object> clickPraise(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -233,7 +233,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/removePraise.json",method=RequestMethod.POST)
+	@RequestMapping(value="/removePraise",method=RequestMethod.POST)
 	public Map<String, Object> removePraise(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -269,7 +269,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/replyComment.json",method=RequestMethod.POST)
+	@RequestMapping(value="/replyComment",method=RequestMethod.POST)
 	public Map<String, Object> replyComment(HttpServletRequest request,
 		HttpServletResponse response) throws IOException {
 		String requestJson = getJsonParamStr(request);
@@ -307,7 +307,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/removeReply.json",method=RequestMethod.POST)
+	@RequestMapping(value="/removeReply",method=RequestMethod.POST)
 	public Map<String, Object> removereply(HttpServletRequest request,
 		HttpServletResponse response) throws IOException {
 		String requestJson = getJsonParamStr(request);

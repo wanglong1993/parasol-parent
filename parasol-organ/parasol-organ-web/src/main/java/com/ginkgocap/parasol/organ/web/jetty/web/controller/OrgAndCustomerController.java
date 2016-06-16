@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
 import com.ginkgocap.parasol.user.model.UserBasic;
+
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +39,7 @@ import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
 import com.ginkgocap.ywxt.organ.service.CustomerService;
 import com.ginkgocap.ywxt.organ.service.SimpleCustomerService;
 import com.ginkgocap.ywxt.organ.service.tag.RCustomerTagService;
+import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.JsonUtil;
 import com.ginkgocap.ywxt.util.PageUtil;
 
@@ -73,12 +75,10 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getCustomer.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/getCustomer", method = RequestMethod.POST)
 	public Map<String, Object> getCustomer(HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("/org/getCustomer.json");
-        UserBasic userBasic=null;
-        userBasic=getUser(request);
+		UserBasic user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -92,7 +92,7 @@ public class OrgAndCustomerController  extends BaseController {
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
-			if (userBasic == null) {
+			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 				int currentPage=j.optInt("index"); //默认currentPage为1
@@ -100,21 +100,34 @@ public class OrgAndCustomerController  extends BaseController {
 				pageSize = pageSize == 0 ? 20 : pageSize;
 			    String type=j.optString("type");//1创建的客户，2收藏的客户
 			    String keyword=j.optString("keyword");
+			    String ordername=j.optString("ordername");//排序字段
+			    String ordertype=j.optString("ordertype");//排序方式
+			    if(type=="" || type==null){
+			    	type="1";
+			    }
+			    if(ordername=="" || ordername==null){
+			    	ordername="ctime";
+			    }
+			    if(ordertype=="" || ordertype==null){
+			    	ordertype="desc";
+			    }
                 //按条件查询
 			    Map<String,Object>   map=new HashMap<String,Object>();
 		    	map.put("start", (currentPage-1)*pageSize);
 		    	map.put("end", pageSize);
 		    	map.put("keyword", keyword);
+		    	map.put("ordername", ordername);
+		    	map.put("ordertype", ordertype);
 			    List<SimpleCustomer> simpleCustomerList;
 				if("1".equals(type)){
-			    	 map.put("userid", userBasic.getUserId());
+			    	 map.put("userid", user.getUserId());
 			    	 simpleCustomerList=simpleCustomerService.selectUserid(map);
 			    	 int count = simpleCustomerService.selectUseridCount(map);
 			    	 PageUtil page = new PageUtil((int)count, currentPage, pageSize);
 			    	 responseDataMap.put("simpleCustomerList", simpleCustomerList);
 			    	 responseDataMap.put("page", page);	
 			    }else if("2".equals(type)){
-			    	 List<Long> customerIds=customerCollectService.getCustomerIdsByParam(userBasic.getUserId(), 0);
+			    	 List<Long> customerIds=customerCollectService.getCustomerIdsByParam(user.getUserId(), 0);
 			    	 map.put("list", customerIds);
 			    	 simpleCustomerList=simpleCustomerService.selectId(map);
 			    	 int count = simpleCustomerService.selectIdCount(map);
@@ -144,14 +157,11 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@SuppressWarnings("null")
 	@ResponseBody
-	@RequestMapping(value = "/updateCustomerDirectory.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/updateCustomerDirectory", method = RequestMethod.POST)
 	public Map<String, Object> updateCustomerTags(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		logger.info("/org/updateCustomerDirectory.json");
-        UserBasic userBasic=null;
-        userBasic=getUser(request);
+		UserBasic user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -165,7 +175,7 @@ public class OrgAndCustomerController  extends BaseController {
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
-			if (userBasic == null) {
+			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 			    String custormId=j.optString("custormId");//需要修改添加标签目录的客户id
@@ -173,13 +183,13 @@ public class OrgAndCustomerController  extends BaseController {
 			    Long appId = 1l;
 			    Long ctime = System.currentTimeMillis();
 			    //删除以前的
-			    directorySourceService.removeDirectorySourcesBySourceId(userBasic.getUserId(), appId, 1, Long.valueOf(custormId));
+			    directorySourceService.removeDirectorySourcesBySourceId(user.getUserId(), appId, 1, Long.valueOf(custormId));
 			    if(!directoryIds.isEmpty()){
 			    	for (Long directoryId : directoryIds) {
 			    		DirectorySource directorySource = new DirectorySource();
 						directorySource.setDirectoryId(directoryId);
 						directorySource.setAppId(appId);
-						directorySource.setUserId(userBasic.getUserId());
+						directorySource.setUserId(user.getUserId());
 						directorySource.setSourceId(Long.valueOf(custormId));
 						directorySource.setSourceType(1);//
 						directorySource.setCreateAt(ctime);
@@ -207,14 +217,11 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@SuppressWarnings("null")
 	@ResponseBody
-	@RequestMapping(value = "/updateCustomerTags.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/updateCustomerTags", method = RequestMethod.POST)
 	public Map<String, Object> updateCustomerDirectory(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		logger.info("/org/updateCustomerTags.json");
-        UserBasic userBasic=null;
-        userBasic=getUser(request);
+		UserBasic user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -230,7 +237,7 @@ public class OrgAndCustomerController  extends BaseController {
 		Long ctime = System.currentTimeMillis();
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
-			if (userBasic == null) {
+			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 				List<Long> taglist = JsonUtil.getList(j, "taglist", Long.class);
@@ -240,14 +247,14 @@ public class OrgAndCustomerController  extends BaseController {
 				List<TagSource> listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, Long.valueOf(custormId), 1l);
 				//删除该人脉下的所有标签
 				for (TagSource tagSource2 : listTagSource) {
-					tagSourceService.removeTagSource(appId, userBasic.getUserId(), tagSource2.getId());
+					tagSourceService.removeTagSource(appId, user.getUserId(), tagSource2.getId());
 				}
                 if(!taglist.isEmpty()){
                 	for (Long tagId : taglist) {
                 		TagSource tagSource = new TagSource();
 						tagSource.setTagId(tagId);
 						tagSource.setAppId(appId);
-						tagSource.setUserId(userBasic.getUserId());
+						tagSource.setUserId(user.getUserId());
 						tagSource.setSourceId(Long.valueOf(custormId));
 						tagSource.setSourceType(1);//
 						tagSource.setCreateAt(ctime);
@@ -273,14 +280,11 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @param response
 	 * @return
 	 */
-	@SuppressWarnings("null")
 	@ResponseBody
-	@RequestMapping(value = "/findDirectoryIdsCustomer.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/findDirectoryIdsCustomer", method = RequestMethod.POST)
 	public Map<String, Object> findDirectoryIdsCustomer(HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("/org/findDirectoryIdsCustomer.json");
-        UserBasic userBasic=null;
-        userBasic=getUser(request);
+		UserBasic user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -294,7 +298,7 @@ public class OrgAndCustomerController  extends BaseController {
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
-			if (userBasic == null) {
+			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 				  List<Long> custermIds = JsonUtil.getList(j, "custermIds", Long.class);
@@ -302,7 +306,7 @@ public class OrgAndCustomerController  extends BaseController {
 	              if(!custermIds.isEmpty()){
 	            	  Map map=new HashMap();
 	            	  map.put("list", custermIds);
-	            	  map.put("userId", userBasic.getUserId());
+	            	  map.put("userId", user.getUserId());
 	            	  List<SimpleCustomer> simpleCustormerList = simpleCustomerService.selectByIds(map,type);
 	                  responseDataMap.put("simpleCustormerList", simpleCustormerList);
 	              }else{
@@ -327,14 +331,11 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @param response
 	 * @return
 	 */
-	@SuppressWarnings("null")
 	@ResponseBody
-	@RequestMapping(value = "/findTagIdCustomer.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/findTagIdCustomer", method = RequestMethod.POST)
 	public Map<String, Object> findTagIdCustomer(HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("/org/findTagIdCustomer.json");
-        UserBasic userBasic=null;
-        userBasic=getUser(request);
+		UserBasic user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -348,7 +349,7 @@ public class OrgAndCustomerController  extends BaseController {
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
-			if (userBasic == null) {
+			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 					List<Long> custermIds = JsonUtil.getList(j, "custermIds", Long.class);
@@ -356,7 +357,7 @@ public class OrgAndCustomerController  extends BaseController {
 	                if(!custermIds.isEmpty()){
 	            	  Map map=new HashMap();
 	            	  map.put("list", custermIds);
-	            	  map.put("userId", userBasic.getUserId());
+	            	  map.put("userId", user.getUserId());
 	                   List<SimpleCustomer> simpleCustormerList = simpleCustomerService.selectByIds(map,type);
 	                   responseDataMap.put("simpleCustormerList", simpleCustormerList); 
 	                }else{
@@ -383,14 +384,11 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @throws TagSourceServiceException 
 	 * @throws DirectorySourceServiceException 
 	 */
-	@SuppressWarnings("null")
 	@ResponseBody
-	@RequestMapping(value = "/deleteResourcesCustomer.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/deleteResourcesCustomer", method = RequestMethod.POST)
 	public Map<String, Object> deleteResourcesCustomer(HttpServletRequest request,
 			HttpServletResponse response) throws TagSourceServiceException, DirectorySourceServiceException {
-		logger.info("/org/deleteResourcesCustomer.json");
-        UserBasic userBasic=null;
-        userBasic=getUser(request);
+		UserBasic user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -404,7 +402,7 @@ public class OrgAndCustomerController  extends BaseController {
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
-			if (userBasic == null) {
+			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 					List<Long> custermIds = JsonUtil.getList(j, "custermIds", Long.class);
@@ -418,11 +416,11 @@ public class OrgAndCustomerController  extends BaseController {
 							}else if("2".equals(type)){
 								 Map map = new HashMap();
 								 map.put("custermId", custermId);
-								 map.put("userId", userBasic.getUserId());
+								 map.put("userId", user.getUserId());
 								 customerCollectService.deleteUserCustomerCollect(map);
 							}
-                    	    tagSourceService.removeTagSource(appId, userBasic.getUserId(), custermId);
-                    	    directorySourceService.removeDirectorySourcesBySourceId(userBasic.getUserId(), appId, 1, custermId);
+                    	    tagSourceService.removeTagSource(appId, user.getUserId(), custermId);
+                    	    directorySourceService.removeDirectorySourcesBySourceId(user.getUserId(), appId, 1, custermId);
 				        }
 	                }
 			    }	
@@ -436,6 +434,7 @@ public class OrgAndCustomerController  extends BaseController {
 		model.put("notification", notificationMap);
 		return model;
 	}
+	
 	
 	
 }
