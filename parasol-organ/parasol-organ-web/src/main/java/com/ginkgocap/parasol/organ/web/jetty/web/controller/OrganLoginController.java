@@ -50,7 +50,7 @@ public class OrganLoginController extends BaseController {
      * @throws IOException
      */
     @ResponseBody
-    @RequestMapping(value = "/completeInfo.json", method = RequestMethod.POST)
+    @RequestMapping(value = "/organ/completeInfo.json", method = RequestMethod.POST)
     public Map<String, Object> completeInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("完善组织信息");
 
@@ -68,9 +68,9 @@ public class OrganLoginController extends BaseController {
                 org.setId(loginUserId);
                 org.setStatus(Constants.OrganStatus.emailNoActive.v());
                 org.setIsSwitch(0);
-                organRegisterService.insertOrganRegister(org);
+                //organRegisterService.insertOrganRegister(org);
                 //更新
-                result = organRegisterService.updateOrganInformation(org);
+                result = organRegisterService.saveOrUpdateOrganRegister(org);
                 result.put("id", org.getId());
             }
         } catch (Exception e) {

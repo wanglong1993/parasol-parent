@@ -25,12 +25,12 @@ public class ColumnApplication {
 //		        set.add("classpath:applicationContext.xml");  
 //		        app.setSources(set);  
 		        ConfigurableApplicationContext context=SpringApplication.run(ColumnApplication.class,args);
-		        System.out.println("hohoho"); 
+		        /*System.out.println("hohoho"); 
 		        String[] names = context.getBeanDefinitionNames();  
 		        Arrays.sort(names);  
 		        for (String string : names) {  
 		        System.err.println(string);  
-		        }
+		        }*/
 	}
 	
 }

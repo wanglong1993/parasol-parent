@@ -18,7 +18,7 @@ public interface FavoriteService {
 	/**
 	 * 应用 用户 创建指定分类下的根收藏
 	 * 
-	 * @param appId
+	 * @param favorite
 	 *            应用Id
 	 * @param favoriteType
 	 *            收藏分类
@@ -31,9 +31,9 @@ public interface FavoriteService {
 	/**
 	 * 应用 用户 创建指定父收藏下的收藏
 	 * 
-	 * @param appId
+	 * @param pId
 	 *            应用Id
-	 * @param favoriteType
+	 * @param favorite
 	 *            收藏分类
 	 * @param favorite
 	 * @return
@@ -62,7 +62,10 @@ public interface FavoriteService {
 	/**
 	 * 应用 用户 移动一个收藏 不能重名
 	 * 
-	 * @param favorite
+	 * @param appId
+	 * @param userId
+	 * @param favoriteId
+	 * @param toFavoriteId
 	 * @return
 	 * @throws FavoriteServiceException
 	 */
@@ -71,7 +74,7 @@ public interface FavoriteService {
 	/**
 	 * 应用 用户 查询一个Favorite
 	 * 
-	 * @param favoriteId
+	 * @param appId
 	 * @return
 	 * @throws FavoriteServiceException
 	 */
@@ -80,9 +83,9 @@ public interface FavoriteService {
 	/**
 	 * 查询一个父节点下边的一级子节点 注意：最多返回500
 	 * 
-	 * @param parentId
+	 * @param appId
 	 *            父节点ID
-	 * @param displayDisabled
+	 * @param userId
 	 *            是否显示禁用的Favorite，默认为false，不显示
 	 * @return
 	 * @throws FavoriteServiceException
