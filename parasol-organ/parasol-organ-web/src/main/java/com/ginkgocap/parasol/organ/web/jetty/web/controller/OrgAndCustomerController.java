@@ -119,7 +119,7 @@ public class OrgAndCustomerController  extends BaseController {
 		    	map.put("keyword", keyword);
 		    	map.put("ordername", ordername);
 		    	map.put("ordertype", ordertype);
-			    List<SimpleCustomer> simpleCustomerList;
+			    List<SimpleCustomer> simpleCustomerList = null;
 				if("1".equals(type)){
 			    	 map.put("userid", user.getUserId());
 			    	 simpleCustomerList=simpleCustomerService.selectUserid(map);
@@ -129,12 +129,16 @@ public class OrgAndCustomerController  extends BaseController {
 			    	 responseDataMap.put("page", page);	
 			    }else if("2".equals(type)){
 			    	 List<Long> customerIds=customerCollectService.getCustomerIdsByParam(user.getUserId(), 0);
+			    	 if(customerIds==null || customerIds.isEmpty()){ 
+			    		 responseDataMap.put("simpleCustomerList", simpleCustomerList);
+			    	 }else{
 			    	 map.put("list", customerIds);
 			    	 simpleCustomerList=simpleCustomerService.selectId(map);
 			    	 int count = simpleCustomerService.selectIdCount(map);
 			    	 PageUtil page = new PageUtil((int)count, currentPage, pageSize);
-			    	 responseDataMap.put("simpleCustomerList", simpleCustomerList);
 			    	 responseDataMap.put("page", page);	
+			    	 responseDataMap.put("simpleCustomerList", simpleCustomerList);
+			    	 } 
 			    }else{
 			    	setSessionAndErr(request, response, "-1", "输入参数不合法");
 			    }
