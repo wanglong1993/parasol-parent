@@ -50,7 +50,7 @@ public class OrganLoginController extends BaseController {
      * @throws IOException
      */
     @ResponseBody
-    @RequestMapping(value = "/organ/completeInfo.json", method = RequestMethod.POST)
+    @RequestMapping(value = "/organ/completeInfo", method = RequestMethod.POST)
     public Map<String, Object> completeInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("完善组织信息");
 
