@@ -58,7 +58,7 @@ public class OrganCommentController  extends BaseController{
 
         UserBasic userBasic=null;
         userBasic=getUser(request);
- 		boolean flag = false;
+ 		boolean flag = true;
  		if (requestJson != null && !"".equals(requestJson)){
  			JSONObject jo = JSONObject.fromObject(requestJson);
 			if (userBasic == null) {
@@ -152,9 +152,7 @@ public class OrganCommentController  extends BaseController{
 				  long orgid = CommonUtil.getLongFromJSONObject(jo, "orgid");
 				   int currentPage = jo.getInt( "currentPage");
 				   int pageSize = jo.getInt( "pageSize");
-				   int type = jo.getInt( "type");
 				   canshu.put("orgid", orgid);
-				   canshu.put("type", type);
 				   canshu.put("currentPage", (currentPage-1)*pageSize);
 				   canshu.put("pageSize", pageSize);
 				   List<CommentMain> commentMainlist = commentMainService.findByOrganId(canshu);
@@ -303,7 +301,7 @@ public class OrganCommentController  extends BaseController{
 		return model;
 	}
 	
-	/**删除评论
+	/**删除回复
 	 * @author zbb
 	 */
 	@ResponseBody
