@@ -50,7 +50,7 @@ public class OrganMeetController extends BaseController {
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/save.json",method=RequestMethod.POST)
+	@RequestMapping(value="/save",method=RequestMethod.POST)
 	public Map<String, Object> orgSave(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String requestJson = getJsonParamStr(request);
@@ -106,7 +106,7 @@ public class OrganMeetController extends BaseController {
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/update.json",method=RequestMethod.POST)
+	@RequestMapping(value="/update",method=RequestMethod.POST)
 	public Map<String, Object> update(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -169,7 +169,7 @@ public class OrganMeetController extends BaseController {
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/findList.json",method=RequestMethod.POST)
+	@RequestMapping(value="/findList",method=RequestMethod.POST)
 	public Map<String, Object> findList(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -210,7 +210,7 @@ public class OrganMeetController extends BaseController {
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/findOne.json",method=RequestMethod.POST)
+	@RequestMapping(value="/findOne",method=RequestMethod.POST)
 	public Map<String, Object> findOne(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -241,7 +241,7 @@ public class OrganMeetController extends BaseController {
 	 * @throws AssociateServiceException 
 	 */
 	@ResponseBody
-	@RequestMapping(value="/deleteById.json",method=RequestMethod.POST)
+	@RequestMapping(value="/deleteById",method=RequestMethod.POST)
 	public Map<String, Object> deleteById(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, AssociateServiceException {
 		 String requestJson = getJsonParamStr(request);
