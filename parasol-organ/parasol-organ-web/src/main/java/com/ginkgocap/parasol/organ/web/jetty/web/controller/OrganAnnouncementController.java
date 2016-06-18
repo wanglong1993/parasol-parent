@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.gintong.ywxt.organization.model.CustomerAnnouncement;
 import com.gintong.ywxt.organization.model.OrganRegister;
-import com.gintong.ywxt.organization.model.OrganUserLog;
 import com.gintong.ywxt.organization.service.CustomerAnnouncementService;
 import com.gintong.ywxt.organization.service.OrganRegisterService;
 import com.gintong.ywxt.organization.service.OrganUserLogService;
@@ -126,7 +125,6 @@ public class OrganAnnouncementController extends BaseController {
 		} catch (Exception e) {
 			return returnFailMSGNew("01", "系统异常,请稍后再试");
 		}
-
 		return genRespBody(result, null);
 	}
 	

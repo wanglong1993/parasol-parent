@@ -31,6 +31,7 @@ import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
+import com.ginkgocap.ywxt.organ.model.Constants;
 import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.CustomerCollect;
 import com.ginkgocap.ywxt.organ.model.CustomerTag;
@@ -284,11 +285,13 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws DirectorySourceServiceException 
+	 * @throws NumberFormatException 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/organ/findDirectoryIdsCustomer", method = RequestMethod.POST)
 	public Map<String, Object> findDirectoryIdsCustomer(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws NumberFormatException, DirectorySourceServiceException {
 		UserBasic user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
@@ -301,22 +304,29 @@ public class OrgAndCustomerController  extends BaseController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
+		Long appId = 1l;
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
 			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
-				  List<Long> custermIds = JsonUtil.getList(j, "custermIds", Long.class);
+				  String directoryId=j.optString("directoryId"); //目录id
 			      String type=j.optString("type");//1创建的客户，2收藏的客户
-	              if(!custermIds.isEmpty()){
-	            	  Map map=new HashMap();
-	            	  map.put("list", custermIds);
-	            	  map.put("userId", user.getUserId());
-	            	  List<SimpleCustomer> simpleCustormerList = simpleCustomerService.selectByIds(map,type);
-	                  responseDataMap.put("simpleCustormerList", simpleCustormerList);
-	              }else{
-	            	  responseDataMap.put("simpleCustormerList", null);
-	              }
+			      int currentPage=j.optInt("index"); //默认currentPage为1
+				  int pageSize=j.optInt("size");
+			      List<DirectorySource> dirctoryList = directorySourceService.getDirectorySourcesByDirectoryId(appId, user.getUserId(), Long.valueOf(directoryId));
+			      if(!dirctoryList.isEmpty()){
+			    	  for (DirectorySource directorySource : dirctoryList) {
+			    		  Map map=new HashMap();
+		            	  map.put("list", directorySource.getSourceId());
+		            	  map.put("userId", user.getUserId());
+		            	  map.put("start", (currentPage-1)*pageSize);
+		            	  map.put("end", pageSize);
+		            	  map.put("currentPage", currentPage);
+		            	  Map<String, Object> simpleCustormerMap = simpleCustomerService.selectByIds(map,type);
+		                  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
+					}
+			      }
 			}
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
@@ -335,11 +345,13 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws TagSourceServiceException 
+	 * @throws NumberFormatException 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/organ/findTagIdCustomer", method = RequestMethod.POST)
 	public Map<String, Object> findTagIdCustomer(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws NumberFormatException, TagSourceServiceException {
 		UserBasic user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
@@ -352,22 +364,33 @@ public class OrgAndCustomerController  extends BaseController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
+		Long appId = 1l;
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
 			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
-					List<Long> custermIds = JsonUtil.getList(j, "custermIds", Long.class);
-				    String type=j.optString("type");//1创建的客户，2收藏的客户
-	                if(!custermIds.isEmpty()){
-	            	  Map map=new HashMap();
-	            	  map.put("list", custermIds);
-	            	  map.put("userId", user.getUserId());
-	                   List<SimpleCustomer> simpleCustormerList = simpleCustomerService.selectByIds(map,type);
-	                   responseDataMap.put("simpleCustormerList", simpleCustormerList); 
-	                }else{
-	            	  responseDataMap.put("simpleCustormerList", null); 
-	                }
+				  String tagId=j.optString("tagId"); //标签id
+			      String type=j.optString("type");//1创建的客户，2收藏的客户
+			      int currentPage=j.optInt("index"); //默认currentPage为1
+				  int pageSize=j.optInt("size");
+				  List<TagSource> tagsourceList = tagSourceService.getTagSourcesByAppIdTagId(appId, Long.valueOf(tagId), (currentPage-1)*pageSize, pageSize);
+				  int count=tagSourceService.countTagSourcesByAppIdTagId(appId, Long.valueOf(tagId));
+				  pageSize=pageSize>Constants.max_select_count?Constants.max_select_count:pageSize;
+				  PageUtil page = new PageUtil((int)count, currentPage, pageSize);
+				  if(!tagsourceList.isEmpty()){
+			    	  for (TagSource tagSource : tagsourceList) {
+			    		  Map map=new HashMap();
+		            	  map.put("list", tagSource.getSourceId());
+		            	  map.put("userId", user.getUserId());
+		            	  map.put("start", (currentPage-1)*pageSize);
+		            	  map.put("end", pageSize);
+		            	  map.put("currentPage", currentPage);
+		            	  Map<String, Object> simpleCustormerMap = simpleCustomerService.selectByIds(map,type);
+		                  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
+		                  responseDataMap.put("page", page);
+					}
+			      }
 			    }	
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
