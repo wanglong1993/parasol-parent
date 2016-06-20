@@ -178,22 +178,17 @@ public class OrganMeetController extends BaseController {
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
 		boolean flag = true;
-		try {
 		if (requestJson != null && !"".equals(requestJson)){
 			JSONObject j = JSONObject.fromObject(requestJson);
-			String creatorId=JsonUtil.getJsonNode(requestJson, "creatorId").toString();
-			String creatortype=JsonUtil.getJsonNode(requestJson, "creatortype").toString();
+			Long creatorId = j.optLong("creatorId");
+			String creatortype = j.optString("creatortype");
 			int currentPage = j.getInt("currentPage");
 			int pageSize = j.getInt("pageSize");
-			Map<String,Object> mapTemp = customerMeetingDetailService.findByCustomerId(Long.valueOf(creatorId),creatortype, currentPage, pageSize);
+			Map<String,Object> mapTemp = customerMeetingDetailService.findByCustomerId(creatorId,creatortype, currentPage, pageSize);
 			responseDataMap.put("success",true);
 			responseDataMap.put("meetList", mapTemp.get("results"));
 			responseDataMap.put("page", mapTemp.get("page"));
 		}else{
-			setSessionAndErr(request, response, "-1", "请稍后再试！");
-			flag = false;
-		}
-		} catch (Exception e) {
 			setSessionAndErr(request, response, "-1", "请稍后再试！");
 			flag = false;
 		}
