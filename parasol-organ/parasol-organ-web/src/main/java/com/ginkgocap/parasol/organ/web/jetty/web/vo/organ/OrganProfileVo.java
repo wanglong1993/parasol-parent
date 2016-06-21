@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,8 +46,7 @@ public class OrganProfileVo implements Serializable {
 	private long loginUserId;// 当前登陆用户id
 	// 自定义板块
 	private List<CustomerPersonalPlate> personalPlateList;
-	// 模块
-    private List<CustomerPersonalPlate> mouduesPlateList;
+	
 
 	private List<CustomerPersonalLine> propertyList; // 自定义属性
 	private String virtual;// 是否是组织 0 客户 1 用户注册组织 2 大数据推送的客户
@@ -71,7 +71,7 @@ public class OrganProfileVo implements Serializable {
 	private String organNumber;// 组织号
 
     // 复杂模块
-    private JSONObject  complexmodule;
+    private JSONArray  moudles;
     
 	
 	// 模板Id  
@@ -436,23 +436,16 @@ public class OrganProfileVo implements Serializable {
 		this.linkManName = linkManName;
 	}
 
+	public JSONArray getMoudles() {
+		return moudles;
+	}
+
+	public void setMoudles(JSONArray moudles) {
+		this.moudles = moudles;
+	}
+
 	
-    public List<CustomerPersonalPlate> getMouduesPlateList() {
-	 
-		return mouduesPlateList==null?new ArrayList<CustomerPersonalPlate>():mouduesPlateList;
-	 }
-	 
-	public void setMouduesPlateList(List<CustomerPersonalPlate> mouduesPlateList) {
-			this.mouduesPlateList = mouduesPlateList;
-	 }
-		
-		
-	public JSONObject getComplexmodule() {
-		return complexmodule==null ?new JSONObject():complexmodule;
-	}
-	public void setComplexmodule(JSONObject complexmodule) {
-		this.complexmodule = (complexmodule==null ?new JSONObject():complexmodule);
-	}
+    
 	
 	
 }
