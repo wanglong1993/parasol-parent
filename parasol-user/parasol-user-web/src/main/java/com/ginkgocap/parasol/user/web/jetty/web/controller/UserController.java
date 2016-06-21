@@ -2168,7 +2168,7 @@ public class UserController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				if(code.equals(vcode.toString())){
-					resultMap.put( "message", Prompt.code_cannot_be_null_or_empty);
+					resultMap.put( "message", Prompt.code_is_not_right);
 					resultMap.put( "status", 0);
 					return new MappingJacksonValue(resultMap);
 				}
