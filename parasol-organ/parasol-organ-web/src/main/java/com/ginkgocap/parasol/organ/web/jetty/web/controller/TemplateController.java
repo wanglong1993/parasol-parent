@@ -1,9 +1,12 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.TemplateVo;
 import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.template.TemplateService;
+
 import net.sf.json.JSONObject;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +56,14 @@ public class TemplateController extends BaseController{
 						System.out.println("zhixingfangfaqian");
 						System.out.println(templateService+"kkkkk");
 					    Template template=templateService.findTemplateById(templateId);
-					    responseDataMap.put("templates", template);
+					    
+					    TemplateVo templateVo=new TemplateVo();
+					    templateVo.setTemplateName(template.getName());
+					    templateVo.setTemplateId(template.getId());
+					    templateVo.setTemplateType(template.getType());
+					    templateVo.setMoudles(template.getMoudles());
+					    responseDataMap.put("template", templateVo);
+					    
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -105,7 +116,6 @@ public class TemplateController extends BaseController{
 	    
 	    
 	    
-	    
 	  
 	  //根据Id 查询模板
 	    @ResponseBody
@@ -145,7 +155,7 @@ public class TemplateController extends BaseController{
 	    
 		  //根据Id 查询模板
 		    @ResponseBody
-			@RequestMapping(value = "/template/deleteTemplate.json", method = RequestMethod.POST)
+			@RequestMapping(value = "/template/deleteTemplate", method = RequestMethod.POST)
 			public Map<String, Object> deleteTemplate(HttpServletRequest request,
 					HttpServletResponse response) throws IOException {
 		    	System.out.println("/template/deleteTemplate.json");

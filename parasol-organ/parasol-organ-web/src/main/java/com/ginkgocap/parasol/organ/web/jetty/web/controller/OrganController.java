@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
@@ -25,7 +26,10 @@ import com.ginkgocap.ywxt.util.DateFunc;
 import com.ginkgocap.ywxt.util.JsonUtil;
 import com.gintong.ywxt.organization.model.OrganRegister;
 import com.gintong.ywxt.organization.service.OrganRegisterService;
+
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -41,6 +45,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,7 +106,7 @@ public class OrganController extends BaseController {
 	/**
 	 * 添加组织详情(新的web端调用)
 	 * 
-	 * @author cazhigang
+	 * @author caizhigang
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/organ/saveOrganProfile", method = RequestMethod.POST)
@@ -121,7 +126,9 @@ public class OrganController extends BaseController {
 
 				OrganRegister organRegister=organRegisterService.getOrganRegisterById(userBasic.getUserId());
 				ObjectMapper objectMapper = new ObjectMapper();
-				Customer customer = objectMapper.readValue(jo.toString(), Customer.class);
+				//Customer customer = objectMapper.readValue(jo.toString(), Customer.class);
+				
+				Customer customer=JSON.parseObject(requestJson, Customer.class);
 
 				if ("1".equals(customer.getIsListing()) && isNullOrEmpty(customer.getStockNum())) {
 					setSessionAndErr(request, response, "-1", "上市公司必须填写证券号码！");
@@ -300,6 +307,28 @@ public class OrganController extends BaseController {
 			organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
 			organProfileVo.setLinkManName(customer_temp.getLinkManName());
 
+			if(loginUserId==organId){
+				organProfileVo.setMoudles(customer_temp.getMoudles());
+			}else{// 过滤
+				JSONArray moudles=customer_temp.getMoudles();
+				JSONArray moudltemp=new JSONArray();
+				for(int i=0;i<moudles.size();i++){
+					JSONObject moudleJsonObject=moudles.getJSONObject(i);
+					String moudleType=moudleJsonObject.getString("type");
+					if("complex".equals(moudleType)){
+						
+					}else{
+						int moudlepermissions= moudleJsonObject.getInt("permissions");	
+						if(moudlepermissions==0){// 公开
+							moudltemp.add(moudleJsonObject);
+						}
+					}
+					
+					
+				}
+				organProfileVo.setMoudles(moudltemp);
+			}
+			
 			responseData.put("customer", organProfileVo);
 			responseData.put("bindUserId", customer_temp.getBindUserId());
 			responseData.put("id", organProfileVo.getId());
@@ -330,7 +359,7 @@ public class OrganController extends BaseController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/getOrganProfileAndTemplate.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/getOrganProfileAndTemplate", method = RequestMethod.POST)
 	public Map<String, Object> getOrganProfileAndTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String requestJson = Utils.getJsonIn(request);
 		Map<String, Object> responseData = new HashMap<String, Object>();
@@ -399,6 +428,7 @@ public class OrganController extends BaseController {
                 organProfileVo.setStatus(customer_temp.getStatus());
                 organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
                 organProfileVo.setLinkManName(customer_temp.getLinkManName());
+                organProfileVo.setMoudles(customer_temp.getMoudles());
 
                 responseData.put("customer", organProfileVo);
                 responseData.put("bindUserId", customer_temp.getBindUserId());
