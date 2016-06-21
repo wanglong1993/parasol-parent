@@ -5,11 +5,15 @@ import com.ginkgocap.ywxt.organ.model.JsonObj;
 import com.ginkgocap.ywxt.organ.model.profile.CustomerPersonalLine;
 import com.ginkgocap.ywxt.organ.model.profile.CustomerPersonalPlate;
 import com.ginkgocap.ywxt.organ.model.profile.CustomerPhone;
+
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,8 +48,6 @@ public class CustomerProfileVoNew implements Serializable {
 	private long loginUserId;// 当前登陆用户id
 	// 自定义板块
 	private List<CustomerPersonalPlate> personalPlateList;
-	// 模块
-    private List<CustomerPersonalPlate> mouduesPlateList;
 
 	private List<CustomerPersonalLine> propertyList; // 自定义属性
 	private String virtual;// 是否是组织 0 客户 1 用户注册组织 2 大数据推送的客户
@@ -69,18 +71,16 @@ public class CustomerProfileVoNew implements Serializable {
 	private String linkManName;// 联系人姓名
 	private String organNumber;// 组织号
 
-    // 复杂模块
-    private JSONObject  complexmodule;
-    
-    private String dataType;
-	
-	// 模板Id  
-    private long templateId;
-   
-    
-	private long id; // 当前客户数据的 Id  mongo 中的id
+	// 复杂模块
+	private JSONArray moudles;
 
-    
+	private Map customerPermissions;// 权限
+
+	// 模板Id
+	private long templateId;
+
+	private long id; // 当前客户数据的 Id mongo 中的id
+
 	public long getId() {
 		return id;
 	}
@@ -134,7 +134,8 @@ public class CustomerProfileVoNew implements Serializable {
 	}
 
 	public void setPhoneList(List<CustomerPhone> phoneList) {
-		this.phoneList = phoneList == null ? new ArrayList<CustomerPhone>() : phoneList;
+		this.phoneList = phoneList == null ? new ArrayList<CustomerPhone>()
+				: phoneList;
 	}
 
 	public long getComeId() {
@@ -154,11 +155,13 @@ public class CustomerProfileVoNew implements Serializable {
 	}
 
 	public List<CustomerPersonalLine> getPropertyList() {
-		return propertyList == null ? new ArrayList<CustomerPersonalLine>() : propertyList;
+		return propertyList == null ? new ArrayList<CustomerPersonalLine>()
+				: propertyList;
 	}
 
 	public void setPropertyList(List<CustomerPersonalLine> propertyList) {
-		this.propertyList = propertyList == null ? new ArrayList<CustomerPersonalLine>() : propertyList;
+		this.propertyList = propertyList == null ? new ArrayList<CustomerPersonalLine>()
+				: propertyList;
 		;
 	}
 
@@ -171,11 +174,14 @@ public class CustomerProfileVoNew implements Serializable {
 	}
 
 	public List<CustomerPersonalPlate> getPersonalPlateList() {
-		return personalPlateList == null ? new ArrayList<CustomerPersonalPlate>() : personalPlateList;
+		return personalPlateList == null ? new ArrayList<CustomerPersonalPlate>()
+				: personalPlateList;
 	}
 
-	public void setPersonalPlateList(List<CustomerPersonalPlate> personalPlateList) {
-		this.personalPlateList = personalPlateList == null ? new ArrayList<CustomerPersonalPlate>() : personalPlateList;
+	public void setPersonalPlateList(
+			List<CustomerPersonalPlate> personalPlateList) {
+		this.personalPlateList = personalPlateList == null ? new ArrayList<CustomerPersonalPlate>()
+				: personalPlateList;
 	}
 
 	public List<Long> getColumns() {
@@ -319,7 +325,8 @@ public class CustomerProfileVoNew implements Serializable {
 	}
 
 	public List<Map<String, Object>> getLableList() {
-		return lableList == null ? new ArrayList<Map<String, Object>>() : lableList;
+		return lableList == null ? new ArrayList<Map<String, Object>>()
+				: lableList;
 	}
 
 	public void setLableList(List<Map<String, Object>> lableList) {
@@ -442,29 +449,22 @@ public class CustomerProfileVoNew implements Serializable {
 		this.linkManName = linkManName;
 	}
 
-	
-    public List<CustomerPersonalPlate> getMouduesPlateList() {
-	 
-		return mouduesPlateList==null?new ArrayList<CustomerPersonalPlate>():mouduesPlateList;
-	 }
-	 
-	public void setMouduesPlateList(List<CustomerPersonalPlate> mouduesPlateList) {
-			this.mouduesPlateList = mouduesPlateList;
-	 }
-		
-		
-	public JSONObject getComplexmodule() {
-		return complexmodule==null ?new JSONObject():complexmodule;
+	public JSONArray getMoudles() {
+		return moudles;
 	}
-	public void setComplexmodule(JSONObject complexmodule) {
-		this.complexmodule = (complexmodule==null ?new JSONObject():complexmodule);
+
+	public void setMoudles(JSONArray moudles) {
+		this.moudles = moudles;
 	}
-	
-	public String getDataType() {
-		return dataType;
+
+	public Map getCustomerPermissions() {
+		return customerPermissions == null ? new HashMap()
+				: customerPermissions;
 	}
-	
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
+
+	public void setCustomerPermissions(Map customerPermissions) {
+		this.customerPermissions = (customerPermissions == null ? new HashMap()
+				: customerPermissions);
 	}
+
 }
