@@ -278,4 +278,11 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		return true;
 	}
 
+	@Override
+	public boolean createTagSources(List<TagSource> tagSource)
+			throws TagSourceServiceException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
