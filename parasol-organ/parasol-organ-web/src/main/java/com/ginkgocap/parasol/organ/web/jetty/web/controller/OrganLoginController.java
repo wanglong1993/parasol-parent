@@ -65,7 +65,7 @@ public class OrganLoginController extends BaseController {
                 JSONObject j = JSONObject.fromObject(requestJson);
                 OrganRegister org = JSON.parseObject(requestJson, OrganRegister.class);
                 //增加
-                org.setId(loginUserId);
+                org.setId(org.getId());
                 org.setStatus(Constants.OrganStatus.emailNoActive.v());
                 org.setIsSwitch(0);
                 //organRegisterService.insertOrganRegister(org);
