@@ -55,6 +55,8 @@ public class ParasolLoggerFilter extends OncePerRequestFilter {
         String requestJson = result;
         reader.close();
 
+        logger.info(result);
+
         if (requestJson != null && !"".equals(requestJson)) {
             request.setAttribute("requestJson", requestJson);
             CommonUtil.setRequestIsFromWebFlag(false);
