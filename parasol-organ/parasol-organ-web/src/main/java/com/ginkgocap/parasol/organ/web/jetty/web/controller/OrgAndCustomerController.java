@@ -28,8 +28,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
+import com.ginkgocap.parasol.tags.exception.TagServiceException;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
+import com.ginkgocap.parasol.tags.model.Tag;
 import com.ginkgocap.parasol.tags.model.TagSource;
+import com.ginkgocap.parasol.tags.service.TagService;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.ywxt.organ.model.Constants;
 import com.ginkgocap.ywxt.organ.model.Customer;
@@ -67,6 +70,8 @@ public class OrgAndCustomerController  extends BaseController {
 	private CustomerCollectService customerCollectService;
 	@Autowired
 	private TagSourceService tagSourceService;
+	@Autowired
+	private TagService tagService;
 	@Autowired
 	private DirectorySourceService directorySourceService;
 
@@ -468,6 +473,31 @@ public class OrgAndCustomerController  extends BaseController {
 	}
 	
 	
+	/**
+	 * 创建标签目录（测试用）
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws TagSourceServiceException 
+	 * @throws DirectorySourceServiceException 
+	 * @throws TagServiceException 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/organ/createTagDirecty", method = RequestMethod.POST)
+	public Map<String, Object> createTagDirecty(HttpServletRequest request,
+			HttpServletResponse response) throws TagSourceServiceException, DirectorySourceServiceException, TagServiceException {
+		UserBasic user = getUser(request);
+		// 获取json参数串
+		Tag tag = new Tag();
+		tag.setAppId(1l);
+		tag.setTagName("zbb");
+		tag.setTagType(3);
+		tag.setUserId(user.getUserId());
+		Long aa = tagService.createTag(user.getUserId(), tag);
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("tagId", aa);
+		return model;
+	}
 	
 }
 
