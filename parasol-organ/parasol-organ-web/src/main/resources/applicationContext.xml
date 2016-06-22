@@ -61,8 +61,10 @@
 
 
     </bean>
+    <aop:aspectj-autoproxy/>
+    <context:component-scan base-package="com.gintong.common.phoenix.permission" annotation-config="true" />
 
-	<import resource="classpath:organ-dubbo-config.xml" />
+    <import resource="classpath:organ-dubbo-config.xml" />
    <import resource="classpath:organ-dubbo-consumer.xml" />
     <import resource="classpath:person-dubbo-consumer.xml" />
 	<import resource="classpath:file-dubbo-consumer.xml"/>
@@ -73,7 +75,9 @@
 	<import resource="classpath:message-dubbo-consumer.xml"/>
     <import resource="classpath:user-dubbo-consumer.xml" />
 
+
     <import resource="classpath:organization-dubbo-consumer.xml" />
+    <import resource="classpath*:permission-dubbo-consumer.xml" />
 
 
 

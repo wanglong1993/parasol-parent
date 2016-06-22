@@ -263,6 +263,11 @@
             <artifactId>phoenix-organization-api</artifactId>
             <version>${organization.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.gintong.common</groupId>
+            <artifactId>phoenix-permission-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
         <!-- jdbc start -->
         <dependency>
