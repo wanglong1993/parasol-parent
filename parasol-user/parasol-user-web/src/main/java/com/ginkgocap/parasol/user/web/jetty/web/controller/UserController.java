@@ -176,8 +176,14 @@ public class UserController extends BaseControl {
 	private String vcodeUrlGintong; 	
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
+    private static int st = 0;
+    private int index = 0;  
 
-
+    @RequestMapping("/user/user/test")
+    public String test() {
+        System.out.println(st++ + " | " + index++);
+        return "/lsh/ch5/test";
+    }
 	/**
 	 * 完善个人用户信息
 	 * @picId 个人或组织LOGOID
