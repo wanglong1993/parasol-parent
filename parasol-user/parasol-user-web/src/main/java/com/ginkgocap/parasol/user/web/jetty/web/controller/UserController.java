@@ -103,7 +103,6 @@ import com.gintong.rocketmq.api.enums.TopicType;
  * 用户登录注册
  */
 @RestController
-@Scope("prototype")
 public class UserController extends BaseControl {
 	private static Logger logger = Logger.getLogger(UserController.class);
 	private static long sourceType  = 2l;
@@ -179,11 +178,14 @@ public class UserController extends BaseControl {
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
     private static int st = 0;
-    private int index = 0;  
+    private ThreadLocal<Integer> indexThreadLocal = new ThreadLocal<Integer>();  
 
     @RequestMapping("/user/user/test")
     public String test() {
-        System.out.println(st++ + " c " + index++);
+    	if(ObjectUtils.isEmpty(indexThreadLocal.get())){
+    		indexThreadLocal.set(new Integer(1));
+    	}
+        System.out.println(st++ + " c " +indexThreadLocal.get().toString() );
         return "/lsh/ch5/test";
     }
 	/**
