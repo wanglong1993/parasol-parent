@@ -44,7 +44,6 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -177,18 +176,8 @@ public class UserController extends BaseControl {
 	private String vcodeUrlGintong; 	
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
-    private static int st = 0;
-    private ThreadLocal<Integer> indexThreadLocal = new ThreadLocal<Integer>();  
 
-    @RequestMapping("/user/user/test")
-    public String test() {
-    	if(ObjectUtils.isEmpty(indexThreadLocal.get())){
-    		indexThreadLocal.set(new Integer(1));
-    	}
-        System.out.println(st++ + " c " +indexThreadLocal.get().toString() );
-        return "/lsh/ch5/test";
-    }
-	/**
+    /**
 	 * 完善个人用户信息
 	 * @picId 个人或组织LOGOID
 	 * @param name 昵称,企业全称
