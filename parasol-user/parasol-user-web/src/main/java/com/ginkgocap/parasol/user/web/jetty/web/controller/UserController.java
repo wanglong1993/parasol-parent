@@ -177,8 +177,7 @@ public class UserController extends BaseControl {
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
 
-
-	/**
+    /**
 	 * 完善个人用户信息
 	 * @picId 个人或组织LOGOID
 	 * @param name 昵称,企业全称
