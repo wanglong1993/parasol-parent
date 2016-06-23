@@ -1,14 +1,18 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
-import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.RedisKeyUtils;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
-import com.ginkgocap.parasol.user.model.UserBasic;
-import com.ginkgocap.parasol.user.service.UserBasicService;
+
+import com.ginkgocap.ywxt.cache.Cache;
+import com.ginkgocap.ywxt.user.model.User;
+import com.ginkgocap.ywxt.user.service.UserService;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +28,7 @@ public abstract class BaseController {
 	private static Logger logger = Logger.getLogger(BaseController.class);
 
     @Autowired
-    private UserBasicService userBasicService;
+    private UserService userService;
     /**
      * 获取head中的json参数串
      *
@@ -125,18 +129,45 @@ public abstract class BaseController {
         }
     }
 
-    protected UserBasic getUser(HttpServletRequest request) {
-        UserBasic userBasic=new UserBasic();
-        Long loginUserId = LoginUserContextHolder.getUserId();
-
-        try {
-            userBasic.setUserId(loginUserId);
-            userBasic.setName("name");
-         //  userBasic= userBasicService.getObject(loginUserId);
-        }catch(Exception e){
-            //throw e;
+    protected static boolean isWebRequest(HttpServletRequest request) {
+        String s = getRequestSource(request);
+        if (StringUtils.isBlank(s)) {
+            return false;
         }
-        return  userBasic;
+        return true;
+    }
+
+    public static String getRequestSource(HttpServletRequest request) {
+        return request.getHeader("s");
+    }
+
+
+    protected User getUser(HttpServletRequest request) {
+        // 判断客户端请求方式
+        if (isWebRequest(request)) {
+            String sessionId = request.getHeader("sessionID");
+            if (StringUtils.isNotBlank(sessionId)) {
+                String key = RedisKeyUtils.getSessionIdKey(sessionId);
+                return getUser(request, key);
+            }
+        } else {
+            String sessionId = request.getHeader("sessionID");
+            if (sessionId != null && !"null".equals(sessionId)
+                    && !"".equals(sessionId)) {
+                String key = "user" + sessionId;
+                return getUser(request, key);
+            }
+        }
+        return null;
+    }
+
+    private User getUser(HttpServletRequest request, String key) {
+        WebApplicationContext wac = WebApplicationContextUtils
+                .getWebApplicationContext(request.getSession()
+                        .getServletContext());
+        Cache cache = (Cache) wac.getBean("cache");
+        User user = (User) cache.getByRedis(key);
+        return user;
     }
     /**
      * 设置金桐脑用户
@@ -144,11 +175,11 @@ public abstract class BaseController {
      * @param request
      * @return
      */
-    public UserBasic getJTNUser(HttpServletRequest request) {
-        UserBasic user = getUser(request);
+    public User getJTNUser(HttpServletRequest request) {
+        User user = getUser(request);
         if (null == user) {
-            user = new UserBasic();
-            user.setUserId(0l);
+            user = new User();
+            user.setId(0);// 金桐脑
             return user;
         }
         return user;

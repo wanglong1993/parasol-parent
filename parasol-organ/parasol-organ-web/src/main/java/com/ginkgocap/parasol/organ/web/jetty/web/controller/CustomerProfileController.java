@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ginkgocap.ywxt.user.service.UserService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -37,11 +38,6 @@ import com.ginkgocap.parasol.tags.model.Tag;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagService;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
-import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
-import com.ginkgocap.parasol.user.model.UserBasic;
-import com.ginkgocap.parasol.user.model.UserLoginRegister;
-import com.ginkgocap.parasol.user.service.UserBasicService;
-import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
@@ -67,16 +63,14 @@ import com.gintong.frame.util.dto.Notification;
 public class CustomerProfileController extends BaseController {
 	
     @Autowired
-    private UserBasicService userBasicService;
+    private UserService userService;
 	
 	@Resource
 	private CustomerService customerService;
 
 	@Autowired
 	private TemplateService templateService;
-	
-	@Autowired
-	UserLoginRegisterService userLoginRegisterService;
+
 
 	@Autowired
 	PermissionRepositoryService permissionRepositoryService;
@@ -125,7 +119,7 @@ public class CustomerProfileController extends BaseController {
 
 		String  requestJson = getJsonParamStr(request);;
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
-		UserBasic userBasic = null;
+		User userBasic = null;
 		if (requestJson != null && !"".equals(requestJson)) {
 			try {
 				JSONObject jo = JSONObject.fromObject(requestJson);
@@ -147,7 +141,7 @@ public class CustomerProfileController extends BaseController {
 				Customer oldCustomer = customerService
 						.findOne(customer.getId());
 				if (oldCustomer != null
-						&& userBasic.getUserId() != oldCustomer.getCreateById()) {// 修改
+						&& userBasic.getId() != oldCustomer.getCreateById()) {// 修改
 					setSessionAndErr(request, response, "-1", "您没有权限进行此操作");
 					return returnFailMSGNew("01", "您没有权限进行此操作");
 				}
@@ -158,7 +152,7 @@ public class CustomerProfileController extends BaseController {
 				if (isNullOrEmpty(customer.getPicLogo())) {
 					customer.setPicLogo(Constants.ORGAN_DEFAULT_PIC_PATH);
 				}
-				customer.setCreateById(userBasic.getUserId());
+				customer.setCreateById(userBasic.getId());
 				customer.setVirtual("0");
 				customer.setAuth(-1);// 客户都是未进行认证的。
 				customer.setUtime(DateFunc.getDate());
@@ -215,7 +209,7 @@ public class CustomerProfileController extends BaseController {
 				} else {
 
 					PermissionQuery p = new PermissionQuery();
-					p.setUserId(userBasic.getUserId());
+					p.setUserId(userBasic.getId());
 					p.setResId(customer.getCustomerId());
 					p.setResType((short) sourceType);
 					InterfaceResult interfaceReslut = customerService
@@ -260,7 +254,7 @@ public class CustomerProfileController extends BaseController {
 								customer.getCustomerId(), ResourceType.ORG)
 								.getResponseData();
 					}
-					per.setResOwnerId(userBasic.getUserId());// 资源所有者id
+					per.setResOwnerId(userBasic.getId());// 资源所有者id
 					per.setPublicFlag(customerPermissions.getInt("pubicFlag"));// 公开-1，私密-0
 					per.setShareFlag(customerPermissions.getInt("shareFlag"));// 可分享-1,不可分享-0
 					per.setConnectFlag(customerPermissions
@@ -282,7 +276,7 @@ public class CustomerProfileController extends BaseController {
 				Directory directory = new Directory();
 				directory.setAppId(appId);
 				directory.setName("蔡志刚" + System.currentTimeMillis());
-				directory.setUserId(userBasic.getUserId());
+				directory.setUserId(userBasic.getId());
 				directory.setTypeId(3);
 
 				long directoryId = directoryService.createDirectoryForRoot(
@@ -291,7 +285,7 @@ public class CustomerProfileController extends BaseController {
 
 				if (!isAdd) {// 如果不是新增资源先删除原来的目录
 					directorySourceService.removeDirectorySourcesBySourceId(
-							userBasic.getUserId(), (long) 1, (int) sourceType,
+							userBasic.getId(), (long) 1, (int) sourceType,
 							customer.getCustomerId());
 				}
 
@@ -300,7 +294,7 @@ public class CustomerProfileController extends BaseController {
 					directorySource = new DirectorySource();
 					directorySource.setDirectoryId(directoryArry.getLong(i));
 					directorySource.setAppId(appId);
-					directorySource.setUserId(userBasic.getUserId());
+					directorySource.setUserId(userBasic.getId());
 					directorySource.setSourceId(customer.getCustomerId());
 					directorySource.setSourceType((int) sourceType);
 					directorySource.setCreateAt(System.currentTimeMillis());
@@ -315,13 +309,13 @@ public class CustomerProfileController extends BaseController {
 				tag.setAppId(appId);
 				tag.setTagName("蔡志刚:  " + System.currentTimeMillis());
 				tag.setTagType(sourceType);
-				long tagId = tagService.createTag(userBasic.getUserId(), tag);
+				long tagId = tagService.createTag(userBasic.getId(), tag);
 
 				System.out.println("创建标签为:  " + tagId);
 
 				if (!isAdd) {// 如果不是新增客户 先删除原来的标签
 					tagSourceService.removeTagSource((long) 1,
-							userBasic.getUserId(), customer.getId());
+							userBasic.getId(), customer.getId());
 				}
 
 				if (tagArry != null && tagArry.size() > 0) {// 添加标签
@@ -330,7 +324,7 @@ public class CustomerProfileController extends BaseController {
 						TagSource tagSource = new TagSource();
 						tagSource.setTagId(tagId);
 						tagSource.setAppId(appId);
-						tagSource.setUserId(userBasic.getUserId());
+						tagSource.setUserId(userBasic.getId());
 						tagSource.setSourceId(customer.getCustomerId());
 						tagSource.setSourceType(sourceType);
 						tagSource.setCreateAt(System.currentTimeMillis());
@@ -343,11 +337,11 @@ public class CustomerProfileController extends BaseController {
 
 					List<Associate> associateList = associateService
 							.getAssociatesBySourceId(appId,
-									userBasic.getUserId(),
+									userBasic.getId(),
 									customer.getCustomerId());
 					for (Associate associate : associateList) {
 						associateService.removeAssociate(appId,
-								userBasic.getUserId(), associate.getId());
+								userBasic.getId(), associate.getId());
 					}
 				}
 				JSONArray associateArray = jo.getJSONArray("associateList");
@@ -357,7 +351,7 @@ public class CustomerProfileController extends BaseController {
 					JSONObject associateJsonObject = (JSONObject) associateArray
 							.opt(i);
 					Associate associate = new Associate();
-					associate.setUserId(userBasic.getUserId());
+					associate.setUserId(userBasic.getId());
 					associate.setAppId(1);
 					associate.setSourceTypeId(sourceType);
 					associate.setSourceId(customer.getCustomerId());
@@ -375,7 +369,7 @@ public class CustomerProfileController extends BaseController {
 							.getString("assoc_title") : null);
 					associate.setCreateAt(System.currentTimeMillis());
 					associateService.createAssociate(appId,
-							userBasic.getUserId(), associate);
+							userBasic.getId(), associate);
 				}
 				// 生成动态
 				// saveCustomerDynamicNews(user,customer,customerPermissions.toString());
@@ -413,7 +407,7 @@ public class CustomerProfileController extends BaseController {
 		CustomerProfileVoNew customer_new = new CustomerProfileVoNew();
     	Customer customer_temp = customerService.findCustomerCurrentData(customerId);//组织详情基本资料
     	String sckNum ="";
-    	UserBasic userBasic = null;
+    	User userBasic = null;
     	if(customer_temp!= null){
     		sckNum = customer_temp.getStockNum();//证券号码
     		customer_new.setCustomerId(customer_temp.getCustomerId());
@@ -422,9 +416,9 @@ public class CustomerProfileController extends BaseController {
     		customer_new.setIndustryId(customer_temp.getIndustryId());
     		customer_new.setIsListing(customer_temp.getIsListing());
     		userBasic=getUser(request);
-    		 customer_new.setLoginUserId(userBasic.getUserId());
+    		 customer_new.setLoginUserId(userBasic.getId());
     		 //新增是否收藏
-    		 customer_new.setIsCollect(customerCollectService.findByUserIdAndCustomerId(userBasic.getUserId(), customer_temp.getCustomerId())!=null?"1":"0");
+    		 customer_new.setIsCollect(customerCollectService.findByUserIdAndCustomerId(userBasic.getId(), customer_temp.getCustomerId())!=null?"1":"0");
 //    		 cusotmerCommonService.findCustomerAuth(view, customer_new, customer_temp,user);
     		 
     		customer_new.setStockNum(sckNum);
@@ -519,7 +513,7 @@ public class CustomerProfileController extends BaseController {
 	// 账号是否是组织 0:个人 1:组织
 	public boolean getUserType(long userId) {
 		
-		UserLoginRegister userLoginRegister;
+		/*UserLoginRegister userLoginRegister;
 		try {
 			userLoginRegister = userLoginRegisterService.getUserLoginRegister(userId);
 			if (userLoginRegister!=null) {
@@ -528,7 +522,7 @@ public class CustomerProfileController extends BaseController {
 		} catch (UserLoginRegisterServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		return false;
 	}
@@ -553,7 +547,7 @@ public class CustomerProfileController extends BaseController {
 		CustomerProfileVoNew customer_new = new CustomerProfileVoNew();
     	Customer customer_temp = customerService.findCustomerDataInTemplate(customerId, templateId);//组织详情基本资料
     	String sckNum ="";
-    	UserBasic userBasic = null;
+    	User userBasic = null;
     	if(customer_temp!= null){
     		userBasic=getUser(request);
     		sckNum = customer_temp.getStockNum();//证券号码
@@ -562,9 +556,9 @@ public class CustomerProfileController extends BaseController {
     		customer_new.setIndustry(customer_temp.getIndustry());
     		customer_new.setIndustryId(customer_temp.getIndustryId());
     		customer_new.setIsListing(customer_temp.getIsListing());
-    		 customer_new.setLoginUserId(userBasic.getUserId());
+    		 customer_new.setLoginUserId(userBasic.getId());
     		 //新增是否收藏
-    		 customer_new.setIsCollect(customerCollectService.findByUserIdAndCustomerId(userBasic.getUserId(), customer_temp.getCustomerId())!=null?"1":"0");
+    		 customer_new.setIsCollect(customerCollectService.findByUserIdAndCustomerId(userBasic.getId(), customer_temp.getCustomerId())!=null?"1":"0");
 //    		 cusotmerCommonService.findCustomerAuth(view, customer_new, customer_temp,user);
     		 
     		customer_new.setStockNum(sckNum);
@@ -633,7 +627,7 @@ public class CustomerProfileController extends BaseController {
 	public Map<String, Object> delete(HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("/customer/deleteCustomer.json");
-		UserBasic userBasic = getUser(request);
+		User userBasic = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -659,7 +653,7 @@ public class CustomerProfileController extends BaseController {
 			    
 			  PermissionQuery p=new PermissionQuery();
 			  p.setResId(customerId);
-			  p.setUserId(userBasic.getUserId());
+			  p.setUserId(userBasic.getId());
 			  p.setResType((short)3);//  3组织
 			  
 			  InterfaceResult<Boolean>  interfaceResult=customerService.deleteCustomerByCustomerId(customerId, p);

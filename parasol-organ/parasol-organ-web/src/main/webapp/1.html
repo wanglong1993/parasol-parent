@@ -1,0 +1,166 @@
+
+
+
+<html>
+
+
+
+
+<head>
+
+<script type="text/javascript" src="jquery-1.0.js"></script>
+
+
+<script  type="text/javascript">
+
+		function  test(){
+alert();
+					var ajax_url ="http://192.168.130.131:8099/organ/comment/selectComment?access_token=7f06cd98-ad42-4e9c-ad75-806de06e62fc";//��ȡ�Խ�url��ַ
+					var ajax_data =  { 
+							"orgid":3,        
+							"currentPage":1,  
+							"pageSize":4,  
+							"type":1
+						}
+					var ajaxTimeout = $.ajax({
+					beforeSend : function(request){ 
+					request.setRequestHeader('s','web'); 
+					},
+					url: ajax_url,  
+					type:'post',
+					timeout : 120000,
+					dataType:'json',
+					async:true,
+					data:JSON.stringify(ajax_data),
+					success:function(data){
+							alert(data);
+					},
+							complete:function(XMLHttpRequest,status){
+							 if(status=='timeout'){
+					ajaxTimeout.abort();
+					  alert("��ʱ");
+					}
+					����	},
+					error:function(msg){
+					alert(msg);
+					}
+					});
+		}
+		
+		
+		function  testUI(){
+
+					var ajax_url ="http://192.168.130.116:81/organ/comment/selectComment.json";//��ȡ�Խ�url��ַ
+					var ajax_data =  { 
+							"orgid":3,        
+							"currentPage":1,  
+							"pageSize":4,  
+							"type":1
+						}
+					var ajaxTimeout = $.ajax({
+					beforeSend : function(request){ 
+					request.setRequestHeader('s','web'); 
+					request.setRequestHeader('sessionID',"eXNzLTM0MzQtZHNmNTUtMjIyNTY3MzcxNDY2NTk5MDQ4OTEy"); 
+					},
+					url: ajax_url,  
+					type:'post',
+					timeout : 120000,
+					dataType:'json',
+					async:true,
+					data:JSON.stringify(ajax_data),
+					success:function(data){
+							
+							alert(JSON.stringify(data));
+					},
+							complete:function(XMLHttpRequest,status){
+							 if(status=='timeout'){
+					ajaxTimeout.abort();
+					  alert("��ʱ");
+					}
+					����	},
+					error:function(msg){
+					alert(JSON.stringify(msg));
+					}
+					});
+		}
+		
+		
+		
+		
+		
+		function getMethodReturnJsonValue() {
+	
+	
+		var url='http://192.168.130.116:8099//organ/organ/completeInfo?access_token=7f06cd98-ad42-4e9c-ad75-806de06e62fc';
+		$.ajax({
+			url : url,
+			data :  "xxxxx",
+			
+			async : false,
+			type : 'POST',
+            dataType: "jsonp",
+            jsonp: "callback",
+            jsonpCallback:"flightHandler",
+			cache : false,
+			success : function(data,statusText, jqXHR) {
+				sessionId=jqXHR.getResponseHeader("sessionID");
+				$("#showResult").val(data);
+				//$("#resultDiv").html(data);
+			}
+		});
+	
+	
+	
+}
+		
+		
+		function getMethodReturnJsonValue22() {
+	
+	
+		var url='http://192.168.130.116:8099//organ/organ/completeInfo?access_token=c7660600-cdc9-4d2f-8f02-f746a86f5ba1';
+		$.ajax({
+			url : url,
+			data :  "xxxxx",
+			beforeSend: function(xhr){xhr.setRequestHeader('sessionID', "eXNzLTM0MzQtZHNmNTUtMjIyNTY0MzA1MTQ2NjYwMjQ3MzAzNw");},
+			async : false,
+			type : 'POST',
+            dataType: "jsonp",
+            jsonp: "callback",
+            jsonpCallback:"flightHandler",
+            cache : false,
+			success : function(data,statusText, jqXHR) {
+				sessionId=jqXHR.getResponseHeader("sessionID");
+				$("#showResult").val(data);
+				//$("#resultDiv").html(data);
+			}
+		});
+	
+	}
+		
+</script>
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+
+<button type="button" onclick="test()">����</button>
+
+<button type="button" onclick="testUI()">����UI</button>
+
+
+<button type="button" onclick="getMethodReturnJsonValue()">����UI2</button>
+
+<button type="button" onclick="getMethodReturnJsonValue22()">����UI3</button>
+
+<body>
+</html>
+
+
+

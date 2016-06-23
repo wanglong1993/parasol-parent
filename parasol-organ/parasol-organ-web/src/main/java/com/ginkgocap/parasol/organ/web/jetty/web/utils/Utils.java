@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** @Description:  工具类
  * @Author:       qinguochao  
@@ -220,5 +222,20 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    /**
+     * 功能描述：去掉特殊字符
+     * @param source
+     * @return dest
+     */
+    public static String replaceSpecial(String source) {
+        String dest = "";
+        if (source != null) {
+            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+            Matcher m = p.matcher(source);
+            dest = m.replaceAll("");
+        }
+        return dest;
     }
 }

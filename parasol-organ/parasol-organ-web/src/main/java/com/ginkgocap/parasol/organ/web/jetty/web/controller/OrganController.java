@@ -1,17 +1,10 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.OrganProfileVo;
-import com.ginkgocap.parasol.user.model.UserBasic;
-import com.ginkgocap.parasol.user.model.UserConfig;
-import com.ginkgocap.parasol.user.model.UserFriendly;
-//import com.ginkgocap.parasol.user.service.UserBlackListService;
-import com.ginkgocap.parasol.user.service.UserConfigerService;
-import com.ginkgocap.parasol.user.service.UserFriendlyService;
 import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.SimpleCustomer;
 import com.ginkgocap.ywxt.organ.model.template.Template;
@@ -22,6 +15,11 @@ import com.ginkgocap.ywxt.organ.service.profile.CustomerProfileService;
 import com.ginkgocap.ywxt.organ.service.resource.CustomerResourceService;
 import com.ginkgocap.ywxt.organ.service.tag.RCustomerTagService;
 import com.ginkgocap.ywxt.organ.service.template.TemplateService;
+import com.ginkgocap.ywxt.user.model.User;
+import com.ginkgocap.ywxt.user.model.UserConfig;
+import com.ginkgocap.ywxt.user.service.FriendsRelationService;
+import com.ginkgocap.ywxt.user.service.UserConfigService;
+import com.ginkgocap.ywxt.user.service.UserService;
 import com.ginkgocap.ywxt.util.DateFunc;
 import com.ginkgocap.ywxt.util.JsonUtil;
 import com.gintong.ywxt.organization.model.OrganRegister;
@@ -78,9 +76,12 @@ public class OrganController extends BaseController {
 	// 用户黑名单
 	//private UserBlackListService userBlackService;
 	@Resource
-	private UserConfigerService userConfigService;
+	private UserService userService;
+
+    @Resource
+    private UserConfigService userConfigService;
 	@Autowired
-	private UserFriendlyService userFriendlyService;
+	private FriendsRelationService friendsRelationService;
 	@Resource
 	private CustomerNoticeService customerNoticeService;
 	@Resource
@@ -112,19 +113,20 @@ public class OrganController extends BaseController {
 	@RequestMapping(value = "/organ/saveOrganProfile", method = RequestMethod.POST)
 	public Map<String, Object> saveOrganPro(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String requestJson = "";
+
 		requestJson = getJsonParamStr(request);
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
 
-        UserBasic userBasic=null;
+        User userBasic=null;
 		if (requestJson != null && !"".equals(requestJson)) {
 			try {
 				JSONObject jo = JSONObject.fromObject(requestJson);
 				userBasic=getUser(request);
 
 
-				OrganRegister organRegister=organRegisterService.getOrganRegisterById(userBasic.getUserId());
+				OrganRegister organRegister=organRegisterService.getOrganRegisterById(userBasic.getId());
 				ObjectMapper objectMapper = new ObjectMapper();
 				//Customer customer = objectMapper.readValue(jo.toString(), Customer.class);
 				
@@ -138,8 +140,8 @@ public class OrganController extends BaseController {
 				
 				customer.setPicLogo("".equals(StringUtils.trimToEmpty(customer.getPicLogo())) ? Constants.ORGAN_DEFAULT_PIC_PATH :
                         Utils.alterImageUrl(customer.getPicLogo()));
-				customer.setCreateById(userBasic.getUserId());
-				customer.setUserId(userBasic.getUserId());
+				customer.setCreateById(userBasic.getId());
+				customer.setUserId(userBasic.getId());
 				customer.setVirtual("1");
 				customer.setUtime(DateFunc.getDate());
 				// 数据类型  组织数据
@@ -241,8 +243,8 @@ public class OrganController extends BaseController {
 		Map<String, Object> responseData = new HashMap<String, Object>();
 		JSONObject j = JSONObject.fromObject(requestJson);
 
-        //登录用户id
-        Long loginUserId = LoginUserContextHolder.getUserId();
+        User user=null;
+        user=getUser(request);
         //组织id 同时是用户id
 		long organId = JsonUtil.getNodeToLong(j, "organId");
 
@@ -251,11 +253,12 @@ public class OrganController extends BaseController {
 		if (customer_temp != null) {
             OrganProfileVo organProfileVo = new OrganProfileVo();
 			// 查看组织对应的用户个人设置 看其主页是否允许查看
-			UserConfig uc = userConfigService.getUserConfig(organId);
+			UserConfig uc = userConfigService.getByUserId(organId);
+
 
 			if (uc != null) {
 				if (uc.getHomePageVisible() == null)
-					uc.setHomePageVisible(new Byte("2"));
+					uc.setHomePageVisible(2);
                 organProfileVo.setUserConfig(uc.getHomePageVisible());
 			}
             //看是否是对方的黑名单
@@ -264,16 +267,16 @@ public class OrganController extends BaseController {
 			if (isblack) {
 				return returnFailMSGNew("01", "请查看其它组织");
 			}*/
-            organProfileVo.setLoginUserId(loginUserId);
+            organProfileVo.setLoginUserId(user.getId());
 
             //组织可以收藏吗？？？
 			// 新增是否收藏
 		    //customer_new.setIsCollect(customerCollectService.findByUserIdAndCustomerId(loginUserId, customer_temp.getId()) != null ? "1" : "0");
-			Customer temps = customerService.getCustomerByComeidAndCreateId(customer_temp.getId(), loginUserId);
+			Customer temps = customerService.getCustomerByComeidAndCreateId(customer_temp.getId(), user.getId());
 			if (temps != null) {
                 organProfileVo.setComeId(temps.getId());
 			}
-			organProfileVo.setFriends(isFriend(loginUserId, customer_temp.getUserId()));
+			organProfileVo.setFriends(isFriend(user.getId(), customer_temp.getUserId()));
 			//cusotmerCommonService.findCustomerAuth(view, organProfileVo, customer_temp, user);
 
 			String sckNum = customer_temp.getStockNum();// 证券号码
@@ -307,7 +310,7 @@ public class OrganController extends BaseController {
 			organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
 			organProfileVo.setLinkManName(customer_temp.getLinkManName());
 
-			if(loginUserId==organId){
+			if(user.getId()==organId){
 				organProfileVo.setMoudles(customer_temp.getMoudles());
 			}else{// 过滤
 				JSONArray moudles=customer_temp.getMoudles();
@@ -365,7 +368,8 @@ public class OrganController extends BaseController {
 		Map<String, Object> responseData = new HashMap<String, Object>();
 		JSONObject j = JSONObject.fromObject(requestJson);
         //登录用户id
-        Long loginUserId = LoginUserContextHolder.getUserId();
+        User user=null;
+        user=getUser(request);
         //组织id 同时是用户id
         long organId = JsonUtil.getNodeToLong(j, "organId");
 		long templateId=JsonUtil.getNodeToLong(j, "templateId");
@@ -376,10 +380,10 @@ public class OrganController extends BaseController {
 		if (customer_temp != null) {
             OrganProfileVo organProfileVo = new OrganProfileVo();
             // 查看组织对应的用户个人设置 看其主页是否允许查看
-            UserConfig uc = userConfigService.getUserConfig(organId);
+            UserConfig uc = userConfigService.getByUserId(organId);
             if (uc != null) {
                 if (uc.getHomePageVisible() == null)
-                    uc.setHomePageVisible(new Byte("2"));
+                    uc.setHomePageVisible(2);
                 organProfileVo.setUserConfig(uc.getHomePageVisible());
             }
             //看是否是对方的黑名单
@@ -388,15 +392,15 @@ public class OrganController extends BaseController {
             if (isblack) {
                 return returnFailMSGNew("01", "请查看其它组织");
             }*/
-                organProfileVo.setLoginUserId(loginUserId);
+                organProfileVo.setLoginUserId(user.getId());
                 //组织可以收藏吗？？？
                 // 新增是否收藏
                 //customer_new.setIsCollect(customerCollectService.findByUserIdAndCustomerId(loginUserId, customer_temp.getId()) != null ? "1" : "0");
-                Customer temps = customerService.getCustomerByComeidAndCreateId(customer_temp.getId(), loginUserId);
+                Customer temps = customerService.getCustomerByComeidAndCreateId(customer_temp.getId(), user.getId());
                 if (temps != null) {
                     organProfileVo.setComeId(temps.getId());
                 }
-                organProfileVo.setFriends(isFriend(loginUserId, customer_temp.getUserId()));
+                organProfileVo.setFriends(isFriend(user.getId(), customer_temp.getUserId()));
 
                 String sckNum = customer_temp.getStockNum();// 证券号码
 //			organProfileVo.setCustomerId(customer_temp.getId());
@@ -469,15 +473,10 @@ public class OrganController extends BaseController {
 		 */
         // 用户好友支持 默认为3
         int status=3;
-        UserFriendly userFriendly=null;
 
         try {
-            userFriendly = userFriendlyService.getFriendly(userId, toUserId);
-            if(userFriendly!=null){
-                //和vo定义的值匹配
-                status=userFriendly.getStatus()+1;
+           status = friendsRelationService.getFriendsStatus(userId, toUserId);
 
-            }
 
         }catch (Exception e){
         e.printStackTrace();

@@ -1,27 +1,25 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ginkgocap.parasol.user.model.UserBasic;
+import com.ginkgocap.ywxt.user.model.User;
+import com.gintong.ywxt.organization.model.CustomerAnnouncement;
+import com.gintong.ywxt.organization.model.OrganRegister;
+import com.gintong.ywxt.organization.service.CustomerAnnouncementService;
+import com.gintong.ywxt.organization.service.OrganRegisterService;
+import com.gintong.ywxt.organization.service.OrganUserLogService;
 import jersey.repackaged.com.google.common.collect.Maps;
 import net.sf.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.gintong.ywxt.organization.model.CustomerAnnouncement;
-import com.gintong.ywxt.organization.model.OrganRegister;
-import com.gintong.ywxt.organization.service.CustomerAnnouncementService;
-import com.gintong.ywxt.organization.service.OrganRegisterService;
-import com.gintong.ywxt.organization.service.OrganUserLogService;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by jbqiu on 2016/6/10.
@@ -60,14 +58,14 @@ public class OrganAnnouncementController extends BaseController {
 		requestJson = getJsonParamStr(request);
 		Map<String, Object> responseDataMap = Maps.newHashMap();
 
-        UserBasic userBasic=null;
+        User userBasic=null;
         userBasic=getUser(request);
 		if(requestJson != null && !"".equals(requestJson)){
 			try{
                 userBasic=getUser(request);
 				JSONObject jo = JSONObject.fromObject(requestJson);
 				CustomerAnnouncement ca = new CustomerAnnouncement();
-				ca.setCreateId(userBasic.getUserId());
+				ca.setCreateId(userBasic.getId());
 				ca.setTitle(jo.optString("title"));
 				ca.setContent(jo.optString("content"));
 				ca.setType(0);

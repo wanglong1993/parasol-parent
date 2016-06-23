@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
-import com.ginkgocap.parasol.user.model.UserBasic;
 
 import net.sf.json.JSONObject;
 
@@ -85,7 +84,7 @@ public class OrgAndCustomerController  extends BaseController {
 	@RequestMapping(value = "/organ/getCustomer", method = RequestMethod.POST)
 	public Map<String, Object> getCustomer(HttpServletRequest request,
 			HttpServletResponse response) {
-		UserBasic user = getUser(request);
+		User user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -127,14 +126,14 @@ public class OrgAndCustomerController  extends BaseController {
 		    	map.put("ordertype", ordertype);
 			    List<SimpleCustomer> simpleCustomerList = null;
 				if("1".equals(type)){
-			    	 map.put("userid", user.getUserId());
+			    	 map.put("userid", user.getId());
 			    	 simpleCustomerList=simpleCustomerService.selectUserid(map);
 			    	 int count = simpleCustomerService.selectUseridCount(map);
 			    	 PageUtil page = new PageUtil((int)count, currentPage, pageSize);
 			    	 responseDataMap.put("simpleCustomerList", simpleCustomerList);
 			    	 responseDataMap.put("page", page);	
 			    }else if("2".equals(type)){
-			    	 List<Long> customerIds=customerCollectService.getCustomerIdsByParam(user.getUserId(), 0);
+			    	 List<Long> customerIds=customerCollectService.getCustomerIdsByParam(user.getId(), 0);
 			    	 if(customerIds==null || customerIds.isEmpty()){ 
 			    		 responseDataMap.put("simpleCustomerList", simpleCustomerList);
 			    	 }else{
@@ -172,7 +171,7 @@ public class OrgAndCustomerController  extends BaseController {
 	@RequestMapping(value = "/organ/updateCustomerDirectory", method = RequestMethod.POST)
 	public Map<String, Object> updateCustomerTags(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		UserBasic user = getUser(request);
+		User user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -194,13 +193,13 @@ public class OrgAndCustomerController  extends BaseController {
 			    Long appId = 1l;
 			    Long ctime = System.currentTimeMillis();
 			    //删除以前的
-			    directorySourceService.removeDirectorySourcesBySourceId(user.getUserId(), appId, 1, Long.valueOf(custormId));
+			    directorySourceService.removeDirectorySourcesBySourceId(user.getId(), appId, 1, Long.valueOf(custormId));
 			    if(!directoryIds.isEmpty()){
 			    	for (Long directoryId : directoryIds) {
 			    		DirectorySource directorySource = new DirectorySource();
 						directorySource.setDirectoryId(directoryId);
 						directorySource.setAppId(appId);
-						directorySource.setUserId(user.getUserId());
+						directorySource.setUserId(user.getId());
 						directorySource.setSourceId(Long.valueOf(custormId));
 						directorySource.setSourceType(1);//
 						directorySource.setCreateAt(ctime);
@@ -232,7 +231,7 @@ public class OrgAndCustomerController  extends BaseController {
 	@RequestMapping(value = "/organ/updateCustomerTags", method = RequestMethod.POST)
 	public Map<String, Object> updateCustomerDirectory(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		UserBasic user = getUser(request);
+		User user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -258,14 +257,14 @@ public class OrgAndCustomerController  extends BaseController {
 				List<TagSource> listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, Long.valueOf(custormId), 1l);
 				//删除该人脉下的所有标签
 				for (TagSource tagSource2 : listTagSource) {
-					tagSourceService.removeTagSource(appId, user.getUserId(), tagSource2.getId());
+					tagSourceService.removeTagSource(appId, user.getId(), tagSource2.getId());
 				}
                 if(!taglist.isEmpty()){
                 	for (Long tagId : taglist) {
                 		TagSource tagSource = new TagSource();
 						tagSource.setTagId(tagId);
 						tagSource.setAppId(appId);
-						tagSource.setUserId(user.getUserId());
+						tagSource.setUserId(user.getId());
 						tagSource.setSourceId(Long.valueOf(custormId));
 						tagSource.setSourceType(1);//
 						tagSource.setCreateAt(ctime);
@@ -297,7 +296,7 @@ public class OrgAndCustomerController  extends BaseController {
 	@RequestMapping(value = "/organ/findDirectoryIdsCustomer", method = RequestMethod.POST)
 	public Map<String, Object> findDirectoryIdsCustomer(HttpServletRequest request,
 			HttpServletResponse response) throws NumberFormatException, DirectorySourceServiceException {
-		UserBasic user = getUser(request);
+		User user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -319,12 +318,12 @@ public class OrgAndCustomerController  extends BaseController {
 			      String type=j.optString("type");//1创建的客户，2收藏的客户
 			      int currentPage=j.optInt("index"); //默认currentPage为1
 				  int pageSize=j.optInt("size");
-			      List<DirectorySource> dirctoryList = directorySourceService.getDirectorySourcesByDirectoryId(appId, user.getUserId(), Long.valueOf(directoryId));
+			      List<DirectorySource> dirctoryList = directorySourceService.getDirectorySourcesByDirectoryId(appId, user.getId(), Long.valueOf(directoryId));
 			      if(!dirctoryList.isEmpty()){
 			    	  for (DirectorySource directorySource : dirctoryList) {
 			    		  Map map=new HashMap();
 		            	  map.put("list", directorySource.getSourceId());
-		            	  map.put("userId", user.getUserId());
+		            	  map.put("userId", user.getId());
 		            	  map.put("start", (currentPage-1)*pageSize);
 		            	  map.put("end", pageSize);
 		            	  map.put("currentPage", currentPage);
@@ -357,7 +356,7 @@ public class OrgAndCustomerController  extends BaseController {
 	@RequestMapping(value = "/organ/findTagIdCustomer", method = RequestMethod.POST)
 	public Map<String, Object> findTagIdCustomer(HttpServletRequest request,
 			HttpServletResponse response) throws NumberFormatException, TagSourceServiceException {
-		UserBasic user = getUser(request);
+		User user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -387,7 +386,7 @@ public class OrgAndCustomerController  extends BaseController {
 			    	  for (TagSource tagSource : tagsourceList) {
 			    		  Map map=new HashMap();
 		            	  map.put("list", tagSource.getSourceId());
-		            	  map.put("userId", user.getUserId());
+		            	  map.put("userId", user.getId());
 		            	  map.put("start", (currentPage-1)*pageSize);
 		            	  map.put("end", pageSize);
 		            	  map.put("currentPage", currentPage);
@@ -421,7 +420,7 @@ public class OrgAndCustomerController  extends BaseController {
 	@RequestMapping(value = "/organ/deleteResourcesCustomer", method = RequestMethod.POST)
 	public Map<String, Object> deleteResourcesCustomer(HttpServletRequest request,
 			HttpServletResponse response) throws TagSourceServiceException, DirectorySourceServiceException {
-		UserBasic user = getUser(request);
+		User user = getUser(request);
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -445,7 +444,7 @@ public class OrgAndCustomerController  extends BaseController {
 	                  for (Long custermId : custermIds) {
 						  PermissionQuery p=new PermissionQuery();
 						  p.setResId(custermId);
-						  p.setUserId(user.getUserId());
+						  p.setUserId(user.getId());
 						  p.setResType((short)5);//  5 组织
 	                       if("1".equals(type)){
 								   simpleCustomerService.deleteByIds(custermIds);
@@ -453,11 +452,11 @@ public class OrgAndCustomerController  extends BaseController {
 							}else if("2".equals(type)){
 								 Map map = new HashMap();
 								 map.put("custermId", custermId);
-								 map.put("userId", user.getUserId());
+								 map.put("userId", user.getId());
 								 customerCollectService.deleteUserCustomerCollect(map);
 							}
-                    	    tagSourceService.removeTagSource(appId, user.getUserId(), custermId);
-                    	    directorySourceService.removeDirectorySourcesBySourceId(user.getUserId(), appId, 1, custermId);
+                    	    tagSourceService.removeTagSource(appId, user.getId(), custermId);
+                    	    directorySourceService.removeDirectorySourcesBySourceId(user.getId(), appId, 1, custermId);
 				        }
 	                }
 			    }	
@@ -486,14 +485,14 @@ public class OrgAndCustomerController  extends BaseController {
 	@RequestMapping(value = "/organ/createTagDirecty", method = RequestMethod.POST)
 	public Map<String, Object> createTagDirecty(HttpServletRequest request,
 			HttpServletResponse response) throws TagSourceServiceException, DirectorySourceServiceException, TagServiceException {
-		UserBasic user = getUser(request);
+		User user = getUser(request);
 		// 获取json参数串
 		Tag tag = new Tag();
 		tag.setAppId(1l);
 		tag.setTagName("zbb");
 		tag.setTagType(3);
-		tag.setUserId(user.getUserId());
-		Long aa = tagService.createTag(user.getUserId(), tag);
+		tag.setUserId(user.getId());
+		Long aa = tagService.createTag(user.getId(), tag);
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("tagId", aa);
 		return model;

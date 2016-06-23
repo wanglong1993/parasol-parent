@@ -1,7 +1,6 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
-import com.ginkgocap.parasol.user.model.UserBasic;
 import com.ginkgocap.ywxt.organ.model.Constants;
 import com.ginkgocap.ywxt.organ.model.comment.CommentMain;
 import com.ginkgocap.ywxt.organ.model.comment.CommentPraise;
@@ -9,6 +8,7 @@ import com.ginkgocap.ywxt.organ.model.comment.CommentReply;
 import com.ginkgocap.ywxt.organ.service.comment.CommentMainService;
 import com.ginkgocap.ywxt.organ.service.comment.CommentPraiseService;
 import com.ginkgocap.ywxt.organ.service.comment.CommentReplyService;
+import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.PageUtil;
 import net.sf.json.JSONObject;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -56,7 +56,7 @@ public class OrganCommentController  extends BaseController{
  		Map<String, Object> responseDataMap = new HashMap<String, Object>();
  		Map<String, Object> notificationMap = new HashMap<String, Object>();
 
-        UserBasic userBasic=null;
+        User userBasic=null;
         userBasic=getUser(request);
  		boolean flag = true;
  		if (requestJson != null && !"".equals(requestJson)){
@@ -73,7 +73,7 @@ public class OrganCommentController  extends BaseController{
 			    	   username="匿名用户";
 			       }
 			       CommentMain commentMain=objectMapper.readValue(jo.toString(),CommentMain.class);	
-			       commentMain.setCommentuserid(userBasic.getUserId());
+			       commentMain.setCommentuserid(userBasic.getId());
 			       commentMain.setCommentusername(username);
 			       commentMainService.savecommentMain(commentMain);
 
@@ -103,7 +103,7 @@ public class OrganCommentController  extends BaseController{
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
-        UserBasic userBasic=null;
+        User userBasic=null;
         userBasic=getUser(request);
 		boolean flag = true;
 		if (requestJson != null && !"".equals(requestJson)){
@@ -140,7 +140,7 @@ public class OrganCommentController  extends BaseController{
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
-        UserBasic userBasic=null;
+        User userBasic=null;
         userBasic=getUser(request);
 		boolean flag = true;
 		if (requestJson != null && !"".equals(requestJson)){
@@ -163,7 +163,7 @@ public class OrganCommentController  extends BaseController{
 			       for(CommentMain commentMain:commentMainlist){
 			    	  Long id = commentMain.getId();
 			    	  Long praisecount = commentPraiseService.selectPraiseCount(id);
-			    	  boolean praiseresult = commentPraiseService.selectUserPraiseCount(userBasic.getUserId(), id);
+			    	  boolean praiseresult = commentPraiseService.selectUserPraiseCount(userBasic.getId(), id);
 			    	  commentMain.setPraisecount(praisecount);
 			    	  commentMain.setPraiseresult(praiseresult);
 			    	  commentMain.setReplyMap(ommentReplyService.findByCommentid(id));
@@ -194,7 +194,7 @@ public class OrganCommentController  extends BaseController{
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
-        UserBasic userBasic=null;
+        User userBasic=null;
         userBasic=getUser(request);
 		boolean flag = true;
 		if (requestJson != null && !"".equals(requestJson)){
@@ -203,8 +203,8 @@ public class OrganCommentController  extends BaseController{
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 				long commentid = CommonUtil.getLongFromJSONObject(jo, "commentid");
-				long userid = userBasic.getUserId();
-				boolean praiseresult = commentPraiseService.selectUserPraiseCount(userBasic.getUserId(), commentid);
+				long userid = userBasic.getId();
+				boolean praiseresult = commentPraiseService.selectUserPraiseCount(userBasic.getId(), commentid);
 				if(praiseresult){
 				setSessionAndErr(request, response, "-1", "给用户已经点过赞");
 				}else{
@@ -238,7 +238,7 @@ public class OrganCommentController  extends BaseController{
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
-        UserBasic userBasic=null;
+        User userBasic=null;
         userBasic=getUser(request);
 		boolean flag = true;
 		if (requestJson != null && !"".equals(requestJson)){
@@ -247,7 +247,7 @@ public class OrganCommentController  extends BaseController{
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 				long commentid = CommonUtil.getLongFromJSONObject(jo, "commentid");
-				long userid = userBasic.getUserId();
+				long userid = userBasic.getId();
 				commentPraiseService.deleteById(userid,commentid);
 			}
 		}else{
@@ -274,7 +274,7 @@ public class OrganCommentController  extends BaseController{
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
-        UserBasic userBasic=null;
+        User userBasic=null;
         userBasic=getUser(request);
 
 		boolean flag = true;
@@ -285,7 +285,7 @@ public class OrganCommentController  extends BaseController{
 			} else {
 				ObjectMapper objectMapper=new ObjectMapper();
 				CommentReply commentReply=objectMapper.readValue(jo.toString(),CommentReply.class);	
-				commentReply.setReplyuserid(userBasic.getUserId());
+				commentReply.setReplyuserid(userBasic.getId());
 				commentReply.setReplyusername(userBasic.getName());
 				Long id = ommentReplyService.savecommentReply(commentReply);
 			}
@@ -312,7 +312,7 @@ public class OrganCommentController  extends BaseController{
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
-        UserBasic userBasic=null;
+        User userBasic=null;
         userBasic=getUser(request);
 
 

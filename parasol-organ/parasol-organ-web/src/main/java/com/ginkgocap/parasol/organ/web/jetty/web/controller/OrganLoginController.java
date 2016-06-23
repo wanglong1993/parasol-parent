@@ -16,13 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
+
 @Controller
 @RequestMapping("/organ")
 /**
@@ -58,14 +57,14 @@ public class OrganLoginController extends BaseController {
         Map<String, Object> result = Maps.newHashMap();
         try {
 
-            // Long loginAppId = LoginUserContextHolder.getAppKey();
-            Long loginUserId = LoginUserContextHolder.getUserId();
+
             String requestJson = getJsonParamStr(request);
             if (StringUtils.isNotBlank(requestJson)) {
                 JSONObject j = JSONObject.fromObject(requestJson);
                 OrganRegister org = JSON.parseObject(requestJson, OrganRegister.class);
                 //增加
-                org.setId(org.getId());
+
+
                 org.setStatus(Constants.OrganStatus.emailNoActive.v());
                 org.setIsSwitch(0);
                 //organRegisterService.insertOrganRegister(org);

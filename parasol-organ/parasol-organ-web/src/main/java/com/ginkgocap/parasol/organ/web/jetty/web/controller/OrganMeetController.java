@@ -1,22 +1,14 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.ginkgocap.parasol.associate.exception.AssociateServiceException;
 import com.ginkgocap.parasol.associate.model.Associate;
 import com.ginkgocap.parasol.associate.service.AssociateService;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
-import com.ginkgocap.parasol.user.model.UserBasic;
-
+import com.ginkgocap.ywxt.organ.model.meet.CustomerMeetingDetail;
+import com.ginkgocap.ywxt.organ.model.meet.MeetAssociate;
+import com.ginkgocap.ywxt.organ.service.meet.CustomerMeetingDetailService;
+import com.ginkgocap.ywxt.user.model.User;
 import net.sf.json.JSONObject;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ginkgocap.ywxt.organ.model.meet.CustomerMeetingDetail;
-import com.ginkgocap.ywxt.organ.model.meet.MeetAssociate;
-import com.ginkgocap.ywxt.organ.service.meet.CustomerMeetingDetailService;
-import com.ginkgocap.ywxt.user.model.User;
-import com.ginkgocap.ywxt.util.JsonUtil;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  * Created by jbqiu on 2016/6/10.
  * controller 组织会面controller
@@ -54,7 +48,7 @@ public class OrganMeetController extends BaseController {
 	public Map<String, Object> orgSave(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String requestJson = getJsonParamStr(request);
-		UserBasic userBasic = getUser(request);
+		User userBasic = getUser(request);
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
@@ -66,12 +60,12 @@ public class OrganMeetController extends BaseController {
 		       JSONObject jo=JSONObject.fromObject(requestJson);
 		       ObjectMapper objectMapper=new ObjectMapper();
 		       CustomerMeetingDetail meetDetail=objectMapper.readValue(jo.toString(),CustomerMeetingDetail.class);
-		       meetDetail.setCreatorId(userBasic.getUserId());
+		       meetDetail.setCreatorId(userBasic.getId());
 			   meetDetail =  customerMeetingDetailService.saveOrUpdate(meetDetail);
 				for (int i = 0; i < meetDetail.getAssociateList().size(); i++) {
 					MeetAssociate jsonObject2 = meetDetail.getAssociateList().get(i); 
 					Associate associate = new Associate();
-					associate.setUserId(userBasic.getUserId());
+					associate.setUserId(userBasic.getId());
 					associate.setAppId(appId);
 					associate.setSourceTypeId(1);
 					associate.setSourceId(meetDetail.getId());
@@ -80,7 +74,7 @@ public class OrganMeetController extends BaseController {
 					associate.setAssocId(jsonObject2.getAssocid());
 					associate.setAssocTitle(jsonObject2.getAssoc_title());
 					associate.setCreateAt(ctime);
-					associateService.createAssociate(appId, userBasic.getUserId(), associate);
+					associateService.createAssociate(appId, userBasic.getId(), associate);
 				}
 		       responseDataMap.put("id", meetDetail.getId());
 			} catch (Exception e) {
@@ -110,7 +104,7 @@ public class OrganMeetController extends BaseController {
 	public Map<String, Object> update(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
-		 UserBasic userBasic = getUser(request);
+		 User userBasic = getUser(request);
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
@@ -122,18 +116,18 @@ public class OrganMeetController extends BaseController {
 				JSONObject jo=JSONObject.fromObject(requestJson);
 				  ObjectMapper objectMapper=new ObjectMapper();
 			       CustomerMeetingDetail meetDetail=objectMapper.readValue(jo.toString(),CustomerMeetingDetail.class);
-			       meetDetail.setCreatorId(userBasic.getUserId());
+			       meetDetail.setCreatorId(userBasic.getId());
 				   customerMeetingDetailService.saveOrUpdate(meetDetail);
 				   //查询当前会面在关联表中的信息
-                   List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getUserId(), meetDetail.getId());
+                   List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getId(), meetDetail.getId());
 				   //删除当前会面在关联表中的信息
                    for (Associate associate : associatlist) {
-					   associateService.removeAssociate(appId,  userBasic.getUserId(), associate.getId());
+					   associateService.removeAssociate(appId,  userBasic.getId(), associate.getId());
 				   }
    				   for (int i = 0; i < meetDetail.getAssociateList().size(); i++) {
    					MeetAssociate jsonObject2 = meetDetail.getAssociateList().get(i); 
    					Associate associate = new Associate();
-   					associate.setUserId(userBasic.getUserId());
+   					associate.setUserId(userBasic.getId());
    					associate.setAppId(appId);
    					associate.setSourceTypeId(1);
    					associate.setSourceId(meetDetail.getId());
@@ -142,7 +136,7 @@ public class OrganMeetController extends BaseController {
 					associate.setAssocId(jsonObject2.getAssocid());
 					associate.setAssocTitle(jsonObject2.getAssoc_title());
    					associate.setCreateAt(ctime);
-   					associateService.createAssociate(appId, userBasic.getUserId(), associate);
+   					associateService.createAssociate(appId, userBasic.getId(), associate);
    				   }
                    responseDataMap.put("id", meetDetail.getId());
 			} catch (Exception e) {
@@ -173,7 +167,7 @@ public class OrganMeetController extends BaseController {
 	public Map<String, Object> findList(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
-		 UserBasic userBasic = getUser(request);
+		 User userBasic = getUser(request);
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
@@ -245,7 +239,7 @@ public class OrganMeetController extends BaseController {
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
 		boolean flag = false;
 		Long appId = 1l;
-		UserBasic userBasic = null;
+		User userBasic = null;
         userBasic=getUser(request);
 		if (requestJson != null && !"".equals(requestJson)){
 			JSONObject j = JSONObject.fromObject(requestJson);
@@ -253,10 +247,10 @@ public class OrganMeetController extends BaseController {
 			if(id != 0){
 				flag = customerMeetingDetailService.deleteById(id);
 				   //查询当前会面在关联表中的信息
-                List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getUserId(), id);
+                List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getId(), id);
 				   //删除当前会面在关联表中的信息
                 for (Associate associate : associatlist) {
-					   associateService.removeAssociate(appId,  userBasic.getUserId(), associate.getId());
+					   associateService.removeAssociate(appId,  userBasic.getId(), associate.getId());
 				   }
 			}
 		}else{
