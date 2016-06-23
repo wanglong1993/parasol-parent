@@ -44,6 +44,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -102,6 +103,7 @@ import com.gintong.rocketmq.api.enums.TopicType;
  * 用户登录注册
  */
 @RestController
+@Scope("prototype")
 public class UserController extends BaseControl {
 	private static Logger logger = Logger.getLogger(UserController.class);
 	private static long sourceType  = 2l;
@@ -181,7 +183,7 @@ public class UserController extends BaseControl {
 
     @RequestMapping("/user/user/test")
     public String test() {
-        System.out.println(st++ + " | " + index++);
+        System.out.println(st++ + " c " + index++);
         return "/lsh/ch5/test";
     }
 	/**
