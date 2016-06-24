@@ -309,7 +309,7 @@ public class OrganController extends BaseController {
 			organProfileVo.setStatus(customer_temp.getStatus());
 			organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
 			organProfileVo.setLinkManName(customer_temp.getLinkManName());
-
+			organProfileVo.setTemplateId(customer_temp.getTemplateId());
 			if(user.getId()==organId){
 				organProfileVo.setMoudles(customer_temp.getMoudles());
 			}else{// 过滤
@@ -433,7 +433,7 @@ public class OrganController extends BaseController {
                 organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
                 organProfileVo.setLinkManName(customer_temp.getLinkManName());
                 organProfileVo.setMoudles(customer_temp.getMoudles());
-
+                organProfileVo.setTemplateId(templateId);
                 responseData.put("customer", organProfileVo);
                 responseData.put("bindUserId", customer_temp.getBindUserId());
                 responseData.put("id", organProfileVo.getId());
@@ -484,6 +484,37 @@ public class OrganController extends BaseController {
 		return String.valueOf(status);
 	}
 
+	/**
+    *
+    * 定义成功返回信息
+    *
+    * @param successResult
+    * @return
+    * @author haiyan
+    */
+   protected Map<String, Object> returnSuccessMSG(Map<String, Object> successResult) {
+	   
+	    successResult.put("success", true);
+        return successResult;
+   }
+
+   /**
+    * 定义错误返回信息
+    *
+    * @param result
+    * @param errRespCode
+    * @param errRespMsg
+    * @return
+    * @author wangfeiliang
+    */
+   protected Map<String, Object> returnFailMSGNew(String errRespCode, String errRespMsg) {
+       Map<String, Object> result = new HashMap<String, Object>();
+      
+
+       result.put("success", false);
+       result.put("msg", errRespMsg);
+       return result;
+   }
 
 
 }
