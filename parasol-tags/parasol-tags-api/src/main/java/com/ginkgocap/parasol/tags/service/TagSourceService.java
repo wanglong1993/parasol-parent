@@ -28,12 +28,21 @@ public interface TagSourceService {
 	 * 删除TagSource，比如删除一篇文章下边的一个标签
 	 * 
 	 * @param appId
-	 * @param tagSourceId
+	 * @param id
 	 * @return
 	 * @throws TagSourceServiceException
 	 */
-	public boolean removeTagSource(Long appId, Long userId, Long tagSourceId) throws TagSourceServiceException;
+	public boolean removeTagSource(Long appId, Long userId, Long id) throws TagSourceServiceException;
 
+	/**
+	 * 删除TagSource，比如删除一篇文章下边的一个标签
+	 * 
+	 * @param appId
+	 * @param sourceId
+	 * @return
+	 * @throws TagSourceServiceException
+	 */
+	public int removeTagSourceBySourceId(Long appId, Long userId, Long sourceId,Long sourceType) throws TagSourceServiceException;
 	/**
 	 * 查询一个TagSource
 	 * 
