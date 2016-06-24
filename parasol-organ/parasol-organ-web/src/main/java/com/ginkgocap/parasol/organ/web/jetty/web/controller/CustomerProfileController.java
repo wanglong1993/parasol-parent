@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ginkgocap.ywxt.user.service.UserService;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -636,9 +637,7 @@ public class CustomerProfileController extends BaseController {
 			logger.error("参数读取异常");
 		}
 		// 封装 response
-		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
-		Map<String, Object> notificationMap = new HashMap<String, Object>();
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
 			if (userBasic == null) {
@@ -673,20 +672,49 @@ public class CustomerProfileController extends BaseController {
 				    }
 			   
 			  
-			  notificationMap.put("notifCode", notifacation.getNotifCode());
-			  notificationMap.put("notifInfo", notifacation.getNotifInfo());
+			 
 			}
 
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
 		}
-		model.put("responseData", responseDataMap);
-		model.put("notification", notificationMap);
-		return model;
+	
+		return responseDataMap;
 	}
     
 	
 	
-	
+	 /**
+    *
+    * 定义成功返回信息
+    *
+    * @param successResult
+    * @return
+    * @author haiyan
+    */
+   protected Map<String, Object> returnSuccessMSG(Map<String, Object> successResult) {
+	   
+	    successResult.put("success", true);
+        return successResult;
+   }
+
+   /**
+    * 定义错误返回信息
+    *
+    * @param result
+    * @param errRespCode
+    * @param errRespMsg
+    * @return
+    * @author wangfeiliang
+    */
+   protected Map<String, Object> returnFailMSGNew(String errRespCode, String errRespMsg) {
+       Map<String, Object> result = new HashMap<String, Object>();
+      
+
+       result.put("success", false);
+       result.put("msg", errRespMsg);
+       return result;
+   }
+
 
 }
