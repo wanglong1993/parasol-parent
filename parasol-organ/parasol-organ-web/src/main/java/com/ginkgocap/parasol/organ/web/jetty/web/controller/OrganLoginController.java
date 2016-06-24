@@ -1,13 +1,21 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.ywxt.organ.service.CustomerService;
+import com.ginkgocap.ywxt.user.model.User;
+import com.ginkgocap.ywxt.user.service.UserService;
+import com.ginkgocap.ywxt.util.DateFunc;
+import com.ginkgocap.ywxt.util.Encodes;
 import com.gintong.ywxt.organization.model.OrganRegister;
 import com.gintong.ywxt.organization.service.OrganRegisterService;
 import com.gintong.ywxt.organization.util.Constants;
 import jersey.repackaged.com.google.common.collect.Maps;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.crypto.RandomNumberGenerator;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +28,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/organ")
@@ -39,6 +50,8 @@ public class OrganLoginController extends BaseController {
     @Resource
     private CustomerService customerService;
 
+    @Autowired
+    private UserService userService;
 
     /**
      * 完善组织资料
