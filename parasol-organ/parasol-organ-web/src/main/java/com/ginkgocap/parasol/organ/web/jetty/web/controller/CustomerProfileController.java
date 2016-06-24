@@ -34,6 +34,7 @@ import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
+import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.BigDataModel;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.CustomerProfileVoNew;
 import com.ginkgocap.parasol.tags.model.Tag;
 import com.ginkgocap.parasol.tags.model.TagSource;
@@ -528,6 +529,74 @@ public class CustomerProfileController extends BaseController {
 		return false;
 	}
 	
+	
+	
+	 /**
+     * 查询客户详情(大数据客户)
+     * @param customerId 查询考客户详情
+     * @return
+	 * @throws Exception 
+	 * @author zbb
+     */
+	@ResponseBody
+    @RequestMapping(value = "/customer/findDigDataByCustomerId", method = RequestMethod.POST)
+	public Map<String, Object> findDigDataByCustomerId(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String requestJson = getJsonParamStr(request);
+    	Map<String, Object> responseData = new HashMap<String, Object>();
+    	System.out.println("json:"+requestJson);
+    	JSONObject j = JSONObject.fromObject(requestJson);
+    	long customerId=JsonUtil.getNodeToLong(j, "customerId");
+		BigDataModel bigDataCustomer = new BigDataModel();
+    	Customer customer_temp = customerService.findCustomerCurrentData(customerId,"2");//组织详情基本资料
+    	if(customer_temp!= null){
+    		bigDataCustomer.setId(customer_temp.getId());
+    		bigDataCustomer.setName(customer_temp.getName());
+    		bigDataCustomer.setCreateById(customer_temp.getCreateById());
+    		bigDataCustomer.setCustomerId(customer_temp.getCustomerId());
+    		bigDataCustomer.setCtime(customer_temp.getCtime());
+    		bigDataCustomer.setCurrent(customer_temp.isCurrent());
+    		bigDataCustomer.setVirtual(customer_temp.getVirtual());
+    		bigDataCustomer.setUrl(customer_temp.getUrl());
+    		bigDataCustomer.setUtime(customer_temp.getUtime());
+    		bigDataCustomer.setSource(customer_temp.getSource());
+    		bigDataCustomer.setTaskid(customer_temp.getTaskid());
+    		bigDataCustomer.setCrawl_datetime(customer_temp.getCrawl_datetime());
+    		bigDataCustomer.setRegistration_number(customer_temp.getRegistration_number());
+    		bigDataCustomer.setOrganization_code(customer_temp.getOrganization_code());
+    		bigDataCustomer.setCredit_code(customer_temp.getCredit_code());
+    		bigDataCustomer.setOperating_state(customer_temp.getOperating_state());
+    		bigDataCustomer.setCtype(customer_temp.getCtype());
+    		bigDataCustomer.setSet_up_time(customer_temp.getSet_up_time());
+    		bigDataCustomer.setLegal_representative(customer_temp.getLegal_representative());
+    		bigDataCustomer.setRegistered_capital(customer_temp.getRegistered_capital());
+    		bigDataCustomer.setBusiness_term(customer_temp.getBusiness_term());
+    		bigDataCustomer.setRegistration_authority(customer_temp.getRegistration_authority());
+    		bigDataCustomer.setDate_issue(customer_temp.getDate_issue());
+    		bigDataCustomer.setAddress(customer_temp.getAddress());
+    		bigDataCustomer.setIndustry_involved(customer_temp.getIndustry_involved());
+    		bigDataCustomer.setBusiness_scope(customer_temp.getBusiness_scope());
+    		bigDataCustomer.setCompany_profile(customer_temp.getCompany_profile());
+    		bigDataCustomer.setComment(customer_temp.getComment());
+    		bigDataCustomer.setChange(customer_temp.getChange());
+    		bigDataCustomer.setInvestment(customer_temp.getInvestment());
+    		bigDataCustomer.setPeople(customer_temp.getPeople());
+    		bigDataCustomer.setFinfo(customer_temp.getFinfo());
+    		bigDataCustomer.setReport(customer_temp.getReport());
+    		bigDataCustomer.setShareholders(customer_temp.getShareholders());
+	    	responseData.put("customer", bigDataCustomer);
+	    	try{
+    			customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read.getType(), customerId);
+    		}catch(Exception e){
+    			logger.error("插入查询大数据客户功能报错,请求参数json: ",e);
+    		}
+	    	
+    	}else{
+    		setSessionAndErr(request, response, "-1", "客户不存在!");
+    		return returnFailMSGNew("01", "客户不存在!");
+    	}
+		return returnSuccessMSG(responseData);
+  }
+
 	
 	
 	/**
