@@ -987,24 +987,6 @@
                 <client_id>1</client_id>
                 <client_secret>2db7c5148a86b59ea285529a41ef84cb</client_secret>
 
-                <!-- 数据库连接地址和数据库名 -->
-                <jdbc.url>
-                    jdbc:mysql://192.168.101.131:3306/phoenix_mobile?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
-                </jdbc.url>
-                <jdbc.cloud.url>
-                    jdbc:mysql://192.168.101.131:3306/phoenix_cloud?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
-                </jdbc.cloud.url>
-                <jdbc.user.url>
-                    jdbc:mysql://192.168.101.131:3306/phoenix_user?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
-                </jdbc.user.url>
-                <jdbc.file.url>
-                    jdbc:mysql://192.168.101.131:3306/phoenix_file?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
-                </jdbc.file.url>
-                <!-- 数据库访问帐号 -->
-                <jdbc.username>zhangwei</jdbc.username>
-                <!-- 数据库访问密码 -->
-                <jdbc.password>zhangwei</jdbc.password>
-
 
 
                 <!-- nfs地址 -->
@@ -1122,18 +1104,6 @@
                 <!-- 数据库访问密码 -->
                 <jdbc.password>111111</jdbc.password>
 
-                <!-- phoenix-solr项目的访问地址 只要替换ip和端口即可 -->
-                <solr.people.url>http://192.168.101.90:8088/solr/people</solr.people.url>
-                <!-- phoenix-solr项目的访问地址 只要替换ip和端口即可 -->
-                <solr.customer.url>http://192.168.101.90:8088/solr/customer</solr.customer.url>
-                <!-- phoenix-solr项目的访问地址 只要替换ip和端口即可 -->
-                <solr.requirement.url>http://192.168.101.90:8088/solr/requirement</solr.requirement.url>
-                <!-- phoenix-solr项目的访问地址 只要替换ip和端口即可 -->
-                <solr.user.url>http://192.168.101.90:8088/solr/user</solr.user.url>
-                <!-- phoenix-solr项目的访问地址 只要替换ip和端口即可 -->
-                <solr.friend.url>http://192.168.101.90:8088/solr/friend</solr.friend.url>
-                <!-- phoenix-solr项目的访问地址 只要替换ip和端口即可 -->
-                <solr.diary.url>http://192.168.101.90:8088/solr/diary</solr.diary.url>
 
                 <log4j.path>/home/zhangle/project/qatest</log4j.path>
                 <!-- 日志级别，由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
