@@ -791,7 +791,7 @@ function changeUrl() {
             break;
         case '1':
             url = "/login/loginConfiguration.json";
-            loginInfo = '{"clientID":"131321321321","clientPassword":"","imei":"yss-3434-dsf55-22256","version":"1.6.0.0609","platform":"iPhone","model":"iPhone 3G","resolution":"480x320","systemName":"iOS","systemVersion":"1.5.7","channelID":"10086111445441","loginString":"yinxing","password":"MTExMTEx"}';
+            loginInfo = '{"clientID":"131321321321","clientPassword":"","imei":"yss-3434-dsf55-22256","version":"1.6.0.0609","platform":"iPhone","model":"iPhone 3G","resolution":"480x320","systemName":"iOS","systemVersion":"1.5.7","channelID":"10086111445441","loginString":"yinxing","password":"27c878bcb21bf1b26375c059923a5d48dd3f5e75578769b52632a0faaff564d3"}';
             $("#paramsDiv").val(loginInfo);
             break;
         case '2':
@@ -1035,7 +1035,7 @@ function changeUrl() {
             break;
         case '47':
             url = "/login/userLogin.json";
-            loginInfo = '{"loginString":"zsf@ginkgocap.cn","password":"MTExMTEx"}';
+            loginInfo = '{"loginString":"zsf@ginkgocap.cn","password":"27c878bcb21bf1b26375c059923a5d48dd3f5e75578769b52632a0faaff564d3"}';
             $("#paramsDiv").val(loginInfo);
             break;
         case '48':
@@ -2017,7 +2017,7 @@ function getMethodReturnJsonValue() {
 //zhangzhen 加入 2014-11-3 
 function login() {
     url = '<%=basePath %>' + 'login/loginConfiguration.json';
-    loginInfo = '{"clientID":"131321321321","clientPassword":"","imei":"yss-3434-dsf55-22256","version":"1.6.0.0609","platform":"iPhone","model":"iPhone 3G","resolution":"480x320","systemName":"iOS","systemVersion":"1.5.7","channelID":"10086111445441","loginString":"yinxing","password":"MTExMTEx"}';
+    loginInfo = '{"clientID":"131321321321","clientPassword":"","imei":"yss-3434-dsf55-22256","version":"1.6.0.0609","platform":"iPhone","model":"iPhone 3G","resolution":"480x320","systemName":"iOS","systemVersion":"1.5.7","channelID":"10086111445441","loginString":"yinxing","password":"27c878bcb21bf1b26375c059923a5d48dd3f5e75578769b52632a0faaff564d3"}';
     $.ajax({
         url : url,
         data :  loginInfo,
