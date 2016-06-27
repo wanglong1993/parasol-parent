@@ -1,6 +1,7 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
+import com.ginkgocap.ywxt.cache.Cache;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.user.service.UserService;
 import com.ginkgocap.ywxt.util.DateFunc;
@@ -39,7 +40,8 @@ public class UserLoginController extends BaseController {
     @Autowired
     private UserService userService;
 
-
+    @Autowired
+    private Cache cache;
 
 
 
@@ -111,6 +113,10 @@ public class UserLoginController extends BaseController {
                         OrganRegister or=new OrganRegister();
                         or.setId(1l);
                         or.setOrganAllName("组织全称");
+
+
+                        cache.setByRedis("user" + userSesssionId, user,60 * 60 * 24);
+                        cache.setByRedis("organ"+userSesssionId, or, 60 * 60 * 24);
 
                         setSessionAndErr(request, response, "0", "");
                         response.setHeader("sessionID", userSesssionId);
