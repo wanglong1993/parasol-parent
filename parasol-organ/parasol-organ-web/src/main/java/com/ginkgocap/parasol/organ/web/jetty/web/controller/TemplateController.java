@@ -153,7 +153,6 @@ public class TemplateController extends BaseController{
 	 
 	    
 	    
-		  //根据Id 查询模板
 		    @ResponseBody
 			@RequestMapping(value = "/template/deleteTemplate.json", method = RequestMethod.POST)
 			public Map<String, Object> deleteTemplate(HttpServletRequest request,
@@ -172,7 +171,16 @@ public class TemplateController extends BaseController{
 								model.put("msg", "传入参数不能为空");
 								return model;
 							}
+						Template template=	templateService.findTemplateById(templateId);
+						if(template.getType()==1){
 							templateService.deleteTemplate(templateId);
+						}else{
+							
+							model.put("success", false);
+							model.put("msg", "不能删除系统模板");
+							return model;
+						}
+						
 						
 					} catch (Exception e) {
 						
