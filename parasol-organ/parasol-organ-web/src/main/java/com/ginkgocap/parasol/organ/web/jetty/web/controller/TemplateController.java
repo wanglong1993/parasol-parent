@@ -43,7 +43,6 @@ public class TemplateController extends BaseController{
 	    	System.out.println("controller:org/template/findTempleById.json");
 	    	String requestJson = "";
 			requestJson = getJsonParamStr(request);
-			Map<String, Object> model = new HashMap<String, Object>();
 			Map<String, Object> responseDataMap = new HashMap<String, Object>();
 			boolean flag = true;
 				try {
@@ -71,9 +70,8 @@ public class TemplateController extends BaseController{
 					return returnFailMSGNew("01", "系统异常,请稍后再试");
 				}
 			responseDataMap.put("success", flag);
-			model.put("responseData", responseDataMap);
 
-			return model;
+			return responseDataMap;
 	    }
 	 
 	    
