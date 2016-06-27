@@ -921,9 +921,10 @@
                     <contextPath>/</contextPath>
                     <scanIntervalSeconds>2</scanIntervalSeconds>
                     <connectors>
-                        <connector implementation="org.mortbay.jetty.bio.SocketConnector">
+                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                             <port>81</port>
                             <maxIdleTime>60000</maxIdleTime>
+                            <headerBufferSize>163840</headerBufferSize>
                         </connector>
                     </connectors>
                     <scanTargetPatterns>
