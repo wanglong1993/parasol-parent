@@ -45,7 +45,7 @@ public class MoudleController extends BaseController{
 	
 	    	//保存或修改  模块
 	    @ResponseBody
-		@RequestMapping(value = "/moudle/saveMoudle", method = RequestMethod.POST)
+		@RequestMapping(value = "/moudle/saveMoudle.json", method = RequestMethod.POST)
 		public Map<String, Object> saveMoudle(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:moudle/saveMoudle.json");
@@ -75,7 +75,7 @@ public class MoudleController extends BaseController{
 	    
 	 	//保存或修改  模块
 	    @ResponseBody
-		@RequestMapping(value = "/moudle/deleteMoudle", method = RequestMethod.POST)
+		@RequestMapping(value = "/moudle/deleteMoudle.json", method = RequestMethod.POST)
 		public Map<String, Object> delteMoudle(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:org/moudle/delteMoudle.json");

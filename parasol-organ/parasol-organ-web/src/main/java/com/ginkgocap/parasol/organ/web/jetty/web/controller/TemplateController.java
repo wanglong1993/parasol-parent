@@ -37,13 +37,12 @@ public class TemplateController extends BaseController{
 	
 	    //根据ID 查询模板
 	    @ResponseBody
-		@RequestMapping(value = "/template/findTempleById", method = RequestMethod.POST)
+		@RequestMapping(value = "/template/findTempleById.json", method = RequestMethod.POST)
 		public Map<String, Object> findTempleById(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:org/template/findTempleById.json");
 	    	String requestJson = "";
 			requestJson = getJsonParamStr(request);
-			Map<String, Object> model = new HashMap<String, Object>();
 			Map<String, Object> responseDataMap = new HashMap<String, Object>();
 			boolean flag = true;
 				try {
@@ -71,16 +70,15 @@ public class TemplateController extends BaseController{
 					return returnFailMSGNew("01", "系统异常,请稍后再试");
 				}
 			responseDataMap.put("success", flag);
-			model.put("responseData", responseDataMap);
 
-			return model;
+			return responseDataMap;
 	    }
 	 
 	    
 	   
 	    //根据Id 保存或修改模板
 	    @ResponseBody
-	    @RequestMapping(value = "/template/saveTemplate", method = RequestMethod.POST)
+	    @RequestMapping(value = "/template/saveTemplate.json", method = RequestMethod.POST)
 		public Map<String, Object> saveTemplate(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:/template/saveTemplate.json");
@@ -119,13 +117,12 @@ public class TemplateController extends BaseController{
 	  
 	  //根据Id 查询模板
 	    @ResponseBody
-		@RequestMapping(value = "/template/findUserTemplateBasiInfo", method = RequestMethod.POST)
+		@RequestMapping(value = "/template/findUserTemplateBasiInfo.json", method = RequestMethod.POST)
 		public Map<String, Object> findUserTemplateBasiInfo(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("/template/findUserTemplateBasiInfo.json");
 	    	String requestJson = "";
 			requestJson = getJsonParamStr(request);
-			Map<String, Object> model = new HashMap<String, Object>();
 			Map<String, Object> responseDataMap = new HashMap<String, Object>();
 			boolean flag=true;
 				try {
@@ -146,16 +143,14 @@ public class TemplateController extends BaseController{
 				}
 					
 				responseDataMap.put("success", flag);
-				model.put("responseData", responseDataMap);
 
-			return model;
+			return responseDataMap;
 	    }
 	 
 	    
 	    
-		  //根据Id 查询模板
 		    @ResponseBody
-			@RequestMapping(value = "/template/deleteTemplate", method = RequestMethod.POST)
+			@RequestMapping(value = "/template/deleteTemplate.json", method = RequestMethod.POST)
 			public Map<String, Object> deleteTemplate(HttpServletRequest request,
 					HttpServletResponse response) throws IOException {
 		    	System.out.println("/template/deleteTemplate.json");
@@ -172,7 +167,16 @@ public class TemplateController extends BaseController{
 								model.put("msg", "传入参数不能为空");
 								return model;
 							}
+						Template template=	templateService.findTemplateById(templateId);
+						if(template.getType()==1){
 							templateService.deleteTemplate(templateId);
+						}else{
+							
+							model.put("success", false);
+							model.put("msg", "不能删除系统模板");
+							return model;
+						}
+						
 						
 					} catch (Exception e) {
 						
@@ -188,4 +192,39 @@ public class TemplateController extends BaseController{
 				return model;
 		    }
 	    
+		    
+		    
+			
+			 /**
+		    *
+		    * 定义成功返回信息
+		    *
+		    * @param successResult
+		    * @return
+		    * @author haiyan
+		    */
+		   protected Map<String, Object> returnSuccessMSG(Map<String, Object> successResult) {
+			   
+			    successResult.put("success", true);
+		        return successResult;
+		   }
+
+		   /**
+		    * 定义错误返回信息
+		    *
+		    * @param result
+		    * @param errRespCode
+		    * @param errRespMsg
+		    * @return
+		    * @author wangfeiliang
+		    */
+		   protected Map<String, Object> returnFailMSGNew(String errRespCode, String errRespMsg) {
+		       Map<String, Object> result = new HashMap<String, Object>();
+		      
+
+		       result.put("success", false);
+		       result.put("msg", errRespMsg);
+		       return result;
+		   }
+
 }
