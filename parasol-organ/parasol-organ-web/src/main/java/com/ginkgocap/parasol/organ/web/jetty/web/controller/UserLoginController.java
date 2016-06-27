@@ -98,12 +98,12 @@ public class UserLoginController extends BaseController {
                     String salt = user.getSalt();
                     String password=j.getString("password");
 //					byte[] bt = Base64.decode(password);
-                    byte[] bt = Utils.decode(password);
+                  //  byte[] bt = Utils.decode(password);
                     // 生成新的code
-                    password = new String(bt);
-                    String newPass = new Sha256Hash(password,
-                            salt, hashIterations).toHex();
-                    if (user.getPassword().equals(newPass)) {
+                  //  password = new String(bt);
+                  //  String newPass = new Sha256Hash(password,
+                  //          salt, hashIterations).toHex();
+                    if (user.getPassword().equals(password)) {
                         user=userService.selectByPrimaryKey(user.getId());
                         user.setLastLoginTime(DateFunc.getDate());
                         userService.updateUserInfo(user);
