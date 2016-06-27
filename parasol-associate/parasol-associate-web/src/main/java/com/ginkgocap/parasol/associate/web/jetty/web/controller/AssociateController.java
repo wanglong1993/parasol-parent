@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -39,7 +41,6 @@ import com.ginkgocap.parasol.associate.exception.AssociateServiceException;
 import com.ginkgocap.parasol.associate.model.Associate;
 import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateService;
-import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 
 /**
  * 
@@ -88,14 +89,17 @@ public class AssociateController extends BaseControl {
 			@RequestParam(name = AssociateController.parameterAssocTypeId, required = true) Long assocTypeId,
 			@RequestParam(name = AssociateController.parameterAssocId, required = true) Long assocId,
 			@RequestParam(name = AssociateController.parameterAssocTitle, required = true) String assocTitle,
-			@RequestParam(name = AssociateController.parameterAssocMetadata, required = false) String assocMetadata) throws AssociateServiceException {
+			@RequestParam(name = AssociateController.parameterAssocMetadata, required = false) String assocMetadata,
+			HttpServletRequest request) throws AssociateServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 	// @formatter:on
 		try {
 
 			// 登陆人的信息
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 
 			// 检查数据的参数
 			if (StringUtils.isEmpty(assocDesc)) {
@@ -140,13 +144,16 @@ public class AssociateController extends BaseControl {
 	@RequestMapping(path = { "/associate/associate/deleteAssociate" }, method = { RequestMethod.POST })
 	public MappingJacksonValue deleteAssociate(
 			@RequestParam(name = AssociateController.parameterDebug, defaultValue = "") String debug, 
-			@RequestParam(name = AssociateController.parameterId, required = true) Long id ) throws AssociateServiceException {
+			@RequestParam(name = AssociateController.parameterId, required = true) Long id ,
+			HttpServletRequest request) throws AssociateServiceException {
 	// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			boolean bResult = associateService.removeAssociate(loginAppId, loginUserId, id);
@@ -173,13 +180,16 @@ public class AssociateController extends BaseControl {
 	public MappingJacksonValue getAssociateDetail(
 			@RequestParam(name = AssociateController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = AssociateController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = AssociateController.parameterId, required = true) Long id ) throws AssociateServiceException {
+			@RequestParam(name = AssociateController.parameterId, required = true) Long id,
+			HttpServletRequest request ) throws AssociateServiceException {
 	// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 			Associate associate = associateService.getAssociate(loginAppId, loginUserId, id);
 			Map<String, Object> reusltMap = new HashMap<String, Object>();
 			reusltMap.put("data", associate);
@@ -206,12 +216,15 @@ public class AssociateController extends BaseControl {
 			@RequestParam(name = AssociateController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = AssociateController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = AssociateController.parameterSourceTypeId, required = true) Long sourceTypeId,
-			@RequestParam(name = AssociateController.parameterSourceId, required = true) long sourceId) throws AssociateServiceException {
+			@RequestParam(name = AssociateController.parameterSourceId, required = true) long sourceId,
+			HttpServletRequest request) throws AssociateServiceException {
 	// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		
-		Long loginAppId = LoginUserContextHolder.getAppKey();
-		Long loginUserId = LoginUserContextHolder.getUserId();
+//		Long loginAppId = LoginUserContextHolder.getAppKey();
+//		Long loginUserId = LoginUserContextHolder.getUserId();
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
 		Map<AssociateType, List<Associate>> associateMap = associateService.getAssociatesBy(loginAppId, sourceTypeId, sourceId);
 
 		if (MapUtils.isNotEmpty(associateMap)) {

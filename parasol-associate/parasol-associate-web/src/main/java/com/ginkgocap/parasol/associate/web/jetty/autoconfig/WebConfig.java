@@ -2,9 +2,12 @@ package com.ginkgocap.parasol.associate.web.jetty.autoconfig;
 
 import java.util.List;
 
+import javax.servlet.Filter;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +19,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.ginkgocap.parasol.associate.web.jetty.web.filter.AppFilter;
 
 /**
  * 
@@ -64,6 +68,20 @@ public class WebConfig {
 		// super.addDefaultHttpMessageConverters(converters);
 	}
 	
+	@Bean
+    public FilterRegistrationBean appFilterRegistration() {
 
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(appFilter());
+        registration.addUrlPatterns("/*");
+        registration.addInitParameter("excludedUrl", "/paramValue");
+        registration.setName("appFilter");
+        return registration;
+    }
+	
+	@Bean(name = "appFilter")
+    public Filter appFilter() {
+        return new AppFilter();
+    }
 
 }

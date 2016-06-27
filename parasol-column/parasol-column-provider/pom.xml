@@ -675,80 +675,32 @@
 			<properties>
 				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				<!-- redis地址 -->
-				<redis.host>192.168.101.90</redis.host>
+				<redis.host>192.168.101.42</redis.host>
 				<!-- redis端口 -->
 				<redis.port>6379</redis.port>
-				<!-- mongo地址 -->
-				<mongodb.address>192.168.101.90:27017</mongodb.address>
-				<!-- mongo中数据库 -->
-				<mongodb.database>ywxt</mongodb.database>
 				<!-- 数据库连接地址和数据库名 -->
 				<jdbc.url>
-					jdbc:mysql://192.168.101.90:3306/phoenix_column?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+					jdbc:mysql://192.168.101.42:3306/phoenix_column?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
 				</jdbc.url>
 				<!-- 数据库访问帐号 -->
-				<jdbc.username>root</jdbc.username>
+				<jdbc.username>ph_column</jdbc.username>
 				<!-- 数据库访问密码 -->
-				<jdbc.password>111111</jdbc.password>
+				<jdbc.password>aTadXdEb7VnqjqLc</jdbc.password>
 				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
 				<log4j.level>debug</log4j.level>
 				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
-				<log4j.path>/home/zhangle/project/qatest</log4j.path>
-				<qatest.schema.skip>false</qatest.schema.skip>
+				<log4j.path>log</log4j.path>
+				<qatest.schema.skip>true</qatest.schema.skip>
 				<dubbo.application.name>columndubboprovider</dubbo.application.name>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<dubbo.registry.address>zookeeper://192.168.101.90:2181?client=zkclient</dubbo.registry.address>
-				<dubbo.protocol.port>2015</dubbo.protocol.port>
+				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.port>8816</dubbo.protocol.port>
 				<!-- 应用端的挂载配置路径 -->
 				<linux.mount.path>/webserver/upload/column</linux.mount.path>
 				<webserver.path>/webserver/tomcat/phoenix-column-web/ywxt</webserver.path>
 				<gen.path>/webserver/upload/column/GENFILE</gen.path>
 				<nginx.root>http://file.qatest.gintong.com:81</nginx.root>
 			</properties>
-			<build>
-				<plugins>
-					<!-- sql plugin -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>sql-maven-plugin</artifactId>
-						<version>1.5</version>
-						<!-- common configuration shared by all executions -->
-						<dependencies>
-							<!-- specify the dependent jdbc driver here -->
-							<dependency>
-								<groupId>mysql</groupId>
-								<artifactId>mysql-connector-java</artifactId>
-								<version>5.1.12</version>
-							</dependency>
-						</dependencies>
-						<configuration>
-							<driver>${jdbc.driverClassName}</driver>
-							<username>${jdbc.username}</username>
-							<password>${jdbc.password}</password>
-							<url>${jdbc.url}</url>
-							<!--all executions are ignored if -Dmaven.test.skip=true -->
-							<skip>${qatest.schema.skip}</skip>
-						</configuration>
-						<executions>
-							<execution>
-								<id>final-create-schema-qatest</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<inherited>false</inherited>
-								<configuration>
-									<autocommit>true</autocommit>
-									<srcFiles>
-										<srcFile>src/test/resources/sql/mysql/online.sql</srcFile>
-										<srcFile>src/test/resources/sql/mysql/ddl.sql</srcFile>
-									</srcFiles>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 
 		<profile>

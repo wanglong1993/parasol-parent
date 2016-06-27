@@ -95,7 +95,7 @@ public class ColumnCustomControllerTest {
 	
 	@Test
 	public void testShowAllColumn(){
-		String url="http://192.168.101.131:8022/columnself/showAllColumnSelf";
+		String url="http://192.168.101.41:8022/columnself/showAllColumnSelf";
 		String resp=HttpUtils.sendGet(url);
 		System.out.println(resp);
 	}
@@ -103,12 +103,12 @@ public class ColumnCustomControllerTest {
 	@Test
 	public void testShowColumn1(){
 		String jsonStr="{\"pid\":\"0\"}";
-		String url="http://localhost:8022/columncustom/showColumn.json";
+		String url="http://192.168.101.41:8022/columncustom/showColumn.json";
 		Map<String,String> headers=new HashMap<String,String>();
-		headers.put("sessionID", "8c8c2fcd-58d5-4fd0-b690-0318cf4bb657");
+		headers.put("sessionID", "b75a0c09-cde8-4193-92ea-c23c057cd148");
 		headers.put("s", "web");
 		String resp=HttpUtils.sendPost(url, jsonStr,"application/json",headers);
-		System.out.println(resp);  
+		System.out.println(resp); 
 	}
 	
 }
