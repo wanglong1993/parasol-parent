@@ -115,9 +115,7 @@ public class OrganController extends BaseController {
 		String requestJson = "";
 
 		requestJson = getJsonParamStr(request);
-		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
-		Map<String, Object> notificationMap = new HashMap<String, Object>();
 
         User userBasic=null;
 		if (requestJson != null && !"".equals(requestJson)) {
@@ -155,8 +153,7 @@ public class OrganController extends BaseController {
 		
 				responseDataMap.put("success", true);
 				responseDataMap.put("msg", "操作成功");
-				notificationMap.put("notifCode", "0001");
-				notificationMap.put("notifInfo", "hello mobile app!");
+				
 			} catch (Exception e) {
 				setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
 				logger.error("保存组织详情报错,请求参数:{}" + requestJson, e);
@@ -166,10 +163,8 @@ public class OrganController extends BaseController {
 			setSessionAndErr(request, response, "-1", "非法操作！");
 			return returnFailMSGNew("01", "非法操作！");
 		}
-		model.put("responseData", responseDataMap);
-		model.put("notification", notificationMap);
 
-		return model;
+		return responseDataMap;
 	}
 	
 	
