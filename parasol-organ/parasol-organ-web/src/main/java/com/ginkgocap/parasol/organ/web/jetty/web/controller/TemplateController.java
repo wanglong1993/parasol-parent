@@ -125,7 +125,6 @@ public class TemplateController extends BaseController{
 	    	System.out.println("/template/findUserTemplateBasiInfo.json");
 	    	String requestJson = "";
 			requestJson = getJsonParamStr(request);
-			Map<String, Object> model = new HashMap<String, Object>();
 			Map<String, Object> responseDataMap = new HashMap<String, Object>();
 			boolean flag=true;
 				try {
@@ -146,9 +145,8 @@ public class TemplateController extends BaseController{
 				}
 					
 				responseDataMap.put("success", flag);
-				model.put("responseData", responseDataMap);
 
-			return model;
+			return responseDataMap;
 	    }
 	 
 	    
@@ -196,4 +194,39 @@ public class TemplateController extends BaseController{
 				return model;
 		    }
 	    
+		    
+		    
+			
+			 /**
+		    *
+		    * 定义成功返回信息
+		    *
+		    * @param successResult
+		    * @return
+		    * @author haiyan
+		    */
+		   protected Map<String, Object> returnSuccessMSG(Map<String, Object> successResult) {
+			   
+			    successResult.put("success", true);
+		        return successResult;
+		   }
+
+		   /**
+		    * 定义错误返回信息
+		    *
+		    * @param result
+		    * @param errRespCode
+		    * @param errRespMsg
+		    * @return
+		    * @author wangfeiliang
+		    */
+		   protected Map<String, Object> returnFailMSGNew(String errRespCode, String errRespMsg) {
+		       Map<String, Object> result = new HashMap<String, Object>();
+		      
+
+		       result.put("success", false);
+		       result.put("msg", errRespMsg);
+		       return result;
+		   }
+
 }
