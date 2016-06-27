@@ -271,113 +271,114 @@ public class CustomerProfileController extends BaseController {
 					}
 
 				}
-
-				// // 保存目录
-				JSONArray directoryArry = jo.getJSONArray("directory");
-
-				Directory directory = new Directory();
-				directory.setAppId(appId);
-				directory.setName("蔡志刚" + System.currentTimeMillis());
-				directory.setUserId(userBasic.getId());
-				directory.setTypeId(3);
-
-				long directoryId = directoryService.createDirectoryForRoot(
-						(long) sourceType, directory);
-				System.out.println("创建目录Id为" + directoryId);
-
-				if (!isAdd) {// 如果不是新增资源先删除原来的目录
-					directorySourceService.removeDirectorySourcesBySourceId(
-							userBasic.getId(), (long) 1, (int) sourceType,
-							customer.getCustomerId());
-				}
-
-				for (int i = 0; i < directoryArry.size(); i++) {
-					DirectorySource directorySource = new DirectorySource();
-					directorySource = new DirectorySource();
-					directorySource.setDirectoryId(directoryArry.getLong(i));
-					directorySource.setAppId(appId);
-					directorySource.setUserId(userBasic.getId());
-					directorySource.setSourceId(customer.getCustomerId());
-					directorySource.setSourceType((int) sourceType);
-					directorySource.setCreateAt(System.currentTimeMillis());
-
-					directorySourceService
-							.createDirectorySources(directorySource);
-				}
-
-				// 保存标签
-				JSONArray tagArry = jo.getJSONArray("tagList");
-				Tag tag = new Tag();
-				tag.setAppId(appId);
-				tag.setTagName("蔡志刚:  " + System.currentTimeMillis());
-				tag.setTagType(sourceType);
-				long tagId = tagService.createTag(userBasic.getId(), tag);
-
-				System.out.println("创建标签为:  " + tagId);
-
-				if (!isAdd) {// 如果不是新增客户 先删除原来的标签
-					tagSourceService.removeTagSource((long) 1,
-							userBasic.getId(), customer.getId());
-				}
-
-				if (tagArry != null && tagArry.size() > 0) {// 添加标签
-					System.out.println("tagArry:" + tagArry);
-					for (int i = 0; i < tagArry.size(); i++) {
-						TagSource tagSource = new TagSource();
-						tagSource.setTagId(tagId);
-						tagSource.setAppId(appId);
-						tagSource.setUserId(userBasic.getId());
-						tagSource.setSourceId(customer.getCustomerId());
-						tagSource.setSourceType(sourceType);
-						tagSource.setCreateAt(System.currentTimeMillis());
-						tagSourceService.createTagSource(tagSource);
-					}
-				}
-
-				// 保存关联
-				if (!isAdd) {// 如果不是增加先删除原来关联关系
-
-					List<Associate> associateList = associateService
-							.getAssociatesBySourceId(appId,
-									userBasic.getId(),
-									customer.getCustomerId());
-					for (Associate associate : associateList) {
-						associateService.removeAssociate(appId,
-								userBasic.getId(), associate.getId());
-					}
-				}
-				JSONArray associateArray = jo.getJSONArray("associateList");
-				System.out.println("associateList:" + associateArray);
-				for (int i = 0; i < associateArray.size(); i++) {
-
-					JSONObject associateJsonObject = (JSONObject) associateArray
-							.opt(i);
-					Associate associate = new Associate();
-					associate.setUserId(userBasic.getId());
-					associate.setAppId(1);
-					associate.setSourceTypeId(sourceType);
-					associate.setSourceId(customer.getCustomerId());
-					associate.setAssocDesc(associateJsonObject
-							.has("assoc_desc") ? associateJsonObject
-							.getString("assoc_desc") : null);
-					associate.setAssocTypeId(associateJsonObject
-							.has("assoc_type_id") ? associateJsonObject
-							.getLong("assoc_type_id") : null);
-					associate
-							.setAssocId(associateJsonObject.has("associd") ? associateJsonObject
-									.getLong("associd") : null);
-					associate.setAssocTitle(associateJsonObject
-							.has("assoc_title") ? associateJsonObject
-							.getString("assoc_title") : null);
-					associate.setCreateAt(System.currentTimeMillis());
-					associateService.createAssociate(appId,
-							userBasic.getId(), associate);
-				}
+//
+//				// // 保存目录
+//				JSONArray directoryArry = jo.getJSONArray("directory");
+//
+//				Directory directory = new Directory();
+//				directory.setAppId(appId);
+//				directory.setName("蔡志刚" + System.currentTimeMillis());
+//				directory.setUserId(userBasic.getId());
+//				directory.setTypeId(3);
+//
+//				long directoryId = directoryService.createDirectoryForRoot(
+//						(long) sourceType, directory);
+//				System.out.println("创建目录Id为" + directoryId);
+//
+//				if (!isAdd) {// 如果不是新增资源先删除原来的目录
+//					directorySourceService.removeDirectorySourcesBySourceId(
+//							userBasic.getId(), (long) 1, (int) sourceType,
+//							customer.getCustomerId());
+//				}
+//
+//				for (int i = 0; i < directoryArry.size(); i++) {
+//					DirectorySource directorySource = new DirectorySource();
+//					directorySource = new DirectorySource();
+//					directorySource.setDirectoryId(directoryArry.getLong(i));
+//					directorySource.setAppId(appId);
+//					directorySource.setUserId(userBasic.getId());
+//					directorySource.setSourceId(customer.getCustomerId());
+//					directorySource.setSourceType((int) sourceType);
+//					directorySource.setCreateAt(System.currentTimeMillis());
+//
+//					directorySourceService
+//							.createDirectorySources(directorySource);
+//				}
+//
+//				// 保存标签
+//				JSONArray tagArry = jo.getJSONArray("tagList");
+//				Tag tag = new Tag();
+//				tag.setAppId(appId);
+//				tag.setTagName("蔡志刚:  " + System.currentTimeMillis());
+//				tag.setTagType(sourceType);
+//				long tagId = tagService.createTag(userBasic.getId(), tag);
+//
+//				System.out.println("创建标签为:  " + tagId);
+//
+//				if (!isAdd) {// 如果不是新增客户 先删除原来的标签
+//					tagSourceService.removeTagSource((long) 1,
+//							userBasic.getId(), customer.getId());
+//				}
+//
+//				if (tagArry != null && tagArry.size() > 0) {// 添加标签
+//					System.out.println("tagArry:" + tagArry);
+//					for (int i = 0; i < tagArry.size(); i++) {
+//						TagSource tagSource = new TagSource();
+//						tagSource.setTagId(tagId);
+//						tagSource.setAppId(appId);
+//						tagSource.setUserId(userBasic.getId());
+//						tagSource.setSourceId(customer.getCustomerId());
+//						tagSource.setSourceType(sourceType);
+//						tagSource.setCreateAt(System.currentTimeMillis());
+//						tagSourceService.createTagSource(tagSource);
+//					}
+//				}
+//
+//				// 保存关联
+//				if (!isAdd) {// 如果不是增加先删除原来关联关系
+//
+//					List<Associate> associateList = associateService
+//							.getAssociatesBySourceId(appId,
+//									userBasic.getId(),
+//									customer.getCustomerId());
+//					for (Associate associate : associateList) {
+//						associateService.removeAssociate(appId,
+//								userBasic.getId(), associate.getId());
+//					}
+//				}
+//				JSONArray associateArray = jo.getJSONArray("associateList");
+//				System.out.println("associateList:" + associateArray);
+//				for (int i = 0; i < associateArray.size(); i++) {
+//
+//					JSONObject associateJsonObject = (JSONObject) associateArray
+//							.opt(i);
+//					Associate associate = new Associate();
+//					associate.setUserId(userBasic.getId());
+//					associate.setAppId(1);
+//					associate.setSourceTypeId(sourceType);
+//					associate.setSourceId(customer.getCustomerId());
+//					associate.setAssocDesc(associateJsonObject
+//							.has("assoc_desc") ? associateJsonObject
+//							.getString("assoc_desc") : null);
+//					associate.setAssocTypeId(associateJsonObject
+//							.has("assoc_type_id") ? associateJsonObject
+//							.getLong("assoc_type_id") : null);
+//					associate
+//							.setAssocId(associateJsonObject.has("associd") ? associateJsonObject
+//									.getLong("associd") : null);
+//					associate.setAssocTitle(associateJsonObject
+//							.has("assoc_title") ? associateJsonObject
+//							.getString("assoc_title") : null);
+//					associate.setCreateAt(System.currentTimeMillis());
+//					associateService.createAssociate(appId,
+//							userBasic.getId(), associate);
+//				}
 				// 生成动态
 				// saveCustomerDynamicNews(user,customer,customerPermissions.toString());
 
 			} catch (Exception e) {
 				setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
+				e.printStackTrace();
 				return returnFailMSGNew("01", "系统异常,请稍后再试");
 			}
 		} else {
@@ -669,12 +670,15 @@ public class CustomerProfileController extends BaseController {
     		
     		System.out.println(customer_temp);
 	    	responseData.put("customer", customer_new);
+	    	responseData.put("hasData", true);
 	    	try{
     			customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read.getType(), customerId);
     		}catch(Exception e){
     			logger.error("插入组织数据统计功能报错,请求参数json: ",e);
     		}
 	    	
+    	}else{
+    		responseData.put("hasData", false);
     	}
     	
     	Template template=templateService.findTemplateById(templateId);
@@ -705,47 +709,61 @@ public class CustomerProfileController extends BaseController {
 		} catch (IOException e) {
 			logger.error("参数读取异常");
 		}
+		System.out.println("requestJson:"+requestJson);
 		// 封装 response
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
 			if (userBasic == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
+				responseDataMap.put("successs", false);
+		    	responseDataMap.put("msg", "无法获取用户");
+		    	System.out.println("无法获取用户");
+		    	return responseDataMap;
+				
 			} else {
 			
 			    long customerId = j.getLong("customerId");
 			 
-			   boolean isDelCustomer= simpleCustomerService.deleteByIds(customerId+"");
-			    
-//			  boolean isDelCustomerDataTag=  customerService.deleteCustomerByCustomerId(customerId);
-			    
-			  PermissionQuery p=new PermissionQuery();
-			  p.setResId(customerId);
-			  p.setUserId(userBasic.getId());
-			  p.setResType((short)3);//  3组织
+			    try{
+			    	
+			    	 boolean isDelCustomer= simpleCustomerService.deleteByIds(customerId+"");
+					    
+					  PermissionQuery p=new PermissionQuery();
+					  p.setResId(customerId);
+					  p.setUserId(userBasic.getId());
+					  p.setResType((short)3);//  3组织
+
+					  InterfaceResult<Boolean>  interfaceResult=customerService.deleteCustomerByCustomerId(customerId, p);
+					  Notification notifacation=  interfaceResult.getNotification();
+					  boolean isDelCustomerDataTag=interfaceResult.getResponseData();
+					  
+				    	   if(isDelCustomerDataTag&&isDelCustomer) {
+								  responseDataMap.put("success", true);
+								  responseDataMap.put("msg", "操作成功");
+								  
+						    } else {
+						    	  customerService.deleteById(String.valueOf(customerId));
+								  responseDataMap.put("success", false);
+								  responseDataMap.put("msg", "删除失败");
+								
+						    }
+					   
+			    }catch(Exception e){
+			    	e.printStackTrace();
+			    	
+			    	responseDataMap.put("successs", false);
+			    	responseDataMap.put("msg", "系统异常");
+			    	return responseDataMap;
+			    }
 			  
-			  InterfaceResult<Boolean>  interfaceResult=customerService.deleteCustomerByCustomerId(customerId, p);
-			  Notification notifacation=  interfaceResult.getNotification();
-			  boolean isDelCustomerDataTag=interfaceResult.getResponseData();
-			  notifacation.getNotifCode();
-			  
-		    	   if(isDelCustomerDataTag&&isDelCustomer) {
-						  responseDataMap.put("success", true);
-						  responseDataMap.put("msg", "操作成功");
-						  
-				    } else {
-				    	  customerService.deleteById(String.valueOf(customerId));
-						  responseDataMap.put("success", false);
-						  responseDataMap.put("msg", "删除失败");
-						
-				    }
-			   
 			  
 			 
 			}
 
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
+			System.out.println("没有参数");
 		}
 	
 		return responseDataMap;
