@@ -407,7 +407,7 @@ public class CustomerProfileController extends BaseController {
     	long customerId=JsonUtil.getNodeToLong(j, "customerId");
     	String view=JsonUtil.getNodeToString(j, "view");  //如果从转发中进入客户详情，前端app传入view=1   2:转发到第三方,不登录查看组织详情
 		CustomerProfileVoNew customer_new = new CustomerProfileVoNew();
-    	Customer customer_temp = customerService.findCustomerCurrentData(customerId,"0");//组织详情基本资料
+    	Customer customer_temp = customerService.findCustomerCurrentData(customerId);//组织详情基本资料
     	String sckNum ="";
     	User userBasic = null;
     	if(customer_temp!= null){
@@ -547,7 +547,7 @@ public class CustomerProfileController extends BaseController {
     	JSONObject j = JSONObject.fromObject(requestJson);
     	long customerId=JsonUtil.getNodeToLong(j, "customerId");
 		BigDataModel bigDataCustomer = new BigDataModel();
-    	Customer customer_temp = customerService.findCustomerCurrentData(customerId,"2");//组织详情基本资料
+    	Customer customer_temp = customerService.findCustomerCurrentData(customerId);//组织详情基本资料
     	if(customer_temp!= null){
     		bigDataCustomer.setId(customer_temp.getId());
     		bigDataCustomer.setName(customer_temp.getName());
