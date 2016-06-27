@@ -548,7 +548,8 @@ public class CustomerProfileController extends BaseController {
     	JSONObject j = JSONObject.fromObject(requestJson);
     	long customerId=JsonUtil.getNodeToLong(j, "customerId");
 		BigDataModel bigDataCustomer = new BigDataModel();
-    	Customer customer_temp = customerService.findCustomerCurrentData(customerId,"0");//组织详情基本资料
+
+    	Customer customer_temp = customerService.findCustomerCurrentData(customerId,"2");
     	if(customer_temp!= null){
     		bigDataCustomer.setId(customer_temp.getId());
     		bigDataCustomer.setName(customer_temp.getName());
