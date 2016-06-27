@@ -29,11 +29,11 @@
 			</dbStrategy>
            <!-- 查询一个资源（例如：知识）下的所有标签 --> 
            <list name="List_Id_AppId_SourceId_SourceType"
-                  sqlitem="select id from tb_tag_source where appId=? userId = ?, and sourceId=? and sourceType=?"
+                  sqlitem="select id from tb_tag_source where appId=? and sourceId=? and sourceType=?"
                   sqlType="hsql" keyProperty="appId,sourceId,sourceType" valueProperty="id"  update="true"/>
            <!-- 删除一个资源（例如：知识）下的所有标签 --> 
            <list name="Delete_By_AppId_SourceId_SourceType"
-                  sqlitem="select id from tb_tag_source where appId=? and sourceId=? and sourceType=?"
+                  sqlitem="select id from tb_tag_source where appId=? and userId = ? and sourceId=? and sourceType=?"
                   sqlType="hsql" keyProperty="appId,userId,sourceId,sourceType" valueProperty="id"  update="true"/>
 			<!-- 查询一个标签下的所有资源（例如：知识） -->
            <list name="List_Id_AppId_TagId"

@@ -133,7 +133,7 @@ public class TagSourceController extends BaseControl {
 	
 	/**
 	 * 3.根据标签获取资源
-	 * curl -i "http://localhost:8081/tags/source/getSourceListByTag?appKey=1&userId=111&tagId=1&sourceType=7&start=0&count=10"
+	 * curl -i "http://localhost:8081/tags/source/getSourceListByTagAndType?appKey=1&userId=111&tagId=1&sourceType=7&start=0&count=10"
 	 * @param fileds
 	 * @param debug
 	 * @param tagId

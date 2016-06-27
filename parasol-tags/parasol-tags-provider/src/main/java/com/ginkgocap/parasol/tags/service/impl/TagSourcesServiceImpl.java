@@ -92,15 +92,15 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	}
 
 	@Override
-	public boolean removeTagSource(Long appId, Long userId, Long id) throws TagSourceServiceException {
+	public boolean removeTagSource(Long appId, Long userId, Long tagSourceId) throws TagSourceServiceException {
 		ServiceError.assertAppidIsNullForTagSource(appId);
-		ServiceError.assertTagSourceIdIsNullForTagSource(id);
+		ServiceError.assertTagSourceIdIsNullForTagSource(tagSourceId);
 		ServiceError.assertUserIdIsNullForTagSource(userId);
 		try {
-			TagSource tagSource = this.getTagSource(appId, id);
+			TagSource tagSource = this.getTagSource(appId, tagSourceId);
 			if (tagSource != null) {
 				if (ObjectUtils.equals(tagSource.getUserId(), userId) && ObjectUtils.equals(tagSource.getAppId(), appId)) {
-					return this.deleteEntity(id);
+					return this.deleteEntity(tagSourceId);
 				} else {
 					throw new TagSourceServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own TagSource");
 				}
