@@ -188,12 +188,12 @@ public class OrgAndCustomerController  extends BaseController {
 			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
-			    String custormId=j.optString("custormId");//需要修改添加标签目录的客户id
+			    long custormId = j.optLong("custormId");//需要修改添加标签目录的客户id
 			    List<Long> directoryIds = JsonUtil.getList(j, "directoryIds", Long.class);
 			    Long appId = 1l;
 			    Long ctime = System.currentTimeMillis();
 			    //删除以前的
-			    directorySourceService.removeDirectorySourcesBySourceId(user.getId(), appId, 1, Long.valueOf(custormId));
+			    directorySourceService.removeDirectorySourcesBySourceId(user.getId(), appId, 1,custormId);
 			    if(!directoryIds.isEmpty()){
 			    	for (Long directoryId : directoryIds) {
 			    		DirectorySource directorySource = new DirectorySource();
@@ -251,7 +251,7 @@ public class OrgAndCustomerController  extends BaseController {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 				List<Long> taglist = JsonUtil.getList(j, "taglist", Long.class);
-			    String custormId=j.optString("custormId");//需要修改添加标签目录的客户id
+			    Long custormId=j.optLong("custormId");//需要修改添加标签目录的客户id
 			    
 				//查找该人脉下的所有标签
 				List<TagSource> listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, Long.valueOf(custormId), 1l);
@@ -265,7 +265,7 @@ public class OrgAndCustomerController  extends BaseController {
 						tagSource.setTagId(tagId);
 						tagSource.setAppId(appId);
 						tagSource.setUserId(user.getId());
-						tagSource.setSourceId(Long.valueOf(custormId));
+						tagSource.setSourceId(custormId);
 						tagSource.setSourceType(1);//
 						tagSource.setCreateAt(ctime);
                         tagSourceService.createTagSource(tagSource);
@@ -314,11 +314,11 @@ public class OrgAndCustomerController  extends BaseController {
 			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
-				  String directoryId=j.optString("directoryId"); //目录id
+				  Long directoryId=j.optLong("directoryId"); //目录id
 			      String type=j.optString("type");//1创建的客户，2收藏的客户
 			      int currentPage=j.optInt("index"); //默认currentPage为1
 				  int pageSize=j.optInt("size");
-			      List<DirectorySource> dirctoryList = directorySourceService.getDirectorySourcesByDirectoryId(appId, user.getId(), Long.valueOf(directoryId));
+			      List<DirectorySource> dirctoryList = directorySourceService.getDirectorySourcesByDirectoryId(appId,user.getId(),directoryId);
 			      if(!dirctoryList.isEmpty()){
 			    	  for (DirectorySource directorySource : dirctoryList) {
 			    		  Map map=new HashMap();
@@ -374,11 +374,11 @@ public class OrgAndCustomerController  extends BaseController {
 			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
-				  String tagId=j.optString("tagId"); //标签id
+				  long tagId = j.optLong("tagId"); //标签id
 			      String type=j.optString("type");//1创建的客户，2收藏的客户
 			      int currentPage=j.optInt("index"); //默认currentPage为1
 				  int pageSize=j.optInt("size");
-				  List<TagSource> tagsourceList = tagSourceService.getTagSourcesByAppIdTagId(appId, Long.valueOf(tagId), (currentPage-1)*pageSize, pageSize);
+				  List<TagSource> tagsourceList = tagSourceService.getTagSourcesByAppIdTagId(appId,tagId, (currentPage-1)*pageSize, pageSize);
 				  int count=tagSourceService.countTagSourcesByAppIdTagId(appId, Long.valueOf(tagId));
 				  pageSize=pageSize>Constants.max_select_count?Constants.max_select_count:pageSize;
 				  PageUtil page = new PageUtil((int)count, currentPage, pageSize);
