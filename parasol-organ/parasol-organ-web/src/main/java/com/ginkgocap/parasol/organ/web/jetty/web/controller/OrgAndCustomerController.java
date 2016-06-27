@@ -81,7 +81,7 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/getCustomer", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/getCustomer.json", method = RequestMethod.POST)
 	public Map<String, Object> getCustomer(HttpServletRequest request,
 			HttpServletResponse response) {
 		User user = getUser(request);
@@ -168,7 +168,7 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @throws Exception 
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/updateCustomerDirectory", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/updateCustomerDirectory.json", method = RequestMethod.POST)
 	public Map<String, Object> updateCustomerTags(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		User user = getUser(request);
@@ -228,7 +228,7 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @throws Exception 
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/updateCustomerTags", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/updateCustomerTags.json", method = RequestMethod.POST)
 	public Map<String, Object> updateCustomerDirectory(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		User user = getUser(request);
@@ -293,7 +293,7 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @throws NumberFormatException 
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/findDirectoryIdsCustomer", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/findDirectoryIdsCustomer.json", method = RequestMethod.POST)
 	public Map<String, Object> findDirectoryIdsCustomer(HttpServletRequest request,
 			HttpServletResponse response) throws NumberFormatException, DirectorySourceServiceException {
 		User user = getUser(request);
@@ -353,7 +353,7 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @throws NumberFormatException 
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/findTagIdCustomer", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/findTagIdCustomer.json", method = RequestMethod.POST)
 	public Map<String, Object> findTagIdCustomer(HttpServletRequest request,
 			HttpServletResponse response) throws NumberFormatException, TagSourceServiceException {
 		User user = getUser(request);
@@ -417,7 +417,7 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @throws DirectorySourceServiceException 
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/deleteResourcesCustomer", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/deleteResourcesCustomer.json", method = RequestMethod.POST)
 	public Map<String, Object> deleteResourcesCustomer(HttpServletRequest request,
 			HttpServletResponse response) throws TagSourceServiceException, DirectorySourceServiceException {
 		User user = getUser(request);
@@ -482,7 +482,7 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @throws TagServiceException 
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/createTagDirecty", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/createTagDirecty.json", method = RequestMethod.POST)
 	public Map<String, Object> createTagDirecty(HttpServletRequest request,
 			HttpServletResponse response) throws TagSourceServiceException, DirectorySourceServiceException, TagServiceException {
 		User user = getUser(request);

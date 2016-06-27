@@ -51,7 +51,7 @@ public class OrganAnnouncementController extends BaseController {
 	* @author:		xutianlong
 	 */
 	@ResponseBody
-	@RequestMapping(value="/announcement/save")
+	@RequestMapping(value="/announcement/save.json")
 	public Map<String,Object> AnnouncementSave(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 				String requestJson = "";
@@ -99,7 +99,7 @@ public class OrganAnnouncementController extends BaseController {
 	* @author:		xutianlong
 	 */
 	@ResponseBody
-	@RequestMapping(value="/announcement/list")
+	@RequestMapping(value="/announcement/list.json")
 	public Map<String,Object> findByCreateId(HttpServletRequest request,
 			HttpServletResponse response) throws IOException{
 		logger.info("查询组织公告列表");
@@ -129,7 +129,7 @@ public class OrganAnnouncementController extends BaseController {
 	
 	//获取公告内容
 	@ResponseBody
-	@RequestMapping(value="/announcement/getOne")
+	@RequestMapping(value="/announcement/getOne.json")
 	public Map<String,Object> findAnnouncementById(HttpServletRequest request,
 			HttpServletResponse response) throws IOException{
 		Map<String,Object> responseDataMap = Maps.newHashMap();
@@ -174,7 +174,7 @@ public class OrganAnnouncementController extends BaseController {
 	
 	//修改公告内容
 	@ResponseBody
-	@RequestMapping(value="/announcement/update")
+	@RequestMapping(value="/announcement/update.json")
 	public Map<String,Object> updateAnnouncement(HttpServletRequest request
 			, HttpServletResponse response){
 		Map<String,Object> responseDateMap = Maps.newHashMap();
@@ -212,7 +212,7 @@ public class OrganAnnouncementController extends BaseController {
 	
 	//根据公告id删除公告
 	@ResponseBody
-	@RequestMapping(value="/announcement/delete")
+	@RequestMapping(value="/announcement/delete.json")
 	public Map<String,Object> deleteAnnouncement(HttpServletRequest request
 			, HttpServletResponse response){
 		Map<String,Object> responseDataMap = Maps.newHashMap();

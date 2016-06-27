@@ -48,7 +48,7 @@ public class OrganCommentController  extends BaseController{
  	 * @author zbb
  	 */
  	@ResponseBody
- 	@RequestMapping(value="/saveComment",method=RequestMethod.POST)
+ 	@RequestMapping(value="/saveComment.json",method=RequestMethod.POST)
  	public Map<String, Object> saveComment(HttpServletRequest request,
  			HttpServletResponse response) throws IOException {
  		String requestJson = getJsonParamStr(request);
@@ -96,7 +96,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/deleteComment",method=RequestMethod.POST)
+	@RequestMapping(value="/deleteComment.json",method=RequestMethod.POST)
 	public Map<String, Object> deleteComment(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -133,7 +133,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/selectComment",method=RequestMethod.POST)
+	@RequestMapping(value="/selectComment.json",method=RequestMethod.POST)
 	public Map<String, Object> selectComment(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -145,9 +145,6 @@ public class OrganCommentController  extends BaseController{
 		boolean flag = true;
 		if (requestJson != null && !"".equals(requestJson)){
 			JSONObject jo = JSONObject.fromObject(requestJson);
-			if (userBasic == null) {
-				setSessionAndErr(request, response, "-1", "请登录以后再操作");
-			} else {
 				 Map<String,Object>  canshu=new HashMap<String,Object>();
 				  long orgid = CommonUtil.getLongFromJSONObject(jo, "orgid");
 				   int currentPage = jo.getInt( "currentPage");
@@ -163,13 +160,15 @@ public class OrganCommentController  extends BaseController{
 			       for(CommentMain commentMain:commentMainlist){
 			    	  Long id = commentMain.getId();
 			    	  Long praisecount = commentPraiseService.selectPraiseCount(id);
-			    	  boolean praiseresult = commentPraiseService.selectUserPraiseCount(userBasic.getId(), id);
+			    	  boolean praiseresult=false;
+			    	  if(userBasic!=null){
+			    		   praiseresult = commentPraiseService.selectUserPraiseCount(userBasic.getId(), id);
+			    	  }
 			    	  commentMain.setPraisecount(praisecount);
 			    	  commentMain.setPraiseresult(praiseresult);
 			    	  commentMain.setReplyMap(ommentReplyService.findByCommentid(id));
 			       }
 			       responseDataMap.put("commentMap", commentMainlist);
-			}
 		}else{
 			setSessionAndErr(request, response, "-1", "请完善信息！");
 			 flag = false;
@@ -187,7 +186,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/clickPraise",method=RequestMethod.POST)
+	@RequestMapping(value="/clickPraise.json",method=RequestMethod.POST)
 	public Map<String, Object> clickPraise(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -231,7 +230,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/removePraise",method=RequestMethod.POST)
+	@RequestMapping(value="/removePraise.json",method=RequestMethod.POST)
 	public Map<String, Object> removePraise(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -267,7 +266,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/replyComment",method=RequestMethod.POST)
+	@RequestMapping(value="/replyComment.json",method=RequestMethod.POST)
 	public Map<String, Object> replyComment(HttpServletRequest request,
 		HttpServletResponse response) throws IOException {
 		String requestJson = getJsonParamStr(request);
@@ -305,7 +304,7 @@ public class OrganCommentController  extends BaseController{
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/removeReply",method=RequestMethod.POST)
+	@RequestMapping(value="/removeReply.json",method=RequestMethod.POST)
 	public Map<String, Object> removereply(HttpServletRequest request,
 		HttpServletResponse response) throws IOException {
 		String requestJson = getJsonParamStr(request);
