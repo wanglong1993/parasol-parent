@@ -110,7 +110,7 @@ public class OrganController extends BaseController {
 	 * @author caizhigang
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/saveOrganProfile", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/saveOrganProfile.json", method = RequestMethod.POST)
 	public Map<String, Object> saveOrganPro(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String requestJson = "";
 
@@ -237,7 +237,7 @@ public class OrganController extends BaseController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/getOrganProfile", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/getOrganProfile.json", method = RequestMethod.POST)
 	public Map<String, Object> getOrganProfileNew(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String requestJson = Utils.getJsonIn(request);
 		Map<String, Object> responseData = new HashMap<String, Object>();
@@ -362,7 +362,7 @@ public class OrganController extends BaseController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/organ/getOrganProfileAndTemplate", method = RequestMethod.POST)
+	@RequestMapping(value = "/organ/getOrganProfileAndTemplate.json", method = RequestMethod.POST)
 	public Map<String, Object> getOrganProfileAndTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String requestJson = Utils.getJsonIn(request);
 		Map<String, Object> responseData = new HashMap<String, Object>();

@@ -37,7 +37,7 @@ public class TemplateController extends BaseController{
 	
 	    //根据ID 查询模板
 	    @ResponseBody
-		@RequestMapping(value = "/template/findTempleById", method = RequestMethod.POST)
+		@RequestMapping(value = "/template/findTempleById.json", method = RequestMethod.POST)
 		public Map<String, Object> findTempleById(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:org/template/findTempleById.json");
@@ -80,7 +80,7 @@ public class TemplateController extends BaseController{
 	   
 	    //根据Id 保存或修改模板
 	    @ResponseBody
-	    @RequestMapping(value = "/template/saveTemplate", method = RequestMethod.POST)
+	    @RequestMapping(value = "/template/saveTemplate.json", method = RequestMethod.POST)
 		public Map<String, Object> saveTemplate(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("controller:/template/saveTemplate.json");
@@ -119,7 +119,7 @@ public class TemplateController extends BaseController{
 	  
 	  //根据Id 查询模板
 	    @ResponseBody
-		@RequestMapping(value = "/template/findUserTemplateBasiInfo", method = RequestMethod.POST)
+		@RequestMapping(value = "/template/findUserTemplateBasiInfo.json", method = RequestMethod.POST)
 		public Map<String, Object> findUserTemplateBasiInfo(HttpServletRequest request,
 				HttpServletResponse response) throws IOException {
 	    	System.out.println("/template/findUserTemplateBasiInfo.json");
@@ -155,7 +155,7 @@ public class TemplateController extends BaseController{
 	    
 		  //根据Id 查询模板
 		    @ResponseBody
-			@RequestMapping(value = "/template/deleteTemplate", method = RequestMethod.POST)
+			@RequestMapping(value = "/template/deleteTemplate.json", method = RequestMethod.POST)
 			public Map<String, Object> deleteTemplate(HttpServletRequest request,
 					HttpServletResponse response) throws IOException {
 		    	System.out.println("/template/deleteTemplate.json");

@@ -115,7 +115,7 @@ public class CustomerProfileController extends BaseController {
 	 * @author caizhigang
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/customer/saveCustomerProfile", method = RequestMethod.POST)
+	@RequestMapping(value = "/customer/saveCustomerProfile.json", method = RequestMethod.POST)
 	public Map<String, Object> saveCustomerProfile(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
@@ -398,7 +398,7 @@ public class CustomerProfileController extends BaseController {
 	 * @author caizhigang
      */
 	@ResponseBody
-    @RequestMapping(value = "/customer/findCustomerByCustomerId", method = RequestMethod.POST)
+    @RequestMapping(value = "/customer/findCustomerByCustomerId.json", method = RequestMethod.POST)
 	public Map<String, Object> findCustomerByCustomerId(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String requestJson = getJsonParamStr(request);
     	Map<String, Object> responseData = new HashMap<String, Object>();
@@ -407,7 +407,7 @@ public class CustomerProfileController extends BaseController {
     	long customerId=JsonUtil.getNodeToLong(j, "customerId");
     	String view=JsonUtil.getNodeToString(j, "view");  //如果从转发中进入客户详情，前端app传入view=1   2:转发到第三方,不登录查看组织详情
 		CustomerProfileVoNew customer_new = new CustomerProfileVoNew();
-    	Customer customer_temp = customerService.findCustomerCurrentData(customerId);//组织详情基本资料
+    	Customer customer_temp = customerService.findCustomerCurrentData(customerId,"0");//组织详情基本资料
     	String sckNum ="";
     	User userBasic = null;
     	if(customer_temp!= null){
@@ -539,7 +539,7 @@ public class CustomerProfileController extends BaseController {
 	 * @author zbb
      */
 	@ResponseBody
-    @RequestMapping(value = "/customer/findDigDataByCustomerId", method = RequestMethod.POST)
+    @RequestMapping(value = "/customer/findDigDataByCustomerId.json", method = RequestMethod.POST)
 	public Map<String, Object> findDigDataByCustomerId(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String requestJson = getJsonParamStr(request);
     	Map<String, Object> responseData = new HashMap<String, Object>();
@@ -547,7 +547,7 @@ public class CustomerProfileController extends BaseController {
     	JSONObject j = JSONObject.fromObject(requestJson);
     	long customerId=JsonUtil.getNodeToLong(j, "customerId");
 		BigDataModel bigDataCustomer = new BigDataModel();
-    	Customer customer_temp = customerService.findCustomerCurrentData(customerId);//组织详情基本资料
+    	Customer customer_temp = customerService.findCustomerCurrentData(customerId,"0");//组织详情基本资料
     	if(customer_temp!= null){
     		bigDataCustomer.setId(customer_temp.getId());
     		bigDataCustomer.setName(customer_temp.getName());
@@ -605,7 +605,7 @@ public class CustomerProfileController extends BaseController {
 	 * @author caizhigang
      */
 	@ResponseBody
-    @RequestMapping(value = "/customer/findTemplateAndCustomerData", method = RequestMethod.POST)
+    @RequestMapping(value = "/customer/findTemplateAndCustomerData.json", method = RequestMethod.POST)
 	public Map<String, Object> findTemplateAndCustomerData(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String requestJson = getJsonParamStr(request);
     	Map<String, Object> responseData = new HashMap<String, Object>();
@@ -693,7 +693,7 @@ public class CustomerProfileController extends BaseController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/customer/deleteCustomer", method = RequestMethod.POST)
+	@RequestMapping(value = "/customer/deleteCustomer.json", method = RequestMethod.POST)
 	public Map<String, Object> delete(HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("/customer/deleteCustomer.json");
