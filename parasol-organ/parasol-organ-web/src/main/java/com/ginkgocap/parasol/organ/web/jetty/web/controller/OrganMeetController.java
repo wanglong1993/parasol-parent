@@ -44,7 +44,7 @@ public class OrganMeetController extends BaseController {
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/save",method=RequestMethod.POST)
+	@RequestMapping(value="/save.json",method=RequestMethod.POST)
 	public Map<String, Object> orgSave(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String requestJson = getJsonParamStr(request);
@@ -56,30 +56,34 @@ public class OrganMeetController extends BaseController {
 		Long ctime = 1l;
 		boolean flag = true;
 		if (requestJson != null && !"".equals(requestJson)){
-			try {
-		       JSONObject jo=JSONObject.fromObject(requestJson);
-		       ObjectMapper objectMapper=new ObjectMapper();
-		       CustomerMeetingDetail meetDetail=objectMapper.readValue(jo.toString(),CustomerMeetingDetail.class);
-		       meetDetail.setCreatorId(userBasic.getId());
-			   meetDetail =  customerMeetingDetailService.saveOrUpdate(meetDetail);
-				for (int i = 0; i < meetDetail.getAssociateList().size(); i++) {
-					MeetAssociate jsonObject2 = meetDetail.getAssociateList().get(i); 
-					Associate associate = new Associate();
-					associate.setUserId(userBasic.getId());
-					associate.setAppId(appId);
-					associate.setSourceTypeId(1);
-					associate.setSourceId(meetDetail.getId());
-					associate.setAssocDesc(jsonObject2.getAssoc_desc());
-					associate.setAssocTypeId(jsonObject2.getAssoc_type_id());
-					associate.setAssocId(jsonObject2.getAssocid());
-					associate.setAssocTitle(jsonObject2.getAssoc_title());
-					associate.setCreateAt(ctime);
-					associateService.createAssociate(appId, userBasic.getId(), associate);
+			if(userBasic==null){
+				setSessionAndErr(request, response, "-1", "请登录！");
+			}else{
+				try {
+			       JSONObject jo=JSONObject.fromObject(requestJson);
+			       ObjectMapper objectMapper=new ObjectMapper();
+			       CustomerMeetingDetail meetDetail=objectMapper.readValue(jo.toString(),CustomerMeetingDetail.class);
+			       meetDetail.setCreatorId(userBasic.getId());
+				   meetDetail =  customerMeetingDetailService.saveOrUpdate(meetDetail);
+					for (int i = 0; i < meetDetail.getAssociateList().size(); i++) {
+						MeetAssociate jsonObject2 = meetDetail.getAssociateList().get(i); 
+						Associate associate = new Associate();
+						associate.setUserId(userBasic.getId());
+						associate.setAppId(appId);
+						associate.setSourceTypeId(1);
+						associate.setSourceId(meetDetail.getId());
+						associate.setAssocDesc(jsonObject2.getAssoc_desc());
+						associate.setAssocTypeId(jsonObject2.getAssoc_type_id());
+						associate.setAssocId(jsonObject2.getAssocid());
+						associate.setAssocTitle(jsonObject2.getAssoc_title());
+						associate.setCreateAt(ctime);
+						associateService.createAssociate(appId, userBasic.getId(), associate);
+					}
+			       responseDataMap.put("id", meetDetail.getId());
+				} catch (Exception e) {
+					setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
+					logger.debug(e.getMessage().toString());
 				}
-		       responseDataMap.put("id", meetDetail.getId());
-			} catch (Exception e) {
-				setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
-				logger.debug(e.getMessage().toString());
 			}
 		}else{
 			setSessionAndErr(request, response, "-1", "请完善信息！");
@@ -100,7 +104,7 @@ public class OrganMeetController extends BaseController {
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/update",method=RequestMethod.POST)
+	@RequestMapping(value="/update.json",method=RequestMethod.POST)
 	public Map<String, Object> update(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -112,38 +116,41 @@ public class OrganMeetController extends BaseController {
 		Long appId = 1l;
 		Long ctime = 1l;
 		if (requestJson != null && !"".equals(requestJson)){
-		       try {
-				JSONObject jo=JSONObject.fromObject(requestJson);
-				  ObjectMapper objectMapper=new ObjectMapper();
-			       CustomerMeetingDetail meetDetail=objectMapper.readValue(jo.toString(),CustomerMeetingDetail.class);
-			       meetDetail.setCreatorId(userBasic.getId());
-				   customerMeetingDetailService.saveOrUpdate(meetDetail);
-				   //查询当前会面在关联表中的信息
-                   List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getId(), meetDetail.getId());
-				   //删除当前会面在关联表中的信息
-                   for (Associate associate : associatlist) {
-					   associateService.removeAssociate(appId,  userBasic.getId(), associate.getId());
-				   }
-   				   for (int i = 0; i < meetDetail.getAssociateList().size(); i++) {
-   					MeetAssociate jsonObject2 = meetDetail.getAssociateList().get(i); 
-   					Associate associate = new Associate();
-   					associate.setUserId(userBasic.getId());
-   					associate.setAppId(appId);
-   					associate.setSourceTypeId(1);
-   					associate.setSourceId(meetDetail.getId());
-					associate.setAssocDesc(jsonObject2.getAssoc_desc());
-					associate.setAssocTypeId(jsonObject2.getAssoc_type_id());
-					associate.setAssocId(jsonObject2.getAssocid());
-					associate.setAssocTitle(jsonObject2.getAssoc_title());
-   					associate.setCreateAt(ctime);
-   					associateService.createAssociate(appId, userBasic.getId(), associate);
-   				   }
-                   responseDataMap.put("id", meetDetail.getId());
-			} catch (Exception e) {
-				setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
-				logger.debug(e.getMessage().toString());
-			}
-		      
+			if(userBasic==null){
+				setSessionAndErr(request, response, "-1", "请登录！");
+			}else{
+			       try {
+					JSONObject jo=JSONObject.fromObject(requestJson);
+					  ObjectMapper objectMapper=new ObjectMapper();
+				       CustomerMeetingDetail meetDetail=objectMapper.readValue(jo.toString(),CustomerMeetingDetail.class);
+				       meetDetail.setCreatorId(userBasic.getId());
+					   customerMeetingDetailService.saveOrUpdate(meetDetail);
+					   //查询当前会面在关联表中的信息
+	                   List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getId(), meetDetail.getId());
+					   //删除当前会面在关联表中的信息
+	                   for (Associate associate : associatlist) {
+						   associateService.removeAssociate(appId,  userBasic.getId(), associate.getId());
+					   }
+	   				   for (int i = 0; i < meetDetail.getAssociateList().size(); i++) {
+	   					MeetAssociate jsonObject2 = meetDetail.getAssociateList().get(i); 
+	   					Associate associate = new Associate();
+	   					associate.setUserId(userBasic.getId());
+	   					associate.setAppId(appId);
+	   					associate.setSourceTypeId(1);
+	   					associate.setSourceId(meetDetail.getId());
+						associate.setAssocDesc(jsonObject2.getAssoc_desc());
+						associate.setAssocTypeId(jsonObject2.getAssoc_type_id());
+						associate.setAssocId(jsonObject2.getAssocid());
+						associate.setAssocTitle(jsonObject2.getAssoc_title());
+	   					associate.setCreateAt(ctime);
+	   					associateService.createAssociate(appId, userBasic.getId(), associate);
+	   				   }
+	                   responseDataMap.put("id", meetDetail.getId());
+				} catch (Exception e) {
+					setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
+					logger.debug(e.getMessage().toString());
+				}
+			} 
 		}else{
 			setSessionAndErr(request, response, "-1", "请完善信息！");
 			 flag = false;
@@ -163,7 +170,7 @@ public class OrganMeetController extends BaseController {
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/findList",method=RequestMethod.POST)
+	@RequestMapping(value="/findList.json",method=RequestMethod.POST)
 	public Map<String, Object> findList(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -199,7 +206,7 @@ public class OrganMeetController extends BaseController {
 	 * @author zbb
 	 */
 	@ResponseBody
-	@RequestMapping(value="/findOne",method=RequestMethod.POST)
+	@RequestMapping(value="/findOne.json",method=RequestMethod.POST)
 	public Map<String, Object> findOne(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		 String requestJson = getJsonParamStr(request);
@@ -230,7 +237,7 @@ public class OrganMeetController extends BaseController {
 	 * @throws AssociateServiceException 
 	 */
 	@ResponseBody
-	@RequestMapping(value="/deleteById",method=RequestMethod.POST)
+	@RequestMapping(value="/deleteById.json",method=RequestMethod.POST)
 	public Map<String, Object> deleteById(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, AssociateServiceException {
 		 String requestJson = getJsonParamStr(request);
@@ -242,16 +249,20 @@ public class OrganMeetController extends BaseController {
 		User userBasic = null;
         userBasic=getUser(request);
 		if (requestJson != null && !"".equals(requestJson)){
-			JSONObject j = JSONObject.fromObject(requestJson);
-			long id = CommonUtil.getLongFromJSONObject(j, "id");
-			if(id != 0){
-				flag = customerMeetingDetailService.deleteById(id);
-				   //查询当前会面在关联表中的信息
-                List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getId(), id);
-				   //删除当前会面在关联表中的信息
-                for (Associate associate : associatlist) {
-					   associateService.removeAssociate(appId,  userBasic.getId(), associate.getId());
-				   }
+			if(userBasic==null){
+				setSessionAndErr(request, response, "-1", "请登录！");
+			}else{
+				JSONObject j = JSONObject.fromObject(requestJson);
+				long id = CommonUtil.getLongFromJSONObject(j, "id");
+				if(id != 0){
+					flag = customerMeetingDetailService.deleteById(id);
+					   //查询当前会面在关联表中的信息
+	                List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getId(), id);
+					   //删除当前会面在关联表中的信息
+	                for (Associate associate : associatlist) {
+						   associateService.removeAssociate(appId,  userBasic.getId(), associate.getId());
+					   }
+				}
 			}
 		}else{
 			flag = false;
