@@ -976,11 +976,11 @@
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>8827</dubbo.protocol.port>-->
 
-                <dubbo.application.name>customerdubboprovider</dubbo.application.name>
+                <dubbo.application.name>parasol-organ-web</dubbo.application.name>
                 <dubbo.protocol.name>dubbo</dubbo.protocol.name>
                 <dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
                 <!--  <dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>-->
-                 <dubbo.protocol.port>2017</dubbo.protocol.port>
+                 <dubbo.protocol.port>2018</dubbo.protocol.port>
                  <user.web.url>http://localhost:8089</user.web.url>
                  <upload.web.url>http://192.168.130.100:8091/file/upload</upload.web.url>
                  <delivery.web.url>http://192.168.130.100:8091/file/upload</delivery.web.url>
