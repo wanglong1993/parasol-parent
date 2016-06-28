@@ -92,6 +92,7 @@ public class OrgAndCustomerController  extends BaseController {
 		} catch (IOException e) {
 			logger.error("参数读取异常");
 		}
+		boolean flag=true;
 		// 封装 response
 		Map<String, Object> model = new HashMap<String, Object>();
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
@@ -99,6 +100,7 @@ public class OrgAndCustomerController  extends BaseController {
 		if (!isNullOrEmpty(requestJson)) {
 			JSONObject j = JSONObject.fromObject(requestJson);
 			if (user == null) {
+				flag=false;
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 				int currentPage=j.optInt("index"); //默认currentPage为1
@@ -149,9 +151,10 @@ public class OrgAndCustomerController  extends BaseController {
 			    }
 			}
 		} else {
+			flag=false;
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
 		}
-		responseDataMap.put("success",true);
+		responseDataMap.put("success",flag);
 		notificationMap.put("notifCode", "0001");
 		notificationMap.put("notifInfo", "hello mobile app!");
 		model.put("responseData", responseDataMap);
@@ -190,6 +193,10 @@ public class OrgAndCustomerController  extends BaseController {
 			} else {
 			    long custormId = j.optLong("custormId");//需要修改添加标签目录的客户id
 			    List<Long> directoryIds = JsonUtil.getList(j, "directoryIds", Long.class);
+			    String sourceUrl=j.optString("sourceUrl");
+			    String sourceTitle=j.optString("sourceTitle");
+			    String sourceData=j.optString("sourceData");
+			    String invokeMethod=j.optString("invokeMethod");
 			    Long appId = 1l;
 			    Long ctime = System.currentTimeMillis();
 			    //删除以前的
@@ -203,6 +210,10 @@ public class OrgAndCustomerController  extends BaseController {
 						directorySource.setSourceId(Long.valueOf(custormId));
 						directorySource.setSourceType(1);//
 						directorySource.setCreateAt(ctime);
+						directorySource.setSourceUrl(sourceUrl);
+						directorySource.setSourceTitle(sourceTitle);
+						directorySource.setSourceData(sourceData);
+						directorySource.setInvokeMethod(invokeMethod);
 						directorySourceService.createDirectorySources(directorySource);
 					}
 			    }
@@ -252,7 +263,7 @@ public class OrgAndCustomerController  extends BaseController {
 			} else {
 				List<Long> taglist = JsonUtil.getList(j, "taglist", Long.class);
 			    Long custormId=j.optLong("custormId");//需要修改添加标签目录的客户id
-			    
+			    String sourceTitle=j.optString("sourceTitle");
 				//查找该人脉下的所有标签
 				List<TagSource> listTagSource=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, Long.valueOf(custormId), 1l);
 				//删除该人脉下的所有标签
@@ -268,6 +279,7 @@ public class OrgAndCustomerController  extends BaseController {
 						tagSource.setSourceId(custormId);
 						tagSource.setSourceType(1);//
 						tagSource.setCreateAt(ctime);
+						tagSource.setSourceTitle(sourceTitle);
                         tagSourceService.createTagSource(tagSource);
 					}
                 }				   
