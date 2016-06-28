@@ -35,6 +35,15 @@ public interface TagSourceService {
 	public boolean removeTagSource(Long appId, Long userId, Long tagSourceId) throws TagSourceServiceException;
 
 	/**
+	 * 删除TagSource，比如删除一篇文章下边的一个标签
+	 * 
+	 * @param appId
+	 * @param sourceId
+	 * @return
+	 * @throws TagSourceServiceException
+	 */
+	public int removeTagSourceBySourceId(Long appId, Long userId, Long sourceId,Long sourceType) throws TagSourceServiceException;
+	/**
 	 * 查询一个TagSource
 	 * 
 	 * @param appId
@@ -77,6 +86,16 @@ public interface TagSourceService {
 	public List<TagSource> getTagSourcesByAppIdTagId(Long appId, Long tagId, Integer iStart, Integer iCount) throws TagSourceServiceException;
 
 	/**
+	 * 根据一个应用的的TagId和SourceType查找SourceId列表 比如：根据知识的“智能硬件”标签查找TagSource对象。
+	 * 
+	 * @param appId
+	 * @param tagId
+	 * @param sourceType
+	 * @return
+	 * @throws TagSourceServiceException
+	 */
+	public List<TagSource> getTagSourcesByAppIdTagIdAndType(Long appId, Long tagId, Long sourceType, Integer iStart, Integer iCount) throws TagSourceServiceException;
+	/**
 	 * 根据一个应用的的TagId查找SourceId列表 比如：根据知识的“智能硬件”标签查找TagSource对象。
 	 * 
 	 * @param appId
@@ -95,4 +114,11 @@ public interface TagSourceService {
 	 * @throws TagSourceServiceException
 	 */
 	public boolean removeTagSourcesByTagId(Long appId, Long tagId) throws TagSourceServiceException;
+	/**
+	 * 批量打标签。比如给多篇文章打标签。
+	 * @param tagSource
+	 * @return
+	 * @throws TagSourceServiceException
+	 */
+	public boolean createTagSources(List<TagSource> tagSource) throws TagSourceServiceException;
 }

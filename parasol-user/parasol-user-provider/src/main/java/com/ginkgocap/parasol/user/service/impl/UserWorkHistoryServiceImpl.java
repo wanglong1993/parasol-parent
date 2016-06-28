@@ -1,107 +1,90 @@
 package com.ginkgocap.parasol.user.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
-import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.user.exception.UserWorkHistoryServiceException;
 import com.ginkgocap.parasol.user.model.UserWorkHistory;
 import com.ginkgocap.parasol.user.service.UserWorkHistoryService;
 @Service("userWorkHistoryService")
 public class UserWorkHistoryServiceImpl extends BaseService<UserWorkHistory> implements UserWorkHistoryService {
-	private static final String USER_WORK_HISTORY_LIST_USERID = "UserWorkHistory_List_UserId";
-	private static Logger logger = Logger.getLogger(UserWorkHistoryServiceImpl.class);
+	private UserWorkHistory checkValidity(UserWorkHistory UserWorkHistory,int type)throws Exception {
+		if(UserWorkHistory==null) throw new Exception("UserWorkHistory can not be null.");
+		if(UserWorkHistory.getUserId()<0l) throw new Exception("The value of userId is null or empty.");
+		if(type!=0)
+		if(getObject(UserWorkHistory.getId())==null)throw new Exception("userId not exists in UserWorkHistory");
+		if(UserWorkHistory.getCtime()==null) UserWorkHistory.setCtime(System.currentTimeMillis());
+		if(UserWorkHistory.getUtime()==null) UserWorkHistory.setUtime(System.currentTimeMillis());
+		if(type==1)UserWorkHistory.setUtime(System.currentTimeMillis());
+		return UserWorkHistory;
+	}
+	@Override
+	public Long createObject(UserWorkHistory object) throws Exception {
+		Long id= (Long)this.saveEntity(this.checkValidity(object, 0));
+		if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
+		else throw new Exception("创建失败！ ");
+	}
 	
-	/**
-	 * 检查数据
-	 * @param list
-	 * @return
-	 * @throws UserWorkHistoryServiceException
-	 */
-	private List<UserWorkHistory> checkValidity(List<UserWorkHistory> list)throws UserWorkHistoryServiceException{
-		if(list==null || list.size()==0) throw new UserWorkHistoryServiceException("UserWorkHistory is null");
-		for (UserWorkHistory userDefined : list) {
-			if(userDefined.getUserId()==null ||userDefined.getUserId()<=0l) throw new UserWorkHistoryServiceException("userId must be a value");
-			if(StringUtils.isEmpty(userDefined.getIp())) throw new UserWorkHistoryServiceException("ip is null or empty");
-			if(userDefined.getCtime()==null ||userDefined.getCtime()<=0l)userDefined.setCtime(System.currentTimeMillis());
-			if(userDefined.getUtime()==null ||userDefined.getUtime()<=0l)userDefined.setUtime(System.currentTimeMillis());
-		}
-		return list;
-	}
-	 
 	@Override
-	public List<UserWorkHistory> createUserWorkHistoryByList(List<UserWorkHistory> list,Long userId) throws UserWorkHistoryServiceException {
-		try {
-			checkValidity(list);
-			//删除以前的
-			deleteEntityByIds(getIdList(userId));
-			List<UserWorkHistory> userWorkHistorys=saveEntitys(list);
-			if(userWorkHistorys==null || userWorkHistorys.size()==0) throw new UserWorkHistoryServiceException("createUserWorkHistoryByList failed.");
-			return userWorkHistorys;
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserWorkHistoryServiceException(e);
-		}
-	}
-	@Override
-	public List<UserWorkHistory> updateUserWorkHistoryByList(List<UserWorkHistory> list,Long userId) throws UserWorkHistoryServiceException {
-		try {
-			checkValidity(list);
-			//删除以前的
-			deleteEntityByIds(getIdList(userId));
-			List<UserWorkHistory> userWorkHistorys=saveEntitys(list);
-			if(userWorkHistorys==null || userWorkHistorys.size()==0) throw new UserWorkHistoryServiceException("updateUserWorkHistoryByList failed.");
-			return userWorkHistorys;
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserWorkHistoryServiceException(e);
-		}
-	}
-	@Override
-	public List<Long> getIdList(Long userId) throws UserWorkHistoryServiceException {
-		try {
-			if((userId==null || userId<=0l)) return ListUtils.EMPTY_LIST;
-			return getIds(USER_WORK_HISTORY_LIST_USERID,userId);
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserWorkHistoryServiceException(e);
-		}
-	}
-	@Override
-	public boolean realDeleteUserWorkHistoryList(List<Long> list)throws UserWorkHistoryServiceException {
-		try {
-			if(list==null || list.size()==0) return false;
-			return deleteEntityByIds(list);
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserWorkHistoryServiceException(e);
-		}
+	public Boolean deleteObjectsByUserId(Long userId) throws Exception {
+		if(userId==null) throw new Exception("userId is null or empty");
+		this.deleteList("UserWorkHistory_List_UserId", userId);
+		return true;
 	}
 
 	@Override
-	public List<UserWorkHistory> getIdList(List<Long> ids)throws UserWorkHistoryServiceException {
-		try {
-			if(ids==null || ids.size()==0) return Collections.EMPTY_LIST;
-			return getEntityByIds(ids);
-		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserWorkHistoryServiceException(e);
+	public Boolean updateObject(UserWorkHistory objcet) throws Exception {
+		if(updateEntity(checkValidity(objcet,1)))return true;
+		else return false;
+	}
+
+	@Override
+	public UserWorkHistory getObject(Long id) throws Exception {
+		if(id==null || id<=0l)throw new Exception("id is null or empty");
+		UserWorkHistory UserWorkHistory =getEntity(id);
+		return UserWorkHistory;
+	}
+
+	@Override
+	public List<UserWorkHistory> getObjects(List<Long> ids) throws Exception {
+		if(ids==null || ids.size()<=0)throw new Exception("ids is null or empty");
+		List<UserWorkHistory> UserWorkHistorys =this.getEntityByIds(ids);
+		return UserWorkHistorys;
+	}
+
+	@Override
+	public Boolean deleteObject(Long id) throws Exception {
+		if(id==null || id<=0l)throw new Exception("id is null or empty");
+		return this.deleteEntity(id);
+	}
+	@Override
+	public List<UserWorkHistory> createObjects(List<UserWorkHistory> objects)
+			throws Exception {
+		if(objects==null || objects.size()<=0) return null;
+		for(UserWorkHistory UserWorkHistory : objects){
+			this.checkValidity(UserWorkHistory, 0);
 		}
+		return this.saveEntitys(objects);
+	}
+	@Override
+	public List<UserWorkHistory> getObjectsByUserId(Long userId) throws Exception {
+		if(userId==null || userId<=0l)throw new Exception("id is null or empty");
+		List<Long> ids = this.getIds("UserWorkHistory_List_UserId", userId);
+		return this.getEntityByIds(ids);
+	}
+	@Override
+	public Boolean deleteObjects(List<Long> ids) throws Exception {
+		if(ids==null || ids.size()<=0)throw new Exception("ids is null or empty");
+		return this.deleteEntityByIds(ids);
+	}
+	@Override
+	public Boolean updateObjects(List<UserWorkHistory> objects) throws Exception {
+		if(objects==null || objects.size()<=0) return true;
+		for(UserWorkHistory UserWorkHistory : objects){
+			this.checkValidity(UserWorkHistory, 1);
+		}
+		return this.updateEntitys(objects);
 	}
 }

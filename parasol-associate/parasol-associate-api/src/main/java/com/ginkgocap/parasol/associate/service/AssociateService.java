@@ -53,7 +53,16 @@ public interface AssociateService {
 	 */
 	public Associate getAssociate(Long appId, Long userId, Long associateId) throws AssociateServiceException;
 
-
+	/**
+	 * 查询一个资源的关联详情列表
+	 * 
+	 * @param appId
+	 * @param userId
+	 * @param associateId
+	 * @return
+	 * @throws AssociateServiceException
+	 */
+	public List<Associate> getAssociatesBySourceId(Long appId, Long userId, Long sourceId)  throws AssociateServiceException;
 	/**
 	 *  查询一个对象的关联数据，需要定义一下格式
 	 * @param appId

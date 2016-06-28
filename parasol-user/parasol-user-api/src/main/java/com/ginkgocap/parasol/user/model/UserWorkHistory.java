@@ -9,9 +9,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 工作经历
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserWorkHistory")
 @Entity
 @Table(name = "tb_user_work_history", catalog = "parasol_user")
 public class UserWorkHistory implements java.io.Serializable {
@@ -21,13 +24,21 @@ public class UserWorkHistory implements java.io.Serializable {
 	 */
 	private Long id;
 	/**
+	 * 应用id
+	 */
+	private Long appId;
+	/**
 	 * 个人用户id.
 	 */
 	private Long userId;
 	/**
 	 * 单位名称.
 	 */
-	private String incName;
+	private String name;
+	/**
+	 * 部门
+	 */
+	private String department;
 	/**
 	 * 职务.
 	 */
@@ -45,9 +56,13 @@ public class UserWorkHistory implements java.io.Serializable {
 	 */
 	private String description;
 	/**
-	 * 好友可见 1.公开，2.好友可见.
+	 * 0:私密,1:好友可见,2:部分好友,3:公开
 	 */
-	private Byte isVisible;
+	private int permission;
+	/**
+	 * 部分好友可见时存放好友的id，用逗号“,”隔开。
+	 */
+	private String friendIds;
 	/**
 	 * 创建时间.
 	 */
@@ -86,14 +101,24 @@ public class UserWorkHistory implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "inc_name")
-	public String getIncName() {
-		return this.incName;
+	@Column(name = "name")
+	public String getName() {
+		return this.name;
 	}
 
-	public void setIncName(String incName) {
-		this.incName = incName;
+	public void setName(String name) {
+		this.name = name;
 	}
+	@Column(name = "department")
+	public String getDepartment() {
+		return department;
+	}
+
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
 
 	@Column(name = "position")
 	public String getPosition() {
@@ -130,16 +155,22 @@ public class UserWorkHistory implements java.io.Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	@Column(name = "is_visible")
-	public Byte getIsVisible() {
-		return this.isVisible;
+	@Column(name = "permission")
+	public int getPermission() {
+		return permission;
 	}
 
-	public void setIsVisible(Byte isVisible) {
-		this.isVisible = isVisible;
+	public void setPermission(int permission) {
+		this.permission = permission;
+	}
+	@Column(name = "friendIds")
+	public String getFriendIds() {
+		return friendIds;
 	}
 
+	public void setFriendIds(String friendIds) {
+		this.friendIds = friendIds;
+	}
 	@Column(name = "ctime")
 	public Long getCtime() {
 		return this.ctime;
@@ -165,6 +196,14 @@ public class UserWorkHistory implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
 	}
 
 }

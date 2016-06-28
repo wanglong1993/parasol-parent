@@ -76,6 +76,15 @@ public interface DirectoryService {
 	 * @throws DirectoryServiceException
 	 */
 	public Directory getDirectory(Long appId, Long userId, Long id) throws DirectoryServiceException;
+	
+	/**
+	 * 根据 Directory Id列表 查询
+	 * 
+	 * @param ids
+	 * @return
+	 * @throws DirectoryServiceException
+	 */
+	public List<Directory> getDirectoryList(Long appId, Long userId, List<Long> ids) throws DirectoryServiceException;
 
 	/**
 	 * 查询一个父节点下边的一级子节点 注意：最多返回500

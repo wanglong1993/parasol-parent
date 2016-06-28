@@ -19,6 +19,13 @@ public interface UserOrgPerCusRelService {
 	 * @throws UserOrgPerCusRelServiceException
 	 */
 	public Long createUserOrgPerCusRel(UserOrgPerCusRel userOrgPerCusRel) throws UserOrgPerCusRelServiceException; 
+	/**
+	 * 修改用户好友人脉组织客户关系
+	 * @param userOrgPerCusRel 
+	 * @return Long
+	 * @throws UserOrgPerCusRelServiceException
+	 */
+	public boolean updateUserOrgPerCusRelList(List<UserOrgPerCusRel> userOrgPerCusRelList) throws UserOrgPerCusRelServiceException; 
 	
 
 	/**
@@ -54,12 +61,28 @@ public interface UserOrgPerCusRelService {
 	 */
 	public List<UserOrgPerCusRel> getOrgFriendlylList(int start,int count,Long userId) throws UserOrgPerCusRelServiceException;
 	/**
+	 * 根据组织好友昵称获取用户我的里面的组织好友列表
+	 * @param userId 
+	 * @param name
+	 * @return List
+	 * @throws UserOrgPerCusRelServiceException
+	 */
+	public List<UserOrgPerCusRel> getOrgFriendlylListByNickname(int start,int count,Long userId,String name) throws UserOrgPerCusRelServiceException;
+	/**
 	 * 根据userId获取用户通讯录个人和组织好友列表
 	 * @param userId 
 	 * @return List
 	 * @throws UserOrgPerCusRelServiceException
 	 */
 	public List<UserOrgPerCusRel> getUserAndOrgFriendlyList(int start,int count,Long userId) throws UserOrgPerCusRelServiceException;	
+	/**
+	 * 根据好友昵称搜索我的里面的个人好友列表
+	 * @param userId 
+	 * @param name 
+	 * @return List
+	 * @throws UserOrgPerCusRelServiceException
+	 */
+	public List<UserOrgPerCusRel> getUserFriendlyListByNickname(int start,int count,Long userId,String name) throws UserOrgPerCusRelServiceException;	
 	/**
 	 * 删除用户好友
 	 * @param friendId

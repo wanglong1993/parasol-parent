@@ -39,11 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.user.model.UserBasic;
-import com.ginkgocap.parasol.user.model.UserExt;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.model.UserLoginThird;
 import com.ginkgocap.parasol.user.service.UserBasicService;
-import com.ginkgocap.parasol.user.service.UserExtService;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 import com.ginkgocap.parasol.user.service.UserLoginThirdService;
 import com.ginkgocap.parasol.user.service.UserOrganExtService;
@@ -63,8 +61,8 @@ public class UserThirdController extends BaseControl {
 	private UserBasicService userBasicService;
 	@Autowired
 	private FileIndexService fileIndexService;
-	@Autowired
-	private UserExtService userExtService;
+//	@Autowired
+//	private UserExtService userExtService;
 	@Autowired
 	private UserOrganExtService userOrganExtService;
 	@Value("${upload.web.url}")  
@@ -162,7 +160,7 @@ public class UserThirdController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= new UserLoginRegister();
 		UserBasic userBasic= new UserBasic();
-		UserExt userExt= null;
+//		UserExt userExt= null;
 		String ip=getIpAddr(request);
 		Long userId=0l;
 		Long id=0l;
@@ -218,14 +216,14 @@ public class UserThirdController extends BaseControl {
 					
 					//设置userBasic开始
 					userBasic.setName(name);
-					userBasic.setPassport(passport);
-					userBasic.setSex(new Byte(sex));
-					userBasic.setStatus(new Byte("1"));
-					userBasic.setAuth(new Byte("1"));
+//					userBasic.setPassport(passport);
+//					userBasic.setSex(new Byte(sex));
+//					userBasic.setStatus(new Byte("1"));
+//					userBasic.setAuth(new Byte("1"));
 					//设置userExt开始
-					userExt=new UserExt();
-					userExt.setName(name);
-					userExt.setIp(ip);
+//					userExt=new UserExt();
+//					userExt.setName(name);
+//					userExt.setIp(ip);
 					//保存userLoginRegister开始
 					id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 					//保存userBasic开始
@@ -247,10 +245,10 @@ public class UserThirdController extends BaseControl {
 					}
 					userBasic.setPicId(json.getLong("id"));
 					userBasic.setUserId(id);
-					userId=userBasicService.createUserBasic(userBasic);
-					//保存userExt开始
-					userExt.setUserId(id);
-					userExtId=userExtService.createUserExt(userExt);
+//					userId=userBasicService.createUserBasic(userBasic);
+//					//保存userExt开始
+//					userExt.setUserId(id);
+//					userExtId=userExtService.createUserExt(userExt);
 					
 					resultMap.put("userId", id);
 					resultMap.put("openId", openId);
@@ -260,7 +258,7 @@ public class UserThirdController extends BaseControl {
 					resultMap.put("status",1);
 					return new MappingJacksonValue(resultMap);
 				}else{//openId已经存在帐号直接返回登录了
-					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+//					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
 					if(userBasic!=null){
 						FileIndex fileIndex=fileIndexService.getFileIndexById(userBasic.getPicId());
 						if(fileIndex!=null)
@@ -277,9 +275,9 @@ public class UserThirdController extends BaseControl {
 		}catch (Exception e ){
 			//异常失败回滚
 			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
-			if(userId!=null && userId>0l)userBasicService.realDeleteUserBasic(userId);
-			if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
-			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
+//			if(userId!=null && userId>0l)userBasicService.realDeleteUserBasic(userId);
+//			if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
+//			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
 			logger.info("第三方注册登录失败:"+passport);
 			throw e;
 		}
@@ -319,13 +317,13 @@ public class UserThirdController extends BaseControl {
 					return new MappingJacksonValue(resultMap);
 				}
 				//判断用户的状态是否正常
-				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
-				int status=userBasic.getStatus().intValue();
-				if(status==0 || status==-1 || status==2  ){
-					resultMap.put( "message", "user have been logic deleted or locked or canceled");
-					resultMap.put( "status", 0);
-					return new MappingJacksonValue(resultMap);
-				}
+//				userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+//				int status=userBasic.getStatus().intValue();
+//				if(status==0 || status==-1 || status==2  ){
+//					resultMap.put( "message", "user have been logic deleted or locked or canceled");
+//					resultMap.put( "status", 0);
+//					return new MappingJacksonValue(resultMap);
+//				}
 				//查找此passport之前是否绑定过
 				userLoginThird=userLoginThirdService.getUserLoginThirdByOpenId(openId);
 				//已经绑定
@@ -432,7 +430,7 @@ public class UserThirdController extends BaseControl {
 		try {
 			UserLoginThird userLoginThird= userLoginThirdService.getUserLoginThirdByOpenId(openId);
 			UserLoginRegister userLoginRegister=userLoginRegisterService.getUserLoginRegister(userLoginThird.getUserId());
-			UserBasic userBasic=userBasicService.getUserBasic(userLoginThird.getUserId());
+//			UserBasic userBasic=userBasicService.getUserBasic(userLoginThird.getUserId());
 			String ip=getIpAddr(request);
 			//每次第三方登录,检查是否需要更新昵称和头像
 			if(!StringUtils.isEmpty(headPic) && userLoginThird.getHeadPic()!=headPic)userLoginThird.setHeadPic(headPic);
@@ -441,16 +439,16 @@ public class UserThirdController extends BaseControl {
 				userLoginThird.setIp(ip);
 				userLoginThirdService.updateUserLoginThird(userLoginThird);	
 			}
-			if(!StringUtils.isEmpty(headPic) && userLoginThird.getHeadPic()!=headPic){
-				userBasic.setName(name);
-				userBasicService.updateUserBasic(userBasic);
-			}
+//			if(!StringUtils.isEmpty(headPic) && userLoginThird.getHeadPic()!=headPic){
+//				userBasic.setName(name);
+//				userBasicService.updateUserBasic(userBasic);
+//			}
 			userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);
 			resultMap.put("userId", userLoginRegister.getId());
 			resultMap.put("openId", userLoginThird.getOpenId());
 			resultMap.put("headPic", userLoginThird.getHeadPic());
-			resultMap.put("name", userBasic.getName());
-			resultMap.put("sex", userBasic.getSex());
+//			resultMap.put("name", userBasic.getName());
+//			resultMap.put("sex", userBasic.getSex());
 			resultMap.put("status",1);
 			logger.info("/user/userThird/login:success");
 			return new MappingJacksonValue(resultMap);
@@ -479,7 +477,7 @@ public class UserThirdController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
 		UserBasic userBasic= null;
-		UserExt userExt= null;
+//		UserExt userExt= null;
 		String ip=getIpAddr(request);
 		Long id=0l;
 		Long userBasicId=0l;
@@ -508,7 +506,7 @@ public class UserThirdController extends BaseControl {
 					userBasic=new UserBasic();
 					userBasic.setName(name);
 					userBasic.setSex(new Byte(sex));
-					userBasic.setStatus(new Byte("1"));
+//					userBasic.setStatus(new Byte("1"));
 					json=upload(request,uploadWebUrl,"11",id.toString(), headPic);
 					if(json==null){
 						//异常失败回滚
@@ -529,21 +527,21 @@ public class UserThirdController extends BaseControl {
 					}
 					userBasic.setUserId(id);
 					userBasic.setPicId(json.getLong("id"));
-					userBasicId=userBasicService.createUserBasic(userBasic);
-					//设置userExt开始
-					userExt=new UserExt();
-					userExt.setUserId(id);
-					userExt.setName(name);
-					userExt.setIp(ip);
-					userExtId=userExtService.createUserExt(userExt);
+//					userBasicId=userBasicService.createUserBasic(userBasic);
+//					//设置userExt开始
+//					userExt=new UserExt();
+//					userExt.setUserId(id);
+//					userExt.setName(name);
+//					userExt.setIp(ip);
+//					userExtId=userExtService.createUserExt(userExt);
 					resultMap.put("userLoginRegister",userLoginRegister);
 					resultMap.put("userBasic",userBasic);
-					resultMap.put("userExt",userExt);
+//					resultMap.put("userExt",userExt);
 					resultMap.put("userBasic",userBasic);
 					resultMap.put("status",1);
 					return new MappingJacksonValue(resultMap);
 				}else{
-					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
+//					userBasic=userBasicService.getUserBasic(userLoginRegister.getId());
 					userLoginRegisterService.updateIpAndLoginTime(userLoginRegister.getId(), ip);
 					resultMap.put("userLoginRegister",userLoginRegister);
 					resultMap.put("status",1);
@@ -553,8 +551,8 @@ public class UserThirdController extends BaseControl {
 		}catch (Exception e ){
 			//异常失败回滚
 			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
-			if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
-			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
+//			if(userExtId!=null && userExtId>0L)userExtService.realDeleteUserExt(id);
+//			if(userBasicId!=null && userBasicId>0l)userBasicService.realDeleteUserBasic(userBasicId);
 			logger.info("第三方注册失败:"+openId);
 			e.printStackTrace();
 			throw e;

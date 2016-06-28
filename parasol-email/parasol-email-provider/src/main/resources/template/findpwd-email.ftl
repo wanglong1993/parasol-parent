@@ -38,7 +38,7 @@
 			 
 				<div class="edmText">
 					<span>尊敬的用户${acceptor}，您好！<span>
-					<p>您进行了账号密码密码找回操作，请在30分钟内点击下方链接完成验证:</p>
+					<p>您进行了账号${operatorname}操作，请在30分钟内点击下方链接完成验证:</p>
 					<p><a href='${email}' target="_blank">${email}</a></p>
 					<p></p>
 	

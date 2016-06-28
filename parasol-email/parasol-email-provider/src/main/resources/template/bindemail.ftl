@@ -37,8 +37,8 @@
 			</div>
 			 
 				<div class="edmText">
-					<a>尊敬的用户，您好！<a>
-					<p>您进行了邮箱绑定操作，请在48小时内点击下方链接完成验证:</p>
+					<a>尊敬的用户${acceptor}，您好！<a>
+					<p>您进行了${operatorname}操作，请在30分钟内点击下方链接完成验证:</p>
 					<p></p>
 					<p><a href='${email}' target="_blank">${email}</a></p>
 					<p></p>

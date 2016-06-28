@@ -5,6 +5,7 @@ public final class Prompt {
 	public static final  String mobile_already_exists="手机号已经存在";
 	public static final  String email_format_is_not_correct="邮箱格式不正确";
 	public static final  String code_cannot_be_null_or_empty="验证码不能为空";
+	public static final  String vcode_cannot_be_null_or_empty="缓存图片验证码为空或者已经过期";
 	public static final  String code_is_not_right="验证码不正确";
 	public static final  String passowrd_cannot_be_null_or_empty="密码不能为空";
 	public static final  String password_length_must_be_greater_than_or_equal_to_6="密码长度须大于或等6位";
@@ -15,6 +16,8 @@ public final class Prompt {
 	public static final  String passport_is_not_exists="手机或邮箱不存在";
 	public static final  String userId_is_null_or_empty_please_first_authentication_and_get_access_token="请先oauth认证获取用户access_token";
 	public static final  String passport_is_not_exists_in_UserLoginRegister="用户登录信息中不存在该手机号或邮箱";
+	public static final  String gid_is_exists_in_UserLoginRegister="金桐号已经存在";
+	public static final  String user_is_not_exists_in_UserLoginRegister="用户不存在";
 	public static final  String friendId_is_not_exists_in_UserLoginRegister="好友id在用户登录信息中不存在";
 	public static final  String has_been_add_this_friendly_please_waiting_for_him_to_agree="你已经添加该好友，请等待对方同意";
 	public static final  String he_s_already_a_good_friend_of_yours_cannot_repeat_add_him="该用户已经是你的好友，请不要重复添加";
@@ -62,7 +65,22 @@ public final class Prompt {
 	public static final  String logout_failed="注销失败";
 	public static final  String mobile_type_is_not_correcct="手机验证码类型mobiletype值只能为1或2";
 	public static final  String findpwd_email_type_is_not_correcct="找回密码邮箱验证码类型emailtype值只能为2或4";
-	public static final  String register_email_type_is_not_correcct="注册邮箱验证码类型emailtype值只能为0或1";
+	public static final  String register_email_type_is_not_correcct="注册邮箱验证码类型emailtype值不正确";
+	public static final  String user_perfectionInfo_is_failed="完善用户信息失败";
+	public static final  String update_passport_is_failed="修改绑定邮箱或手机失败";
+	public static final  String update_passport_is_successed="修改成功";
+	public static final  String Operation_succeeded="操作成功";
+	public static final  String Operation_failed="操作失败";
+	public static final  String identifying_code_has_experied_="验证码不存在或已经过期";
+	public static final  String friendIds_is_empty="好友ID不能为空，且ID是以逗号分隔的字符串";
+	public static final  String directoryId_is_empty="目录id不能为空";
+	public static final  String tagId_is_empty="标签id不能为空"; 
+	public static final  String orgId_is_not_exists="组织不存在"; 
+	public static final  String appId_is_empty="appId不能为空！"; 
+	public static final  String gId_length_error="金桐号长度大于5且小于50"; 
+	public static final  String findpwd="找回密码"; 
+	public static final  String bindEmail="邮箱绑定"; 
+	public static final  String changeOldTitle="更改邮箱-验证旧邮箱"; 
 	
 	
 

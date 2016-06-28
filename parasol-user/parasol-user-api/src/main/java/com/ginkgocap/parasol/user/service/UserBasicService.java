@@ -2,55 +2,43 @@ package com.ginkgocap.parasol.user.service;
 
 import java.util.List;
 
-import com.ginkgocap.parasol.user.exception.UserBasicServiceException;
-import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
 import com.ginkgocap.parasol.user.model.UserBasic;
 
-/**
- * 操作用户基本信息接口定义
- * 
- */
-public interface UserBasicService {
-
+public interface UserBasicService extends CommonService<UserBasic> {
 	/**
-	 * 创建用户基本信息
-	 * @param userBasic 
-	 * @return Long
-	 * @throws UserBasicServiceException
+	 * 根据省id查询
+	 * @param start
+	 * @param count
+	 * @param provinceId 
+	 * @return
+	 * @throws Exception
 	 */
-	public Long createUserBasic(UserBasic userBasic) throws UserBasicServiceException ,UserLoginRegisterServiceException; 
-	
-
+	public List<UserBasic> getUserBasicListByProvinceId(int start, int count, Long provinceId) throws Exception;
 	/**
-	 * 修改用户基本信息
-	 * @param userBasic
-	 * @return boolean
-	 * @throws UserBasicServiceException 
+	 * 根据市id查询
+	 * @param start
+	 * @param count
+	 * @param provinceId 
+	 * @return
+	 * @throws Exception
 	 */
-	public boolean updateUserBasic(UserBasic userBasic) throws UserBasicServiceException,UserLoginRegisterServiceException; 
-
+	public List<UserBasic> getUserBasicListByCityId(int start, int count, Long cityId) throws Exception;
 	/**
-	 * 根据id获取用户基本信息
-	 * @param userId
-	 * @return UserBasic
-	 * @throws UserBasicServiceException 
+	 * 根据县id查询
+	 * @param start
+	 * @param count
+	 * @param provinceId 
+	 * @return
+	 * @throws Exception
 	 */
-	public UserBasic getUserBasic(Long userId) throws UserBasicServiceException; 
-	
+	public List<UserBasic> getUserBasicListByCountyId(int start, int count, Long countyId) throws Exception;
 	/**
-	 * 根据userId列表获取用户基本信息列表
-	 * @param userIds 
-	 * @return List
-	 * @throws UserBasicServiceException
+	 * 根据用户名模糊查询
+	 * @param start
+	 * @param count
+	 * @param provinceId 
+	 * @return
+	 * @throws Exception
 	 */
-	public List<UserBasic> getUserBasecList(List<Long> userIds) throws UserBasicServiceException;	
-	
-	/**
-	 * 根据id真删除用户基本信息
-	 * @param id
-	 * @return Boolean
-	 * @throws UserLoginRegisterServiceException
-	 */
-	public Boolean realDeleteUserBasic(Long id) throws UserBasicServiceException;	
-
+	public List<UserBasic> getUserBasicListByUserName(int start, int count, String userName) throws Exception;
 }

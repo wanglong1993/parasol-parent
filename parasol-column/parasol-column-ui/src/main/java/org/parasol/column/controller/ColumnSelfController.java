@@ -1,6 +1,5 @@
 package org.parasol.column.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,18 +7,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.parasol.column.api.model.ColumnFlag;
 import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.service.ColumnSelfService;
 import org.parasol.column.utils.JsonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ginkgocap.parasol.user.model.User;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
 
@@ -27,7 +25,8 @@ import com.gintong.frame.util.dto.InterfaceResult;
 @RequestMapping("/columnself")
 public class ColumnSelfController extends BaseController {
 	
-	@Resource(name="columnSelfService")
+//	@Resource(name="columnSelfService")
+	@Autowired
 	private ColumnSelfService css;
 	
 	@RequestMapping(value="/showAllColumnSelf",method = RequestMethod.GET)
@@ -53,11 +52,12 @@ public class ColumnSelfController extends BaseController {
 		Boolean b=false;
 		String jsonStr=this.readJSONString(request);
 		ColumnSelf newCol=(ColumnSelf)JsonUtils.jsonToBean(jsonStr, ColumnSelf.class);
-		if(newCol==null||StringUtils.isEmpty(newCol.getColumnname())){
+		Long uid=this.getUserId(request);
+		if(newCol==null||StringUtils.isEmpty(newCol.getColumnname())||uid.longValue()==0){
 			InterfaceResult<ColumnSelf> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
-		Long uid=this.getUserId(request);
+		
 		Long pid=0l;
 		newCol.setId(null);
 		newCol.setUserOrSystem(ColumnFlag.user.getVal());

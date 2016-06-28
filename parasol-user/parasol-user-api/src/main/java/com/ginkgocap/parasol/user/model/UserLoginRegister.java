@@ -71,13 +71,21 @@ public class UserLoginRegister implements java.io.Serializable {
 	 * 用户IP.
 	 */
 	private String ip;
+	/**
+	 * 金桐号.
+	 */
+	private String gid;
+	/**
+	 * 用户绑定组织ID.
+	 */
+	private long orgId;
 
 	public UserLoginRegister() {
 	}
 
 	public UserLoginRegister(long id, String passport, String password,
 			Byte userType, String salt, String source, Long ctime, Long utime,
-			String ip) {
+			String ip, String gid,long orgId) {
 		this.id = id;
 		this.passport = passport;
 		this.password = password;
@@ -87,12 +95,14 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.ctime = ctime;
 		this.utime = utime;
 		this.ip = ip;
+		this.gid = gid;
+		this.orgId=orgId;
 	}
 
 	public UserLoginRegister(long id, String passport, String mobile,
 			String email, String userName, String password, Byte userType,
 			String salt, String source, Long ctime, Long utime,
-			String ip) {
+			String ip,String gid,long orgId) {
 		this.id = id;
 		this.passport = passport;
 		this.mobile = mobile;
@@ -105,6 +115,8 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.ctime = ctime;
 		this.utime = utime;
 		this.ip = ip;
+		this.gid = gid;
+		this.orgId=orgId;
 	}
 
 	@Id
@@ -217,6 +229,22 @@ public class UserLoginRegister implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	@Column(name = "gid")
+	public String getGid() {
+		return gid;
+	}
+
+	public void setGid(String gid) {
+		this.gid = gid;
+	}
+	@Column(name = "orgId")
+	public long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(long orgId) {
+		this.orgId = orgId;
 	}
 
 }

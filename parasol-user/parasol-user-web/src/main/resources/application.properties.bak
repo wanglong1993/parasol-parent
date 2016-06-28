@@ -1,0 +1,49 @@
+server.port:8089
+server.compression.enabled: true
+server.compression.min-response-size: 1
+#error
+#server.error.path=/directory/error
+
+# HTTP encoding (HttpEncodingProperties)
+spring.http.encoding.charset=UTF-8
+spring.http.encoding.enabled=true
+spring.http.encoding.force=true
+
+
+#test myself write logger filter
+parasol.logger.enabled=true
+parasol.logger.parameter=parameter_11111
+parasol.logger.urlPatterns=/*
+
+logging.level.org.springframework.web=debug
+logging.level.org.springframework.security=DEBUG
+logging.level.com.ginkgocap.parasol.directory.web.jetty.web.filter=INFO
+logging.level.com.ginkgocap.parasol.user.web.jetty.web.controller=INFO
+logging.pattern.level=user:%X{user} %5p
+
+#dubbo
+dubbo.application.name=${dubbo.application.name}
+dubbo.registry.address=${dubbo.registry.address}
+dubbo.protocol.name=${dubbo.protocol.name}
+
+
+
+#dubbo
+#user.dubbo.application.name=userdubboprovider
+#user.dubbo.registry.address=zookeeper://192.168.120.135:2181?client=zkclient
+#user.dubbo.protocol.name=dubbo
+#user.dubbo.protocol.port=20884
+user.web.url=${user.web.url}
+upload.web.url=${upload.web.url}
+file.web.url=${file.web.url}
+oauth.web.url=${oauth.web.url}
+oauth.web.logout=${oauth.web.logout}
+email.validate.url=${email.validate.url}
+email.validate.url.coopert=${email.validate.url.coopert}
+email.findpwd.url.coopert=${email.findpwd.url.coopert}
+client_id=${client_id}
+client_secret=${client_secret}
+dfs.gintong.com=${dfs.gintong.com}
+#oauth2
+security.oauth2.resource.id=user
+security.oauth2.authenticated=/user/user/updatepassword,/user/user/getUserIdAndAppId,/user/user/getUserDetail,/user/user/getOrgFriendlylList,/user/user/getUserFriendlyList,/user/user/getUserAndOrgFriendlyList,/user/user/getUserListByProvinceId,/user/user/getUserListByThirdIndustryId,/user/user/applyToAddFriendly,/user/user/auditByAddFriendly,/user/user/deleteFriendly,/user/user/updateUser,/user/userThird/registerOrLogin

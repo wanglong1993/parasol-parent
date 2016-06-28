@@ -39,6 +39,11 @@
 			<artifactId>parasol-comment-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>1.8.2.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -190,6 +195,8 @@
 				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>20885</dubbo.protocol.port>
+				<!-- mongo地址 -->
+				<mongodb.address>192.168.101.131:27017</mongodb.address>
 			</properties>
 		</profile>
 		<profile>

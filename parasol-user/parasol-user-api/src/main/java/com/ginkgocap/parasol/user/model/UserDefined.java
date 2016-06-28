@@ -7,9 +7,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 用户自定义
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserDefined")
 @Entity
 @Table(name = "tb_user_defined", catalog = "parasol_user")
 public class UserDefined implements java.io.Serializable {
@@ -27,9 +30,11 @@ public class UserDefined implements java.io.Serializable {
 	 */
 	private Long userId;
 	/**
-	 * 自定义模块名.
+	 * 应用id
 	 */
-	private String userDefinedModel;
+	private Long appId;
+	
+
 	/**
 	 * 自定义字段名.
 	 */
@@ -38,6 +43,14 @@ public class UserDefined implements java.io.Serializable {
 	 * 自定义字段内容.
 	 */
 	private String userDefinedValue;
+	/**
+	 * 0:私密,1:好友可见,2:部分好友,3:公开
+	 */
+	private int permission;
+	/**
+	 * 部分好友可见时存放好友的id，用逗号“,”隔开。
+	 */
+	private String friendIds;
 	/**
 	 * 创建时间.
 	 */
@@ -58,19 +71,6 @@ public class UserDefined implements java.io.Serializable {
 			Long utime, String ip) {
 		this.id = id;
 		this.userId = userId;
-		this.userDefinedValue = userDefinedValue;
-		this.ctime = ctime;
-		this.utime = utime;
-		this.ip = ip;
-	}
-
-	public UserDefined(Long id, Long userId, String userDefinedModel,
-			String userDefinedFiled, String userDefinedValue, Long ctime,
-			Long utime, String ip) {
-		this.id = id;
-		this.userId = userId;
-		this.userDefinedModel = userDefinedModel;
-		this.userDefinedFiled = userDefinedFiled;
 		this.userDefinedValue = userDefinedValue;
 		this.ctime = ctime;
 		this.utime = utime;
@@ -98,15 +98,6 @@ public class UserDefined implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "user_defined_model")
-	public String getUserDefinedModel() {
-		return this.userDefinedModel;
-	}
-
-	public void setUserDefinedModel(String userDefinedModel) {
-		this.userDefinedModel = userDefinedModel;
-	}
-
 	@Column(name = "user_defined_filed")
 	public String getUserDefinedFiled() {
 		return this.userDefinedFiled;
@@ -125,7 +116,23 @@ public class UserDefined implements java.io.Serializable {
 		this.userDefinedValue = userDefinedValue;
 	}
 
-	
+	@Column(name = "permission")
+	public int getPermission() {
+		return permission;
+	}
+
+	public void setPermission(int permission) {
+		this.permission = permission;
+	}
+	@Column(name = "friendIds")
+	public String getFriendIds() {
+		return friendIds;
+	}
+
+	public void setFriendIds(String friendIds) {
+		this.friendIds = friendIds;
+	}
+
 	@Column(name = "ctime", nullable = false, length = 19)
 	public Long getCtime() {
 		return this.ctime;
@@ -152,6 +159,14 @@ public class UserDefined implements java.io.Serializable {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
 	}
 
 }

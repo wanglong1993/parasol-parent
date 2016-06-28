@@ -9,9 +9,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 教育经历
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserEducationHistory")
 @Entity
 @Table(name = "tb_user_education_history", catalog = "parasol_user")
 public class UserEducationHistory implements java.io.Serializable {
@@ -25,6 +28,10 @@ public class UserEducationHistory implements java.io.Serializable {
 	 */
 	private Long id;
 	/**
+	 * 应用id
+	 */
+	private Long appId;
+	/**
 	 * 个人用户id.
 	 */
 	private Long userId;
@@ -33,11 +40,19 @@ public class UserEducationHistory implements java.io.Serializable {
 	 */
 	private String school;
 	/**
+	 * 学院
+	 */
+	private String college;
+	/**
+	 * 中学、高中、本科、研究生、博士生
+	 */
+	private String educationalBackground;
+	/**
 	 * 专业.
 	 */
 	private String major;
 	/**
-	 * 学历  小学 初中 高中 中专 专科 本科 硕士 博士.
+	 * 学士 硕士 博士.
 	 */
 	private String degree;
 	/**
@@ -53,9 +68,13 @@ public class UserEducationHistory implements java.io.Serializable {
 	 */
 	private String description;
 	/**
-	 * 好友可见 1.公开，2.好友可见.
+	 * 0:私密,1:好友可见,2:部分好友,3:公开
 	 */
-	private Byte isVisible;
+	private int permission;
+	/**
+	 * 部分好友可见时存放好友的id，用逗号“,”隔开。
+	 */
+	private String friendIds;
 	/**
 	 * 创建时间.
 	 */
@@ -138,22 +157,13 @@ public class UserEducationHistory implements java.io.Serializable {
 		this.endTime = endTime;
 	}
 
-	@Column(name = "description", length = 2024)
+	@Column(name = "description", length = 400)
 	public String getDescription() {
 		return this.description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@Column(name = "is_visible")
-	public Byte getIsVisible() {
-		return this.isVisible;
-	}
-
-	public void setIsVisible(Byte isVisible) {
-		this.isVisible = isVisible;
 	}
 
 	@Column(name = "ctime")
@@ -182,5 +192,46 @@ public class UserEducationHistory implements java.io.Serializable {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
+	@Column(name = "college")
+	public String getCollege() {
+		return college;
+	}
 
+	public void setCollege(String college) {
+		this.college = college;
+	}
+	@Column(name = "educationalBackground")
+	public String getEducationalBackground() {
+		return educationalBackground;
+	}
+
+	public void setEducationalBackground(String educationalBackground) {
+		this.educationalBackground = educationalBackground;
+	}
+	
+	@Column(name = "permission")
+	public int getPermission() {
+		return permission;
+	}
+
+	public void setPermission(int permission) {
+		this.permission = permission;
+	}
+	@Column(name = "friendIds")
+	public String getFriendIds() {
+		return friendIds;
+	}
+
+	public void setFriendIds(String friendIds) {
+		this.friendIds = friendIds;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
+	}
+	
 }

@@ -11,7 +11,10 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alibaba.dubbo.common.json.JSONObject;
 import com.alibaba.dubbo.common.serialize.support.json.JsonObjectOutput;
@@ -25,7 +28,9 @@ import com.ginkgocap.parasol.comment.service.CommentTypeService;
 import junit.framework.Test;
 import junit.framework.TestResult;
 
-public class CommentServiceTest extends TestBase implements Test {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext.xml" })
+public class CommentServiceTest implements Test {
 	private static long System_AppId = 7647448850l;
 	private static Long userId = 111l;
 

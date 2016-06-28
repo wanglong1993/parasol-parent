@@ -75,6 +75,11 @@
 	</pluginRepositories>
 	<dependencies>
 		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-util</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 		</dependency>
@@ -211,6 +216,11 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
+		<dependency>  
+            <groupId>net.glxn</groupId>  
+            <artifactId>qrgen</artifactId>  
+            <version>1.2</version>  
+        </dependency>  		
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
 			<artifactId>json-lib</artifactId>
@@ -258,6 +268,7 @@
 					<include>**/application.properties</include>
 					<include>**/imService.properties</include>
 					<include>**/*.xml</include>
+					<include>**/*.jps</include>
 				</includes>
 			</resource>
 		</resources>
@@ -287,7 +298,7 @@
 			<properties>
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
-				<dubbo.registry.address>zookeeper://192.168.101.131:2182?client=zkclient</dubbo.registry.address>
+				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>20885</dubbo.protocol.port>
 				<user.web.url>http://localhost:8089</user.web.url>
@@ -295,13 +306,15 @@
 				<file.web.url>http://file.gintong.com/</file.web.url>
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
+				<email.validate.url.gintong>http://www.gintong.com/bind</email.validate.url.gintong>
+				<email.bind.url.gintong>http://www.gintong.com/bind</email.bind.url.gintong>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
 				<email.validate.url.coopert>http://www.cooperts.com/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate</email.validate.url.coopert>
 				<email.findpwd.url.coopert>http://open.gintong.com/reset-password</email.findpwd.url.coopert>
 				<dfs.gintong.com>http://192.168.101.148/</dfs.gintong.com>
 				<imservice.url>http://192.168.101.41:4446</imservice.url>
-				<client_id>7647448850</client_id>
-				<client_secret>88aec17e1857ca1341ee6b16b0b75aef</client_secret>
+				<client_id>1</client_id>
+				<client_secret>2db7c5148a86b59ea285529a41ef84cb</client_secret>
 			</properties>
 		</profile>
 		<profile>
@@ -316,6 +329,8 @@
 				<file.web.url>http://file.gintong.com/</file.web.url>
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
+				<email.validate.url.gintong>http://www.gintong.com/bind</email.validate.url.gintong>
+				<email.bind.url.gintong>http://www.gintong.com/bind</email.bind.url.gintong>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
 				<email.validate.url.coopert>http://www.cooperts.com/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate</email.validate.url.coopert>
 				<email.findpwd.url.coopert>http://open.gintong.com/reset-password</email.findpwd.url.coopert>
@@ -337,6 +352,8 @@
 				<file.web.url>http://file.gintong.com/</file.web.url>
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>
+				<email.validate.url.gintong>http://www.gintong.com/bind</email.validate.url.gintong>
+				<email.bind.url.gintong>http://www.gintong.com/bind</email.bind.url.gintong>
 				<email.validate.url>http://open.gintong.com/reset-password</email.validate.url>
 				<email.validate.url.coopert>http://www.cooperts.com/coopert/mail/activateAccountAction.do?uid=0&amp;mode=activate</email.validate.url.coopert>
 				<email.findpwd.url.coopert>http://open.gintong.com/reset-password</email.findpwd.url.coopert>

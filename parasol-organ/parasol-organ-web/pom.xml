@@ -1,0 +1,1306 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>parasol-organ-web</artifactId>
+	<groupId>com.ginkgocap.parasol</groupId>
+	<name>parasol organ web</name>
+	<description>parasol organ web project</description>
+	<version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <packtype>war</packtype>
+        <!-- 主要依赖库的版本定义 -->
+        <organ.version>1.0.2-SNAPSHOT</organ.version>
+        <organization.version>1.0.0-SNAPSHOT</organization.version>
+        <dynamic.version>1.0.0</dynamic.version>
+        <entire.version>5.6.3</entire.version>
+        <person.version>1.0.2</person.version>
+        <knowledge.version>2.1.0</knowledge.version>
+        <spring.version>3.1.2.RELEASE</spring.version>
+        <spring.integration.version>2.1.3.RELEASE</spring.integration.version>
+        <shiro.version>1.2.0</shiro.version>
+        <jersey.version>1.10</jersey.version>
+        <jetty.version>7.5.4.v20111024</jetty.version>
+        <h2.version>1.3.161</h2.version>
+        <jackson.version>1.9.2</jackson.version>
+        <slf4j.version>1.6.4</slf4j.version>
+        <selenium.version>2.12.0</selenium.version>
+        <eclipse.useProjectReferences>false</eclipse.useProjectReferences>
+        <skip_maven_deploy>true</skip_maven_deploy>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <eclipse.useProjectReferences>false</eclipse.useProjectReferences>
+        <skip_maven_deploy>false</skip_maven_deploy>
+        <jackson.databind>2.3.2</jackson.databind>
+        <!-- 测试版本：开发、测试、仿真环境 -->
+        <huanxin.version>1.1.1-SNAPSHOT</huanxin.version>
+        <!-- 线上版本：线上环境 -->
+        <!--<huanxin.version>1.1.1</huanxin.version> -->
+    </properties>
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>Team Nexus Repository</name>
+            <url>http://192.168.101.89:8081/nexus/content/groups/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>Codehaus repository</id>
+            <url>http://repository.codehaus.org/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>localhost plugins</id>
+            <url>http://192.168.101.89:8081/nexus/content/groups/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.gintong</groupId>
+            <artifactId>phoenix-organization-api</artifactId>
+            <version>${organization.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <artifactId>phoenix-person-api</artifactId>
+            <version>${person.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gintong.common</groupId>
+            <artifactId>phoenix-permission-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <artifactId>phoenix-organ-api</artifactId>
+            <version>${organ.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>phoenix-dynamic-api</artifactId>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <version>${dynamic.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <artifactId>phoenix-util</artifactId>
+            <version>${entire.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-entitymanager</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.parasol</groupId>
+            <artifactId>parasol-directory-api</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.parasol</groupId>
+            <artifactId>parasol-associate-api</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.parasol</groupId>
+            <artifactId>parasol-tags-api</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <artifactId>phoenix-cache</artifactId>
+            <version>${entire.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <artifactId>phoenix-cloud-api</artifactId>
+            <version>1.2.7-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.ginkgocap.ywxt</groupId>
+                    <artifactId>phoenix-user-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <artifactId>phoenix-entire-api</artifactId>
+            <version>${entire.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>phoenix-knowledge-api</artifactId>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <!-- <version>app-1.0.0-SNAPSHOT</version> -->
+            <version>${knowledge.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.ginkgocap.ywxt</groupId>
+                    <artifactId>phoenix-entire-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <artifactId>phoenix-business-web</artifactId>
+            <version>2.13.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ginkgocap.ywxt</groupId>
+                    <artifactId>phoenix-business-search</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ginkgocap.ywxt</groupId>
+                    <artifactId>phoenix-platform-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ginkgocap.ywxt</groupId>
+                    <artifactId>phoenix-entire-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ginkgocap.ywxt</groupId>
+                    <artifactId>phoenix-cache</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jtmobileserver</artifactId>
+                    <groupId>com.ginkgocap.ywxt</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- security begin -->
+        <!-- <dependency> <groupId>com.fasterxml.jackson.core</groupId> <artifactId>jackson-databind</artifactId>
+            <version>${jackson.databind}</version> </dependency> -->
+
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <!-- security end -->
+
+        <!-- freemaker -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <!-- Latest 2.3.x (not 2.4.x), at least 2.3.18 -->
+            <version>[2.3.18,2.4)</version>
+        </dependency>
+
+        <!-- spring start -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>3.1.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>3.1.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-asm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>3.2.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+        <!-- spring end -->
+        <!-- spring integration start -->
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+            <version>${spring.integration.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-redis</artifactId>
+            <version>${spring.integration.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-stream</artifactId>
+            <version>${spring.integration.version}</version>
+        </dependency>
+        <!-- spring integration end -->
+        <!-- redis start -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <!-- redis end -->
+
+
+
+        <!-- jdbc start -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>1.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>6.1.22</version>
+        </dependency>
+
+        <!-- jdbc end -->
+        <!-- log start -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <!-- log end -->
+        <!-- common start -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.3</version>
+        </dependency>
+        <!-- <dependency> -->
+        <!-- <groupId>commons-codec</groupId> -->
+        <!-- <artifactId>commons-codec</artifactId> -->
+        <!-- <version>1.7</version> -->
+        <!-- </dependency> -->
+        <!-- common end -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <!-- file upload start -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <!-- file upload end -->
+        <!-- dubbo 服务注册方式 start -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>2.5.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.2.7.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.16.1-GA</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sgroschupf</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <!-- dubbo 服务注册方式 end -->
+
+        <!-- openoffice start -->
+        <dependency>
+            <groupId>com.artofsolving</groupId>
+            <artifactId>jodconverter</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>juh</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>jurt</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>ridl</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>unoil</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>0.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.artofsolving.jodconverter</groupId>
+            <artifactId>jodconverter-core</artifactId>
+            <version>3.0-beta-4-jahia4</version>
+            <classifier>jahia4</classifier>
+        </dependency>
+        <!-- openoffice end -->
+        <!-- spring mongodb mapper -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>1.1.0.M1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- spring mongodb mapper end -->
+        <!-- mongodb- -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+        <!-- mongodb end -->
+        <!-- quartz start -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>1.8.5</version>
+        </dependency>
+        <!-- quartz end -->
+        <!-- icepdf start -->
+        <dependency>
+            <groupId>batik</groupId>
+            <artifactId>batik-awt-util</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>batik</groupId>
+            <artifactId>batik-dom</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>batik</groupId>
+            <artifactId>batik-svg-dom</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>batik</groupId>
+            <artifactId>batik-svggen</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>batik</groupId>
+            <artifactId>batik-util</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>batik</groupId>
+            <artifactId>batik-xml</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.icepdf</groupId>
+            <artifactId>icepdf-core</artifactId>
+            <version>4.3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.icepdf</groupId>
+            <artifactId>icepdf-viewer</artifactId>
+            <version>4.3.4</version>
+        </dependency>
+        <!-- icepdf end 已传到私服 -->
+
+        <!-- jetty start -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jsp-2.1</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jsp-2.1-glassfish</artifactId>
+            <version>2.1.v20100127</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- jetty end -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+        <!-- thumbnailator -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>[0.4, 0.5)</version>
+        </dependency>
+        <!-- <dependency> <groupId>com.ginkgocap.ywxt</groupId> <artifactId>phoenix-business-search</artifactId>
+            <version>1.1.0</version> </dependency> -->
+        <dependency>
+            <groupId>weibo4j</groupId>
+            <artifactId>weibo4j-oauth2</artifactId>
+            <version>2.1.2-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcomponents-client</artifactId>
+            <version>4.3.1</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+
+            </exclusions>
+        </dependency>
+
+        <!-- <dependency> -->
+        <!-- <groupId>net.gplatform</groupId> -->
+        <!-- <artifactId>Sdk4J</artifactId> -->
+        <!-- <version>v2.1</version> -->
+        <!-- </dependency> -->
+        <dependency>
+            <groupId>com.ginkgocap.ywxt</groupId>
+            <artifactId>phoenix-huanxin</artifactId>
+            <version>${huanxin.version}</version>
+        </dependency>
+
+
+        <!-- parasol oauth2 begin -->
+        <!--         <dependency> -->
+        <!--             <groupId>com.ginkgocap.parasol</groupId> -->
+        <!--             <artifactId>parasol-oauth2-resource</artifactId> -->
+        <!--             <version>1.0-SNAPSHOT</version> -->
+        <!--         </dependency> -->
+        <!--         parasol oauth2 end -->
+        <!--     <dependency> -->
+        <!--         <groupId>com.ginkgocap.parasol</groupId> -->
+        <!--         <artifactId>parasol-user-api</artifactId> -->
+        <!--         <version>1.0.2-SNAPSHOT</version> -->
+        <!--     </dependency> -->
+        <!-- parasol oauth2 end -->
+    </dependencies>
+
+    <build>
+        <finalName>phoenix-mobile</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                    <exclude>**/.svn/*</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/main/webapp</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-dependency-plugin</artifactId>
+                                        <versionRange>[2.0,)</versionRange>
+                                        <goals>
+                                            <goal>unpack</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+
+            <!-- compiler插件, 设定JDK版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+
+            <!-- test插件, 增大内存且仅测试名称为*Test的类 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.10</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>2.11</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <argLine>-Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=256m</argLine>
+                    <useSystemClassLoader>true</useSystemClassLoader>
+                </configuration>
+            </plugin>
+
+            <!-- cobertura插件 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>**/model/**/*.class</exclude>
+                        </excludes>
+                    </instrumentation>
+                </configuration>
+            </plugin>
+
+            <!-- war插件, 设定war名称不带版本号 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <warName>${project.artifactId}</warName>
+                </configuration>
+            </plugin>
+
+            <!-- resource插件, 设定编码 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>vcf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>csv</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>swf</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+
+            <!-- jar相关插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+            </plugin>
+
+            <!-- clean插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.4.1</version>
+            </plugin>
+
+            <!-- install插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.3.1</version>
+            </plugin>
+
+            <!-- deploy插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+
+            <!-- eclipse插件,设定下载Source并屏蔽.svn文件 -->
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <wtpversion>1.5</wtpversion>
+                </configuration>
+            </plugin>
+
+            <!-- jetty插件,设定重载模式 <plugin> <groupId>org.mortbay.jetty</groupId> <artifactId>jetty-maven-plugin</artifactId>
+                <version>${jetty.version}</version> <configuration> <reload>manual</reload>
+                </configuration> </plugin> -->
+
+            <!-- dependency插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- assembly插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.1</version>
+            </plugin>
+
+            <!-- sonar插件 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+
+            <!-- release相关插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>1.2</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>6.1.25</version>
+                <configuration>
+                    <stopPort>9968</stopPort>
+                    <stopKey>foo</stopKey>
+                    <contextPath>/</contextPath>
+                    <scanIntervalSeconds>2</scanIntervalSeconds>
+                    <connectors>
+                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <port>81</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                            <headerBufferSize>163840</headerBufferSize>
+                        </connector>
+                    </connectors>
+                    <scanTargetPatterns>
+                        <scanTargetPattern>
+                            <directory>
+                                src/main/webapp/WEB-INF
+                            </directory>
+                            <excludes>
+                                <exclude>**/*.jsp</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*.properties</include>
+                                <include>*.xml</include>
+                                <include>**/*.xml</include>
+                            </includes>
+                        </scanTargetPattern>
+                        <scanTargetPattern>
+                            <directory>src/main/resources</directory>
+                            <includes>
+                                <include>*.properties</include>
+                                <include>*.xml</include>
+                            </includes>
+                        </scanTargetPattern>
+                    </scanTargetPatterns>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat6-maven-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <webAppConfig>
+                        <url>http://www.gt.com.cn:8090/</url>
+                        <contextPath>/</contextPath>
+                    </webAppConfig>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+				<!-- dubbo -->
+				<!--<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.protocol.port>8827</dubbo.protocol.port>-->
+
+                <dubbo.application.name>parasol-organ-web</dubbo.application.name>
+                <dubbo.protocol.name>dubbo</dubbo.protocol.name>
+                <dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
+                <!--  <dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>-->
+                 <dubbo.protocol.port>2018</dubbo.protocol.port>
+                 <user.web.url>http://localhost:8089</user.web.url>
+                 <upload.web.url>http://192.168.130.100:8091/file/upload</upload.web.url>
+                 <delivery.web.url>http://192.168.130.100:8091/file/upload</delivery.web.url>
+                 <file.web.url>http://file.gintong.com/</file.web.url>
+                 <client_id>1</client_id>
+                 <client_secret>2db7c5148a86b59ea285529a41ef84cb</client_secret>
+
+
+
+                 <!-- nfs地址 -->
+                <nfs.home>/webserver/upload/</nfs.home>
+                <!-- nginx上传的地址 -->
+                <nginx.root>http://file.dev.gintong.com/</nginx.root>
+                <bigdata.query.host>http://file.dev.gintong.com/</bigdata.query.host>
+                <ecosphere.query.host>http://file.dev.gintong.com/</ecosphere.query.host>
+                <new.query.host>http://file.dev.gintong.com/</new.query.host>
+                <konwledge.delivery.query.hot.url>http://file.dev.gintong.com/</konwledge.delivery.query.hot.url>
+                <konwledge.delivery.query.comment.url>http://file.dev.gintong.com/</konwledge.delivery.query.comment.url>
+                <knowledge.delivery.query.tag.url>http://file.dev.gintong.com/</knowledge.delivery.query.tag.url>
+
+                <!-- redis地址 -->
+                <redis.host>192.168.101.131</redis.host>
+                <!-- redis端口 -->
+                <redis.port>6379</redis.port>
+
+                <user.cache.expiredTime>86400</user.cache.expiredTime>
+
+            </properties>
+        </profile>
+        <profile>
+            <id>server</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <user.cache.expiredTime>86400</user.cache.expiredTime>
+                <!-- redis地址 -->
+                <redis.host>192.168.101.89</redis.host>
+                <!-- redis端口 -->
+                <redis.port>6379</redis.port>
+                <!-- 数据库连接地址和数据库名 -->
+                <jdbc.url>
+                    jdbc:mysql://192.168.101.89:3306/phoenix_cloud?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.url>
+                <!-- 数据库访问帐号 -->
+                <jdbc.username>root</jdbc.username>
+                <!-- 数据库访问密码 -->
+                <jdbc.password></jdbc.password>
+                <log4j.path>/home/zhangle/project/ci</log4j.path>
+                <!-- 日志级别，由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
+                <log4j.level>info</log4j.level>
+                <!-- phoenix-ui项目的发布地址，只要替换ip和端口即可 -->
+                <images.root>http://192.168.101.89:778/resources/images/v2</images.root>
+                <!-- phoenix-ui项目的发布地址，只要替换ip和端口即可 -->
+                <scripts.root>http://192.168.101.89:778/resources/js</scripts.root>
+                <!-- phoenix-ui项目的发布地址，只要替换ip和端口即可 -->
+                <styles.root>http://192.168.101.89:778/resources/css/v2</styles.root>
+                <!-- nginx上传的地址 -->
+                <nginx.root>http://file.server.gintong.com:81/</nginx.root>
+                <!-- nfs的mount目录 -->
+                <nfs.home>/webserver/upload/</nfs.home>
+                <dubbo.application.name>phoenix-mobile</dubbo.application.name>
+                <dubbo.protocol.name>dubbo</dubbo.protocol.name>
+                <dubbo.registry.address>zookeeper://192.168.101.88:2181?client=zkclient</dubbo.registry.address>
+                <dubbo.protocol.port>7011</dubbo.protocol.port>
+                <sso.host>http://sso.server.gintong.com:1111</sso.host>
+                <!-- server web 192.168.101.5:2222 -->
+                <cloudweb.host>http://cloud.server.gintong.com:2222</cloudweb.host>
+                <web.url>http://qatest.gintong.com:2222</web.url>
+                <business.url>http://we.qatest.gintong.com:1111</business.url>
+                <openoffice.exe>/opt/openoffice.org3</openoffice.exe>
+                <libreoffice.exe>/opt/libreoffice4.0</libreoffice.exe>
+                <swftools.exe>/usr/local/swftools/bin/pdf2swf</swftools.exe>
+                <!-- 社区链接页面 首页 投资 融资 -->
+                <web.index>http://server.gintong.com:2222</web.index>
+            </properties>
+        </profile>
+        <profile>
+            <id>qatest</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <user.cache.expiredTime>86400</user.cache.expiredTime>
+                <!-- redis地址 -->
+                <redis.host>192.168.101.90</redis.host>
+                <!-- redis端口 -->
+                <redis.port>6379</redis.port>
+                <!-- mongo地址 -->
+                <mongodb.address>192.168.101.90:27017</mongodb.address>
+                <!-- mongo中数据库 -->
+                <mongodb.database>ywxt</mongodb.database>
+                <email.SMTP>smtp.263xmail.com</email.SMTP>
+                <!-- 帐号 -->
+                <email.userName>yinxing5@ginkgocap.cn</email.userName>
+                <!-- 密码 -->
+                <email.pwd>sun1307737</email.pwd>
+                <email.port>25</email.port>
+                <!-- 是否使用ssl连接 -->
+                <email.SSL>0</email.SSL>
+                <!-- smtp是否需要登录 -->
+                <email.auth>1</email.auth>
+
+                <!-- 数据库连接地址和数据库名 -->
+                <jdbc.url>
+                    jdbc:mysql://192.168.101.90:3306/phoenix_mobile?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.url>
+                <jdbc.req.url>
+                    jdbc:mysql://192.168.101.90:3306/phoenix_requirement?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.req.url>
+                <jdbc.business.url>
+                    jdbc:mysql://192.168.101.90:3306/business?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.business.url>
+                <jdbc.cloud.url>
+                    jdbc:mysql://192.168.101.90:3306/phoenix_cloud?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.cloud.url>
+                <jdbc.user.url>
+                    jdbc:mysql://192.168.101.90:3306/phoenix_user?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.user.url>
+                <jdbc.im.url>
+                    jdbc:mysql://192.168.101.90:3306/im?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.im.url>
+                <jdbc.person.url>
+                    jdbc:mysql://192.168.101.90:3306/phoenix_person?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+                </jdbc.person.url>
+                <!-- 数据库访问帐号 -->
+                <jdbc.username>root</jdbc.username>
+                <!-- 数据库访问密码 -->
+                <jdbc.password>111111</jdbc.password>
+
+
+                <log4j.path>/home/zhangle/project/qatest</log4j.path>
+                <!-- 日志级别，由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
+                <log4j.level>info</log4j.level>
+                <!-- phoenix-ui项目的发布地址，只要替换ip和端口即可 -->
+                <images.root>http://192.168.101.90:777/resources/images/v2</images.root>
+                <!-- phoenix-ui项目的发布地址，只要替换ip和端口即可 -->
+                <scripts.root>http://192.168.101.90:777/resources/js</scripts.root>
+                <!-- phoenix-ui项目的发布地址，只要替换ip和端口即可 -->
+                <styles.root>http://192.168.101.90:777/resources/css/v2</styles.root>
+                <!-- nfs地址 -->
+                <nfs.home>/webserver/upload/</nfs.home>
+                <!-- nginx上传的地址 -->
+                <nginx.root>http://192.168.101.131:880/</nginx.root>
+                <!-- <nginx.root>http://file.dev.gintong.com:81/</nginx.root> -->
+                <!-- nfs的mount目录 -->
+                <nfs.home>/webserver/upload/</nfs.home>
+                <dubbo.application.name>phoenix-mobile</dubbo.application.name>
+                <dubbo.protocol.name>dubbo</dubbo.protocol.name>
+                <dubbo.registry.address>zookeeper://192.168.101.90:2181?client=zkclient</dubbo.registry.address>
+                <dubbo.protocol.port>7011</dubbo.protocol.port>
+                <!-- dev sso 192.168.101.18:80 -->
+                <sso.host>http://sso.dev.gintong.com:8081</sso.host>
+                <!-- 本地项目地址 -->
+                <cloudweb.host>http://cloud.qatest.gintong.com:8084</cloudweb.host>
+                <web.url>http://qatest.gintong.com:2222</web.url>
+                <business.url>http://we.qatest.gintong.com:1111</business.url>
+                <web.index>http://qatest.gintong.com:2222</web.index>
+                <!-- 关联资源访问地址 -->
+                <bigdata.query.host>http://192.168.101.9:8090</bigdata.query.host>
+                <ecosphere.query.host>http://192.168.101.13:8081</ecosphere.query.host>
+                <bigData.url>http://192.168.101.9:8090/</bigData.url>
+                <baidu.push.user.url>http://192.168.120.144:8080/ImServer/mobile/im/userChannel/</baidu.push.user.url>
+            </properties>
+        </profile>
+        <!-- <profile> <id>qatest</id> <activation> <activeByDefault>false</activeByDefault>
+            </activation> <properties> <user.cache.expiredTime>86400</user.cache.expiredTime>
+            redis地址 <redis.host>192.168.101.90</redis.host> redis端口 <redis.port>6379</redis.port>
+            数据库连接地址和数据库名 <jdbc.url> jdbc:mysql://192.168.101.90:3306/phoenix_cloud?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8
+            </jdbc.url> 数据库访问帐号 <jdbc.username>root</jdbc.username> 数据库访问密码 <jdbc.password></jdbc.password>
+            <log4j.path>/home/zhangle/project/qatest</log4j.path> 日志级别，由大到小分为 debug info
+            warn error 四个级别，越大日志越详细 <log4j.level>info</log4j.level> phoenix-ui项目的发布地址，只要替换ip和端口即可
+            <images.root>http://192.168.101.90:777/resources/images/v2</images.root>
+            phoenix-ui项目的发布地址，只要替换ip和端口即可 <scripts.root>http://192.168.101.90:777/resources/js</scripts.root>
+            phoenix-ui项目的发布地址，只要替换ip和端口即可 <styles.root>http://192.168.101.90:777/resources/css/v2</styles.root>
+            nginx上传的地址 <nginx.root>http://file.qatest.gintong.com:81/</nginx.root> nfs的mount目录
+            <nfs.home>/webserver/upload/</nfs.home> <dubbo.application.name>phoenix-cloud</dubbo.application.name>
+            <dubbo.protocol.name>dubbo</dubbo.protocol.name> <dubbo.registry.address>zookeeper://192.168.101.90:2181?client=zkclient</dubbo.registry.address>
+            <sso.host>http://sso.qatest.gintong.com:1111</sso.host> server web 192.168.101.5:2222
+            <cloudweb.host>http://cloud.qatest.gintong.com:2222</cloudweb.host> <openoffice.exe>/opt/openoffice.org3</openoffice.exe>
+            <libreoffice.exe>/opt/libreoffice4.0</libreoffice.exe> <swftools.exe>/usr/local/swftools/bin/pdf2swf</swftools.exe>
+            <web.index>http://qatest.gintong.com:2222</web.index> </properties> </profile> -->
+
+
+        <profile>
+            <id>delivery</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <filters>
+                    <filter>${sa.config.file}</filter>
+                </filters>
+            </build>
+        </profile>
+
+        <profile>
+            <id>snapshotsjar</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <packtype>jar</packtype>
+            </properties>
+            <!-- 打jar包并发布到私服 -->
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>Snapshots</id>
+                    <url>http://192.168.101.89:8081/nexus/content/repositories/snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+
+                            <includes>
+                                <includes>**/model/**</includes>
+                                <includes>**/service/**</includes>
+                                <includes>**/utils/**</includes>
+                                <includes>**/phoenix-mobile-dubbo-consumer.xml</includes>
+                            </includes>
+                            <excludes>
+                                <excludes>**/service/impl**</excludes>
+                                <excludes>**/service/**/impl/**</excludes>
+                                <excludes>**/service/**/Impl/**</excludes>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <!-- 打jar包到私服 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>releasesjar</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <packtype>jar</packtype>
+            </properties>
+            <!-- 打jar包并发布到私服 -->
+            <distributionManagement>
+                <repository>
+                    <id>Releases</id>
+                    <url>http://192.168.101.89:8081/nexus/content/repositories/releases/</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+
+                            <includes>
+                                <includes>**/model/**</includes>
+                                <includes>**/service/**</includes>
+                                <includes>**/utils/**</includes>
+                                <includes>**/phoenix-mobile-dubbo-consumer.xml</includes>
+                            </includes>
+                            <excludes>
+                                <excludes>**/service/impl**</excludes>
+                                <excludes>**/service/**/impl/**</excludes>
+                                <excludes>**/service/**/Impl/**</excludes>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <!-- 打jar包到私服 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- <profile> <id>online</id> <activation> <activeByDefault>false</activeByDefault>
+            </activation> <build> <filters> <filter>${sa.config.file}</filter> </filters>
+            </build> <properties> <user.cache.expiredTime>86400</user.cache.expiredTime>
+            redis地址 <redis.host>${cloud.web.online.redis.host}</redis.host> redis端口 <redis.port>${cloud.web.online.redis.port}</redis.port>
+            数据库连接地址和数据库名 <jdbc.url> ${cloud.web.online.jdbc.url} </jdbc.url> 数据库访问帐号
+            <jdbc.username>${cloud.web.online.jdbc.username}</jdbc.username> 数据库访问密码
+            <jdbc.password>${cloud.web.online.jdbc.password}</jdbc.password> <log4j.path>${cloud.web.online.log4j.path}</log4j.path>
+            日志级别，由大到小分为 debug info warn error 四个级别，越大日志越详细 <log4j.level>${cloud.web.online.log4j.level}</log4j.level>
+            phoenix-ui项目的发布地址，只要替换ip和端口即可 <images.root>${cloud.web.online.images.root}</images.root>
+            phoenix-ui项目的发布地址，只要替换ip和端口即可 <scripts.root>${cloud.web.online.scripts.root}</scripts.root>
+            phoenix-ui项目的发布地址，只要替换ip和端口即可 <styles.root>${cloud.web.online.styles.root}</styles.root>
+            nginx上传的地址 <nginx.root>${cloud.web.online.nginx.root}</nginx.root> nfs的mount目录
+            <nfs.home>${cloud.web.online.nfs.home}</nfs.home> <dubbo.application.name>${cloud.web.online.dubbo.application.name}</dubbo.application.name>
+            <dubbo.protocol.name>${cloud.web.online.dubbo.protocol.name}</dubbo.protocol.name>
+            <dubbo.registry.address>${cloud.web.online.dubbo.registry.address}</dubbo.registry.address>
+            <sso.host>${cloud.web.online.sso.host}</sso.host> server web 192.168.101.5:2222
+            <cloudweb.host>${cloud.web.online.cloudweb.host}</cloudweb.host> <openoffice.exe>${cloud.web.online.openoffice.exe}</openoffice.exe>
+            <libreoffice.exe>${cloud.web.online.libreoffice.exe}</libreoffice.exe> <swftools.exe>${cloud.web.online.swftools.exe}</swftools.exe>
+            <web.index>${cloud.web.online.web.index}</web.index> </properties> </profile> -->
+        <!-- mvn clean resources:resources -Ponline -Dsa.config.file=D:\program\gitwork\phoenix-user\phoenix-user-provider\sa.properties -->
+    </profiles>
+</project>

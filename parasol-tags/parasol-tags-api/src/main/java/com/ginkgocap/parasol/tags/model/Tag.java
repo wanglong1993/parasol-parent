@@ -28,7 +28,7 @@ public class Tag implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8746712290836358492L;
+	private static final long serialVersionUID = 6606454865761504896L;
 
 	private long id;// '标签ID'
 	private long userId; // '用户ID',

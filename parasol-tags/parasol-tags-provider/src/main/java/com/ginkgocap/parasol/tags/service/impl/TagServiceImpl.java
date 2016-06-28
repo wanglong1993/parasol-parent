@@ -133,6 +133,8 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 
 		}
 		oldTag.setTagName(tag.getTagName());
+		//TagType must same with old
+		tag.setTagType(oldTag.getTagType());
 
 		try {
 			this.updateEntity(tag);
@@ -140,7 +142,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 			e.printStackTrace(System.err);
 			throw new TagServiceException(e);
 		}
-		return false;
+		return true;
 	}
 
 	@Override
@@ -171,7 +173,8 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 				List<Tag> tags = this.getEntityByIds(ids);
 				if (CollectionUtils.isNotEmpty(tags)) {
 					for (Tag tag : tags) {
-						if (tag != null && ObjectUtils.equals(tag.getUserId(), userId)) {
+						//userId = -1,For the case: if get others public resource that contain these tags;
+						if (userId.intValue() == -1 || (tag != null && ObjectUtils.equals(tag.getUserId(), userId))) {
 							result.add(tag);
 						}
 					}

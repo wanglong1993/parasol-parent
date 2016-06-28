@@ -33,6 +33,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private final  static String registerTitle = "【金桐】邮箱注册";
 	private final  static String registerCoopertTitle = "【coopert】邮箱注册";
 	private final  static String bindTitle = "【金桐】绑定邮箱";
+	private final  static String changeOldTitle = "【金桐】更改邮箱-验证旧邮箱";
 	private final  static String editPasswordTitle = "【金桐】修改密码";
 	
 	private static SecureRandomNumberGenerator ecureRandomNumberGenerator;
@@ -45,6 +46,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private Cache cache;
 	
 	private static final String USER_LOGIN_REGISTER_MAP_PASSPORT = "UserLoginRegister_Map_Passport"; 
+	private static final String USER_LOGIN_REGISTER_MAP_GID = "UserLoginRegister_Map_Gid"; 
 	private static final String USER_LOGIN_REGISTER_MAP_MOBILE = "UserLoginRegister_Map_Mobile"; 
 	private static final String USER_LOGIN_REGISTER_MAP_EMAIL = "UserLoginRegister_Map_Email"; 
 	private static final String USER_LOGIN_REGISTER_MAP_USER_NAME = "UserLoginRegister_Map_User_Name"; 
@@ -88,20 +90,25 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			UserLoginRegister userLoginRegister=null;
 			//根据passport查找id
 			Long id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_PASSPORT,passport);
+			System.out.println("passport="+passport+",id1111="+id);
 			if(id==null || id<0l){
 				if(isMobileNo(passport))id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_MOBILE,passport);
+				System.out.println("passport="+passport+",id22222="+id);
 			}
 			if(id==null || id<0l){
 				if(isEmail(passport))id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_EMAIL,passport);
+				System.out.println("passport="+passport+",id33333="+id);
 			}
 			if(id==null || id<0l){
 				if(!isMobileNo(passport) && !isEmail(passport))id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_USER_NAME,passport);
+				System.out.println("passport="+passport+",id44444="+id);
 			}
 			//根据id查找实体
 			if(id!=null && id>0l){	
 				userLoginRegister=getEntity(id);
 				return userLoginRegister;
 			}
+			System.out.println("passport="+passport+",id=========="+id);
 			return null;
 		} catch (BaseServiceException e) {
 			if (logger.isDebugEnabled()) {
@@ -382,12 +389,15 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			boolean bl=false;
 			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
-			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
+			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4 && type!=5 && type!=6 && type!=7) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
 			if(type==0) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-code-emai.ftl");
 			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerCoopertTitle, null, map, "reg-activate-emai-coopert.ftl");
-			if(type==2)bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
-			if(type==3)bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
+			if(type==2) bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
+			if(type==3) bl= emailService.sendEmailSync(mailTo, null, bindTitle, null, map, "bindemail.ftl");
+			if(type==7) bl= emailService.sendEmailSync(mailTo, null, changeOldTitle, null, map, "bindemail.ftl");
 			if(type==4) bl= emailService.sendEmailSync(mailTo, null, findPasswordCoopertTitle, null, map, "findpwd-email-coopert.ftl");
+			if(type==5) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-activate-emai-coopert.ftl");
+			if(type==6) bl=emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "bindemail.ftl");
 			return bl;
 		}catch (Exception e) {
 			if (logger.isDebugEnabled()) {
@@ -424,5 +434,37 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	@Override
 	public boolean deleteIdentifyingCode(String passport)throws UserLoginRegisterServiceException {
 		return cache.remove(passport);
+	}
+	@Override
+	public UserLoginRegister getUserLoginRegisterByGid(String gid)throws UserLoginRegisterServiceException {
+		try {
+			if(StringUtils.isEmpty(gid)) throw new UserLoginRegisterServiceException("gid is null or empty.");
+			UserLoginRegister userLoginRegister=null;
+			//根据passport查找id
+			Long id =(Long)getMapId(USER_LOGIN_REGISTER_MAP_GID,gid);
+			//根据id查找实体
+			if(id!=null && id>0l){	
+				userLoginRegister=getEntity(id);
+				return userLoginRegister;
+			}
+			return null;
+		} catch (BaseServiceException e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
+	}
+	@Override
+	public boolean setCache(String key, Object value, int expireTime)throws UserLoginRegisterServiceException {
+		boolean bl =false;
+		String key2=cache.getCacheHelper().buildKey(CacheModule.REGISTER, key);
+		bl = cache.set(key2, expireTime, value);
+		return bl;
+	}
+	@Override
+	public Object getCache(String key) throws UserLoginRegisterServiceException {
+		Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, key));
+		return value!=null?value:null;
 	}
 }

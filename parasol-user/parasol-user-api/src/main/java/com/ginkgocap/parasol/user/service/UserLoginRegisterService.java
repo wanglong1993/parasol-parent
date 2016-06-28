@@ -176,7 +176,25 @@ public interface UserLoginRegisterService {
 	 * @throws UserLoginRegisterServiceException
 	 */
 	public boolean getEmail(String email) throws UserLoginRegisterServiceException;
-
-	
+	/**
+	 * 查找金桐号
+	 * @param gid
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public UserLoginRegister getUserLoginRegisterByGid(String gid) throws UserLoginRegisterServiceException; 
+	/**
+	 * 设置缓存
+	 * @param key
+	 * @param value
+	 * @param expireTime
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public boolean setCache(String key,Object value,int expireTime) throws UserLoginRegisterServiceException; 
+	/**
+	 * 获取缓存
+	 * @param key
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public Object getCache(String key) throws UserLoginRegisterServiceException; 	
 
 }

@@ -1,6 +1,4 @@
 package com.ginkgocap.parasol.person.model;
-
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,17 +7,21 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
- * 人脉自定义模块
+ * 用户自定义
  */
+@JsonFilter("com.ginkgocap.parasol.person.model.PersonDefined")
 @Entity
 @Table(name = "tb_person_defined", catalog = "parasol_person")
 public class PersonDefined implements java.io.Serializable {
 
+
 	/**
 	 * 
 	 */
-	private static final Long serialVersionUID = -4739693535991876072L;
+	private static final long serialVersionUID = 8690847030158633991L;
 	/**
 	 * 主键.
 	 */
@@ -29,15 +31,17 @@ public class PersonDefined implements java.io.Serializable {
 	 */
 	private Long personId;
 	/**
-	 * 自定义模块名.
+	 * 应用id
 	 */
-	private String personDefinedModel;
+	private Long appId;
+	
+
 	/**
 	 * 自定义字段名.
 	 */
 	private String personDefinedFiled;
 	/**
-	 * 自定义字段内容.
+	 * 自定义字段值
 	 */
 	private String personDefinedValue;
 	/**
@@ -56,6 +60,16 @@ public class PersonDefined implements java.io.Serializable {
 	public PersonDefined() {
 	}
 
+	public PersonDefined(Long id, Long personId, String personDefinedValue, Long ctime,
+			Long utime, String ip) {
+		this.id = id;
+		this.personId = personId;
+		this.personDefinedValue = personDefinedValue;
+		this.ctime = ctime;
+		this.utime = utime;
+		this.ip = ip;
+	}
+
 	@Id
 	@GeneratedValue(generator = "id")
 	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator")
@@ -68,22 +82,13 @@ public class PersonDefined implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "person_id")
+	@Column(name = "person_id", nullable = false)
 	public Long getPersonId() {
 		return this.personId;
 	}
 
 	public void setPersonId(Long personId) {
 		this.personId = personId;
-	}
-
-	@Column(name = "person_defined_model")
-	public String getPersonDefinedModel() {
-		return this.personDefinedModel;
-	}
-
-	public void setPersonDefinedModel(String personDefinedModel) {
-		this.personDefinedModel = personDefinedModel;
 	}
 
 	@Column(name = "person_defined_filed")
@@ -95,7 +100,7 @@ public class PersonDefined implements java.io.Serializable {
 		this.personDefinedFiled = personDefinedFiled;
 	}
 
-	@Column(name = "person_defined_value")
+	@Column(name = "person_defined_value", nullable = false, length = 1)
 	public String getPersonDefinedValue() {
 		return this.personDefinedValue;
 	}
@@ -104,7 +109,7 @@ public class PersonDefined implements java.io.Serializable {
 		this.personDefinedValue = personDefinedValue;
 	}
 
-	@Column(name = "ctime")
+	@Column(name = "ctime", nullable = false, length = 19)
 	public Long getCtime() {
 		return this.ctime;
 	}
@@ -113,7 +118,8 @@ public class PersonDefined implements java.io.Serializable {
 		this.ctime = ctime;
 	}
 
-	@Column(name = "utime")
+	
+	@Column(name = "utime", nullable = false, length = 19)
 	public Long getUtime() {
 		return this.utime;
 	}
@@ -122,13 +128,21 @@ public class PersonDefined implements java.io.Serializable {
 		this.utime = utime;
 	}
 
-	@Column(name = "ip", length = 16)
+	@Column(name = "ip", nullable = false, length = 16)
 	public String getIp() {
 		return this.ip;
 	}
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	@Column(name = "appId")
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
 	}
 
 }

@@ -35,6 +35,14 @@ public class UserInterestIndustry implements java.io.Serializable {
 	 */
 	private Long firstIndustryId;
 	/**
+	 * 0:私密,1:好友可见,2:部分好友,3:公开
+	 */
+	private int permission;
+	/**
+	 * 部分好友可见时存放好友的id，用逗号“,”隔开。
+	 */
+	private String friendIds;
+	/**
 	 * 创建时间.
 	 */
 	private Long ctime;
@@ -138,5 +146,20 @@ public class UserInterestIndustry implements java.io.Serializable {
 	public void setFirstIndustryName(String firstIndustryName) {
 		this.firstIndustryName = firstIndustryName;
 	}
+	@Column(name = "permission")
+	public int getPermission() {
+		return permission;
+	}
 
+	public void setPermission(int permission) {
+		this.permission = permission;
+	}
+	@Column(name = "friendIds")
+	public String getFriendIds() {
+		return friendIds;
+	}
+
+	public void setFriendIds(String friendIds) {
+		this.friendIds = friendIds;
+	}
 }

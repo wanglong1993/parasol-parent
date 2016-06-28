@@ -37,6 +37,9 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	// 一个资源下有那些TagSource
 	private static final String LIST_ID_APPID_SOURCEID_SOURCETYPE = "List_Id_AppId_SourceId_SourceType";
 	private static final String LIST_ID_APPID_TAGID = "List_Id_AppId_TagId";
+	private static final String LIST_ID_APPID_TAGID_SOURCETYPE = "List_Id_AppId_TagId_SourceType";
+	private static final String LIST_BY_APPID_TAGID_SOURCETYPE = "List_By_AppId_TagId_SourceType";
+	private static final String DELETE_BY_APPID_SOURCEID_SOURCETYPE = "Delete_By_AppId_SourceId_SourceType";
 
 	private static int MAX_TAG = 10; // 一个资源下最多创建的标签数
 
@@ -104,6 +107,21 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 			} else {
 				throw new TagSourceServiceException(ServiceError.ERROR_NOT_FOUND, "TagSource is not exist");
 			}
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new TagSourceServiceException(e);
+		}
+	}
+	
+	@Override
+	public int removeTagSourceBySourceId(Long appId, Long userId, Long sourceId,Long sourceType) throws TagSourceServiceException
+	{
+		ServiceError.assertAppidIsNullForTagSource(appId);
+		ServiceError.assertTagSourceIdIsNullForTagSource(sourceId);
+		ServiceError.assertUserIdIsNullForTagSource(userId);
+		ServiceError.assertUserIdIsNullForTagSource(sourceType);
+		try {
+			return this.deleteList(DELETE_BY_APPID_SOURCEID_SOURCETYPE, appId, userId, sourceId, sourceType);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new TagSourceServiceException(e);
@@ -218,7 +236,19 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		ServiceError.assertTagIdIsNullForTagSource(tagId);
 		ServiceError.assertAppidIsNullForTagSource(appId);
 		try {
-			return this.getSubEntitys(LIST_ID_APPID_TAGID, iStart, iCount, appId, tagId);
+			return this.getSubEntitys(LIST_ID_APPID_TAGID_SOURCETYPE, iStart, iCount, appId, tagId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new TagSourceServiceException(e);
+		}
+	}
+
+	@Override
+	public List<TagSource> getTagSourcesByAppIdTagIdAndType(Long appId, Long tagId, Long sourceType, Integer iStart, Integer iCount) throws TagSourceServiceException {
+		ServiceError.assertTagIdIsNullForTagSource(tagId);
+		ServiceError.assertAppidIsNullForTagSource(appId);
+		try {
+			return this.getSubEntitys(LIST_BY_APPID_TAGID_SOURCETYPE, iStart, iCount, new Object[]{appId, tagId, sourceType});
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new TagSourceServiceException(e);
@@ -261,6 +291,13 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean createTagSources(List<TagSource> tagSource)
+			throws TagSourceServiceException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

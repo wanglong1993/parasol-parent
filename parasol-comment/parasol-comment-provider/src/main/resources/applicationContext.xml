@@ -32,6 +32,7 @@
 	</bean>
 	<import resource="classpath:comment-dubbo-config.xml" />
 	<import resource="classpath:comment-dubbo-provider.xml" />
+	<import resource="classpath:comment-mongo-config.xml" />
 	<context:component-scan base-package="com.ginkgocap.parasol.comment">
 	</context:component-scan>
 	<bean name="dao" class="com.ginkgocap.ywxt.framework.dal.dao.impl.CompositeDaoImpl"/>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="   
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+	http://www.springframework.org/schema/data/mongo
+    http://www.springframework.org/schema/data/mongo/spring-mongo-1.1.xsd
+    http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+	http://www.springframework.org/schema/data/jpa 
+	http://www.springframework.org/schema/data/jpa/spring-jpa-1.2.xsd">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:application.properties</value>
+			</list>
+		</property>
+	</bean>
+
+
+    <bean id="mobileRpe" class="com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer"
+          init-method="init">
+        <property name="nfsHome" value="${nfs.home}" />
+        <property name="imagesRoot" value="${images.root}" />
+        <property name="webUrl" value="${web.url}" />
+        <property name="bigdataQueryHost" value="${bigdata.query.host}" />
+        <property name="ecosphereQueryHost" value="${ecosphere.query.host}" />
+        <property name="newQueryHost" value="${new.query.host}" />
+        <property name="nginxRoot" value="${nginx.root}" />
+        <property name="konwledgeQueryHotUrl" value="${konwledge.query.hot.url}" />
+        <property name="konwledgeQueryCommentUrl" value="${konwledge.query.comment.url}" />
+        <property name="knowledgeQueryTagUrl" value="${knowledge.query.tag.url}" />
+
+
+    </bean>
+    <aop:aspectj-autoproxy/>
+    <context:component-scan base-package="com.gintong.common.phoenix.permission" annotation-config="true" />
+
+    <import resource="classpath:organ-dubbo-config.xml" />
+   <import resource="classpath:organ-dubbo-consumer.xml" />
+    <import resource="classpath:person-dubbo-consumer.xml" />
+	<import resource="classpath:file-dubbo-consumer.xml"/>
+	<import resource="classpath:tags-dubbo-consumer.xml"/>
+	<import resource="classpath:metadata-directory-consumer.xml"/>
+	<import resource="classpath:metadata-associate-consumer.xml"/>
+	<import resource="classpath:message-dubbo-consumer.xml"/>
+    <import resource="classpath:user-dubbo-consumer.xml" />
+
+
+    <import resource="classpath:organization-dubbo-consumer.xml" />
+    <import resource="classpath*:permission-dubbo-consumer.xml" />
+
+
+
+    <import resource="classpath:applicationContext-cache.xml" />
+	<context:component-scan base-package="com.ginkgocap.parasol.organ,com.ginkgocap.ywxt.organ">
+    </context:component-scan>
+</beans>

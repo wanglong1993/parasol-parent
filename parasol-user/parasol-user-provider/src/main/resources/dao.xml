@@ -19,6 +19,10 @@
           <map name="UserLoginRegister_Map_Passport"
                  sqlitem="select id from tb_user_login_register where passport=? "
                  sqlType="hsql" keyProperty="passport" valueProperty="id"  update="true"/>
+ 		<!-- 通过金桐号查找用户id是否存在 --> 
+          <map name="UserLoginRegister_Map_Gid"
+                 sqlitem="select id from tb_user_login_register where gid=? "
+                 sqlType="hsql" keyProperty="gid" valueProperty="id"  update="true"/>
         <!-- 通过mobile查找用户id是否存在 --> 
           <map name="UserLoginRegister_Map_Mobile"
                  sqlitem="select id from tb_user_login_register where mobile=? "
@@ -33,7 +37,36 @@
                  sqlType="hsql" keyProperty="userName" valueProperty="id"  update="true"/>
                                                
 		</object>
-		
+		<object name="com.ginkgocap.parasol.user.model.UserOrgPerCusRel" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+        <!-- 通过用户id查找用户个人和组织好友列表 --> 
+		  <list name="UserOrgPerCusRel_UserAndOrg_Friendly_UserId"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=1 or releation_type=2 order by utime desc"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true" />
+        <!-- 通过用户id查找用户个人好友列表 --> 
+		  <list name="UserOrgPerCusRel_User_Friendly_UserId"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=1 order by utime desc"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+        <!-- 通过好友昵称搜索我的里面的个人好友列表 --> 
+		  <list name="UserOrgPerCusRel_User_Friendly_UserId_And_UserName"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=1 and name like ? order by utime desc"
+                 sqlType="hsql" keyProperty="userId,name" valueProperty="id"  update="true"/>
+        <!-- 通过用户id查找用户组织好友列表 --> 
+		  <list name="UserOrgPerCusRel_Org_Friendly_UserId"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=2 order by utime desc"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+        <!-- 通过组织好友昵称查找用户组织好友列表 --> 
+		  <list name="UserOrgPerCusRel_Org_Friendly_UserId_And_UserName"
+                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=2 and name like ? order by utime desc"
+                 sqlType="hsql" keyProperty="userId,name" valueProperty="id"  update="true"/>
+ 		<!-- 通过好友friendId查找id --> 
+          <map name="UserOrgPerCusRel_Map_FriendId"
+                 sqlitem="select id from tb_user_org_per_cus_rel where friend_id=? and user_id=?"
+                 sqlType="hsql" keyProperty="friendId,userId" valueProperty="id"  update="true"/>                                  	                 			
+		</object>		
 		<object name="com.ginkgocap.parasol.user.model.UserInterestIndustry" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
@@ -48,64 +81,24 @@
                  sqlType="hsql" keyProperty="firstIndustryId" valueProperty="userId"  update="false"/>
 		</object>
 		
-		<object name="com.ginkgocap.parasol.user.model.UserBasic" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+		<!-- <object name="com.ginkgocap.parasol.user.model.UserExt" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
-		</object>
-		<object name="com.ginkgocap.parasol.user.model.UserExt" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
-			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
-				<pattern value="[02468]$" group="g2" />
-				<pattern value="[13579]$" group="g3" />
-			</dbStrategy>
-        <!-- 通过地区县id查找用户id列表 --> 
+        通过地区县id查找用户id列表 
 		  <list name="UserExt_List_Id_CountyId"
                  sqlitem="select user_id from tb_user_ext where county_id =? order by utime desc"
                  sqlType="hsql" keyProperty="countyId" valueProperty="userId"  update="false"/>
-        <!-- 通过地区省id查找用户id列表 --> 
+        通过地区省id查找用户id列表 
 		  <list name="UserExt_List_Id_ProvinceId"
                  sqlitem="select user_id from tb_user_ext where province_id =? order by utime desc"
                  sqlType="hsql" keyProperty="provinceId" valueProperty="userId"  update="false"/>                 			
-        <!-- 通过第三级行业ID查找用户id列表 --> 
+        通过第三级行业ID查找用户id列表 
 		  <list name="UserExt_List_Id_ThirdIndustryId"
                  sqlitem="select user_id from tb_user_ext where third_industry_id =? order by utime desc"
                  sqlType="hsql" keyProperty="thirdIndustryId" valueProperty="userId"  update="false"/>                 			
-		</object>
-		<object name="com.ginkgocap.parasol.user.model.UserOrganBasic" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
-			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
-				<pattern value="[02468]$" group="g2" />
-				<pattern value="[13579]$" group="g3" />
-			</dbStrategy>
-		</object>		
-		<object name="com.ginkgocap.parasol.user.model.UserOrganExt" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
-			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
-				<pattern value="[02468]$" group="g2" />
-				<pattern value="[13579]$" group="g3" />
-			</dbStrategy>
-		</object>		
-		<object name="com.ginkgocap.parasol.user.model.UserOrgPerCusRel" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
-			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
-				<pattern value="[02468]$" group="g2" />
-				<pattern value="[13579]$" group="g3" />
-			</dbStrategy>
-        <!-- 通过用户id查找用户个人和组织好友列表 --> 
-		  <list name="UserOrgPerCusRel_UserAndOrg_Friendly_UserId"
-                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=1 or releation_type=2 order by utime desc"
-                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true" />
-        <!-- 通过用户id查找用户个人好友列表 --> 
-		  <list name="UserOrgPerCusRel_User_Friendly_UserId"
-                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=1 order by utime desc"
-                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
-        <!-- 通过用户id查找用户组织好友列表 --> 
-		  <list name="UserOrgPerCusRel_Org_Friendly_UserId"
-                 sqlitem="select id from tb_user_org_per_cus_rel where user_id =? and releation_type=2 order by utime desc"
-                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
- 		<!-- 通过好友friendId查找id --> 
-          <map name="UserOrgPerCusRel_Map_FriendId"
-                 sqlitem="select id from tb_user_org_per_cus_rel where friend_id=? and user_id=?"
-                 sqlType="hsql" keyProperty="friendId,userId" valueProperty="id"  update="true"/>                                  	                 			
-		</object>
+		</object> -->
 		<object name="com.ginkgocap.parasol.user.model.UserFriendly" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
@@ -114,7 +107,11 @@
  		<!-- 通过好友friendId查找id --> 
           <map name="UserFriendly_Map_FriendId"
                  sqlitem="select id from tb_user_friendly where friend_id=? and user_id=?"
-                 sqlType="hsql" keyProperty="friendId,userId" valueProperty="id"  update="true"/>                                 	                 			
+                 sqlType="hsql" keyProperty="friendId,userId" valueProperty="id"  update="true"/>     
+        <!-- 通过用户id查找申请和用户做好友的列表 --> 
+		  <list name="UserFriendly_List_Friendly_UserId"
+                 sqlitem="select id from tb_user_friendly where user_id =? and status=0 order by utime desc"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>                                             	                 			
 		</object>
 		<object name="com.ginkgocap.parasol.user.model.UserLoginThird" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
@@ -134,15 +131,6 @@
                  sqlitem="select id from tb_login_third where user_id=? and login_type"
                  sqlType="hsql" keyProperty="userId,loginType" valueProperty="id"  update="true"/>                                                  	                 			
 		</object>
-		<object name="com.ginkgocap.parasol.user.model.UserDefined" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
-			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
-				<pattern value="[02468]$" group="g2" />
-				<pattern value="[13579]$" group="g3" />
-			</dbStrategy>
-          <list name="UserDefined_List_UserId"
-                 sqlitem="select id from tb_user_defined where user_id=?"
-                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
-		</object>
 
 
 		<object name="com.ginkgocap.parasol.user.model.UserInfo" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
@@ -157,12 +145,6 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
 		</object>
-		<object name="com.ginkgocap.parasol.user.model.UserContactWay" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
-			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
-				<pattern value="[02468]$" group="g2" />
-				<pattern value="[13579]$" group="g3" />
-			</dbStrategy>
-		</object>		
 		<object name="com.ginkgocap.parasol.user.model.UserEducationHistory" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
@@ -172,6 +154,115 @@
                  sqlitem="select id from tb_user_education_history where user_id=?"
                  sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
 		</object>										
+		
+		<!-- 最新 -->
+		<object name="com.ginkgocap.parasol.user.model.UserBasic" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+			<list name="UserBasic_List_By_ProvinceId"
+                 sqlitem="select user_id from tb_user_basic where province_id =? order by utime desc"
+                 sqlType="hsql" keyProperty="provinceId" valueProperty="userId"  update="false"/> 
+            <list name="UserBasic_List_By_CityId"
+                 sqlitem="select user_id from tb_user_basic where city_id =? order by utime desc"
+                 sqlType="hsql" keyProperty="cityId" valueProperty="userId"  update="false"/>
+            <list name="UserBasic_List_By_CountyId"
+                 sqlitem="select user_id from tb_user_basic where county_id =? order by utime desc"
+                 sqlType="hsql" keyProperty="countyId" valueProperty="userId"  update="false"/> 
+             <list name="UserBasic_List_By_UserName"
+                 sqlitem="select user_id from tb_user_basic where name like ? order by utime desc"
+                 sqlType="hsql" keyProperty="userName" valueProperty="userId"  update="false"/> 
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserContact" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+          <list name="UserContact_List_UserId"
+                 sqlitem="select id from tb_user_contact where user_id=?"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserAttachment" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>
+				<object name="com.ginkgocap.parasol.user.model.UserDefined" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+          <list name="UserDefined_List_UserId"
+                 sqlitem="select id from tb_user_defined where user_id=?"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserDescription" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserEducationHistory" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+          <list name="UserEducationHistory_List_UserId"
+                 sqlitem="select id from tb_user_education_history where user_id=?"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+		</object>	
+		<object name="com.ginkgocap.parasol.user.model.UserFamilyMember" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+          <list name="UserFamilyMember_List_UserId"
+                 sqlitem="select id from tb_user_family_member where user_id=?"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserInteresting" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserSkill" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserRTemplate" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserTemplate" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+          <list name="UserTemplate_List_UserId"
+                 sqlitem="select id from tb_user_template where user_id=?"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+          <list name="UserTemplate_List_code"
+                 sqlitem="select id from tb_user_template where template_code=?"
+                 sqlType="hsql" keyProperty="template_code" valueProperty="id"  update="true"/>
+		</object>
+		
+		<object name="com.ginkgocap.parasol.user.model.UserDefinedTemplate" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+          <list name="UserDefinedTemplate_List_UserId"
+                 sqlitem="select id from tb_user_defined_template where user_id=?"
+                 sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+		</object>
+			
 		<object name="com.ginkgocap.parasol.user.model.UserWorkHistory" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
 				<pattern value="[02468]$" group="g2" />
@@ -180,7 +271,59 @@
           <list name="UserWorkHistory_List_UserId"
                  sqlitem="select id from tb_user_work_history where user_id=?"
                  sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
-		</object>													
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserTemplate" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>	
+		<object name="com.ginkgocap.parasol.user.model.UserTemplateModel" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+			<list name="UserTemplateModel_List_UserId"
+                 sqlitem="select id from tb_user_template_model where template_id=?"
+                 sqlType="hsql" keyProperty="templateId" valueProperty="id"  update="true"/>
+		</object>
+		<object name="com.ginkgocap.parasol.user.model.UserBlackList" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+
+			<list name="UserBlack_List_UserId_count"
+				  sqlitem="select id from tb_user_blacklist where user_id=? "
+				  sqlType="hsql" keyProperty="userId" valueProperty="id"  update="true"/>
+
+			<list name="UserBlack_List_UserId_BlackListId"
+				  sqlitem="select id from tb_user_blacklist where user_id=? and blackUserId = ? and appId = ?"
+				  sqlType="hsql" keyProperty="userId,blackUserId,appId" valueProperty="id"  update="true"/>
+
+			<list name="UserBlack_List_UserId"
+				  sqlitem="select id from tb_user_blacklist where user_id=? and appId = ?"
+				  sqlType="hsql" keyProperty="userId,appId" valueProperty="id"  update="true"/>
+		</object>
+
+		<object name="com.ginkgocap.parasol.user.model.UserConfigConnector" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+
+			<list name="UserConfigConnector_List_UserId_type"
+				  sqlitem="select id from tb_user_config_connector where user_id=? and type = ?"
+				  sqlType="hsql" keyProperty="userId,type" valueProperty="id"  update="true"/>
+
+			<list name="UserConfigConnector_Delete_UserId_Type"
+				  sqlitem="select id from tb_user_config_connector where user_id=? and type = ? and appId = ?"
+				  sqlType="hsql" keyProperty="userId,type,appId" valueProperty="id"  update="true"/>
+
+			<list name="UserConfigConnector_userId_toUserId_type_appId"
+				  sqlitem="select id from tb_user_config_connector where friendId=? and user_id=? and type = ? and appId = ?"
+				  sqlType="hsql" keyProperty="userId,toUserId,type,appId" valueProperty="id" update="true" />
+		</object>
 	</route>
 </dal>
 

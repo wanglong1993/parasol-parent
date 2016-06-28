@@ -95,6 +95,48 @@ public class TagController extends BaseControl {
 		}
 	}
 
+	/**
+	 * 给出一个用户和系统推荐的标签列表
+	 * curl -i "http://localhost:8081/tags/tags/getRecomTagList?appKey=1&userId=111&tagType=1"
+	 * @param request
+	 * @return
+	 * @throws TagServiceException
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = "/tags/tags/getRecomTagList", method = { RequestMethod.GET })
+	public MappingJacksonValue getRecomTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType) throws TagServiceException {
+		//@formatter:on
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			Long loginAppId = LoginUserContextHolder.getAppKey();
+			Long loginUserId = LoginUserContextHolder.getUserId();
+
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			// 1.查询后台服务
+			List<Tag> userTags = tagService.getTagsByUserIdAppidTagType(loginUserId, loginAppId, tagType);
+			userTags = userTags == null ? new ArrayList<Tag>() : userTags;
+
+			List<Tag> sysTags = tagService.getTagsByUserIdAppidTagType(0L, loginAppId, tagType);
+			sysTags = sysTags == null ? new ArrayList<Tag>() : sysTags;
+			// 2.转成框架数据
+			Map<String, List<Tag>> resultMap = new HashMap<String, List<Tag>>();
+			resultMap.put("user", userTags);
+			resultMap.put("sys", sysTags);
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (TagServiceException e) {
+			e.printStackTrace(System.err);
+			throw e;
+
+		}
+	}
+
 	//@formatter:off
 	/**
 	 * 2. 创建一个Tag
@@ -153,6 +195,7 @@ public class TagController extends BaseControl {
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Tag tag = new Tag();
+			tag.setId(tagId);
 			tag.setAppId(loginAppId);
 			tag.setUserId(loginUserId);
 			tag.setTagName(tagName);
@@ -221,6 +264,7 @@ public class TagController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // id',
+			filter.add("tagType"); // tagType',
 			filter.add("tagName"); // Tag名称
 		}
 

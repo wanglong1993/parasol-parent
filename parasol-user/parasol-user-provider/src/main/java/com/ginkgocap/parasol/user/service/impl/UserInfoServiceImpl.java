@@ -2,105 +2,83 @@ package com.ginkgocap.parasol.user.service.impl;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
-import com.ginkgocap.parasol.user.exception.UserInfoServiceException;
 import com.ginkgocap.parasol.user.model.UserInfo;
 import com.ginkgocap.parasol.user.service.UserInfoService;
-import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
-import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 @Service("userInfoService")
 public class UserInfoServiceImpl extends BaseService<UserInfo> implements UserInfoService  {
-	@Resource
-	private UserLoginRegisterService userLoginRegisterService;
-	private static Logger logger = Logger.getLogger(UserInfoServiceImpl.class);
 	/**
 	 * 检查数据
-	 * @param userInfo
+	 * @param UserInfo
 	 * @return
-	 * @throws UserInfoServiceException
+	 * @throws Exception
 	 */
-	private UserInfo checkValidity(UserInfo userInfo,int type)throws UserInfoServiceException,UserLoginRegisterServiceException {
-		if(userInfo==null) throw new UserInfoServiceException("userInfo can not be null.");
-		if(userInfo.getUserId()<=0l) throw new UserInfoServiceException("The value of userId is null or empty.");
+	private UserInfo checkValidity(UserInfo UserInfo,int type)throws Exception {
+		if(UserInfo==null) throw new Exception("UserInfo can not be null.");
+		if(UserInfo.getUserId()<0l) throw new Exception("The value of userId is null or empty.");
 		if(type!=0)
-		if(getUserInfo(userInfo.getUserId())==null)throw new UserInfoServiceException("userId not exists in userInfo");
-		if(userInfo.getCtime()==null) userInfo.setCtime(System.currentTimeMillis());
-		if(userInfo.getUtime()==null) userInfo.setUtime(System.currentTimeMillis());
-		if(type==1)userInfo.setUtime(System.currentTimeMillis());
-		return userInfo;
+		if(getObject(UserInfo.getUserId())==null)throw new Exception("userId not exists in UserInfo");
+//		if(StringUtils.isEmpty(UserInfo.getName()))throw new Exception("The value of  name is null or empty.");
+		if(UserInfo.getCtime()==null) UserInfo.setCtime(System.currentTimeMillis());
+		if(UserInfo.getUtime()==null) UserInfo.setUtime(System.currentTimeMillis());
+		if(type==1)UserInfo.setUtime(System.currentTimeMillis());
+		return UserInfo;
 	}
 	
+
 	@Override
-	public Long createUserInfo(UserInfo userInfo)throws UserInfoServiceException,UserLoginRegisterServiceException{
+	public Long createObject(UserInfo object) throws Exception {
 		try {
-			Long id=(Long)saveEntity(checkValidity(userInfo,0));
+			Long id=(Long)saveEntity(checkValidity(object,0));
 			if(!ObjectUtils.isEmpty(id) && id>0l)return  id;
-			else throw new UserInfoServiceException("createUserInfo failed.");
+			else throw new Exception("创建失败！ ");
 		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserInfoServiceException(e);
+			throw new Exception(e);
 		}
 	}
 
 	@Override
-	public boolean updateUserInfo(UserInfo userInfo)throws UserInfoServiceException,UserLoginRegisterServiceException {
+	public Boolean updateObject(UserInfo objcet) throws Exception {
 		try {
-			if(updateEntity(checkValidity(userInfo,1)))return true;
+			if(updateEntity(checkValidity(objcet,1)))return true;
 			else return false;
 		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserInfoServiceException(e);
+			throw new Exception(e);
 		}
 	}
 
 	@Override
-	public UserInfo getUserInfo(Long id) throws UserInfoServiceException {
+	public UserInfo getObject(Long id) throws Exception {
 		try {
-			if(id==null || id<=0l)throw new UserInfoServiceException("id is null or empty");
-			UserInfo userInfo =getEntity(id);
-			return userInfo;
+			if(id==null || id<=0l)throw new Exception("userId is null or empty");
+			UserInfo UserInfo =getEntity(id);
+			return UserInfo;
 		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserInfoServiceException(e);
+			throw new Exception(e);
 		}
 	}
 
 	@Override
-	public List<UserInfo> getUserInfo(List<Long> ids)throws UserInfoServiceException {
+	public List<UserInfo> getObjects(List<Long> ids) throws Exception {
 		try {
-			if(ids==null || ids.size()==0)throw new UserInfoServiceException("userIds is null or empty");
+			if(ids==null || ids.size()==0)throw new Exception("userIds is null or empty");
 			return getEntityByIds(ids);
 		} catch (BaseServiceException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserInfoServiceException(e);
+			throw new Exception(e);
 		}
 	}
 
 	@Override
-	public Boolean realDeleteUserInfo(Long id)throws UserInfoServiceException {
+	public Boolean deleteObject(Long id) throws Exception {
 		try {
-			if(id==null || id<=0l) throw new UserInfoServiceException("id is must grater than zero.");
+			if(id==null || id<=0l) throw new Exception("id is must grater than zero.");
 			return deleteEntity(id);
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new UserInfoServiceException(e);
+			throw new Exception(e);
 		}
 	}
 }
