@@ -6,6 +6,7 @@
 	<name>parasol organ web</name>
 	<description>parasol organ web project</description>
 	<version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
         <packtype>war</packtype>
@@ -1171,11 +1172,11 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
-            <build>
+            <!--<build>
                 <filters>
                     <filter>${sa.config.file}</filter>
                 </filters>
-            </build>
+            </build>-->
         </profile>
 
         <profile>
