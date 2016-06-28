@@ -1172,11 +1172,11 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
-            <!--<build>
+            <build>
                 <filters>
                     <filter>${sa.config.file}</filter>
                 </filters>
-            </build>-->
+            </build>
         </profile>
 
         <profile>
