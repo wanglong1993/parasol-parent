@@ -36,6 +36,7 @@ import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.BigDataModel;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.CustomerProfileVoNew;
+import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.TemplateVo;
 import com.ginkgocap.parasol.tags.model.Tag;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagService;
@@ -63,16 +64,15 @@ import com.gintong.frame.util.dto.Notification;
 @Controller
 @RequestMapping("/organ")
 public class CustomerProfileController extends BaseController {
-	
-    @Autowired
-    private UserService userService;
-	
+
+	@Autowired
+	private UserService userService;
+
 	@Resource
 	private CustomerService customerService;
 
 	@Autowired
 	private TemplateService templateService;
-
 
 	@Autowired
 	PermissionRepositoryService permissionRepositoryService;
@@ -91,20 +91,19 @@ public class CustomerProfileController extends BaseController {
 
 	@Autowired
 	AssociateService associateService;
-	
+
 	@Resource
-	private CustomerCollectService  customerCollectService;
-	@Resource 
+	private CustomerCollectService customerCollectService;
+	@Resource
 	private ResourcePathExposer rpe;
-	
+
 	@Resource
-    private CustomerCountService customerCountService;
-	
+	private CustomerCountService customerCountService;
+
 	@Autowired
 	private SimpleCustomerService simpleCustomerService;
 
-	private final Logger logger=LoggerFactory.getLogger(getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	long appId = 1;
 	long sourceType = 3;
@@ -119,7 +118,8 @@ public class CustomerProfileController extends BaseController {
 	public Map<String, Object> saveCustomerProfile(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		String  requestJson = getJsonParamStr(request);;
+		String requestJson = getJsonParamStr(request);
+		;
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		User userBasic = null;
 		if (requestJson != null && !"".equals(requestJson)) {
@@ -271,108 +271,109 @@ public class CustomerProfileController extends BaseController {
 					}
 
 				}
-//
-//				// // 保存目录
-//				JSONArray directoryArry = jo.getJSONArray("directory");
-//
-//				Directory directory = new Directory();
-//				directory.setAppId(appId);
-//				directory.setName("蔡志刚" + System.currentTimeMillis());
-//				directory.setUserId(userBasic.getId());
-//				directory.setTypeId(3);
-//
-//				long directoryId = directoryService.createDirectoryForRoot(
-//						(long) sourceType, directory);
-//				System.out.println("创建目录Id为" + directoryId);
-//
-//				if (!isAdd) {// 如果不是新增资源先删除原来的目录
-//					directorySourceService.removeDirectorySourcesBySourceId(
-//							userBasic.getId(), (long) 1, (int) sourceType,
-//							customer.getCustomerId());
-//				}
-//
-//				for (int i = 0; i < directoryArry.size(); i++) {
-//					DirectorySource directorySource = new DirectorySource();
-//					directorySource = new DirectorySource();
-//					directorySource.setDirectoryId(directoryArry.getLong(i));
-//					directorySource.setAppId(appId);
-//					directorySource.setUserId(userBasic.getId());
-//					directorySource.setSourceId(customer.getCustomerId());
-//					directorySource.setSourceType((int) sourceType);
-//					directorySource.setCreateAt(System.currentTimeMillis());
-//
-//					directorySourceService
-//							.createDirectorySources(directorySource);
-//				}
-//
-//				// 保存标签
-//				JSONArray tagArry = jo.getJSONArray("tagList");
-//				Tag tag = new Tag();
-//				tag.setAppId(appId);
-//				tag.setTagName("蔡志刚:  " + System.currentTimeMillis());
-//				tag.setTagType(sourceType);
-//				long tagId = tagService.createTag(userBasic.getId(), tag);
-//
-//				System.out.println("创建标签为:  " + tagId);
-//
-//				if (!isAdd) {// 如果不是新增客户 先删除原来的标签
-//					tagSourceService.removeTagSource((long) 1,
-//							userBasic.getId(), customer.getId());
-//				}
-//
-//				if (tagArry != null && tagArry.size() > 0) {// 添加标签
-//					System.out.println("tagArry:" + tagArry);
-//					for (int i = 0; i < tagArry.size(); i++) {
-//						TagSource tagSource = new TagSource();
-//						tagSource.setTagId(tagId);
-//						tagSource.setAppId(appId);
-//						tagSource.setUserId(userBasic.getId());
-//						tagSource.setSourceId(customer.getCustomerId());
-//						tagSource.setSourceType(sourceType);
-//						tagSource.setCreateAt(System.currentTimeMillis());
-//						tagSourceService.createTagSource(tagSource);
-//					}
-//				}
-//
-//				// 保存关联
-//				if (!isAdd) {// 如果不是增加先删除原来关联关系
-//
-//					List<Associate> associateList = associateService
-//							.getAssociatesBySourceId(appId,
-//									userBasic.getId(),
-//									customer.getCustomerId());
-//					for (Associate associate : associateList) {
-//						associateService.removeAssociate(appId,
-//								userBasic.getId(), associate.getId());
-//					}
-//				}
-//				JSONArray associateArray = jo.getJSONArray("associateList");
-//				System.out.println("associateList:" + associateArray);
-//				for (int i = 0; i < associateArray.size(); i++) {
-//
-//					JSONObject associateJsonObject = (JSONObject) associateArray
-//							.opt(i);
-//					Associate associate = new Associate();
-//					associate.setUserId(userBasic.getId());
-//					associate.setAppId(1);
-//					associate.setSourceTypeId(sourceType);
-//					associate.setSourceId(customer.getCustomerId());
-//					associate.setAssocDesc(associateJsonObject
-//							.has("assoc_desc") ? associateJsonObject
-//							.getString("assoc_desc") : null);
-//					associate.setAssocTypeId(associateJsonObject
-//							.has("assoc_type_id") ? associateJsonObject
-//							.getLong("assoc_type_id") : null);
-//					associate
-//							.setAssocId(associateJsonObject.has("associd") ? associateJsonObject
-//									.getLong("associd") : null);
-//					associate.setAssocTitle(associateJsonObject
-//							.has("assoc_title") ? associateJsonObject
-//							.getString("assoc_title") : null);
-//					associate.setCreateAt(System.currentTimeMillis());
-//					associateService.createAssociate(appId,
-//							userBasic.getId(), associate);
-//				}
+				//
+				// // // 保存目录
+				// JSONArray directoryArry = jo.getJSONArray("directory");
+				//
+				// Directory directory = new Directory();
+				// directory.setAppId(appId);
+				// directory.setName("蔡志刚" + System.currentTimeMillis());
+				// directory.setUserId(userBasic.getId());
+				// directory.setTypeId(3);
+				//
+				// long directoryId = directoryService.createDirectoryForRoot(
+				// (long) sourceType, directory);
+				// System.out.println("创建目录Id为" + directoryId);
+				//
+				// if (!isAdd) {// 如果不是新增资源先删除原来的目录
+				// directorySourceService.removeDirectorySourcesBySourceId(
+				// userBasic.getId(), (long) 1, (int) sourceType,
+				// customer.getCustomerId());
+				// }
+				//
+				// for (int i = 0; i < directoryArry.size(); i++) {
+				// DirectorySource directorySource = new DirectorySource();
+				// directorySource = new DirectorySource();
+				// directorySource.setDirectoryId(directoryArry.getLong(i));
+				// directorySource.setAppId(appId);
+				// directorySource.setUserId(userBasic.getId());
+				// directorySource.setSourceId(customer.getCustomerId());
+				// directorySource.setSourceType((int) sourceType);
+				// directorySource.setCreateAt(System.currentTimeMillis());
+				//
+				// directorySourceService
+				// .createDirectorySources(directorySource);
+				// }
+				//
+				// // 保存标签
+				// JSONArray tagArry = jo.getJSONArray("tagList");
+				// Tag tag = new Tag();
+				// tag.setAppId(appId);
+				// tag.setTagName("蔡志刚:  " + System.currentTimeMillis());
+				// tag.setTagType(sourceType);
+				// long tagId = tagService.createTag(userBasic.getId(), tag);
+				//
+				// System.out.println("创建标签为:  " + tagId);
+				//
+				// if (!isAdd) {// 如果不是新增客户 先删除原来的标签
+				// tagSourceService.removeTagSource((long) 1,
+				// userBasic.getId(), customer.getId());
+				// }
+				//
+				// if (tagArry != null && tagArry.size() > 0) {// 添加标签
+				// System.out.println("tagArry:" + tagArry);
+				// for (int i = 0; i < tagArry.size(); i++) {
+				// TagSource tagSource = new TagSource();
+				// tagSource.setTagId(tagId);
+				// tagSource.setAppId(appId);
+				// tagSource.setUserId(userBasic.getId());
+				// tagSource.setSourceId(customer.getCustomerId());
+				// tagSource.setSourceType(sourceType);
+				// tagSource.setCreateAt(System.currentTimeMillis());
+				// tagSourceService.createTagSource(tagSource);
+				// }
+				// }
+				//
+				// // 保存关联
+				// if (!isAdd) {// 如果不是增加先删除原来关联关系
+				//
+				// List<Associate> associateList = associateService
+				// .getAssociatesBySourceId(appId,
+				// userBasic.getId(),
+				// customer.getCustomerId());
+				// for (Associate associate : associateList) {
+				// associateService.removeAssociate(appId,
+				// userBasic.getId(), associate.getId());
+				// }
+				// }
+				// JSONArray associateArray = jo.getJSONArray("associateList");
+				// System.out.println("associateList:" + associateArray);
+				// for (int i = 0; i < associateArray.size(); i++) {
+				//
+				// JSONObject associateJsonObject = (JSONObject) associateArray
+				// .opt(i);
+				// Associate associate = new Associate();
+				// associate.setUserId(userBasic.getId());
+				// associate.setAppId(1);
+				// associate.setSourceTypeId(sourceType);
+				// associate.setSourceId(customer.getCustomerId());
+				// associate.setAssocDesc(associateJsonObject
+				// .has("assoc_desc") ? associateJsonObject
+				// .getString("assoc_desc") : null);
+				// associate.setAssocTypeId(associateJsonObject
+				// .has("assoc_type_id") ? associateJsonObject
+				// .getLong("assoc_type_id") : null);
+				// associate
+				// .setAssocId(associateJsonObject.has("associd") ?
+				// associateJsonObject
+				// .getLong("associd") : null);
+				// associate.setAssocTitle(associateJsonObject
+				// .has("assoc_title") ? associateJsonObject
+				// .getString("assoc_title") : null);
+				// associate.setCreateAt(System.currentTimeMillis());
+				// associateService.createAssociate(appId,
+				// userBasic.getId(), associate);
+				// }
 				// 生成动态
 				// saveCustomerDynamicNews(user,customer,customerPermissions.toString());
 
@@ -388,310 +389,370 @@ public class CustomerProfileController extends BaseController {
 
 		return returnSuccessMSG(responseDataMap);
 	}
-	
-	
-	
-	 /**
-     * 查询客户详情(新客户详情)
-     * @param customerId 查询考客户详情
-     * @return
-	 * @throws Exception 
+
+	/**
+	 * 查询客户详情(新客户详情)
+	 * 
+	 * @param customerId
+	 *            查询考客户详情
+	 * @return
+	 * @throws Exception
 	 * @author caizhigang
-     */
+	 */
 	@ResponseBody
-    @RequestMapping(value = "/customer/findCustomerByCustomerId.json", method = RequestMethod.POST)
-	public Map<String, Object> findCustomerByCustomerId(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "/customer/findCustomerByCustomerId.json", method = RequestMethod.POST)
+	public Map<String, Object> findCustomerByCustomerId(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String requestJson = getJsonParamStr(request);
-    	Map<String, Object> responseData = new HashMap<String, Object>();
-    	System.out.println("json:"+requestJson);
-    	JSONObject j = JSONObject.fromObject(requestJson);
-    	long customerId=JsonUtil.getNodeToLong(j, "customerId");
-    	String view=JsonUtil.getNodeToString(j, "view");  //如果从转发中进入客户详情，前端app传入view=1   2:转发到第三方,不登录查看组织详情
+		Map<String, Object> responseData = new HashMap<String, Object>();
+		System.out.println("json:" + requestJson);
+		JSONObject j = JSONObject.fromObject(requestJson);
+		long customerId = JsonUtil.getNodeToLong(j, "customerId");
+		String view = JsonUtil.getNodeToString(j, "view"); // 如果从转发中进入客户详情，前端app传入view=1
+															// 2:转发到第三方,不登录查看组织详情
 		CustomerProfileVoNew customer_new = new CustomerProfileVoNew();
-    	Customer customer_temp = customerService.findCustomerCurrentData(customerId,"0");//组织详情基本资料
-    	String sckNum ="";
-    	User userBasic = null;
-    	if(customer_temp!= null){
-    		sckNum = customer_temp.getStockNum();//证券号码
-    		customer_new.setCustomerId(customer_temp.getCustomerId());
-    		customer_new.setName(customer_temp.getName());
-    		customer_new.setIndustry(customer_temp.getIndustry());
-    		customer_new.setIndustryId(customer_temp.getIndustryId());
-    		customer_new.setIsListing(customer_temp.getIsListing());
-    		userBasic=getUser(request);
-    		 customer_new.setLoginUserId(userBasic.getId());
-    		 //新增是否收藏
-    		 customer_new.setIsCollect(customerCollectService.findByUserIdAndCustomerId(userBasic.getId(), customer_temp.getCustomerId())!=null?"1":"0");
-//    		 cusotmerCommonService.findCustomerAuth(view, customer_new, customer_temp,user);
-    		 
-    		customer_new.setStockNum(sckNum);
-    		customer_new.setLinkMobile(customer_temp.getLinkMobile());
-    		customer_new.setLinkEmail(customer_temp.getLinkEmail());
-    		customer_new.setPicLogo("".equals(StringUtils.trimToEmpty(customer_temp.getPicLogo())) ? Constants.ORGAN_DEFAULT_PIC_PATH :
-                Utils.alterImageUrl(customer_temp.getPicLogo()));
-    		customer_new.setDiscribe(customer_temp.getDiscribe());
-    		/*CustomerProfile cpr=customerProfileService.findOne(orgId);
-    		if(cpr!=null) */
-    			customer_new.setPersonalPlateList(customer_temp.getPersonalPlateList());
-    		customer_new.setPropertyList(customer_temp.getPropertyList());
-    		customer_new.setVirtual(customer_temp.getVirtual());
-    		customer_new.setCreateById(customer_temp.getCreateById());
-    		//修改组织来源 
-    		customer_new.setComeId(customer_temp.getComeId());
-    		customer_new.setCreateType(getUserType(customer_temp.getCreateById())==true?"2":"1");
-    		
-    		customer_new.setDirectory(customer_temp.getDirectory());
-    		
-//    		customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));
-//    		cusotmerCommonService.findFourModule(responseData, customer_temp,rpe.getNginxRoot());
-    		customer_new.setIndustryObj(customer_temp.getIndustryObj());
-    		
-          
-            customer_new.setOrgType(customer_temp.getOrgType());
-            customer_new.setAreaid(customer_temp.getAreaid());
-            customer_new.setAreaString(customer_temp.getAreaString());
-            customer_new.setAddress(customer_temp.getAddress());
-    		customer_new.setLinkManName(customer_temp.getLinkManName());
-            
-    		customer_new.setId(customer_temp.getId());
-    		
-    		// 设置模板ID
-    		customer_new.setTemplateId(customer_temp.getTemplateId());
-    		// 设置模块
-    		
-    		customer_new.setMoudles(customer_temp.getMoudles());
-    		
-//    		permissionRepositoryService.selectByRes(customer_temp.getCustomerId(), ResourceType.);
-    		
-//    		List<TagSource> tagSources=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId, customer_temp.getCustomerId(), sourceType);
-//    		List<Map<String,String>> tagList=new ArrayList<Map<String,String>>();
-//    		
-//    		for(TagSource tagSource:tagSources){
-//    			Map map=new HashMap<String,String>();
-//    			map.put("name", tagSource.getTagName());
-//    			map.put("id", tagSource.getId());
-//    		}
-    		
-//    		customer_new.setTagList(tagList); // 设置标签
-//    		
-//    		
-//    		 List<DirectorySource>  directorySources=directorySourceService.getDirectorySourcesBySourceId(user.getId(), appId, (int)sourceType, customer_temp.getCustomerId());
-//    		 
-//    		 for(DirectorySource directorySource:directorySources){
-//    			 
-//    		 }
-//    		 
-    		 
-//    		 //设置权限
-//    		InterfaceResult<Permission> permissionInterfaceResult= permissionRepositoryService.selectByRes(customer_temp.getCustomerId(), ResourceType.ORG);
-//    		Permission permission=permissionInterfaceResult.getResponseData();
-//    		if(permissionInterfaceResult.getNotification().getNotifCode().equals("0")){
-//    			
-//    			Map permissionMap=new HashMap();
-//    			permissionMap.put("publicFlag", permission.getPublicFlag());
-//    			permissionMap.put("shareFlag", permission.getShareFlag());
-//    			permissionMap.put("connectFlag", permission.getConnectFlag());
-//    			customer_new.setCustomerPermissions(permissionMap);
-//    		}
-//    		
-//    		 associateService.getAssociatesBy(appId, sourceType, customer_temp.getCustomerId());
-//    		
-    		
-    		
-    		 System.out.println(customer_temp);
-	    	responseData.put("customer", customer_new);
-	    	try{
-    			customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read.getType(), customerId);
-    		}catch(Exception e){
-    			logger.error("插入组织数据统计功能报错,请求参数json: ",e);
-    		}
-	    	
-    	}else{
-    		setSessionAndErr(request, response, "-1", "客户不存在!");
-    		return returnFailMSGNew("01", "客户不存在!");
-    	}
+		Customer customer_temp = customerService.findCustomerCurrentData(
+				customerId, "0");// 组织详情基本资料
+		String sckNum = "";
+		User userBasic = null;
+		if (customer_temp != null) {
+			sckNum = customer_temp.getStockNum();// 证券号码
+			customer_new.setCustomerId(customer_temp.getCustomerId());
+			customer_new.setName(customer_temp.getName());
+			customer_new.setIndustry(customer_temp.getIndustry());
+			customer_new.setIndustryId(customer_temp.getIndustryId());
+			customer_new.setIsListing(customer_temp.getIsListing());
+			userBasic = getUser(request);
+			customer_new.setLoginUserId(userBasic.getId());
+			// 新增是否收藏
+			customer_new.setIsCollect(customerCollectService
+					.findByUserIdAndCustomerId(userBasic.getId(),
+							customer_temp.getCustomerId()) != null ? "1" : "0");
+			// cusotmerCommonService.findCustomerAuth(view, customer_new,
+			// customer_temp,user);
+
+			customer_new.setStockNum(sckNum);
+			customer_new.setLinkMobile(customer_temp.getLinkMobile());
+			customer_new.setLinkEmail(customer_temp.getLinkEmail());
+			customer_new
+					.setPicLogo("".equals(StringUtils.trimToEmpty(customer_temp
+							.getPicLogo())) ? Constants.ORGAN_DEFAULT_PIC_PATH
+							: Utils.alterImageUrl(customer_temp.getPicLogo()));
+			customer_new.setDiscribe(customer_temp.getDiscribe());
+			/*
+			 * CustomerProfile cpr=customerProfileService.findOne(orgId);
+			 * if(cpr!=null)
+			 */
+			customer_new.setPersonalPlateList(customer_temp
+					.getPersonalPlateList());
+			customer_new.setPropertyList(customer_temp.getPropertyList());
+			customer_new.setVirtual(customer_temp.getVirtual());
+			customer_new.setCreateById(customer_temp.getCreateById());
+			// 修改组织来源
+			customer_new.setComeId(customer_temp.getComeId());
+			customer_new.setCreateType(getUserType(customer_temp
+					.getCreateById()) == true ? "2" : "1");
+
+			customer_new.setDirectory(customer_temp.getDirectory());
+
+			// customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));
+			// cusotmerCommonService.findFourModule(responseData,
+			// customer_temp,rpe.getNginxRoot());
+			customer_new.setIndustryObj(customer_temp.getIndustryObj());
+
+			customer_new.setOrgType(customer_temp.getOrgType());
+			customer_new.setAreaid(customer_temp.getAreaid());
+			customer_new.setAreaString(customer_temp.getAreaString());
+			customer_new.setAddress(customer_temp.getAddress());
+			customer_new.setLinkManName(customer_temp.getLinkManName());
+
+			customer_new.setId(customer_temp.getId());
+
+			// 设置模板ID
+			customer_new.setTemplateId(customer_temp.getTemplateId());
+			// 设置模块
+
+			customer_new.setMoudles(customer_temp.getMoudles());
+
+			// permissionRepositoryService.selectByRes(customer_temp.getCustomerId(),
+			// ResourceType.);
+
+			// List<TagSource>
+			// tagSources=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId,
+			// customer_temp.getCustomerId(), sourceType);
+			// List<Map<String,String>> tagList=new
+			// ArrayList<Map<String,String>>();
+			//
+			// for(TagSource tagSource:tagSources){
+			// Map map=new HashMap<String,String>();
+			// map.put("name", tagSource.getTagName());
+			// map.put("id", tagSource.getId());
+			// }
+
+			// customer_new.setTagList(tagList); // 设置标签
+			//
+			//
+			// List<DirectorySource>
+			// directorySources=directorySourceService.getDirectorySourcesBySourceId(user.getId(),
+			// appId, (int)sourceType, customer_temp.getCustomerId());
+			//
+			// for(DirectorySource directorySource:directorySources){
+			//
+			// }
+			//
+
+			// //设置权限
+			// InterfaceResult<Permission> permissionInterfaceResult=
+			// permissionRepositoryService.selectByRes(customer_temp.getCustomerId(),
+			// ResourceType.ORG);
+			// Permission
+			// permission=permissionInterfaceResult.getResponseData();
+			// if(permissionInterfaceResult.getNotification().getNotifCode().equals("0")){
+			//
+			// Map permissionMap=new HashMap();
+			// permissionMap.put("publicFlag", permission.getPublicFlag());
+			// permissionMap.put("shareFlag", permission.getShareFlag());
+			// permissionMap.put("connectFlag", permission.getConnectFlag());
+			// customer_new.setCustomerPermissions(permissionMap);
+			// }
+			//
+			// associateService.getAssociatesBy(appId, sourceType,
+			// customer_temp.getCustomerId());
+			//
+
+			System.out.println(customer_temp);
+			responseData.put("customer", customer_new);
+			try {
+				customerCountService
+						.updateCustomerCount(
+								com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read
+										.getType(), customerId);
+			} catch (Exception e) {
+				logger.error("插入组织数据统计功能报错,请求参数json: ", e);
+			}
+
+		} else {
+			setSessionAndErr(request, response, "-1", "客户不存在!");
+			return returnFailMSGNew("01", "客户不存在!");
+		}
 		return returnSuccessMSG(responseData);
-  }
-	
+	}
+
 	// 账号是否是组织 0:个人 1:组织
 	public boolean getUserType(long userId) {
-		
-		/*UserLoginRegister userLoginRegister;
-		try {
-			userLoginRegister = userLoginRegisterService.getUserLoginRegister(userId);
-			if (userLoginRegister!=null) {
-				return userLoginRegister.getUsetType()==1;
-			}
-		} catch (UserLoginRegisterServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
+
+		/*
+		 * UserLoginRegister userLoginRegister; try { userLoginRegister =
+		 * userLoginRegisterService.getUserLoginRegister(userId); if
+		 * (userLoginRegister!=null) { return
+		 * userLoginRegister.getUsetType()==1; } } catch
+		 * (UserLoginRegisterServiceException e) { // TODO Auto-generated catch
+		 * block e.printStackTrace(); }
+		 */
+
 		return false;
 	}
-	
-	
-	
-	 /**
-     * 查询客户详情(大数据客户)
-     * @param customerId 查询考客户详情
-     * @return
-	 * @throws Exception 
+
+	/**
+	 * 查询客户详情(大数据客户)
+	 * 
+	 * @param customerId
+	 *            查询考客户详情
+	 * @return
+	 * @throws Exception
 	 * @author zbb
-     */
+	 */
 	@ResponseBody
-    @RequestMapping(value = "/customer/findDigDataByCustomerId.json", method = RequestMethod.POST)
-	public Map<String, Object> findDigDataByCustomerId(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "/customer/findDigDataByCustomerId.json", method = RequestMethod.POST)
+	public Map<String, Object> findDigDataByCustomerId(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		String requestJson = getJsonParamStr(request);
-    	Map<String, Object> responseData = new HashMap<String, Object>();
-    	System.out.println("json:"+requestJson);
-    	JSONObject j = JSONObject.fromObject(requestJson);
-    	long customerId=JsonUtil.getNodeToLong(j, "customerId");
+		Map<String, Object> responseData = new HashMap<String, Object>();
+		System.out.println("json:" + requestJson);
+		JSONObject j = JSONObject.fromObject(requestJson);
+		long customerId = JsonUtil.getNodeToLong(j, "customerId");
 		BigDataModel bigDataCustomer = new BigDataModel();
 
-    	Customer customer_temp = customerService.findCustomerCurrentData(customerId,"2");
-    	if(customer_temp!= null){
-    		bigDataCustomer.setId(customer_temp.getId());
-    		bigDataCustomer.setName(customer_temp.getName());
-    		bigDataCustomer.setCreateById(customer_temp.getCreateById());
-    		bigDataCustomer.setCustomerId(customer_temp.getCustomerId());
-    		bigDataCustomer.setCtime(customer_temp.getCtime());
-    		bigDataCustomer.setCurrent(customer_temp.isCurrent());
-    		bigDataCustomer.setVirtual(customer_temp.getVirtual());
-    		bigDataCustomer.setUrl(customer_temp.getUrl());
-    		bigDataCustomer.setUtime(customer_temp.getUtime());
-    		bigDataCustomer.setSource(customer_temp.getSource());
-    		bigDataCustomer.setTaskid(customer_temp.getTaskid());
-    		bigDataCustomer.setCrawl_datetime(customer_temp.getCrawl_datetime());
-    		bigDataCustomer.setRegistration_number(customer_temp.getRegistration_number());
-    		bigDataCustomer.setOrganization_code(customer_temp.getOrganization_code());
-    		bigDataCustomer.setCredit_code(customer_temp.getCredit_code());
-    		bigDataCustomer.setOperating_state(customer_temp.getOperating_state());
-    		bigDataCustomer.setCtype(customer_temp.getCtype());
-    		bigDataCustomer.setSet_up_time(customer_temp.getSet_up_time());
-    		bigDataCustomer.setLegal_representative(customer_temp.getLegal_representative());
-    		bigDataCustomer.setRegistered_capital(customer_temp.getRegistered_capital());
-    		bigDataCustomer.setBusiness_term(customer_temp.getBusiness_term());
-    		bigDataCustomer.setRegistration_authority(customer_temp.getRegistration_authority());
-    		bigDataCustomer.setDate_issue(customer_temp.getDate_issue());
-    		bigDataCustomer.setAddress(customer_temp.getAddress());
-    		bigDataCustomer.setIndustry_involved(customer_temp.getIndustry_involved());
-    		bigDataCustomer.setBusiness_scope(customer_temp.getBusiness_scope());
-    		bigDataCustomer.setCompany_profile(customer_temp.getCompany_profile());
-    		bigDataCustomer.setComment(customer_temp.getComment());
-    		bigDataCustomer.setChange(customer_temp.getChange());
-    		bigDataCustomer.setInvestment(customer_temp.getInvestment());
-    		bigDataCustomer.setPeople(customer_temp.getPeople());
-    		bigDataCustomer.setFinfo(customer_temp.getFinfo());
-    		bigDataCustomer.setReport(customer_temp.getReport());
-    		bigDataCustomer.setShareholders(customer_temp.getShareholders());
-	    	responseData.put("customer", bigDataCustomer);
-	    	try{
-    			customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read.getType(), customerId);
-    		}catch(Exception e){
-    			logger.error("插入查询大数据客户功能报错,请求参数json: ",e);
-    		}
-	    	
-    	}else{
-    		setSessionAndErr(request, response, "-1", "客户不存在!");
-    		return returnFailMSGNew("01", "客户不存在!");
-    	}
-		return returnSuccessMSG(responseData);
-  }
+		Customer customer_temp = customerService.findCustomerCurrentData(
+				customerId, "2");
+		if (customer_temp != null) {
+			bigDataCustomer.setId(customer_temp.getId());
+			bigDataCustomer.setName(customer_temp.getName());
+			bigDataCustomer.setCreateById(customer_temp.getCreateById());
+			bigDataCustomer.setCustomerId(customer_temp.getCustomerId());
+			bigDataCustomer.setCtime(customer_temp.getCtime());
+			bigDataCustomer.setCurrent(customer_temp.isCurrent());
+			bigDataCustomer.setVirtual(customer_temp.getVirtual());
+			bigDataCustomer.setUrl(customer_temp.getUrl());
+			bigDataCustomer.setUtime(customer_temp.getUtime());
+			bigDataCustomer.setSource(customer_temp.getSource());
+			bigDataCustomer.setTaskid(customer_temp.getTaskid());
+			bigDataCustomer
+					.setCrawl_datetime(customer_temp.getCrawl_datetime());
+			bigDataCustomer.setRegistration_number(customer_temp
+					.getRegistration_number());
+			bigDataCustomer.setOrganization_code(customer_temp
+					.getOrganization_code());
+			bigDataCustomer.setCredit_code(customer_temp.getCredit_code());
+			bigDataCustomer.setOperating_state(customer_temp
+					.getOperating_state());
+			bigDataCustomer.setCtype(customer_temp.getCtype());
+			bigDataCustomer.setSet_up_time(customer_temp.getSet_up_time());
+			bigDataCustomer.setLegal_representative(customer_temp
+					.getLegal_representative());
+			bigDataCustomer.setRegistered_capital(customer_temp
+					.getRegistered_capital());
+			bigDataCustomer.setBusiness_term(customer_temp.getBusiness_term());
+			bigDataCustomer.setRegistration_authority(customer_temp
+					.getRegistration_authority());
+			bigDataCustomer.setDate_issue(customer_temp.getDate_issue());
+			bigDataCustomer.setAddress(customer_temp.getAddress());
+			bigDataCustomer.setIndustry_involved(customer_temp
+					.getIndustry_involved());
+			bigDataCustomer
+					.setBusiness_scope(customer_temp.getBusiness_scope());
+			bigDataCustomer.setCompany_profile(customer_temp
+					.getCompany_profile());
+			bigDataCustomer.setComment(customer_temp.getComment());
+			bigDataCustomer.setChange(customer_temp.getChange());
+			bigDataCustomer.setInvestment(customer_temp.getInvestment());
+			bigDataCustomer.setPeople(customer_temp.getPeople());
+			bigDataCustomer.setFinfo(customer_temp.getFinfo());
+			bigDataCustomer.setReport(customer_temp.getReport());
+			bigDataCustomer.setShareholders(customer_temp.getShareholders());
+			responseData.put("customer", bigDataCustomer);
+			try {
+				customerCountService
+						.updateCustomerCount(
+								com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read
+										.getType(), customerId);
+			} catch (Exception e) {
+				logger.error("插入查询大数据客户功能报错,请求参数json: ", e);
+			}
 
-	
-	
-	/**
-     * 返回 客户 数据  和 模板  切换模板时 用
-     * @param customerId 查询考客户详情
-	 * @author caizhigang
-     */
-	@ResponseBody
-    @RequestMapping(value = "/customer/findTemplateAndCustomerData.json", method = RequestMethod.POST)
-	public Map<String, Object> findTemplateAndCustomerData(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String requestJson = getJsonParamStr(request);
-    	Map<String, Object> responseData = new HashMap<String, Object>();
-    	System.out.println("json:"+requestJson);
-    	JSONObject j = JSONObject.fromObject(requestJson);
-    	long customerId=JsonUtil.getNodeToLong(j, "customerId");
-    	long templateId=JsonUtil.getNodeToLong(j, "templateId");
-    	String view=JsonUtil.getNodeToString(j, "view");  //如果从转发中进入客户详情，前端app传入view=1   2:转发到第三方,不登录查看组织详情
-		CustomerProfileVoNew customer_new = new CustomerProfileVoNew();
-    	Customer customer_temp = customerService.findCustomerDataInTemplate(customerId, templateId);//组织详情基本资料
-    	String sckNum ="";
-    	User userBasic = null;
-    	if(customer_temp!= null){
-    		userBasic=getUser(request);
-    		sckNum = customer_temp.getStockNum();//证券号码
-    		customer_new.setCustomerId(customer_temp.getCustomerId());
-    		customer_new.setName(customer_temp.getName());
-    		customer_new.setIndustry(customer_temp.getIndustry());
-    		customer_new.setIndustryId(customer_temp.getIndustryId());
-    		customer_new.setIsListing(customer_temp.getIsListing());
-    		 customer_new.setLoginUserId(userBasic.getId());
-    		 //新增是否收藏
-    		 customer_new.setIsCollect(customerCollectService.findByUserIdAndCustomerId(userBasic.getId(), customer_temp.getCustomerId())!=null?"1":"0");
-//    		 cusotmerCommonService.findCustomerAuth(view, customer_new, customer_temp,user);
-    		 
-    		customer_new.setStockNum(sckNum);
-    		customer_new.setLinkMobile(customer_temp.getLinkMobile());
-    		customer_new.setLinkEmail(customer_temp.getLinkEmail());
-    		customer_new.setPicLogo("".equals(StringUtils.trimToEmpty(customer_temp.getPicLogo())) ? Constants.ORGAN_DEFAULT_PIC_PATH :
-                Utils.alterImageUrl(customer_temp.getPicLogo()));
-    		customer_new.setDiscribe(customer_temp.getDiscribe());
-    		/*CustomerProfile cpr=customerProfileService.findOne(orgId);
-    		if(cpr!=null) */
-    			customer_new.setPersonalPlateList(customer_temp.getPersonalPlateList());
-    		customer_new.setPropertyList(customer_temp.getPropertyList());
-    		customer_new.setVirtual(customer_temp.getVirtual());
-    		customer_new.setCreateById(customer_temp.getCreateById());
-    		//修改组织来源 
-    		customer_new.setComeId(customer_temp.getComeId());
-    		customer_new.setCreateType(getUserType(customer_temp.getCreateById())==true?"2":"1");
-    		
-    		customer_new.setDirectory(customer_temp.getDirectory());
-    		
-//    		customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));
-//    		cusotmerCommonService.findFourModule(responseData, customer_temp,rpe.getNginxRoot());
-    		customer_new.setIndustryObj(customer_temp.getIndustryObj());
-    		
-          
-            customer_new.setOrgType(customer_temp.getOrgType());
-            customer_new.setAreaid(customer_temp.getAreaid());
-            customer_new.setAreaString(customer_temp.getAreaString());
-            customer_new.setAddress(customer_temp.getAddress());
-    		customer_new.setLinkManName(customer_temp.getLinkManName());
-    		customer_new.setId(customer_temp.getId());
-    		
-    		
-    		// 设置模板ID
-    		customer_new.setTemplateId(customer_temp.getTemplateId());
-    		// 设置模块
-    		customer_new.setMoudles(customer_temp.getMoudles());
-    		
-    		System.out.println(customer_temp);
-	    	responseData.put("customer", customer_new);
-	    	responseData.put("hasData", true);
-	    	try{
-    			customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read.getType(), customerId);
-    		}catch(Exception e){
-    			logger.error("插入组织数据统计功能报错,请求参数json: ",e);
-    		}
-	    	
-    	}else{
-    		responseData.put("hasData", false);
-    	}
-    	
-    	Template template=templateService.findTemplateById(templateId);
-    	responseData.put("template", template);
-    	
+		} else {
+			setSessionAndErr(request, response, "-1", "客户不存在!");
+			return returnFailMSGNew("01", "客户不存在!");
+		}
 		return returnSuccessMSG(responseData);
-  }
-	
-	
-	
-	 /**
+	}
+
+	/**
+	 * 返回 客户 数据 和 模板 切换模板时 用
+	 * 
+	 * @param customerId
+	 *            查询考客户详情
+	 * @author caizhigang
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/customer/findTemplateAndCustomerData.json", method = RequestMethod.POST)
+	public Map<String, Object> findTemplateAndCustomerData(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String requestJson = getJsonParamStr(request);
+		Map<String, Object> responseData = new HashMap<String, Object>();
+		System.out.println("json:" + requestJson);
+		JSONObject j = JSONObject.fromObject(requestJson);
+		long customerId = JsonUtil.getNodeToLong(j, "customerId");
+		long templateId = JsonUtil.getNodeToLong(j, "templateId");
+		String view = JsonUtil.getNodeToString(j, "view"); // 如果从转发中进入客户详情，前端app传入view=1
+															// 2:转发到第三方,不登录查看组织详情
+		CustomerProfileVoNew customer_new = new CustomerProfileVoNew();
+		Customer customer_temp = customerService.findCustomerDataInTemplate(
+				customerId, templateId);// 组织详情基本资料
+		String sckNum = "";
+		User userBasic = null;
+		if (customer_temp != null) {
+			userBasic = getUser(request);
+			sckNum = customer_temp.getStockNum();// 证券号码
+			customer_new.setCustomerId(customer_temp.getCustomerId());
+			customer_new.setName(customer_temp.getName());
+			customer_new.setIndustry(customer_temp.getIndustry());
+			customer_new.setIndustryId(customer_temp.getIndustryId());
+			customer_new.setIsListing(customer_temp.getIsListing());
+			customer_new.setLoginUserId(userBasic.getId());
+			// 新增是否收藏
+			customer_new.setIsCollect(customerCollectService
+					.findByUserIdAndCustomerId(userBasic.getId(),
+							customer_temp.getCustomerId()) != null ? "1" : "0");
+			// cusotmerCommonService.findCustomerAuth(view, customer_new,
+			// customer_temp,user);
+
+			customer_new.setStockNum(sckNum);
+			customer_new.setLinkMobile(customer_temp.getLinkMobile());
+			customer_new.setLinkEmail(customer_temp.getLinkEmail());
+			customer_new
+					.setPicLogo("".equals(StringUtils.trimToEmpty(customer_temp
+							.getPicLogo())) ? Constants.ORGAN_DEFAULT_PIC_PATH
+							: Utils.alterImageUrl(customer_temp.getPicLogo()));
+			customer_new.setDiscribe(customer_temp.getDiscribe());
+			/*
+			 * CustomerProfile cpr=customerProfileService.findOne(orgId);
+			 * if(cpr!=null)
+			 */
+			customer_new.setPersonalPlateList(customer_temp
+					.getPersonalPlateList());
+			customer_new.setPropertyList(customer_temp.getPropertyList());
+			customer_new.setVirtual(customer_temp.getVirtual());
+			customer_new.setCreateById(customer_temp.getCreateById());
+			// 修改组织来源
+			customer_new.setComeId(customer_temp.getComeId());
+			customer_new.setCreateType(getUserType(customer_temp
+					.getCreateById()) == true ? "2" : "1");
+
+			customer_new.setDirectory(customer_temp.getDirectory());
+
+			// customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));
+			// cusotmerCommonService.findFourModule(responseData,
+			// customer_temp,rpe.getNginxRoot());
+			customer_new.setIndustryObj(customer_temp.getIndustryObj());
+
+			customer_new.setOrgType(customer_temp.getOrgType());
+			customer_new.setAreaid(customer_temp.getAreaid());
+			customer_new.setAreaString(customer_temp.getAreaString());
+			customer_new.setAddress(customer_temp.getAddress());
+			customer_new.setLinkManName(customer_temp.getLinkManName());
+			customer_new.setId(customer_temp.getId());
+
+			// 设置模板ID
+			customer_new.setTemplateId(customer_temp.getTemplateId());
+			// 设置模块
+			customer_new.setMoudles(customer_temp.getMoudles());
+
+			System.out.println(customer_temp);
+			responseData.put("customer", customer_new);
+			responseData.put("hasData", true);
+			try {
+				customerCountService
+						.updateCustomerCount(
+								com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read
+										.getType(), customerId);
+			} catch (Exception e) {
+				logger.error("插入组织数据统计功能报错,请求参数json: ", e);
+			}
+
+		} else {
+			responseData.put("hasData", false);
+		}
+
+		Template template = templateService.findTemplateById(templateId);
+		
+		TemplateVo templateVo = new TemplateVo();
+		templateVo.setTemplateName(template.getName());
+		templateVo.setTemplateId(template.getId());
+		templateVo.setTemplateType(template.getType());
+		templateVo.setMoudles(template.getMoudles());
+		
+		responseData.put("template", templateVo);
+
+		return returnSuccessMSG(responseData);
+	}
+
+	/**
 	 * 删除客户
+	 * 
 	 * @param request
 	 * @param response
 	 * @author cazhigang
@@ -710,7 +771,7 @@ public class CustomerProfileController extends BaseController {
 		} catch (IOException e) {
 			logger.error("参数读取异常");
 		}
-		System.out.println("requestJson:"+requestJson);
+		System.out.println("requestJson:" + requestJson);
 		// 封装 response
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		if (!isNullOrEmpty(requestJson)) {
@@ -718,91 +779,91 @@ public class CustomerProfileController extends BaseController {
 			if (userBasic == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 				responseDataMap.put("successs", false);
-		    	responseDataMap.put("msg", "无法获取用户");
-		    	System.out.println("无法获取用户");
-		    	return responseDataMap;
-				
-			} else {
-			
-			    long customerId = j.getLong("customerId");
-			 
-			    try{
-			    	
-			    	 boolean isDelCustomer= simpleCustomerService.deleteByIds(customerId+"");
-					    
-					  PermissionQuery p=new PermissionQuery();
-					  p.setResId(customerId);
-					  p.setUserId(userBasic.getId());
-					  p.setResType((short)3);//  3组织
+				responseDataMap.put("msg", "无法获取用户");
+				System.out.println("无法获取用户");
+				return responseDataMap;
 
-					  InterfaceResult<Boolean>  interfaceResult=customerService.deleteCustomerByCustomerId(customerId, p);
-					  Notification notifacation=  interfaceResult.getNotification();
-					  boolean isDelCustomerDataTag=interfaceResult.getResponseData();
-					  
-				    	   if(isDelCustomerDataTag&&isDelCustomer) {
-								  responseDataMap.put("success", true);
-								  responseDataMap.put("msg", "操作成功");
-								  
-						    } else {
-						    	  customerService.deleteById(String.valueOf(customerId));
-								  responseDataMap.put("success", false);
-								  responseDataMap.put("msg", "删除失败");
-								
-						    }
-					   
-			    }catch(Exception e){
-			    	e.printStackTrace();
-			    	
-			    	responseDataMap.put("successs", false);
-			    	responseDataMap.put("msg", "系统异常");
-			    	return responseDataMap;
-			    }
-			  
-			  
-			 
+			} else {
+
+				long customerId = j.getLong("customerId");
+
+				try {
+
+					boolean isDelCustomer = simpleCustomerService
+							.deleteByIds(customerId + "");
+
+					PermissionQuery p = new PermissionQuery();
+					p.setResId(customerId);
+					p.setUserId(userBasic.getId());
+					p.setResType((short) 3);// 3组织
+
+					InterfaceResult<Boolean> interfaceResult = customerService
+							.deleteCustomerByCustomerId(customerId, p);
+					Notification notifacation = interfaceResult
+							.getNotification();
+					boolean isDelCustomerDataTag = interfaceResult
+							.getResponseData();
+
+					if (isDelCustomerDataTag && isDelCustomer) {
+						responseDataMap.put("success", true);
+						responseDataMap.put("msg", "操作成功");
+
+					} else {
+						customerService.deleteById(String.valueOf(customerId));
+						responseDataMap.put("success", false);
+						responseDataMap.put("msg", "删除失败");
+
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+
+					responseDataMap.put("successs", false);
+					responseDataMap.put("msg", "系统异常");
+					return responseDataMap;
+				}
+
 			}
 
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
 			System.out.println("没有参数");
 		}
-	
+
 		return responseDataMap;
 	}
-    
-	
-	
-	 /**
-    *
-    * 定义成功返回信息
-    *
-    * @param successResult
-    * @return
-    * @author haiyan
-    */
-   protected Map<String, Object> returnSuccessMSG(Map<String, Object> successResult) {
-	   
-	    successResult.put("success", true);
-        return successResult;
-   }
 
-   /**
-    * 定义错误返回信息
-    *
-    * @param result
-    * @param errRespCode
-    * @param errRespMsg
-    * @return
-    * @author wangfeiliang
-    */
-   protected Map<String, Object> returnFailMSGNew(String errRespCode, String errRespMsg) {
-       Map<String, Object> result = new HashMap<String, Object>();
-      
+	/**
+	 * 
+	 * 定义成功返回信息
+	 * 
+	 * @param successResult
+	 * @return
+	 * @author haiyan
+	 */
+	protected Map<String, Object> returnSuccessMSG(
+			Map<String, Object> successResult) {
 
-       result.put("success", false);
-       result.put("msg", errRespMsg);
-       return result;
-   }
+		successResult.put("success", true);
+		return successResult;
+	}
 
+	/**
+	 * 定义错误返回信息
+	 * 
+	 * @param result
+	 * @param errRespCode
+	 * @param errRespMsg
+	 * @return
+	 * @author wangfeiliang
+	 */
+	protected Map<String, Object> returnFailMSGNew(String errRespCode,
+			String errRespMsg) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		result.put("success", false);
+		result.put("msg", errRespMsg);
+		return result;
+	}
 
 }
