@@ -10,7 +10,9 @@ import com.ginkgocap.ywxt.organ.service.comment.CommentPraiseService;
 import com.ginkgocap.ywxt.organ.service.comment.CommentReplyService;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.PageUtil;
+
 import net.sf.json.JSONObject;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -285,9 +288,16 @@ public class OrganCommentController  extends BaseController{
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 				ObjectMapper objectMapper=new ObjectMapper();
-				CommentReply commentReply=objectMapper.readValue(jo.toString(),CommentReply.class);	
+				CommentReply commentReply=objectMapper.readValue(jo.toString(),CommentReply.class);
+				String username=null;
+				int anonymous = commentReply.getAnonymous();
+			       if(anonymous==0){
+			    	   username=userBasic.getName();
+			       }else{
+			    	   username="匿名用户";
+			       }
 				commentReply.setReplyuserid(userBasic.getId());
-				commentReply.setReplyusername(userBasic.getName());
+				commentReply.setReplyusername(username);
 				Long id = ommentReplyService.savecommentReply(commentReply);
 			}
 		}else{
