@@ -65,16 +65,17 @@ public class OrganCommentController  extends BaseController{
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 			       ObjectMapper objectMapper=new ObjectMapper();
-			       int anonymous = jo.getInt( "anonymous");
+			       CommentMain commentMain=objectMapper.readValue(jo.toString(),CommentMain.class);
 			       String username=null;
+			       int anonymous=commentMain.getAnonymous();
 			       if(anonymous==0){
 			    	   username=userBasic.getName();
 			       }else{
 			    	   username="匿名用户";
 			       }
-			       CommentMain commentMain=objectMapper.readValue(jo.toString(),CommentMain.class);	
 			       commentMain.setCommentuserid(userBasic.getId());
 			       commentMain.setCommentusername(username);
+			       commentMain.setUserurl(userBasic.getPicPath());
 			       commentMainService.savecommentMain(commentMain);
 
 			}
@@ -167,6 +168,7 @@ public class OrganCommentController  extends BaseController{
 			    	  commentMain.setPraisecount(praisecount);
 			    	  commentMain.setPraiseresult(praiseresult);
 			    	  commentMain.setReplyMap(ommentReplyService.findByCommentid(id));
+			    	  commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
 			       }
 			       responseDataMap.put("commentMap", commentMainlist);
 		}else{

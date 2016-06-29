@@ -161,6 +161,7 @@ public abstract class BaseController {
         User user = new User();
         user.setId(1);
         user.setName("yinxing");
+        user.setPicPath("/public/c/phoenix-fe/0.0.1/common/images/default200.jpg");
         return user;
     }
 
