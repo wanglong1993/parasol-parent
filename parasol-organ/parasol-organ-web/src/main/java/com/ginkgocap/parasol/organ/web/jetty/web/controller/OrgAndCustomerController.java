@@ -212,7 +212,7 @@ public class OrgAndCustomerController  extends BaseController {
 						directorySource.setAppId(appId);
 						directorySource.setUserId(user.getId());
 						directorySource.setSourceId(Long.valueOf(custormId));
-						directorySource.setSourceType(1);//
+						directorySource.setSourceType(3);//
 						directorySource.setCreateAt(ctime);
 						directorySource.setSourceUrl(sourceUrl);
 						directorySource.setSourceTitle(sourceTitle);
@@ -335,14 +335,17 @@ public class OrgAndCustomerController  extends BaseController {
 			      int currentPage=j.optInt("index"); //默认currentPage为1
 				  int pageSize=j.optInt("size");
 				  Object[] obj = new Object[]{appId,user.getId(),directoryId};
-			      List<DirectorySource> dirctoryList = directorySourceService.getSourcesByDirectoryIdAndSourceType((currentPage-1)*pageSize,pageSize,appId,user.getId(),directoryId);
+			      List<DirectorySource> dirctoryList = directorySourceService.getSourcesByDirectoryIdAndSourceType((currentPage-1)*pageSize,pageSize,user.getId(),appId,1l,directoryId);
+			      int count = directorySourceService.countDirectorySourcesByDirectoryId(appId, user.getId(), directoryId);
+				  pageSize=pageSize>Constants.max_select_count?Constants.max_select_count:pageSize;
+				  PageUtil page = new PageUtil((int)count, currentPage, pageSize);
 			      List<Long> list = new ArrayList<Long>();
 			      if(!dirctoryList.isEmpty()){
 			    	  for (DirectorySource directorySource : dirctoryList) {
 			    		  list.add(directorySource.getSourceId());
 					}
 			      }
-			      Map<String, Object> simpleCustormerMap=null;
+			      List<SimpleCustomer> simpleCustormerMap=null;
 			      if(list.isEmpty()){
 			    	  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
 			      }else{
@@ -352,6 +355,7 @@ public class OrgAndCustomerController  extends BaseController {
 	            	  simpleCustormerMap = simpleCustomerService.selectByIds(map,type);
 	                  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
 			      }
+			      responseDataMap.put("page", page);
 			}
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
@@ -405,7 +409,7 @@ public class OrgAndCustomerController  extends BaseController {
 			      String type=j.optString("type");//1创建的客户，2收藏的客户
 			      int currentPage=j.optInt("index"); //默认currentPage为1
 				  int pageSize=j.optInt("size");
-				  List<TagSource> tagsourceList = tagSourceService.getTagSourcesByAppIdTagIdAndType(appId,tagId,1l,(currentPage-1)*pageSize,pageSize);
+				  List<TagSource> tagsourceList = tagSourceService.getTagSourcesByAppIdTagIdAndType(appId,tagId,3l,(currentPage-1)*pageSize,pageSize);
 				  int count=tagSourceService.countTagSourcesByAppIdTagId(appId, tagId);
 				  pageSize=pageSize>Constants.max_select_count?Constants.max_select_count:pageSize;
 				  PageUtil page = new PageUtil((int)count, currentPage, pageSize);
@@ -416,7 +420,7 @@ public class OrgAndCustomerController  extends BaseController {
 			    		  list.add(customerId);
 					}
 			      }
-				  Map<String, Object> simpleCustormerMap=null;
+				  List<SimpleCustomer> simpleCustormerMap=null;
 				  if(list.isEmpty()){
 					  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
 				  }else{
@@ -550,6 +554,7 @@ public class OrgAndCustomerController  extends BaseController {
 		directory.setUpdateAt(time);
 		directory.setUserId(user.getId());
 		Long aa = directoryService.createDirectoryForRoot(3l, directory);
+		System.out.println(directory.getId());
 		model.put("tagId", aa);
 		return model;
 	}

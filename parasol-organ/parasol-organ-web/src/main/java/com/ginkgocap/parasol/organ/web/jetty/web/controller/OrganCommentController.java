@@ -5,9 +5,11 @@ import com.ginkgocap.ywxt.organ.model.Constants;
 import com.ginkgocap.ywxt.organ.model.comment.CommentMain;
 import com.ginkgocap.ywxt.organ.model.comment.CommentPraise;
 import com.ginkgocap.ywxt.organ.model.comment.CommentReply;
+import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.comment.CommentMainService;
 import com.ginkgocap.ywxt.organ.service.comment.CommentPraiseService;
 import com.ginkgocap.ywxt.organ.service.comment.CommentReplyService;
+import com.ginkgocap.ywxt.organ.service.template.TemplateService;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.PageUtil;
 
@@ -16,6 +18,7 @@ import net.sf.json.JSONObject;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,8 +48,9 @@ public class OrganCommentController  extends BaseController{
      private CommentPraiseService commentPraiseService;
      @Resource
      private CommentReplyService ommentReplyService;
-     
-     
+ 	@Autowired
+ 	public TemplateService templateService;
+    
      /**保存发布评论
  	 * @author zbb
  	 */
@@ -153,9 +157,14 @@ public class OrganCommentController  extends BaseController{
 				  long orgid = CommonUtil.getLongFromJSONObject(jo, "orgid");
 				   int currentPage = jo.getInt( "currentPage");
 				   int pageSize = jo.getInt( "pageSize");
+				   String ordertype=jo.getString("ordertype");
+				   if("".equals(ordertype)){
+					   ordertype="desc";
+				   }
 				   canshu.put("orgid", orgid);
 				   canshu.put("currentPage", (currentPage-1)*pageSize);
 				   canshu.put("pageSize", pageSize);
+				   canshu.put("ordertype", ordertype);
 				   List<CommentMain> commentMainlist = commentMainService.findByOrganId(canshu);
 				   int count = commentMainService.selectcount(canshu);
 				   pageSize=pageSize>Constants.max_select_count?Constants.max_select_count:pageSize;
@@ -298,7 +307,8 @@ public class OrganCommentController  extends BaseController{
 			       }
 				commentReply.setReplyuserid(userBasic.getId());
 				commentReply.setReplyusername(username);
-				Long id = ommentReplyService.savecommentReply(commentReply);
+			    CommentReply id = ommentReplyService.savecommentReply(commentReply);
+				responseDataMap.put("commentReply", id);
 			}
 		}else{
 			setSessionAndErr(request, response, "-1", "请完善信息！");
