@@ -157,9 +157,9 @@ public class OrganCommentController  extends BaseController{
 				  long orgid = CommonUtil.getLongFromJSONObject(jo, "orgid");
 				   int currentPage = jo.getInt( "currentPage");
 				   int pageSize = jo.getInt( "pageSize");
-				   String ordertype=jo.getString("ordertype");
+				   int ordertype=jo.getInt("ordertype");
 				   if("".equals(ordertype)){
-					   ordertype="desc";
+					   ordertype=2;
 				   }
 				   canshu.put("orgid", orgid);
 				   canshu.put("currentPage", (currentPage-1)*pageSize);
