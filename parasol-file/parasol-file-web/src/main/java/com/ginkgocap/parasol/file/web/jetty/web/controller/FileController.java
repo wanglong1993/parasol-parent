@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,7 +57,7 @@ import com.ginkgocap.parasol.file.model.PicUser;
 import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
-import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
+//import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 
 /**
  * 
@@ -110,7 +111,8 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
 			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
 			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
-			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId ) throws FileIndexServiceException, IOException, MyException {
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId,
+			HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
@@ -119,8 +121,10 @@ public class FileController extends BaseControl {
 				return new MappingJacksonValue(result);
 			}
 
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 			byte[] file_buff = file.getBytes();
 			StorageClient storageClient = getStorageClient();
 			String fileName = file.getOriginalFilename();
@@ -684,7 +688,8 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
 			@RequestParam(name = "appId", required = true) Long appId,
 			@RequestParam(name = "userId", required = true) Long userId,
-			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId ) throws FileIndexServiceException, IOException, MyException {
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId,
+			HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> result = new HashMap<String, Object>();
 		
@@ -694,8 +699,10 @@ public class FileController extends BaseControl {
 				return new MappingJacksonValue(result);
 			}
 
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 			byte[] file_buff = file.getBytes();
 			StorageClient storageClient = getStorageClient();
 			String fileName = file.getOriginalFilename();
@@ -947,6 +954,13 @@ public class FileController extends BaseControl {
 	protected <T> void processBusinessException(ResponseError error, Exception ex) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@RequestMapping(path = { "/file/test" }, method = { RequestMethod.POST })
+	public void test(HttpServletRequest request){
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
+		System.out.println(loginUserId);
 	}
 
 }
