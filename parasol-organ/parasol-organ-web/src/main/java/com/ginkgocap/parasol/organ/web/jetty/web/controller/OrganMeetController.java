@@ -53,7 +53,6 @@ public class OrganMeetController extends BaseController {
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		Map<String, Object> notificationMap = new HashMap<String, Object>();
 		Long appId = 1l;
-		Long ctime = 1l;
 		boolean flag = true;
 		if (requestJson != null && !"".equals(requestJson)){
 			if(userBasic==null){
@@ -65,24 +64,26 @@ public class OrganMeetController extends BaseController {
 			       CustomerMeetingDetail meetDetail=objectMapper.readValue(jo.toString(),CustomerMeetingDetail.class);
 			       meetDetail.setCreatorId(userBasic.getId());
 				   meetDetail =  customerMeetingDetailService.saveOrUpdate(meetDetail);
+				   System.out.println("SourceId====222="+meetDetail.getId());
 					for (int i = 0; i < meetDetail.getAssociateList().size(); i++) {
 						MeetAssociate jsonObject2 = meetDetail.getAssociateList().get(i); 
 						Associate associate = new Associate();
 						associate.setUserId(userBasic.getId());
 						associate.setAppId(appId);
-						associate.setSourceTypeId(1);
+						associate.setSourceTypeId(3);
 						associate.setSourceId(meetDetail.getId());
 						associate.setAssocDesc(jsonObject2.getAssoc_desc());
 						associate.setAssocTypeId(jsonObject2.getAssoc_type_id());
 						associate.setAssocId(jsonObject2.getAssocid());
 						associate.setAssocTitle(jsonObject2.getAssoc_title());
-						associate.setCreateAt(ctime);
+						associate.setAssocMetadata(jsonObject2.getAssocMetadata());
 						associateService.createAssociate(appId, userBasic.getId(), associate);
 					}
-			       responseDataMap.put("id", meetDetail.getId());
+					System.out.println("----------------------------------------");
+			       responseDataMap.put("id", 2222222);
 				} catch (Exception e) {
-					setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
-					logger.debug(e.getMessage().toString());
+					e.printStackTrace();
+					return returnFailMSGNew("-1", "系统异常,请稍后再试");
 				}
 			}
 		}else{
@@ -129,7 +130,7 @@ public class OrganMeetController extends BaseController {
 	                   List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getId(), meetDetail.getId());
 					   //删除当前会面在关联表中的信息
 	                   for (Associate associate : associatlist) {
-						   associateService.removeAssociate(appId,  userBasic.getId(), associate.getId());
+						   associateService.removeAssociate(appId,userBasic.getId(), associate.getId());
 					   }
 	   				   for (int i = 0; i < meetDetail.getAssociateList().size(); i++) {
 	   					MeetAssociate jsonObject2 = meetDetail.getAssociateList().get(i); 
@@ -143,6 +144,7 @@ public class OrganMeetController extends BaseController {
 						associate.setAssocId(jsonObject2.getAssocid());
 						associate.setAssocTitle(jsonObject2.getAssoc_title());
 	   					associate.setCreateAt(ctime);
+	   					associate.setAssocMetadata(jsonObject2.getAssocMetadata());
 	   					associateService.createAssociate(appId, userBasic.getId(), associate);
 	   				   }
 	                   responseDataMap.put("id", meetDetail.getId());

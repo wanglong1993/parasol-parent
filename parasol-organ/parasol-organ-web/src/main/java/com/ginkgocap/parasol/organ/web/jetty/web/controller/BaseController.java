@@ -144,21 +144,25 @@ public abstract class BaseController {
 
     protected User getUser(HttpServletRequest request) {
         // 判断客户端请求方式
-        if (isWebRequest(request)) {
-            String sessionId = request.getHeader("sessionID");
-            if (StringUtils.isNotBlank(sessionId)) {
-                String key = RedisKeyUtils.getSessionIdKey(sessionId);
-                return getUser(request, key);
-            }
-        } else {
-            String sessionId = request.getHeader("sessionID");
-            if (sessionId != null && !"null".equals(sessionId)
-                    && !"".equals(sessionId)) {
-                String key = "user" + sessionId;
-                return getUser(request, key);
-            }
-        }
-        return null;
+//        if (isWebRequest(request)) {
+//            String sessionId = request.getHeader("sessionID");
+//            if (StringUtils.isNotBlank(sessionId)) {
+//                String key = RedisKeyUtils.getSessionIdKey(sessionId);
+//                return getUser(request, key);
+//            }
+//        } else {
+//            String sessionId = request.getHeader("sessionID");
+//            if (sessionId != null && !"null".equals(sessionId)
+//                    && !"".equals(sessionId)) {
+//                String key = "user" + sessionId;
+//                return getUser(request, key);
+//            }
+//        }
+        User user = new User();
+        user.setId(1);
+        user.setName("yinxing");
+        user.setPicPath("/public/c/phoenix-fe/0.0.1/common/images/default200.jpg");
+        return user;
     }
 
     private User getUser(HttpServletRequest request, String key) {

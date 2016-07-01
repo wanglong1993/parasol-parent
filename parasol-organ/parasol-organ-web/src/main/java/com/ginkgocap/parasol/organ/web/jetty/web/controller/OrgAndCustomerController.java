@@ -24,8 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ginkgocap.parasol.directory.exception.DirectoryServiceException;
 import com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException;
+import com.ginkgocap.parasol.directory.model.Directory;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
+import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.tags.exception.TagServiceException;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
@@ -73,7 +76,8 @@ public class OrgAndCustomerController  extends BaseController {
 	private TagService tagService;
 	@Autowired
 	private DirectorySourceService directorySourceService;
-
+	@Autowired
+	private DirectoryService directoryService;
 	/**
 	 * 我的组织客户列表
 	 * @param request
@@ -208,7 +212,7 @@ public class OrgAndCustomerController  extends BaseController {
 						directorySource.setAppId(appId);
 						directorySource.setUserId(user.getId());
 						directorySource.setSourceId(Long.valueOf(custormId));
-						directorySource.setSourceType(1);//
+						directorySource.setSourceType(3);//
 						directorySource.setCreateAt(ctime);
 						directorySource.setSourceUrl(sourceUrl);
 						directorySource.setSourceTitle(sourceTitle);
@@ -277,7 +281,7 @@ public class OrgAndCustomerController  extends BaseController {
 						tagSource.setAppId(appId);
 						tagSource.setUserId(user.getId());
 						tagSource.setSourceId(custormId);
-						tagSource.setSourceType(1);//
+						tagSource.setSourceType(3);//
 						tagSource.setCreateAt(ctime);
 						tagSource.setSourceTitle(sourceTitle);
                         tagSourceService.createTagSource(tagSource);
@@ -330,19 +334,28 @@ public class OrgAndCustomerController  extends BaseController {
 			      String type=j.optString("type");//1创建的客户，2收藏的客户
 			      int currentPage=j.optInt("index"); //默认currentPage为1
 				  int pageSize=j.optInt("size");
-			      List<DirectorySource> dirctoryList = directorySourceService.getDirectorySourcesByDirectoryId(appId,user.getId(),directoryId);
+				  Object[] obj = new Object[]{appId,user.getId(),directoryId};
+			      List<DirectorySource> dirctoryList = directorySourceService.getSourcesByDirectoryIdAndSourceType((currentPage-1)*pageSize,pageSize,user.getId(),appId,1l,directoryId);
+			      int count = directorySourceService.countDirectorySourcesByDirectoryId(appId, user.getId(), directoryId);
+				  pageSize=pageSize>Constants.max_select_count?Constants.max_select_count:pageSize;
+				  PageUtil page = new PageUtil((int)count, currentPage, pageSize);
+			      List<Long> list = new ArrayList<Long>();
 			      if(!dirctoryList.isEmpty()){
 			    	  for (DirectorySource directorySource : dirctoryList) {
-			    		  Map map=new HashMap();
-		            	  map.put("list", directorySource.getSourceId());
-		            	  map.put("userId", user.getId());
-		            	  map.put("start", (currentPage-1)*pageSize);
-		            	  map.put("end", pageSize);
-		            	  map.put("currentPage", currentPage);
-		            	  Map<String, Object> simpleCustormerMap = simpleCustomerService.selectByIds(map,type);
-		                  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
+			    		  list.add(directorySource.getSourceId());
 					}
 			      }
+			      List<SimpleCustomer> simpleCustormerMap=null;
+			      if(list.isEmpty()){
+			    	  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
+			      }else{
+		    		  Map map=new HashMap();
+	            	  map.put("list", list);
+	            	  map.put("userId", user.getId());
+	            	  simpleCustormerMap = simpleCustomerService.selectByIds(map,type);
+	                  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
+			      }
+			      responseDataMap.put("page", page);
 			}
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
@@ -356,6 +369,12 @@ public class OrgAndCustomerController  extends BaseController {
 	}
 	
 	
+	private int appId(long id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 	/**
 	 * 查询组织在某个标签下的资源
 	 * @param request
@@ -390,23 +409,28 @@ public class OrgAndCustomerController  extends BaseController {
 			      String type=j.optString("type");//1创建的客户，2收藏的客户
 			      int currentPage=j.optInt("index"); //默认currentPage为1
 				  int pageSize=j.optInt("size");
-				  List<TagSource> tagsourceList = tagSourceService.getTagSourcesByAppIdTagId(appId,tagId, (currentPage-1)*pageSize, pageSize);
-				  int count=tagSourceService.countTagSourcesByAppIdTagId(appId, Long.valueOf(tagId));
+				  List<TagSource> tagsourceList = tagSourceService.getTagSourcesByAppIdTagIdAndType(appId,tagId,3l,(currentPage-1)*pageSize,pageSize);
+				  int count=tagSourceService.countTagSourcesByAppIdTagId(appId, tagId);
 				  pageSize=pageSize>Constants.max_select_count?Constants.max_select_count:pageSize;
 				  PageUtil page = new PageUtil((int)count, currentPage, pageSize);
+				  List<Long> list = new ArrayList<Long>();
 				  if(!tagsourceList.isEmpty()){
 			    	  for (TagSource tagSource : tagsourceList) {
-			    		  Map map=new HashMap();
-		            	  map.put("list", tagSource.getSourceId());
-		            	  map.put("userId", user.getId());
-		            	  map.put("start", (currentPage-1)*pageSize);
-		            	  map.put("end", pageSize);
-		            	  map.put("currentPage", currentPage);
-		            	  Map<String, Object> simpleCustormerMap = simpleCustomerService.selectByIds(map,type);
-		                  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
-		                  responseDataMap.put("page", page);
+			    		  long customerId = tagSource.getSourceId();
+			    		  list.add(customerId);
 					}
 			      }
+				  List<SimpleCustomer> simpleCustormerMap=null;
+				  if(list.isEmpty()){
+					  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
+				  }else{
+		    		  Map map=new HashMap();
+	            	  map.put("list", list);
+	            	  map.put("userId", user.getId());
+	            	  simpleCustormerMap = simpleCustomerService.selectByIds(map,type);
+	                  responseDataMap.put("simpleCustormerList", simpleCustormerMap);
+				  }
+                  responseDataMap.put("page", page);
 			    }	
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
@@ -492,20 +516,45 @@ public class OrgAndCustomerController  extends BaseController {
 	 * @throws TagSourceServiceException 
 	 * @throws DirectorySourceServiceException 
 	 * @throws TagServiceException 
+	 * @throws DirectoryServiceException 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/organ/createTagDirecty.json", method = RequestMethod.POST)
 	public Map<String, Object> createTagDirecty(HttpServletRequest request,
-			HttpServletResponse response) throws TagSourceServiceException, DirectorySourceServiceException, TagServiceException {
+			HttpServletResponse response) throws TagSourceServiceException, DirectorySourceServiceException, TagServiceException, DirectoryServiceException {
 		User user = getUser(request);
+		String requestJson = null;
+		try {
+			requestJson = getJsonParamStr(request);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JSONObject j = JSONObject.fromObject(requestJson);
+		String name = j.optString("name");
+		long time = j.optLong("time");
 		// 获取json参数串
-		Tag tag = new Tag();
-		tag.setAppId(1l);
-		tag.setTagName("zbb");
-		tag.setTagType(3);
-		tag.setUserId(user.getId());
-		Long aa = tagService.createTag(user.getId(), tag);
+//		Tag tag = new Tag();
+//		tag.setAppId(1l);
+//		tag.setTagName("zbb");
+//		tag.setTagType(3);
+//		tag.setUserId(user.getId());
+//		Long aa = tagService.createTag(user.getId(), tag);
 		Map<String, Object> model = new HashMap<String, Object>();
+		Directory directory = new Directory();
+		directory.setAppId(1l);
+		directory.setName(name);
+		directory.setNameIndex("");
+		directory.setNameIndexAll("");
+		directory.setNumberCode("");
+		directory.setOrderNo(0);
+		directory.setPid(0);
+		directory.setRemark("");
+		directory.setTypeId(3);
+		directory.setUpdateAt(time);
+		directory.setUserId(user.getId());
+		Long aa = directoryService.createDirectoryForRoot(3l, directory);
+		System.out.println(directory.getId());
 		model.put("tagId", aa);
 		return model;
 	}
