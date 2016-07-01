@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -33,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.tags.exception.TagServiceException;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
 import com.ginkgocap.parasol.tags.model.Tag;
@@ -70,12 +71,15 @@ public class TagController extends BaseControl {
 	@RequestMapping(path = "/tags/tags/getTagList", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType) throws TagServiceException {
+			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType,
+			HttpServletRequest request) throws TagServiceException {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
@@ -106,12 +110,15 @@ public class TagController extends BaseControl {
 	@RequestMapping(path = "/tags/tags/getRecomTagList", method = { RequestMethod.GET })
 	public MappingJacksonValue getRecomTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType) throws TagServiceException {
+			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType,
+			HttpServletRequest request) throws TagServiceException {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
@@ -149,11 +156,14 @@ public class TagController extends BaseControl {
 	@RequestMapping(path = "/tags/tags/createTag", method = { RequestMethod.POST })
 	public MappingJacksonValue createTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagType, required = true) int tagType,
-			@RequestParam(name = TagController.parameterTagName, required = true) String tagName)
+			@RequestParam(name = TagController.parameterTagName, required = true) String tagName,
+			HttpServletRequest request)
 			throws TagServiceException {
 		//@formatter:on
-		Long loginAppId = LoginUserContextHolder.getAppKey();
-		Long loginUserId = LoginUserContextHolder.getUserId();
+//		Long loginAppId = LoginUserContextHolder.getAppKey();
+//		Long loginUserId = LoginUserContextHolder.getUserId();
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Tag tag = new Tag();
@@ -187,11 +197,14 @@ public class TagController extends BaseControl {
 	@RequestMapping(path = "/tags/tags/updateTag", method = { RequestMethod.PUT })
 	public MappingJacksonValue updateTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagId, required = true) long tagId,
-			@RequestParam(name = TagController.parameterTagName, required = true) String tagName)
+			@RequestParam(name = TagController.parameterTagName, required = true) String tagName,
+			HttpServletRequest request)
 			throws TagServiceException {
 		//@formatter:on
-		Long loginAppId = LoginUserContextHolder.getAppKey();
-		Long loginUserId = LoginUserContextHolder.getUserId();
+//		Long loginAppId = LoginUserContextHolder.getAppKey();
+//		Long loginUserId = LoginUserContextHolder.getUserId();
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Tag tag = new Tag();
@@ -225,12 +238,15 @@ public class TagController extends BaseControl {
 	 */
 	@RequestMapping(path = "/tags/tags/deleteTag", method = { RequestMethod.GET , RequestMethod.DELETE})
 	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.parameterTagId, required = true) Long id) throws TagSourceServiceException, TagServiceException {
+			@RequestParam(name = TagController.parameterTagId, required = true) Long id,
+			HttpServletRequest request) throws TagSourceServiceException, TagServiceException {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 			Boolean success = tagService.removeTag(loginUserId, id); // 服务验证Owner
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
@@ -270,5 +286,12 @@ public class TagController extends BaseControl {
 
 		filterProvider.addFilter(Tag.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
+	}
+	
+	@RequestMapping(path = "/tags/test", method = { RequestMethod.POST })
+	public void test(HttpServletRequest request){
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
+		System.out.println("user："+loginUserId);
 	}
 }

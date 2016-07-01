@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
@@ -74,12 +75,15 @@ public class TagSourceController extends BaseControl {
 	public MappingJacksonValue getSourceList(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
-			@RequestParam(name = TagSourceController.parameterSourceType, required = true) Long sourceType) {
+			@RequestParam(name = TagSourceController.parameterSourceType, required = true) Long sourceType,
+			HttpServletRequest request) {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
 			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdSourceIdSourceType(loginAppId, sourceId, sourceType);
@@ -109,12 +113,15 @@ public class TagSourceController extends BaseControl {
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 			@RequestParam(name = TagSourceController.parameterStart, required = true) Integer start,
-			@RequestParam(name = TagSourceController.parameterCount, required = true) Integer count) {
+			@RequestParam(name = TagSourceController.parameterCount, required = true) Integer count,
+			HttpServletRequest request) {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
 			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdTagId(loginAppId, tagId, start, count);
@@ -145,12 +152,15 @@ public class TagSourceController extends BaseControl {
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 			@RequestParam(name = TagSourceController.parameterSourceType, required = true) Long sourceType,
 			@RequestParam(name = TagSourceController.parameterStart, required = true) Integer start,
-			@RequestParam(name = TagSourceController.parameterCount, required = true) Integer count) {
+			@RequestParam(name = TagSourceController.parameterCount, required = true) Integer count,
+			HttpServletRequest request) {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
 			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdTagIdAndType(loginAppId, tagId, sourceType, start, count);
@@ -178,12 +188,15 @@ public class TagSourceController extends BaseControl {
 	@RequestMapping(path = "/tags/source/getSourceCountByTag", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceCountByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId) {
+			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
+			HttpServletRequest request) {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Long loginAppId = LoginUserContextHolder.getAppKey();
-			Long loginUserId = LoginUserContextHolder.getUserId();
+//			Long loginAppId = LoginUserContextHolder.getAppKey();
+//			Long loginUserId = LoginUserContextHolder.getUserId();
+			Long loginAppId=this.DefaultAppId;
+			Long loginUserId=this.getUserId(request);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
 			Integer resCount = tagsSourceService.countTagSourcesByAppIdTagId(loginAppId, tagId);
@@ -216,10 +229,13 @@ public class TagSourceController extends BaseControl {
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagsId,
 			@RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
 			@RequestParam(name = TagSourceController.parameterSourceTitle, required = true) String sourceTitle,
-			@RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType) throws TagSourceServiceException {
+			@RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+			HttpServletRequest request) throws TagSourceServiceException {
 		//@formatter:on
-		Long loginAppId = LoginUserContextHolder.getAppKey();
-		Long loginUserId = LoginUserContextHolder.getUserId();
+//		Long loginAppId = LoginUserContextHolder.getAppKey();
+//		Long loginUserId = LoginUserContextHolder.getUserId();
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			TagSource source = new TagSource();
@@ -254,10 +270,13 @@ public class TagSourceController extends BaseControl {
 	 */
 	@RequestMapping(path = "/tags/source/deleteTagSource", method = { RequestMethod.GET, RequestMethod.DELETE})
 	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagSourceController.parameterTagSourceId, required = true) Long id) throws TagSourceServiceException {
+			@RequestParam(name = TagSourceController.parameterTagSourceId, required = true) Long id,
+			HttpServletRequest request) throws TagSourceServiceException {
 		//@formatter:on
-		Long loginAppId = LoginUserContextHolder.getAppKey();
-		Long loginUserId = LoginUserContextHolder.getUserId();
+//		Long loginAppId = LoginUserContextHolder.getAppKey();
+//		Long loginUserId = LoginUserContextHolder.getUserId();
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Boolean success = tagsSourceService.removeTagSource(loginAppId, loginUserId, id); // 服务验证Owner
