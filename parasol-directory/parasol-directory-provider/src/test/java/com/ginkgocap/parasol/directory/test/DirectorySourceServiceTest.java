@@ -62,6 +62,7 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 		System.err.println(souceList);
 		
 		//测试创建
+		Long directoryId = 0L;
 		for (Directory directory : rootDirectories) {
 			Assert.assertNotNull(directory);
 			List<Directory> subDirectorys = directoryService.getDirectorysByParentId(System_AppId, user_id, directory.getId());
@@ -73,7 +74,7 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 				source.setSourceType(Source_type);
 				source.setSourceId(source_Id);
 				source.setDirectoryId(targetDirectory.getId());
-				directorySourceService.createDirectorySources(source);
+				directoryId = directorySourceService.createDirectorySources(source);
 			}
 		}
 
@@ -107,8 +108,9 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 			}
 		}
 		
-		
-		
+		Object[] parameters = new Object[]{7, 1, 8, 3990305410121740L};
+		List<DirectorySource> source = directorySourceService.getSourcesByDirectoryIdAndSourceType(0, 10, parameters);
+		System.out.println(source);
 		
 //		//测试清楚SourceId
 //		if (sourceId != null) {
