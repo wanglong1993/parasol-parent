@@ -58,8 +58,8 @@ public class TemplateController extends BaseController {
 			Template template = templateService.findTemplateById(templateId);
 
 			TemplateVo templateVo = new TemplateVo();
-			templateVo.setTemplateName(template.getName());
-			templateVo.setTemplateId(template.getId());
+			templateVo.setTemplateName(template.getTemplateName());
+			templateVo.setTemplateId(template.getTemplateId());
 			templateVo.setTemplateType(template.getType());
 			templateVo.setMoudles(template.getMoudles());
 			responseDataMap.put("template", templateVo);
@@ -83,9 +83,18 @@ public class TemplateController extends BaseController {
 		String requestJson = "";
 		requestJson = getJsonParamStr(request);
 		Map<String, Object> model = new HashMap<String, Object>();
+		User user=getUser(request);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Template template = JSON.parseObject(requestJson, Template.class);
+		if(template.getTemplateName()==null||"".equals(template.getTemplateName())){
+			return returnFailMSGNew("模板名不能为空");
+		}
+		if(templateService.checkUserTemplateNameExits(user.getId(), template.getTemplateName())){
+			return returnFailMSGNew("模板名称已存在");
+		}
+		
+		template.setUserId(user.getId());
 		boolean flag = true;
 		try {
 			templateService.saveOrUpdteTemplate(template);
@@ -201,7 +210,7 @@ public class TemplateController extends BaseController {
 	 * @return
 	 * @author wangfeiliang
 	 */
-	protected Map<String, Object> returnFailMSGNew(String errRespCode,
+	protected Map<String, Object> returnFailMSGNew(
 			String errRespMsg) {
 		Map<String, Object> result = new HashMap<String, Object>();
 

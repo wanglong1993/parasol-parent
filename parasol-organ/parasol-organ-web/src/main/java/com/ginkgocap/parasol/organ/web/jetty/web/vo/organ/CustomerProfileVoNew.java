@@ -38,7 +38,6 @@ public class CustomerProfileVoNew implements Serializable {
 	private String banner;// 顶部图片路径
 	private String discribe;// 客户描述
 	private List<Long> columns;
-	private Long userId;// 用户id
 	private String auth;
 	private String friends;// 1 等待同意 2 是好友 3不是好友
 	private long comeId;// 来源组织id
@@ -146,13 +145,7 @@ public class CustomerProfileVoNew implements Serializable {
 		this.comeId = comeId;
 	}
 
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+	
 
 	public List<CustomerPersonalLine> getPropertyList() {
 		return propertyList == null ? new ArrayList<CustomerPersonalLine>()

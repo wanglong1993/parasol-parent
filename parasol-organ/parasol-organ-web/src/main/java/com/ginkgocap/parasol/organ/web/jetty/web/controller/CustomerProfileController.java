@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ginkgocap.ywxt.user.service.FriendsRelationService;
 import com.ginkgocap.ywxt.user.service.UserService;
 
 import net.sf.json.JSONArray;
@@ -41,6 +42,7 @@ import com.ginkgocap.parasol.tags.model.Tag;
 import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagService;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
+import com.ginkgocap.ywxt.dynamic.service.DynamicNewsService;
 import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
@@ -105,6 +107,14 @@ public class CustomerProfileController extends BaseController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+
+	
+	@Autowired
+	private DynamicNewsService dynamicNewService;
+	
+	@Autowired
+	private FriendsRelationService friendsRelationService;
+	
 	long appId = 1;
 	long sourceType = 3;
 
@@ -134,12 +144,84 @@ public class CustomerProfileController extends BaseController {
 				jo.remove("tagList");
 				jo.remove("directory");
 				jo.remove("associateList");
+				jo.remove("templateName");
+				jo.remove("templateType");
 				userBasic = getUser(request);
 
 				System.out.println("requestJson:" + requestJson);
 				ObjectMapper objectMapper = new ObjectMapper();
 				Customer customer = objectMapper.readValue(jo.toString(),
 						Customer.class);
+				JSONArray moudles=customer.getMoudles();
+				JSONObject basiInfoMoudle=null;
+				for(int i=0;i<moudles.size();i++){
+					 JSONObject jsonObject=moudles.getJSONObject(i);
+					 if(jsonObject.getInt("moudleId")==1||jsonObject.getInt("moudleId")==2){
+						 basiInfoMoudle=jsonObject;
+					 }
+				}
+				
+				if(basiInfoMoudle!=null){
+					
+					JSONArray controlList=basiInfoMoudle.getJSONArray("controlList");
+					for(int i=0;i<controlList.size();i++){
+						JSONObject control=controlList.getJSONObject(i);
+						String name=control.getString("name");
+						if("name".equals(name)){
+							customer.setName(control.getString("value"));
+						}else if("shortName".equals(name)){
+							customer.setShotName(control.getString("value"));
+							
+						}else if("orgType".equals(name)){
+							
+							JSONArray  itemsArray=control.getJSONArray("items");
+							
+							for(int k=0;k<itemsArray.size();k++){
+								
+								JSONObject itemJsonObj=itemsArray.getJSONObject(k);
+								if(itemJsonObj.getBoolean("checked")){
+									
+									customer.setOrgType(itemJsonObj.getInt("value"));
+								}
+							}
+							
+						}else if("district".equals(name)){
+							JSONObject valueJo=control.getJSONObject("value");
+							customer.setAreaString(valueJo.getString("province")+"-"+valueJo.getString("city")+"-"+valueJo.getString("county"));
+							
+						}else if("industry".equals(name)){
+							JSONObject valueJo=control.getJSONObject("value");
+							customer.setIndustry(valueJo.getString("industry"));
+							if("".equals(valueJo.getString("industryId"))){
+								customer.setIndustryId(-1);
+							}else{
+								customer.setIndustryId(Long.parseLong(valueJo.getString("industryId")));
+							}
+							
+						}else if("isListing".equals(name)){
+							
+								JSONArray  itemsArray=control.getJSONArray("items");
+							
+								for(int k=0;k<itemsArray.size();k++){
+									
+									JSONObject itemJsonObj=itemsArray.getJSONObject(k);
+									if(itemJsonObj.getBoolean("checked")){
+										customer.setIsListing(itemJsonObj.getString("value"));
+									}
+								}
+								
+						}else if("stockNum".equals(name)){
+							
+							customer.setStockNum(control.getString("value"));
+						}
+					}
+					
+					
+				}else{
+					return returnFailMSGNew("01", "找不到基础信息模块");
+				}
+				
+				
 				Customer oldCustomer = customerService
 						.findOne(customer.getId());
 				if (oldCustomer != null
@@ -205,6 +287,7 @@ public class CustomerProfileController extends BaseController {
 					customer = customerService.addCustomerData(customer);
 					responseDataMap.put("success", true);
 					responseDataMap.put("msg", "操作成功");
+					responseDataMap.put("customerId", customer.getCustomerId());
 					isAdd = true;
 					System.out
 							.println("增加客户" + customer.getCustomerId() + "成功");
@@ -226,6 +309,7 @@ public class CustomerProfileController extends BaseController {
 
 						responseDataMap.put("success", true);
 						responseDataMap.put("msg", "操作成功");
+					
 						System.out.println("修改客户:" + customer.getCustomerId()
 								+ "成功");
 
@@ -257,7 +341,7 @@ public class CustomerProfileController extends BaseController {
 								.getResponseData();
 					}
 					per.setResOwnerId(userBasic.getId());// 资源所有者id
-					per.setPublicFlag(customerPermissions.getInt("pubicFlag"));// 公开-1，私密-0
+					per.setPublicFlag(customerPermissions.getInt("publicFlag"));// 公开-1，私密-0
 					per.setShareFlag(customerPermissions.getInt("shareFlag"));// 可分享-1,不可分享-0
 					per.setConnectFlag(customerPermissions
 							.getInt("connectFlag"));// 可对接-1,不可对接-0
@@ -375,12 +459,12 @@ public class CustomerProfileController extends BaseController {
 				// userBasic.getId(), associate);
 				// }
 				// 生成动态
-				// saveCustomerDynamicNews(user,customer,customerPermissions.toString());
+//				saveCustomerDynamicNews(getUser(request),customer,customerPermissions.toString());
 
 			} catch (Exception e) {
 				setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
 				e.printStackTrace();
-				return returnFailMSGNew("01", "系统异常,请稍后再试");
+				return returnFailMSGNew("01", e.getMessage());
 			}
 		} else {
 			setSessionAndErr(request, response, "-1", "非法操作！");
@@ -740,8 +824,8 @@ public class CustomerProfileController extends BaseController {
 		Template template = templateService.findTemplateById(templateId);
 		
 		TemplateVo templateVo = new TemplateVo();
-		templateVo.setTemplateName(template.getName());
-		templateVo.setTemplateId(template.getId());
+		templateVo.setTemplateName(template.getTemplateName());
+		templateVo.setTemplateId(template.getTemplateId());
 		templateVo.setTemplateType(template.getType());
 		templateVo.setMoudles(template.getMoudles());
 		
@@ -865,5 +949,102 @@ public class CustomerProfileController extends BaseController {
 		result.put("msg", errRespMsg);
 		return result;
 	}
+	
+	
+	
+	/**创建客户生成动态
+     * @param user
+     * @param customer
+     * @param customerPermissions
+     * @author wfl
+     */
+    protected  void saveCustomerDynamicNews(User user,Customer customer,String customerPermissions){
+    	Map<String, Object> params =new HashMap<String,Object>();
+	    params.put("type", "62");
+	    if(user.getType()==2){
+	    	  params.put("lowType", "61");//组织
+	    	  params.put("createType","2");
+	    	  params.put("gender", 0);
+	    }
+	    if(user.getType()==1){
+	    	  params.put("lowType", "60");//个人
+	    	  params.put("createType","1");
+	    	  params.put("gender", user.getSex());
+	    }
+	    
+	    params.put("createrId",String.valueOf(user.getId()));
+	    if(!"".equals(StringUtils.trimToEmpty(customer.getShotName()))){
+	    	 params.put("title", customer.getShotName());
+	    }else{
+	    	params.put("title", customer.getName());
+	    }
+	    
+	    params.put("content", customer.getArea().getCity()+"#"+Utils.listToString(customer.getIndustrys()));
+	    params.put("targetId", String.valueOf(customer.getId()));
+	    params.put("imgPath", Utils.alterImageUrl(customer.getPicLogo()));
+	    params.put("picPath", Utils.alterImageUrl(user.getPicPath()));
+	    params.put("virtual", "1");// 0 表示客户  1 表示组织
+	    Map<String, List<Long>> receiverIds =new HashMap<String,List<Long>>();
+	    JSONObject dyna=JSONObject.fromObject(customerPermissions);
+	    List<Long> dales=new ArrayList<Long>();
+	    List<Long> zhongles=new ArrayList<Long>();
+	    boolean dule=dyna.getBoolean("dule");
+	    if(!dule){
+	    	JSONArray jarray=JsonUtil.getJsonArray(dyna, "dales");
+	    	if(jarray!=null&&jarray.size()>0){
+	    		 for(int i=0;i<jarray.size();i++){
+	    			 JSONObject jso=jarray.getJSONObject(i);
+		    			 if(!jso.isNullObject()){
+		    				 if("-1".equals(jso.getString("id"))){//全平台
+		    				      List<User> users=friendsRelationService.findAllFriendsByUserId(user.getId());
+		    				      if(users!=null&&users.size()>0){
+		    				    	  for(int j=0;j<users.size();j++){
+		    				    		  User ruser=users.get(j);
+		    				    		  dales.add(ruser.getId());
+		    				    	  }
+		    				      }
+		    				 }
+	    				 dales.add(JsonUtil.getNodeToLong(jso, "id"));
+	    			 }
+	    		 }
+	    	}
+	    	
+	    	JSONArray zls=JsonUtil.getJsonArray(dyna, "zhongles");
+	    	if(zls!=null&&zls.size()>0){
+	    		 for(int i=0;i<zls.size();i++){
+	    			 JSONObject jso=zls.getJSONObject(i);
+	    			 if(!jso.isNullObject()){
+	    				 
+	    				 if("-1".equals(jso.getString("id"))){//全平台
+	    				      List<User> users=friendsRelationService.findAllFriendsByUserId(user.getId());
+	    				      if(users!=null&&users.size()>0){
+	    				    	  for(int j=0;j<users.size();j++){
+	    				    		  User ruser=users.get(j);
+	    				    		  zhongles.add(ruser.getId());
+	    				    	  }
+	    				      }
+	    				 }
+	    				 
+	    				 zhongles.add(JsonUtil.getNodeToLong(jso, "id"));
+	    			 }
+	    		 }
+	    	}
+	    	
+	    }
+	    receiverIds.put("dale", dales);
+	    receiverIds.put("zhongle", zhongles);
+	    params.put("receiverIds", receiverIds);
+	    params.put("createrId", String.valueOf(user.getId()));
+	    if(!"".equals(StringUtils.trimToEmpty(user.getShortName()))){
+	    	params.put("createrName", user.getShortName());
+	    }else{
+	    	params.put("createrName", user.getName());
+	    }
+	    
+	    params.put("picPath", user.getPicPath());
+	    
+	    dynamicNewService.insert(params);
+	    System.out.println("插入动态成功");
+    }
 
 }
