@@ -454,8 +454,8 @@ public class OrganController extends BaseController {
 		Template template = templateService.findTemplateById(templateId);
 		
 		TemplateVo templateVo = new TemplateVo();
-		templateVo.setTemplateName(template.getName());
-		templateVo.setTemplateId(template.getId());
+		templateVo.setTemplateName(template.getTemplateName());
+		templateVo.setTemplateId(template.getTemplateId());
 		templateVo.setTemplateType(template.getType());
 		templateVo.setMoudles(template.getMoudles());
 

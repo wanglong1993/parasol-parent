@@ -58,8 +58,8 @@ public class TemplateController extends BaseController {
 			Template template = templateService.findTemplateById(templateId);
 
 			TemplateVo templateVo = new TemplateVo();
-			templateVo.setTemplateName(template.getName());
-			templateVo.setTemplateId(template.getId());
+			templateVo.setTemplateName(template.getTemplateName());
+			templateVo.setTemplateId(template.getTemplateId());
 			templateVo.setTemplateType(template.getType());
 			templateVo.setMoudles(template.getMoudles());
 			responseDataMap.put("template", templateVo);
@@ -87,10 +87,10 @@ public class TemplateController extends BaseController {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Template template = JSON.parseObject(requestJson, Template.class);
-		if(template.getName()==null||"".equals(template.getName())){
+		if(template.getTemplateName()==null||"".equals(template.getTemplateName())){
 			return returnFailMSGNew("模板名不能为空");
 		}
-		if(templateService.checkUserTemplateNameExits(user.getId(), template.getName())){
+		if(templateService.checkUserTemplateNameExits(user.getId(), template.getTemplateName())){
 			return returnFailMSGNew("模板名称已存在");
 		}
 		
