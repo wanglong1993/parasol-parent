@@ -1,20 +1,31 @@
 package com.ginkgocap.parasol.file.web.jetty.web.utils;
 
-import java.sql.Timestamp;
+import java.text.DecimalFormat;
 
 
 
 public class MakePrimaryKey {
-    public static String getPrimaryKey(){
-        int year=new Timestamp(System.currentTimeMillis()).getYear();
-        int month=(new Timestamp(System.currentTimeMillis()).getMonth()+1);
-        int day=new Timestamp(System.currentTimeMillis()).getDate();
-        int hours=new Timestamp(System.currentTimeMillis()).getHours();
-        int minte=new Timestamp(System.currentTimeMillis()).getMinutes();
-        long time=new Timestamp(System.currentTimeMillis()).getTime();
-        
-        String num=String.valueOf(year).substring(1)+String.valueOf(month)+String.valueOf(day)
-        +String.valueOf(hours)+String.valueOf(minte)+String.valueOf(time).substring(8, 13);
-        return num;
-    }
+	   private static final int MAX_GENERATE_COUNT = 99999;
+	    private static int generateCount = 0;
+	    private static DecimalFormat df = new DecimalFormat("00000");
+	    private MakePrimaryKey() {
+	    }
+
+	    /**创建唯一字符串
+	     * @return 18位唯一字符串  13位时间+5位流水号
+	     */
+	    public static synchronized String getPrimaryKey() {
+	        generateCount++;
+	        if (generateCount > MAX_GENERATE_COUNT)
+	            generateCount = 1;
+	        String uniqueNumber = Long.toString(System.currentTimeMillis()) + df.format(generateCount);
+	        return uniqueNumber;
+	    }
+	    public static void main(String args[]){
+	        for (int i = 0; i < 500; i++) {
+	            String id = getPrimaryKey();
+	            System.err.println(id);
+	            System.err.println(id.length());
+	        }
+	    }
 }

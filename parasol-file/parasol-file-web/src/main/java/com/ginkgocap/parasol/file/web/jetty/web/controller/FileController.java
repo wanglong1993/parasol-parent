@@ -58,6 +58,7 @@ import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
 //import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
+import com.ginkgocap.ywxt.util.MakePrimaryKey;
 
 /**
  * 
@@ -111,7 +112,7 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
 			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
 			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
-			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId,
+//			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId,
 			HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -140,6 +141,7 @@ public class FileController extends BaseControl {
 				generateAvatar(fields[0], fields[1], fileExtName, null);
 				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
 			}
+			String taskId = MakePrimaryKey.getPrimaryKey();
 			FileIndex index = new FileIndex();
 			index.setAppId(loginAppId);
 			index.setCreaterId(loginUserId);
