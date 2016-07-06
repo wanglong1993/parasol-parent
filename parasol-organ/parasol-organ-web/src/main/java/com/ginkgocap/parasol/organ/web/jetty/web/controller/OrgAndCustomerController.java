@@ -179,6 +179,7 @@ public class OrgAndCustomerController  extends BaseController {
 	public Map<String, Object> updateCustomerTags(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		User user = getUser(request);
+		boolean flag=true; 
 		// 获取json参数串
 		String requestJson = "";
 		try {
@@ -202,7 +203,6 @@ public class OrgAndCustomerController  extends BaseController {
 			    String sourceData=j.optString("sourceData");
 			    String invokeMethod=j.optString("invokeMethod");
 			    Long appId = 1l;
-			    Long ctime = System.currentTimeMillis();
 			    //删除以前的
 			    directorySourceService.removeDirectorySourcesBySourceId(user.getId(), appId, 1,custormId);
 			    if(!directoryIds.isEmpty()){
@@ -213,7 +213,6 @@ public class OrgAndCustomerController  extends BaseController {
 						directorySource.setUserId(user.getId());
 						directorySource.setSourceId(Long.valueOf(custormId));
 						directorySource.setSourceType(3);//
-						directorySource.setCreateAt(ctime);
 						directorySource.setSourceUrl(sourceUrl);
 						directorySource.setSourceTitle(sourceTitle);
 						directorySource.setSourceData(sourceData);
@@ -223,9 +222,10 @@ public class OrgAndCustomerController  extends BaseController {
 			    }
 			}
 		} else {
+			flag=false;
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
 		}
-		responseDataMap.put("success",true);
+		responseDataMap.put("success",flag);
 		notificationMap.put("notifCode", "0001");
 		notificationMap.put("notifInfo", "hello mobile app!");
 		model.put("responseData", responseDataMap);
@@ -247,12 +247,14 @@ public class OrgAndCustomerController  extends BaseController {
 	public Map<String, Object> updateCustomerDirectory(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		User user = getUser(request);
+		boolean flag=true;
 		// 获取json参数串
 		String requestJson = "";
 		try {
 			requestJson = getJsonParamStr(request);
 		} catch (IOException e) {
 			logger.error("参数读取异常");
+			flag=false; 
 		}
 		// 封装 response
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -290,6 +292,7 @@ public class OrgAndCustomerController  extends BaseController {
 			}
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
+			flag=false; 
 		}
 		responseDataMap.put("success",true);
 		notificationMap.put("notifCode", "0001");
@@ -313,11 +316,13 @@ public class OrgAndCustomerController  extends BaseController {
 	public Map<String, Object> findDirectoryIdsCustomer(HttpServletRequest request,
 			HttpServletResponse response) throws NumberFormatException, DirectorySourceServiceException {
 		User user = getUser(request);
+		boolean flag=true;
 		// 获取json参数串
 		String requestJson = "";
 		try {
 			requestJson = getJsonParamStr(request);
 		} catch (IOException e) {
+			flag=false;
 			logger.error("参数读取异常");
 		}
 		// 封装 response
@@ -358,9 +363,10 @@ public class OrgAndCustomerController  extends BaseController {
 			      responseDataMap.put("page", page);
 			}
 		} else {
+			flag=false;
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
 		}
-		responseDataMap.put("success",true);
+		responseDataMap.put("success",flag);
 		notificationMap.put("notifCode", "0001");
 		notificationMap.put("notifInfo", "hello mobile app!");
 		model.put("responseData", responseDataMap);
