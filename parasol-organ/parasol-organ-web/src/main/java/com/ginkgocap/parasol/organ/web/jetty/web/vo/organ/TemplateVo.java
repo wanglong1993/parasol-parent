@@ -23,8 +23,8 @@ public class TemplateVo  implements Serializable{
 	private int templateType ; // 0 表示  公共模板  1 表示 用户模板
 	private List<JSONObject> moudles; // 模板模块 内容
 	
-
-
+	
+	private List<JSONObject> visibleMoudles; // 默认显示的模块内容
 	
 	public List<JSONObject> getMoudles() {
 		return moudles==null?new ArrayList<JSONObject>():moudles;
@@ -50,8 +50,12 @@ public class TemplateVo  implements Serializable{
 	public void setTemplateType(int templateType) {
 		this.templateType = templateType;
 	}
-	
 
-	
+	public List<JSONObject> getVisibleMoudles() {
+		return visibleMoudles;
+	}
+	public void setVisibleMoudles(List<JSONObject> visibleMoudles) {
+		this.visibleMoudles = visibleMoudles;
+	}
 	
 }
