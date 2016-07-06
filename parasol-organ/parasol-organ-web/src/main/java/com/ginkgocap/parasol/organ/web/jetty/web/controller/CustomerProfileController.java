@@ -180,6 +180,7 @@ public class CustomerProfileController extends BaseController {
 								
 								JSONObject itemJsonObj=itemsArray.getJSONObject(k);
 								if(itemJsonObj.getBoolean("checked")){
+									
 									customer.setOrgType(itemJsonObj.getInt("value"));
 								}
 							}
@@ -191,7 +192,12 @@ public class CustomerProfileController extends BaseController {
 						}else if("industry".equals(name)){
 							JSONObject valueJo=control.getJSONObject("value");
 							customer.setIndustry(valueJo.getString("industry"));
-							customer.setIndustryId(valueJo.getLong("industryId"));
+							if("".equals(valueJo.getString("industryId"))){
+								customer.setIndustryId(-1);
+							}else{
+								customer.setIndustryId(Long.parseLong(valueJo.getString("industryId")));
+							}
+							
 						}else if("isListing".equals(name)){
 							
 								JSONArray  itemsArray=control.getJSONArray("items");
