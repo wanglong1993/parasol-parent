@@ -62,6 +62,7 @@ public class TemplateController extends BaseController {
 			templateVo.setTemplateId(template.getTemplateId());
 			templateVo.setTemplateType(template.getType());
 			templateVo.setMoudles(template.getMoudles());
+			templateVo.setVisibleMoudles(template.getVisibleMoudles());
 			responseDataMap.put("template", templateVo);
 
 		} catch (Exception e) {
@@ -82,11 +83,13 @@ public class TemplateController extends BaseController {
 		System.out.println("controller:/template/saveTemplate.json");
 		String requestJson = "";
 		requestJson = getJsonParamStr(request);
+		System.out.println("requestJson:"+requestJson);
 		Map<String, Object> model = new HashMap<String, Object>();
 		User user=getUser(request);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Template template = JSON.parseObject(requestJson, Template.class);
+		System.out.println("parentTemplateId:"+template.getParentTemplateId());
 		if(template.getTemplateName()==null||"".equals(template.getTemplateName())){
 			return returnFailMSGNew("模板名不能为空");
 		}
@@ -97,10 +100,11 @@ public class TemplateController extends BaseController {
 		template.setUserId(user.getId());
 		boolean flag = true;
 		try {
-			templateService.saveOrUpdteTemplate(template);
+			long templateId=templateService.addUserTemplate(template);
 			model.put("success", true);
 			model.put("msg", "操作成功");
-
+			model.put("templateId", templateId);
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
