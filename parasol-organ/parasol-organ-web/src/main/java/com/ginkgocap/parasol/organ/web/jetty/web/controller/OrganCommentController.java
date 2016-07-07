@@ -5,7 +5,6 @@ import com.ginkgocap.ywxt.organ.model.Constants;
 import com.ginkgocap.ywxt.organ.model.comment.CommentMain;
 import com.ginkgocap.ywxt.organ.model.comment.CommentPraise;
 import com.ginkgocap.ywxt.organ.model.comment.CommentReply;
-import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.comment.CommentMainService;
 import com.ginkgocap.ywxt.organ.service.comment.CommentPraiseService;
 import com.ginkgocap.ywxt.organ.service.comment.CommentReplyService;
@@ -16,8 +15,6 @@ import com.ginkgocap.ywxt.util.PageUtil;
 import net.sf.json.JSONObject;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,9 +36,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/organ/comment")
 public class OrganCommentController  extends BaseController{
-	
-	private final Logger logger=LoggerFactory.getLogger(getClass());
-	
+
      @Resource
      private CommentMainService commentMainService;
      @Resource
@@ -353,6 +348,47 @@ public class OrganCommentController  extends BaseController{
 		   responseDataMap.put("success", flag);
 	       notificationMap.put("notifCode", "0001");
 		   notificationMap.put("notifInfo", "hello mobile app!");
+		model.put("responseData", responseDataMap);
+		model.put("notification", notificationMap);
+		return model;
+	}
+	
+	
+	/**查询一条评论内容
+	 * @author zbb
+	 */
+	@ResponseBody
+	@RequestMapping(value="/findOne.json",method=RequestMethod.POST)
+	public Map<String, Object> findOne(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		 String requestJson = getJsonParamStr(request);
+		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
+		Map<String, Object> notificationMap = new HashMap<String, Object>();
+        User userBasic=null;
+        userBasic=getUser(request);
+		boolean flag = true;
+		if (requestJson != null && !"".equals(requestJson)){
+			JSONObject jo = JSONObject.fromObject(requestJson);
+				  long id = CommonUtil.getLongFromJSONObject(jo, "id");  //品论的id
+				  CommentMain commentMain = commentMainService.findOne(id);
+			      Long praisecount = commentPraiseService.selectPraiseCount(id);
+			      boolean praiseresult=false;
+			      if(userBasic!=null){
+			         praiseresult = commentPraiseService.selectUserPraiseCount(userBasic.getId(), id);
+			      }
+			      commentMain.setPraisecount(praisecount);
+			      commentMain.setPraiseresult(praiseresult);
+			      commentMain.setReplyMap(ommentReplyService.findByCommentid(id));
+			      commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
+			      responseDataMap.put("commentMain", commentMain);
+		}else{
+			setSessionAndErr(request, response, "-1", "请完善信息！");
+			 flag = false;
+		}
+		   responseDataMap.put("success", flag);
+	       notificationMap.put("notifCode", "0001");
+			notificationMap.put("notifInfo", "hello mobile app!");
 		model.put("responseData", responseDataMap);
 		model.put("notification", notificationMap);
 		return model;
