@@ -159,8 +159,13 @@ public abstract class BaseController {
             }
         }
         
+        System.out.println("无法获取用户");
+        User user = new User();
+        user.setId(1);
+        user.setName("yinxing");
+        user.setPicPath("/public/c/phoenix-fe/0.0.1/common/images/default200.jpg");
+        return user;
         
-          return null;
     }
 
     private User getUser(HttpServletRequest request, String key) {
@@ -171,6 +176,7 @@ public abstract class BaseController {
         User user = (User) cache.getByRedis(key);
         
         if(user==null){
+        	System.out.println("无法获取用户");
         	   user = new User();
               user.setId(1);
               user.setName("yinxing");
