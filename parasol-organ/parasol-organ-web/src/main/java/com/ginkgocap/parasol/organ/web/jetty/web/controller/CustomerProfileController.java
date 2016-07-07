@@ -146,6 +146,7 @@ public class CustomerProfileController extends BaseController {
 				jo.remove("associateList");
 				jo.remove("templateName");
 				jo.remove("templateType");
+				jo.remove("columns");// 不知道什么东西暂时去掉
 				userBasic = getUser(request);
 
 				System.out.println("requestJson:" + requestJson);
