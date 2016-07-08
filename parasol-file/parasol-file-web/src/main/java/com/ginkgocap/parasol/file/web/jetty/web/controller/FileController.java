@@ -96,6 +96,21 @@ public class FileController extends BaseControl {
 	
 	@Autowired
 	private PicUserService picUserService;
+	
+//	String taskId = MakePrimaryKey.getPrimaryKey();
+	
+	/**
+	 * 获取文件taskId 
+	 */
+	@RequestMapping(path = { "/file/getTaskId" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getTaskId(HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
+		MappingJacksonValue mappingJacksonValue = null;
+		Map<String, Object> result = new HashMap<String, Object>();
+		String taskId = MakePrimaryKey.getPrimaryKey();
+		result.put("taskId", taskId);
+		mappingJacksonValue = new MappingJacksonValue(result);
+		return mappingJacksonValue;
+	}
 	/**
 	 * 
 	 * @param fileds
@@ -112,7 +127,7 @@ public class FileController extends BaseControl {
 			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
 			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
 			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
-//			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId,
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId,
 			HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -141,7 +156,6 @@ public class FileController extends BaseControl {
 				generateAvatar(fields[0], fields[1], fileExtName, null);
 				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
 			}
-			String taskId = MakePrimaryKey.getPrimaryKey();
 			FileIndex index = new FileIndex();
 			index.setAppId(loginAppId);
 			index.setCreaterId(loginUserId);
