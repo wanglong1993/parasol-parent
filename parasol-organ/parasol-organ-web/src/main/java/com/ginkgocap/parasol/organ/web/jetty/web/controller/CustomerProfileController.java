@@ -43,6 +43,7 @@ import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagService;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.ywxt.dynamic.service.DynamicNewsService;
+import com.ginkgocap.ywxt.organ.model.Area;
 import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
@@ -59,6 +60,7 @@ import com.gintong.common.phoenix.permission.entity.PermissionQuery;
 import com.gintong.common.phoenix.permission.service.PermissionRepositoryService;
 import com.gintong.frame.util.dto.InterfaceResult;
 import com.gintong.frame.util.dto.Notification;
+import com.google.gson.JsonObject;
 
 /**
  * Created by jbqiu on 2016/6/10. controller 组织点评controller
@@ -155,10 +157,18 @@ public class CustomerProfileController extends BaseController {
 						Customer.class);
 				JSONArray moudles=customer.getMoudles();
 				JSONObject basiInfoMoudle=null;
+				JSONObject briefMoudle=null;
 				for(int i=0;i<moudles.size();i++){
 					 JSONObject jsonObject=moudles.getJSONObject(i);
-					 if(jsonObject.getInt("moudleId")==1||jsonObject.getInt("moudleId")==2){
+					 if(jsonObject.getInt("moudleId")==1||jsonObject.getInt("moudleId")==2){// 基本信息模块
 						 basiInfoMoudle=jsonObject;
+					 }
+					 
+					 if(jsonObject.getInt("moudleId")==3){// 企业简介模块
+						 briefMoudle=jsonObject;
+					 }
+					 if(briefMoudle!=null&&basiInfoMoudle!=null){
+						 continue;
 					 }
 				}
 				
@@ -187,9 +197,24 @@ public class CustomerProfileController extends BaseController {
 							}
 							
 						}else if("district".equals(name)){
-							JSONObject valueJo=control.getJSONObject("value");
-							customer.setAreaString(valueJo.getString("province")+"-"+valueJo.getString("city")+"-"+valueJo.getString("county"));
 							
+							JSONObject valueJo=control.getJSONObject("value");
+							String province=valueJo.getString("province");
+							String city=valueJo.getString("city");
+							String county=valueJo.getString("county");
+							
+							if(province.equals(city)){
+								customer.setAreaString(city+"-"+county);
+
+							}else{
+								customer.setAreaString(province+"-"+city+"-"+county);
+							}
+							
+							Area area=new Area();
+							area.setCity(city);
+							area.setProvince(province);
+							area.setCounty(county);
+							customer.setArea(area);
 						}else if("industry".equals(name)){
 							JSONObject valueJo=control.getJSONObject("value");
 							customer.setIndustry(valueJo.getString("industry"));
@@ -221,6 +246,18 @@ public class CustomerProfileController extends BaseController {
 				}else{
 					return returnFailMSGNew("01", "找不到基础信息模块");
 				}
+				
+				
+				if(briefMoudle!=null){
+					
+					JSONArray controlList=briefMoudle.getJSONArray("controlList");
+					JSONObject  briefObj=controlList.getJSONObject(0);
+					customer.setDiscribe(briefObj.getString("value"));
+					
+				}else{
+					return returnFailMSGNew("01", "找不到企业简介模块");
+				}
+				
 				
 				
 				Customer oldCustomer = customerService
