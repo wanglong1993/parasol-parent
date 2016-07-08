@@ -10,6 +10,8 @@ import com.ginkgocap.ywxt.organ.service.comment.CommentPraiseService;
 import com.ginkgocap.ywxt.organ.service.comment.CommentReplyService;
 import com.ginkgocap.ywxt.organ.service.template.TemplateService;
 import com.ginkgocap.ywxt.user.model.User;
+import com.ginkgocap.ywxt.user.model.UserConfig;
+import com.ginkgocap.ywxt.user.service.UserConfigService;
 import com.ginkgocap.ywxt.util.PageUtil;
 
 import net.sf.json.JSONObject;
@@ -45,7 +47,8 @@ public class OrganCommentController  extends BaseController{
      private CommentReplyService ommentReplyService;
  	@Autowired
  	public TemplateService templateService;
-    
+ 	@Resource
+ 	public UserConfigService userConfigService;
      /**保存发布评论
  	 * @author zbb
  	 */
@@ -177,6 +180,9 @@ public class OrganCommentController  extends BaseController{
 			    	  commentMain.setReplyMap(ommentReplyService.findByCommentid(id));
 			    	  commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
 			       }
+			       UserConfig config = userConfigService.getByUserId(userBasic.getId());
+			       int quanixan=config.getEvaluateVisible();
+			       responseDataMap.put("Jurisdiction", quanixan);
 			       responseDataMap.put("commentMap", commentMainlist);
 		}else{
 			setSessionAndErr(request, response, "-1", "请完善信息！");
@@ -219,6 +225,8 @@ public class OrganCommentController  extends BaseController{
 					CommentPraise commentPraise=new CommentPraise();
 					commentPraise.setCommentid(commentid);
 					commentPraise.setUserid(userid);
+					commentPraise.setUsername(userBasic.getName());
+					commentPraise.setUserpic(userBasic.getPicPath());
 					commentPraiseService.insertPraiseUser(commentPraise);
 				}
 			}
@@ -373,10 +381,12 @@ public class OrganCommentController  extends BaseController{
 				  long id = CommonUtil.getLongFromJSONObject(jo, "id");  //品论的id
 				  CommentMain commentMain = commentMainService.findOne(id);
 			      Long praisecount = commentPraiseService.selectPraiseCount(id);
+			      List<CommentPraise> praiseUser = commentPraiseService.selectCommentPraiseUser(id);
 			      boolean praiseresult=false;
 			      if(userBasic!=null){
 			         praiseresult = commentPraiseService.selectUserPraiseCount(userBasic.getId(), id);
 			      }
+			      commentMain.setPraiseUser(praiseUser);
 			      commentMain.setPraisecount(praisecount);
 			      commentMain.setPraiseresult(praiseresult);
 			      commentMain.setReplyMap(ommentReplyService.findByCommentid(id));

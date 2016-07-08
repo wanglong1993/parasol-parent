@@ -2027,7 +2027,7 @@ function login() {
         dataType : "text",
         cache : false,
         success : function(data,statusText, jqXHR) {
-         //  sessionId=jqXHR.getResponseHeader("sessionID");
+         // sessionId=jqXHR.getResponseHeader("sessionID");
            sessionId="ea469c36-bba6-4572-a336-b41001a3e689";
             $("#resultDiv").html(data);
         }
