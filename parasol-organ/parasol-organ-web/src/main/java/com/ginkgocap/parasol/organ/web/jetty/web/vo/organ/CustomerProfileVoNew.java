@@ -1,6 +1,7 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.vo.organ;
 
 import com.ginkgocap.ywxt.organ.model.Area;
+import com.ginkgocap.ywxt.organ.model.CustomerTag;
 import com.ginkgocap.ywxt.organ.model.JsonObj;
 import com.ginkgocap.ywxt.organ.model.profile.CustomerPersonalLine;
 import com.ginkgocap.ywxt.organ.model.profile.CustomerPersonalPlate;
@@ -69,6 +70,17 @@ public class CustomerProfileVoNew implements Serializable {
 	private String email;// 组织/客户邮箱
 	private String linkManName;// 联系人姓名
 	private String organNumber;// 组织号
+	
+	 private String relevance;//关联信息
+	 
+
+	public String getRelevance() {
+		return relevance;
+	}
+
+	public void setRelevance(String relevance) {
+		this.relevance = relevance;
+	}
 
 	// 复杂模块
 	private JSONArray moudles;

@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
 import com.ginkgocap.ywxt.user.service.FriendsRelationService;
 import com.ginkgocap.ywxt.user.service.UserService;
 
@@ -18,6 +19,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
+import com.ginkgocap.parasol.organ.web.jetty.web.service.DealCustomerConnectInfoService;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.BigDataModel;
@@ -44,12 +47,19 @@ import com.ginkgocap.parasol.tags.service.TagService;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.ywxt.dynamic.service.DynamicNewsService;
 import com.ginkgocap.ywxt.organ.model.Area;
+import com.ginkgocap.ywxt.organ.model.ConnectionInfo;
+import com.ginkgocap.ywxt.organ.model.Constants2;
 import com.ginkgocap.ywxt.organ.model.Customer;
+import com.ginkgocap.ywxt.organ.model.CustomerGroup;
+import com.ginkgocap.ywxt.organ.model.CustomerTag;
+import com.ginkgocap.ywxt.organ.model.SimpleCustomer;
 import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
 import com.ginkgocap.ywxt.organ.service.CustomerCountService;
+import com.ginkgocap.ywxt.organ.service.CustomerGroupService;
 import com.ginkgocap.ywxt.organ.service.CustomerService;
 import com.ginkgocap.ywxt.organ.service.SimpleCustomerService;
+import com.ginkgocap.ywxt.organ.service.tag.RCustomerTagService;
 import com.ginkgocap.ywxt.organ.service.template.TemplateService;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.DateFunc;
@@ -109,13 +119,20 @@ public class CustomerProfileController extends BaseController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-
+	@Resource
+	private CustomerGroupService customerGroupService;
 	
 	@Autowired
 	private DynamicNewsService dynamicNewService;
 	
 	@Autowired
 	private FriendsRelationService friendsRelationService;
+	
+	@Resource
+	private RCustomerTagService rCustomerTagService;
+
+	@Resource
+	private DealCustomerConnectInfoService dealCustomerConnectInfoService;
 	
 	long appId = 1;
 	long sourceType = 3;
@@ -133,7 +150,7 @@ public class CustomerProfileController extends BaseController {
 		String requestJson = getJsonParamStr(request);
 		;
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
-		User userBasic = null;
+		User user = null;
 		if (requestJson != null && !"".equals(requestJson)) {
 			try {
 				JSONObject jo = JSONObject.fromObject(requestJson);
@@ -149,7 +166,7 @@ public class CustomerProfileController extends BaseController {
 				jo.remove("templateName");
 				jo.remove("templateType");
 				jo.remove("columns");// 不知道什么东西暂时去掉
-				userBasic = getUser(request);
+				user = getUser(request);
 
 				System.out.println("requestJson:" + requestJson);
 				ObjectMapper objectMapper = new ObjectMapper();
@@ -168,7 +185,7 @@ public class CustomerProfileController extends BaseController {
 						 briefMoudle=jsonObject;
 					 }
 					 if(briefMoudle!=null&&basiInfoMoudle!=null){
-						 continue;
+						 break;
 					 }
 				}
 				
@@ -263,7 +280,7 @@ public class CustomerProfileController extends BaseController {
 				Customer oldCustomer = customerService
 						.findOne(customer.getId());
 				if (oldCustomer != null
-						&& userBasic.getId() != oldCustomer.getCreateById()) {// 修改
+						&& user.getId() != oldCustomer.getCreateById()) {// 修改
 					setSessionAndErr(request, response, "-1", "您没有权限进行此操作");
 					return returnFailMSGNew("01", "您没有权限进行此操作");
 				}
@@ -274,7 +291,7 @@ public class CustomerProfileController extends BaseController {
 				if (isNullOrEmpty(customer.getPicLogo())) {
 					customer.setPicLogo(Constants.ORGAN_DEFAULT_PIC_PATH);
 				}
-				customer.setCreateById(userBasic.getId());
+				customer.setCreateById(user.getId());
 				customer.setVirtual("0");
 				customer.setAuth(-1);// 客户都是未进行认证的。
 				customer.setUtime(DateFunc.getDate());
@@ -285,40 +302,56 @@ public class CustomerProfileController extends BaseController {
 				// "p":[{"tag":"111","conn":[{"type":2,"id":"141527672992500079","name":"五小六","ownerid":1,"ownername":"","caree":"","company":""}]}],
 				// "o":[{"tag":"22","conn":[{"type":5,"id":618,"name":"我的测试客户","ownerid":"","ownername":"","address":"","hy":","},{"type":5,"id":617,"name":" 中国平安","ownerid":"","ownername":"","address":"","hy":",保险公司,"}]}],
 				// "k":[{"tag":"44","conn":[{"type":5,"id":618,"title":"测试知识","ownerid":"","ownername":"","columntype":"","columnpath":""]}
-				// String relevance=JsonUtil.getJsonNode(requestJson,
-				// "relevance").toString();
-				// if(StringUtils.isBlank(relevance) ||
-				// StringUtils.equals(relevance, "{}")){
-				// relevance="{\"r\":[],\"p\":[],\"o\":[],\"k\":[]}";
-				// }
-				// 目录
-				// [2,3,4]
-				// String directory=JsonUtil.getJsonNode(requestJson,
-				// "directory").toString();
-				// if(StringUtils.isBlank(directory)){
-				// directory="[]";
-				// }
-				// 标签
-				// [{"tagId":1,"tagName":"飞凤舞"}]
-				// String tagJson=JsonUtil.getJsonNode(requestJson,
-				// "lableList").toString();
-				// if(StringUtils.isBlank(tagJson)){
-				// tagJson="[]";
-				// }
+				 String relevance=JsonUtil.getJsonNode(requestJson,
+				 "relevance").toString();
+				 if(StringUtils.isBlank(relevance) ||
+				 StringUtils.equals(relevance, "{}")){
+				 relevance="{\"r\":[],\"p\":[],\"o\":[],\"k\":[]}";
+				 }
+//				 目录
+//				 [2,3,4]
+				 String directory=JsonUtil.getJsonNode(requestJson,
+				 "directory").toString();
+				 if(StringUtils.isBlank(directory)){
+				 directory="[]";
+				 }
+//				 标签
+//				 [{"tagId":1,"tagName":"飞凤舞"}]
+				 String tagJson=JsonUtil.getJsonNode(requestJson,
+				 "lableList").toString();
+				 if(StringUtils.isBlank(tagJson)){
+					 tagJson="[]";
+				 }
+				 
+				 rCustomerTagService.saveAll(customer.getCustomerId(), tagJson, user.getId());// 保存标签
+				 
+				 
+			     customer.setDirectory(directory);
+			     customer.setRelevance(relevance);
 
-				// //标签转成CustomerTag对象
-				// List<CustomerTag> tagList= new ArrayList<CustomerTag>();
-				// if(StringUtils.isNotBlank(tagJson)){
-				// tagList = objectMapper.readValue(tagJson,new
-				// TypeReference<List<CustomerTag>>() {});
-				// }
+				 //标签转成CustomerTag对象
+				 List<CustomerTag> tagList= new ArrayList<CustomerTag>();
+				 if(StringUtils.isNotBlank(tagJson)){
+				 tagList = objectMapper.readValue(tagJson,new
+						 TypeReference<List<CustomerTag>>() {});
+				 }
 
-				// customer.setLableList(tagList);
+				 customer.setLableList(tagList);
 
+				 
+				
+				 
+				 
 				if (oldCustomer != null) {
 					customer.setCustomerId(oldCustomer.getCustomerId());
 				}
 
+				
+				JSONObject customerPermissions = jo
+						.getJSONObject("customerPermissions");
+				
+				customer.setCustomerPermissions(customerPermissions.toString());
+				
 				boolean isAdd = false; // 是否增加
 				if (customer.getCustomerId() == 0) {
 
@@ -332,7 +365,7 @@ public class CustomerProfileController extends BaseController {
 				} else {
 
 					PermissionQuery p = new PermissionQuery();
-					p.setUserId(userBasic.getId());
+					p.setUserId(user.getId());
 					p.setResId(customer.getCustomerId());
 					p.setResType((short) sourceType);
 					InterfaceResult interfaceReslut = customerService
@@ -360,12 +393,29 @@ public class CustomerProfileController extends BaseController {
 
 				}
 
+				
+				if(!isNullOrEmpty(relevance)){
+					Map<String, Object> map =  dealCustomerConnectInfoService.insertCustomerConnectInfo(relevance, customer.getId(), user.getId());
+					String result = String.valueOf(map.get(Constants2.status));//0 关联失败 1 关联成功
+				}
+				String groupIds="";
+				if(StringUtils.isNotBlank(directory)&& !StringUtils.equals(directory, "[]")){
+					JSONArray arr = JSONArray.fromObject(directory);
+					groupIds = StringUtils.join(arr, ",");
+				}
+				customerGroupService.updateGroup(customer.getId()+"", groupIds);
+				//if(!"[]".equals(tagJson)){
+					rCustomerTagService.saveAll(customer.getId(), tagJson, user.getId());
+				//}
+				
+				
+				
+				
 				System.out.println("客户e:" + customer.getCustomerId());
 				jo = JSONObject.fromObject(requestJson);
 
 				// 保存权限
-				JSONObject customerPermissions = jo
-						.getJSONObject("customerPermissions");
+			
 				if (customerPermissions != null) {
 
 					System.out.println("customerPermissions:"
@@ -378,7 +428,7 @@ public class CustomerProfileController extends BaseController {
 								customer.getCustomerId(), ResourceType.ORG)
 								.getResponseData();
 					}
-					per.setResOwnerId(userBasic.getId());// 资源所有者id
+					per.setResOwnerId(user.getId());// 资源所有者id
 					per.setPublicFlag(customerPermissions.getInt("publicFlag"));// 公开-1，私密-0
 					per.setShareFlag(customerPermissions.getInt("shareFlag"));// 可分享-1,不可分享-0
 					per.setConnectFlag(customerPermissions
@@ -393,109 +443,9 @@ public class CustomerProfileController extends BaseController {
 					}
 
 				}
-				//
-				// // // 保存目录
-				// JSONArray directoryArry = jo.getJSONArray("directory");
-				//
-				// Directory directory = new Directory();
-				// directory.setAppId(appId);
-				// directory.setName("蔡志刚" + System.currentTimeMillis());
-				// directory.setUserId(userBasic.getId());
-				// directory.setTypeId(3);
-				//
-				// long directoryId = directoryService.createDirectoryForRoot(
-				// (long) sourceType, directory);
-				// System.out.println("创建目录Id为" + directoryId);
-				//
-				// if (!isAdd) {// 如果不是新增资源先删除原来的目录
-				// directorySourceService.removeDirectorySourcesBySourceId(
-				// userBasic.getId(), (long) 1, (int) sourceType,
-				// customer.getCustomerId());
-				// }
-				//
-				// for (int i = 0; i < directoryArry.size(); i++) {
-				// DirectorySource directorySource = new DirectorySource();
-				// directorySource = new DirectorySource();
-				// directorySource.setDirectoryId(directoryArry.getLong(i));
-				// directorySource.setAppId(appId);
-				// directorySource.setUserId(userBasic.getId());
-				// directorySource.setSourceId(customer.getCustomerId());
-				// directorySource.setSourceType((int) sourceType);
-				// directorySource.setCreateAt(System.currentTimeMillis());
-				//
-				// directorySourceService
-				// .createDirectorySources(directorySource);
-				// }
-				//
-				// // 保存标签
-				// JSONArray tagArry = jo.getJSONArray("tagList");
-				// Tag tag = new Tag();
-				// tag.setAppId(appId);
-				// tag.setTagName("蔡志刚:  " + System.currentTimeMillis());
-				// tag.setTagType(sourceType);
-				// long tagId = tagService.createTag(userBasic.getId(), tag);
-				//
-				// System.out.println("创建标签为:  " + tagId);
-				//
-				// if (!isAdd) {// 如果不是新增客户 先删除原来的标签
-				// tagSourceService.removeTagSource((long) 1,
-				// userBasic.getId(), customer.getId());
-				// }
-				//
-				// if (tagArry != null && tagArry.size() > 0) {// 添加标签
-				// System.out.println("tagArry:" + tagArry);
-				// for (int i = 0; i < tagArry.size(); i++) {
-				// TagSource tagSource = new TagSource();
-				// tagSource.setTagId(tagId);
-				// tagSource.setAppId(appId);
-				// tagSource.setUserId(userBasic.getId());
-				// tagSource.setSourceId(customer.getCustomerId());
-				// tagSource.setSourceType(sourceType);
-				// tagSource.setCreateAt(System.currentTimeMillis());
-				// tagSourceService.createTagSource(tagSource);
-				// }
-				// }
-				//
-				// // 保存关联
-				// if (!isAdd) {// 如果不是增加先删除原来关联关系
-				//
-				// List<Associate> associateList = associateService
-				// .getAssociatesBySourceId(appId,
-				// userBasic.getId(),
-				// customer.getCustomerId());
-				// for (Associate associate : associateList) {
-				// associateService.removeAssociate(appId,
-				// userBasic.getId(), associate.getId());
-				// }
-				// }
-				// JSONArray associateArray = jo.getJSONArray("associateList");
-				// System.out.println("associateList:" + associateArray);
-				// for (int i = 0; i < associateArray.size(); i++) {
-				//
-				// JSONObject associateJsonObject = (JSONObject) associateArray
-				// .opt(i);
-				// Associate associate = new Associate();
-				// associate.setUserId(userBasic.getId());
-				// associate.setAppId(1);
-				// associate.setSourceTypeId(sourceType);
-				// associate.setSourceId(customer.getCustomerId());
-				// associate.setAssocDesc(associateJsonObject
-				// .has("assoc_desc") ? associateJsonObject
-				// .getString("assoc_desc") : null);
-				// associate.setAssocTypeId(associateJsonObject
-				// .has("assoc_type_id") ? associateJsonObject
-				// .getLong("assoc_type_id") : null);
-				// associate
-				// .setAssocId(associateJsonObject.has("associd") ?
-				// associateJsonObject
-				// .getLong("associd") : null);
-				// associate.setAssocTitle(associateJsonObject
-				// .has("assoc_title") ? associateJsonObject
-				// .getString("assoc_title") : null);
-				// associate.setCreateAt(System.currentTimeMillis());
-				// associateService.createAssociate(appId,
-				// userBasic.getId(), associate);
-				// }
+		
+				
+				
 				// 生成动态
 //				saveCustomerDynamicNews(getUser(request),customer,customerPermissions.toString());
 
@@ -536,16 +486,40 @@ public class CustomerProfileController extends BaseController {
 		CustomerProfileVoNew customer_new = new CustomerProfileVoNew();
 		Customer customer_temp = customerService.findCustomerCurrentData(
 				customerId, "0");// 组织详情基本资料
+		
+		
+	
+		
+		
+		User userBasic = getUser(request);
+		
+		
+		
+		
+		
 		String sckNum = "";
-		User userBasic = null;
+		
 		if (customer_temp != null) {
+			
+			long createById=customer_temp.getCreateById();
+			
+			if(createById!=userBasic.getId()){
+				String customerPermissions =customer_temp.getCustomerPermissions();
+				JSONObject  permissonJo=JSONObject.fromObject(customerPermissions);
+				int publicFlag= permissonJo.getInt("publicFlag");
+				if(publicFlag==0){
+					return returnFailMSGNew("-1", "您没有权限查看该客户");
+				}
+			}
+			
+			
 			sckNum = customer_temp.getStockNum();// 证券号码
 			customer_new.setCustomerId(customer_temp.getCustomerId());
 			customer_new.setName(customer_temp.getName());
 			customer_new.setIndustry(customer_temp.getIndustry());
 			customer_new.setIndustryId(customer_temp.getIndustryId());
 			customer_new.setIsListing(customer_temp.getIsListing());
-			userBasic = getUser(request);
+			
 			customer_new.setLoginUserId(userBasic.getId());
 			// 新增是否收藏
 			customer_new.setIsCollect(customerCollectService
@@ -578,9 +552,9 @@ public class CustomerProfileController extends BaseController {
 
 			customer_new.setDirectory(customer_temp.getDirectory());
 
-			// customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));
-			// cusotmerCommonService.findFourModule(responseData,
-			// customer_temp,rpe.getNginxRoot());
+			 customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));
+             findFourModule(customer_temp,responseData);
+			 
 			customer_new.setIndustryObj(customer_temp.getIndustryObj());
 
 			customer_new.setOrgType(customer_temp.getOrgType());
@@ -590,12 +564,14 @@ public class CustomerProfileController extends BaseController {
 			customer_new.setLinkManName(customer_temp.getLinkManName());
 
 			customer_new.setId(customer_temp.getId());
-
+			customer_new.setCustomerId(customer_temp.getCustomerId());
 			// 设置模板ID
 			customer_new.setTemplateId(customer_temp.getTemplateId());
 			// 设置模块
 
 			customer_new.setMoudles(customer_temp.getMoudles());
+			customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));
+			customer_new.setRelevance(customer_temp.getRelevance());
 
 			// permissionRepositoryService.selectByRes(customer_temp.getCustomerId(),
 			// ResourceType.);
@@ -697,8 +673,8 @@ public class CustomerProfileController extends BaseController {
 		long customerId = JsonUtil.getNodeToLong(j, "customerId");
 		BigDataModel bigDataCustomer = new BigDataModel();
 
-		Customer customer_temp = customerService.findCustomerCurrentData(
-				customerId, "2");
+		Customer customer_temp = customerService.findCustomerCurrentData(customerId, "2");
+				
 		if (customer_temp != null) {
 			bigDataCustomer.setId(customer_temp.getId());
 			bigDataCustomer.setName(customer_temp.getName());
@@ -1085,4 +1061,43 @@ public class CustomerProfileController extends BaseController {
 	    System.out.println("插入动态成功");
     }
 
+    
+    
+	public void findFourModule(Customer customer_temp,Map responseData){
+			
+		try{
+		
+			// 新增目录列表
+			List<Map<String, Object>> directoryMap = new ArrayList<Map<String, Object>>();
+			List<CustomerGroup> groups = customerGroupService
+					.findByCustomerId(customer_temp.getCustomerId());
+			if (groups != null && groups.size() > 0) {
+				for (int i = 0; i < groups.size(); i++) {
+					CustomerGroup group = groups.get(i);
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("id", group.getId());
+					map.put("name", group.getName());
+					directoryMap.add(map);
+				}
+			}
+			// 关联
+			String relevance = customer_temp.getRelevance();
+			Map<String, Object> relevanceMap = new HashMap<String, Object>();
+			if (StringUtils.isNotBlank(relevance)) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				relevanceMap = objectMapper.readValue(relevance,
+						new TypeReference<HashMap<String, Object>>() {
+						});
+			}
+			responseData.put("directory", directoryMap);
+			responseData.put("relevance", relevanceMap);
+
+		}catch(Exception e){
+			logger.info("查询组织客户详情时,四大组织报错，报错信息为:",e);
+		}
+		
+	}
+
+	
+	
 }
