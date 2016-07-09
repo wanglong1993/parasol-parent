@@ -61,5 +61,10 @@
         <property name="local" value="true"></property>
         <property name="localTTL" value="${user.cache.expiredTime}"></property>
 	</bean>
+
+    <bean class="com.ginkgocap.parasol.organ.web.jetty.web.utils.ImageUtils">
+        <property name="imageUrl" value="http://www.baidu.com" />
+        <property name="invitUrl" value="http://local.gintong.com/" />
+    </bean>
 	
 </beans>
