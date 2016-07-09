@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.ObjectUtils;
 
 import net.sf.json.JSONObject;
 
@@ -46,6 +47,7 @@ import com.ginkgocap.ywxt.organ.service.CustomerService;
 import com.ginkgocap.ywxt.organ.service.SimpleCustomerService;
 import com.ginkgocap.ywxt.organ.service.tag.RCustomerTagService;
 import com.ginkgocap.ywxt.user.model.User;
+import com.ginkgocap.ywxt.user.service.FriendsRelationService;
 import com.ginkgocap.ywxt.util.JsonUtil;
 import com.ginkgocap.ywxt.util.PageUtil;
 import com.gintong.common.phoenix.permission.entity.PermissionQuery;
@@ -57,11 +59,15 @@ import com.gintong.common.phoenix.permission.entity.PermissionQuery;
  * @date 2015-3-10
  */
 @Controller
-@RequestMapping("/organ")
+@RequestMapping("/org")
 public class OrgAndCustomerController  extends BaseController {
+	
+	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	SimpleCustomerService simpleCustomerService;
+	@Autowired
+	FriendsRelationService friendsRelationService;
 	@Resource
 	private RCustomerTagService rCustomerTagService;
 	@Resource
@@ -78,6 +84,238 @@ public class OrgAndCustomerController  extends BaseController {
 	private DirectorySourceService directorySourceService;
 	@Autowired
 	private DirectoryService directoryService;
+	
+	/**
+	 * 我的客户组织列表
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getOrgAndCustomer.json", method = RequestMethod.POST)
+	public Map<String, Object> getOrgNoticesList(HttpServletRequest request,
+			HttpServletResponse response) {
+		logger.info("/org/getOrgAndCustomer.json");
+		User user = getUser(request);
+		// 获取json参数串
+		String requestJson = "";
+		try {
+			requestJson = getJsonParamStr(request);
+		} catch (IOException e) {
+			logger.error("参数读取异常");
+		}
+		// 封装 response
+		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
+		Map<String, Object> notificationMap = new HashMap<String, Object>();
+		Map<String,Object> mapPage=new HashMap<String, Object>();
+		if (!isNullOrEmpty(requestJson)) {
+			JSONObject j = JSONObject.fromObject(requestJson);
+			if (user == null) {
+				setSessionAndErr(request, response, "-1", "请登录以后再操作");
+			} else {
+				int currentPage=j.optInt("index")+1; //默认是0 所以+1
+				int pageSize=j.optInt("size");
+				pageSize = pageSize == 0 ? 20 : pageSize;
+			    String groupId = j.optString( "groupId");
+			    String tagId =  j.optString( "tagId");
+			    String type=j.optString("type");
+			    String name="";
+			    if(j.has("name")){
+			    	name =j.optString("name");
+			    }
+			    if("0".equals(groupId)) {
+			    	groupId ="";
+			    }
+			    
+			    //接照分组查询
+			    if(!StringUtils.isBlank(groupId)) {
+			    	Map<String, Object> bsn = customerService.findByParam(user.getId(), groupId, "", "", currentPage, pageSize);
+			    	PageUtil pageUtil= (PageUtil) bsn.get("page");
+					int total=pageUtil.getCount();
+					mapPage.put("total", total);
+					List<SimpleCustomer> list = (List<SimpleCustomer>) bsn.get("results");
+					this.thisIsSbMethod(user.getId(),list);
+					mapPage.put("listResults",bsn.get("results"));
+					mapPage.put("index", currentPage-1);
+					mapPage.put("size", pageSize);
+			    	
+			    } else if(!StringUtils.isBlank(tagId) ){ //接照标签查询
+			    	Map<String,Object> bsn =rCustomerTagService.getListByTagId(Long.valueOf(tagId), user.getId(), "nameIndex", currentPage, pageSize);
+			    	PageUtil pageUtil= (PageUtil) bsn.get("page");
+					int total=pageUtil.getCount();
+					mapPage.put("total", total);
+					List<SimpleCustomer> list = (List<SimpleCustomer>) bsn.get("results");
+					this.thisIsSbMethod(user.getId(),list);
+					mapPage.put("listResults",bsn.get("results"));
+					mapPage.put("index", currentPage-1);
+					mapPage.put("size", pageSize);
+			    } else {
+			           //查询我的组织好友id
+					   List<Long> ids = friendsRelationService.findFirendsIdByPram(user.getId(), 2);
+					   //查询我的收藏的组织客户id
+					   List<Long> customerIds=customerCollectService.getCustomerIdsByParam(user.getId(), 0);
+						//分页列表
+					   Map<String,Object>   bsn=new HashMap<String,Object>();
+					   if("".equals(StringUtils.trimToEmpty(type))||"-2".equals(StringUtils.trimToEmpty(type))){//全部客户和我的组织好友
+						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),ids, customerIds,StringUtils.trimToEmpty(name),currentPage, pageSize);
+					   }else if("-1".equals(StringUtils.trimToEmpty(type))){//全部客户
+						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),null, customerIds,StringUtils.trimToEmpty(name),currentPage, pageSize);
+					   }else if("1".equals(StringUtils.trimToEmpty(type))){//我创建的
+						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),null, null,StringUtils.trimToEmpty(name),currentPage, pageSize);
+					   }else if("2".equals(StringUtils.trimToEmpty(type))){//我收藏的
+							if(customerIds!=null&&customerIds.size()>0){
+								 bsn=simpleCustomerService.findByOrgAndCustmer(-2,null, customerIds,StringUtils.trimToEmpty(name),currentPage, pageSize);
+							}else{//如果没有收藏，直接返回
+								PageUtil page = new PageUtil(0, 1, 20);
+								bsn.put("page", page);
+								bsn.put("results", new ArrayList<SimpleCustomer>());
+							}
+					   }else if("3".equals(StringUtils.trimToEmpty(type))){//其他
+						   if(ids!=null&&ids.size()>0){
+							    bsn=simpleCustomerService.findByOrgAndCustmer(-2,ids, null,StringUtils.trimToEmpty(name),currentPage, pageSize);
+						   }else{
+							    PageUtil page = new PageUtil(0, 1, 20);
+								bsn.put("page", page);
+								bsn.put("results", new ArrayList<SimpleCustomer>());
+						   }
+					   }else if("4".equals(StringUtils.trimToEmpty(type))){//好友和我创建的客户
+						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),ids, null,StringUtils.trimToEmpty(name),currentPage, pageSize);
+					   }
+					   
+						PageUtil pageUtil= (PageUtil) bsn.get("page");
+						int total=pageUtil.getCount();
+						mapPage.put("total", total);
+						List<SimpleCustomer> list = (List<SimpleCustomer>) bsn.get("results");
+						this.thisIsSbMethod(user.getId(),list);
+						mapPage.put("listResults",bsn.get("results"));
+						mapPage.put("index", currentPage-1);
+						mapPage.put("size", pageSize);
+			    }
+			
+			}
+
+		} else {
+			setSessionAndErr(request, response, "-1", "输入参数不合法");
+		}
+		responseDataMap.put("success",true);
+		responseDataMap.put("page",mapPage);
+		notificationMap.put("notifCode", "0001");
+		notificationMap.put("notifInfo", "hello mobile app!");
+		model.put("responseData", responseDataMap);
+		model.put("notification", notificationMap);
+		return model;
+	}
+	
+	
+	/**
+	 * 删除组织好友或者客户
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deleteOrgAndCustomer.json", method = RequestMethod.POST)
+	public Map<String, Object> delete(HttpServletRequest request,
+			HttpServletResponse response) {
+		logger.info("/org/deleteOrgAndCustomer.json");
+		User user = getUser(request);
+		// 获取json参数串
+		String requestJson = "";
+		try {
+			requestJson = getJsonParamStr(request);
+		} catch (IOException e) {
+			logger.error("参数读取异常");
+		}
+		// 封装 response
+		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
+		Map<String, Object> notificationMap = new HashMap<String, Object>();
+		if (!isNullOrEmpty(requestJson)) {
+			JSONObject j = JSONObject.fromObject(requestJson);
+			if (user == null) {
+				setSessionAndErr(request, response, "-1", "请登录以后再操作");
+			} else {
+			
+			    String customerId = j.optString( "customerId");
+			    SimpleCustomer simpleCustomer =  simpleCustomerService.findByCustomerId(Long.valueOf(customerId));
+			 
+			    if(simpleCustomer == null  ||  simpleCustomer.getVirtual() == 0) {//删除客户
+			    	   if(simpleCustomer != null && simpleCustomer.getCreateById()!=user.getId()) {
+							  responseDataMap.put("success", false);
+							  responseDataMap.put("msg", "操作成功");
+							  notificationMap.put("notifCode", "0001");
+							  notificationMap.put("notifInfo", "操作失败,不能删除别人的客户");
+					    } else {
+					    	  customerService.deleteById(String.valueOf(customerId));
+							  responseDataMap.put("success", true);
+							  responseDataMap.put("msg", "操作成功");
+							  notificationMap.put("notifCode", "0001");
+							 notificationMap.put("notifInfo", "hello mobile app!");
+					    }
+			    } else {
+			    	//删除组织好友(列表中不允许删除)
+			    	responseDataMap.put("success", false);
+					responseDataMap.put("msg", "操作成功");
+					notificationMap.put("notifCode", "0001");
+					notificationMap.put("notifInfo", "列表中不允许删除好友");
+			    }
+			}
+
+		} else {
+			setSessionAndErr(request, response, "-1", "输入参数不合法");
+		}
+		model.put("responseData", responseDataMap);
+		model.put("notification", notificationMap);
+		return model;
+	}
+	/**
+	 * 转为绝对地址
+	 * @param list
+	 * @return
+	 */
+	private void thisIsSbMethod (long userId,List<SimpleCustomer> list) {
+		for (int i = 0; i < list.size(); i++) {
+			SimpleCustomer sc = list.get(i);
+			sc.setPicLogo(resourcePathExposer.getNginxRoot()+ObjectUtils.alterImageUrl(sc.getPicLogo()));
+			sc.setSaveType(1);
+			CustomerCollect cc=customerCollectService.findByUserIdAndCustomerId(userId,sc.getCustomerId());
+			if(cc!=null){
+				sc.setSaveType(2);
+			}
+			boolean sign=friendsRelationService.isExistFriends(userId, sc.getCreateById());
+			if(sign) sc.setSaveType(3);
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/resourceManageCount.json")
+	public Map<String, Object> resourceManageCount(HttpServletRequest request,HttpServletResponse response) {
+		String requestJson = "";
+		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
+		Map<String, Object> notificationMap = new HashMap<String, Object>();
+		try {
+			User user = getUser(request);
+			requestJson = getJsonParamStr(request);
+			 //查询我的组织好友id
+			 List<Long> ids = friendsRelationService.findFirendsIdByPram(user.getId(), 2);
+			 //查询我的收藏的组织客户id
+			 List<Long> customerIds=customerCollectService.getCustomerIdsByParam(user.getId(), 0);
+			long count=simpleCustomerService.countByOrgAndCustomer(user.getId(), ids, customerIds, "");
+			responseDataMap.put("count", count);
+			responseDataMap.put("success", true);
+			notificationMap.put("notifCode", "0001");
+			notificationMap.put("notifInfo", "hello mobile app!");
+		} catch (Exception e) {
+			logger.error("访问组织资源管理数量报错，请求参数json{}=="+requestJson,e);
+			return returnFailMSGNew("01", "数据请求失败，请稍后再试");
+		}
+		model.put("responseData", responseDataMap);
+		model.put("notification", notificationMap);
+		return model;
+	}
+	
 	/**
 	 * 我的组织客户列表
 	 * @param request
