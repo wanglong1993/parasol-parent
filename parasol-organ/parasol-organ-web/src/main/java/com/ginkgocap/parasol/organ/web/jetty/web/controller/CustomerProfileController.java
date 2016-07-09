@@ -323,9 +323,7 @@ public class CustomerProfileController extends BaseController {
 					 tagJson="[]";
 				 }
 				 
-				 rCustomerTagService.saveAll(customer.getCustomerId(), tagJson, user.getId());// 保存标签
-				 
-				 
+			
 			     customer.setDirectory(directory);
 			     customer.setRelevance(relevance);
 
@@ -347,8 +345,7 @@ public class CustomerProfileController extends BaseController {
 				}
 
 				
-				JSONObject customerPermissions = jo
-						.getJSONObject("customerPermissions");
+				JSONObject customerPermissions = JSONObject.fromObject(JsonUtil.getJsonNode(requestJson, "customerPermissions").toString());
 				
 				customer.setCustomerPermissions(customerPermissions.toString());
 				
@@ -394,21 +391,24 @@ public class CustomerProfileController extends BaseController {
 				}
 
 				
-				if(!isNullOrEmpty(relevance)){
-					Map<String, Object> map =  dealCustomerConnectInfoService.insertCustomerConnectInfo(relevance, customer.getId(), user.getId());
+				if(!isNullOrEmpty(relevance)){  // 保存关联
+					Map<String, Object> map =  dealCustomerConnectInfoService.insertCustomerConnectInfo(relevance, customer.getCustomerId(), user.getId());
 					String result = String.valueOf(map.get(Constants2.status));//0 关联失败 1 关联成功
 				}
+				
+				
 				String groupIds="";
-				if(StringUtils.isNotBlank(directory)&& !StringUtils.equals(directory, "[]")){
+				if(StringUtils.isNotBlank(directory)&& !StringUtils.equals(directory, "[]")){// 保存目录
 					JSONArray arr = JSONArray.fromObject(directory);
 					groupIds = StringUtils.join(arr, ",");
 				}
-				customerGroupService.updateGroup(customer.getId()+"", groupIds);
+				customerGroupService.updateGroup(customer.getCustomerId()+"", groupIds); // 保存目录
+				System.out.println(customer.getCustomerId()+"--保存目录--"+groupIds);
 				//if(!"[]".equals(tagJson)){
-					rCustomerTagService.saveAll(customer.getId(), tagJson, user.getId());
+					rCustomerTagService.saveAll(customer.getCustomerId(), tagJson, user.getId());
 				//}
 				
-				
+					
 				
 				
 				System.out.println("客户e:" + customer.getCustomerId());
@@ -508,7 +508,7 @@ public class CustomerProfileController extends BaseController {
 				JSONObject  permissonJo=JSONObject.fromObject(customerPermissions);
 				int publicFlag= permissonJo.getInt("publicFlag");
 				if(publicFlag==0){
-					return returnFailMSGNew("-1", "您没有权限查看该客户");
+					return returnFailMSGNew("-1", "该资源为私密资源，您没有权限查看");
 				}
 			}
 			
@@ -550,10 +550,8 @@ public class CustomerProfileController extends BaseController {
 			customer_new.setCreateType(getUserType(customer_temp
 					.getCreateById()) == true ? "2" : "1");
 
-			customer_new.setDirectory(customer_temp.getDirectory());
-
-			 customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));
-             findFourModule(customer_temp,responseData);
+			
+           
 			 
 			customer_new.setIndustryObj(customer_temp.getIndustryObj());
 
@@ -570,9 +568,15 @@ public class CustomerProfileController extends BaseController {
 			// 设置模块
 
 			customer_new.setMoudles(customer_temp.getMoudles());
-			customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));
-			customer_new.setRelevance(customer_temp.getRelevance());
+			
+			customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));// 权限
+			customer_new.setRelevance(customer_temp.getRelevance());// 关联
+			customer_new.setDirectory(customer_temp.getDirectory());// 目录
+			customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));//标签
 
+			findFourModule(customer_temp,responseData);// 目录 和关联
+			
+			
 			// permissionRepositoryService.selectByRes(customer_temp.getCustomerId(),
 			// ResourceType.);
 
@@ -1079,7 +1083,14 @@ public class CustomerProfileController extends BaseController {
 					map.put("name", group.getName());
 					directoryMap.add(map);
 				}
+				
+				System.out.println("到目录:"+JSON.toJSONString(directoryMap));
+			}else{
+				System.out.println("未查到目录");
 			}
+			
+		
+			
 			// 关联
 			String relevance = customer_temp.getRelevance();
 			Map<String, Object> relevanceMap = new HashMap<String, Object>();
@@ -1089,8 +1100,16 @@ public class CustomerProfileController extends BaseController {
 						new TypeReference<HashMap<String, Object>>() {
 						});
 			}
+			
+			
+			
+			
+			
 			responseData.put("directory", directoryMap);
 			responseData.put("relevance", relevanceMap);
+			responseData.put("lableList", rCustomerTagService.getTagListByCustomerId(customer_temp.getCustomerId()));
+			responseData.put("customerPermissions", JSON.parse(customer_temp.getCustomerPermissions()));
+			
 
 		}catch(Exception e){
 			logger.info("查询组织客户详情时,四大组织报错，报错信息为:",e);
