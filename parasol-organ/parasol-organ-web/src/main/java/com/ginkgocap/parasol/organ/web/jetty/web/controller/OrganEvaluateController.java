@@ -48,7 +48,7 @@ import com.ginkgocap.ywxt.user.service.UserService;
  * @version 1.0
  */
 @Controller
-@RequestMapping("organ/customer")
+@RequestMapping("/customer")
 public class OrganEvaluateController extends BaseController {
 
 	// 日志记录对象
