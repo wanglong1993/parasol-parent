@@ -570,8 +570,34 @@ public class CustomerProfileController extends BaseController {
 			customer_new.setMoudles(customer_temp.getMoudles());
 			
 			customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));// 权限
-			customer_new.setRelevance(customer_temp.getRelevance());// 关联
-			customer_new.setDirectory(customer_temp.getDirectory());// 目录
+			String  permissonsStr=customer_temp.getCustomerPermissions();
+			if(isNullOrEmpty(permissonsStr)||(!permissonsStr.contains("publicFlag"))){
+				
+				Map permissonMap=new HashMap();
+				permissonMap.put("publicFlag", "0");
+				permissonMap.put("shareFlag", "1");
+				permissonMap.put("connectFlag", "1");
+				customer_new.setCustomerPermissions(permissonMap);
+				
+			}else{
+				customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));// 权限
+
+			}
+			
+			
+			if(isNullOrEmpty(customer_temp.getRelevance())){
+				customer_new.setRelevance("{\"r\":[],\"p\":[],\"o\":[],\"k\":[]}");// 关联
+			}else{
+				customer_new.setRelevance(customer_temp.getRelevance());
+			}
+			
+			
+			if(isNullOrEmpty(customer_temp.getDirectory())){
+				customer_new.setDirectory("[]");// 目录
+			}else{
+				customer_new.setDirectory(customer_temp.getDirectory());
+			}
+			
 			customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));//标签
 
 			findFourModule(customer_temp,responseData);// 目录 和关联
@@ -1108,7 +1134,23 @@ public class CustomerProfileController extends BaseController {
 			responseData.put("directory", directoryMap);
 			responseData.put("relevance", relevanceMap);
 			responseData.put("lableList", rCustomerTagService.getTagListByCustomerId(customer_temp.getCustomerId()));
-			responseData.put("customerPermissions", JSON.parse(customer_temp.getCustomerPermissions()));
+			
+			
+		   String permissonsStr=customer_temp.getCustomerPermissions();
+	       if(isNullOrEmpty(permissonsStr)||(!permissonsStr.contains("publicFlag"))){
+				
+				Map permissonMap=new HashMap();
+				permissonMap.put("publicFlag", "0");
+				permissonMap.put("shareFlag", "1");
+				permissonMap.put("connectFlag", "1");
+				responseData.put("customerPermissions", permissonMap);
+				
+			}else{
+				responseData.put("customerPermissions", JSON.parse(customer_temp.getCustomerPermissions()));
+
+			}
+			
+			
 			
 
 		}catch(Exception e){
