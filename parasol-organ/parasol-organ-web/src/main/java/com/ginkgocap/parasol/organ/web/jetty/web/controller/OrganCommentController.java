@@ -217,6 +217,7 @@ public class OrganCommentController  extends BaseController{
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
 				long commentid = CommonUtil.getLongFromJSONObject(jo, "commentid");
+				int  usertype = jo.optInt("usertype");
 				long userid = userBasic.getId();
 				boolean praiseresult = commentPraiseService.selectUserPraiseCount(userBasic.getId(), commentid);
 				if(praiseresult){
@@ -227,6 +228,7 @@ public class OrganCommentController  extends BaseController{
 					commentPraise.setUserid(userid);
 					commentPraise.setUsername(userBasic.getName());
 					commentPraise.setUserpic(userBasic.getPicPath());
+					commentPraise.setUsertype(usertype);
 					commentPraiseService.insertPraiseUser(commentPraise);
 				}
 			}
