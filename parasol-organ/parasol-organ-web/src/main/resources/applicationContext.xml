@@ -66,7 +66,7 @@
 
     <import resource="classpath:applicationContext-cache.xml" />
     <import resource="classpath:dynamic-dubbo-consumer.xml" />
-    
+    <import resource="classpath:metadata-dubbo-consumer.xml" /> 
     
 	<context:component-scan base-package="com.ginkgocap.parasol.organ,com.ginkgocap.ywxt.organ">
     </context:component-scan>

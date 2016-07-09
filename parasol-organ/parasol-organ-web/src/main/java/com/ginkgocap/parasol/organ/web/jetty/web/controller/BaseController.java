@@ -1,13 +1,16 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.RedisKeyUtils;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
-
 import com.ginkgocap.ywxt.cache.Cache;
+import com.ginkgocap.ywxt.person.model.Person;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.user.service.UserService;
+
 import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -275,4 +279,88 @@ public abstract class BaseController {
         model.put("notification", notificationMap);
         return model;
     }
+    
+    
+	/**
+	 * 获取用户头像
+	 * 
+	 * @param id
+	 *            用户id
+	 * @param module
+	 *            1 用户 2 人脉 3机构 4客户
+	 * @return
+	 */
+	public String getUserImg(HttpServletRequest request, Long id, int module) {
+		User user = null;
+		Person person = null;
+		// Corporation c=null;
+		// PersonalCustomer customer = null;
+		StringBuilder link = new StringBuilder();
+		link.append(CommonUtil.getServerDomainPath(request));
+		link.append("/img/user/image/?module=");
+		String imgPath = "";
+		String newImgPath = "";
+		boolean isHaveHttp = false;
+		switch (module) {
+		case 1:
+			link.append("user");
+			// user = userService.selectByPrimaryKey(id);
+			if (!isNullOrEmpty(user)) {
+				imgPath = user.getPicPath();
+				newImgPath = user.getPicPath();
+				if (newImgPath != null) {
+					isHaveHttp = newImgPath.contains("http");
+				} else {
+					newImgPath = Constants.USER_DEFAULT_PIC_PATH_FAMALE;
+					isHaveHttp = false;
+				}
+			}
+			break;
+		case 2:
+			link.append("people");
+			try {
+				// person=personService.get(id);
+			} catch (Exception e) {
+			}
+			if (!isNullOrEmpty(person))
+				imgPath = person.getPortrait();
+			break;
+		case 3:
+			link.append("user");
+			// user = userService.selectByPrimaryKey(id);
+			// imgPath = user.getPicPath();
+			break;
+		case 4:
+			link.append("customer");
+			// customer = personalCustomerService.find(id);
+			break;
+		default:
+			link.append("user");
+			break;
+		}
+		link.append("&uId=" + id + "&userId=" + id);
+		if (StringUtils.isNotBlank(imgPath)) {
+			int start = imgPath.lastIndexOf("/");
+			int end = imgPath.lastIndexOf(".");
+			if (end == -1 || start > end) {
+				imgPath = imgPath.substring(start + 1);
+			} else {
+				imgPath = imgPath.substring(start + 1, end);
+			}
+			link.append("&imgPath=" + imgPath);
+		}
+		// XXX 临时替换本地测试用
+		String linkStr = link.toString();
+		if (linkStr.contains("http://localhost:8080")) {
+			linkStr = linkStr.replaceAll("http://localhost:8080", "http://192.168.101.131:3333");
+		} else if (linkStr.contains("http://192.168.120.243:8080")) {// 秦国超机器
+			linkStr = linkStr.replaceAll("http://192.168.120.243:8080", "http://192.168.101.90:5555");
+		} else if (linkStr.contains("http://192.168.120.239:8080")) {// 秦国超机器
+			linkStr = linkStr.replaceAll("http://192.168.120.243:8080", "http://192.168.101.90:5555");
+		}
+		if (module == 1 && isHaveHttp) {
+			return newImgPath;
+		}
+		return linkStr;
+	}
 }
