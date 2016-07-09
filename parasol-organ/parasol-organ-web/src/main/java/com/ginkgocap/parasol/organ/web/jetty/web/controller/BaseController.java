@@ -3,12 +3,16 @@ package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.RedisKeyUtils;
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.TemplateUtils;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.ywxt.cache.Cache;
 import com.ginkgocap.ywxt.person.model.Person;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.user.service.UserService;
-
+import com.ginkgocap.ywxt.email.service.EmailService;
+import com.ginkgocap.ywxt.user.model.User;
+import com.ginkgocap.ywxt.user.service.UserService;
+import com.ginkgocap.ywxt.util.*;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,13 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.ImageUtils;
 /**
  * Created by jbqiu on 2016/6/10.
  * controller 基类
@@ -31,8 +37,17 @@ import java.util.Map;
 public abstract class BaseController {
 	private static Logger logger = Logger.getLogger(BaseController.class);
 
+    @Resource
+    private EmailService emailService;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    protected Cache cache;
+
+    @Resource
+    private ImageUtils imageUtils;
     /**
      * 获取head中的json参数串
      *
@@ -58,6 +73,96 @@ public abstract class BaseController {
             return null;
         }
         return json;
+    }
+
+    // 通过主键获取用户信息
+    public User selectByPrimaryKey(long id) {
+        User user = userService.selectByPrimaryKey(id);
+        return user;
+    }
+
+    /***
+     * 邮箱注册 发送验证邮件
+     *
+     * @return model
+     * @throws IOException
+     */
+    public boolean sendRegValidateEmail(Long userId, String email, int type, long id, HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        Map<String, Object> message = new HashMap<String, Object>();
+        // boolean isExist = userService.isExistByEmail(email);
+        // if (!isExist) {
+        // message.put("msg", "email is not found");
+        // message.put("result", "fail");
+        // logger.info(LoggerHelper.buildInfoMessage(Module.REGISTER,
+        // Function.INDEX, message));
+        // return false;
+        // }
+        Map<String, Object> map = new HashMap<String, Object>();
+        final String to = email;
+
+        // final String from = GetUploadPath.getValueByKey("email.userName");
+        final String subject = "【金桐】邮箱注册";
+        String attachment = "";
+        String key = RedisKeyUtils.getRegEmailKey(email);
+        email = URLEncoder.encode(email);
+        // map.put("email", URLEncoder.encode(email));
+        // 对邮箱进行随机数变化
+        email = MakePrimaryKey.getPrimaryKey() + "=_=" + email;
+        byte[] bt = email.getBytes();
+        // 对邮箱进行base64加密
+        email = Encodes.encodeBase64(bt);
+        // 对邮箱进行缓存
+        Map<String, Object> value = new HashMap<String, Object>();
+        value.put("oldEmail", to);
+        value.put("startTime", System.currentTimeMillis());
+        value.put("status", "0");
+        value.put("userId", userId);
+        cache.set(key, 60 * 60 * 48, value);
+        StringBuffer link = new StringBuffer();
+        // link.append(request.getSession().getServletContext()
+        // .getAttribute("webUrl"));
+        if (isWebRequest(request)) {
+            // WEB
+            if (type == 1) {
+                link.append(imageUtils.getInvitUrl() + "/#/registerorg_fromemail?id=" + id + "&email=").append(email);
+            } else {
+                link.append(imageUtils.getInvitUrl() + "/#/registerorg_fromemail?id=" + id + "&email=").append(email);
+            }
+        } else {
+            // APP
+            link.append(imageUtils.getInvitUrl() + "#/registerorg_fromemail?id=" + id + "&email=").append(email);
+        }
+
+        map.put("email", link.toString());
+        // 获取接收人的信息
+        User acceptor = userService.selectByEmail(to);
+        map.put("acceptor", to);
+        map.put("imageRoot", request.getSession().getServletContext().getAttribute("imagesRoot"));
+        map.put("time", DateFunc.getDate());
+        String content = TemplateUtils.mergeTemplateContent("reg-activate-emai-old.ftl", map);
+        // attachment = getImage(request);
+		/*
+		 * final Email emailService = new Email(to, from, subject, content,
+		 * attachment);
+		 *
+		 * final boolean isSuccess = emailService.sendHtml();
+		 */
+        boolean sign = false;
+        try {
+            emailService.push(to, null, "金桐", subject, content, attachment);
+            message.put("msg", "send email");
+            message.put("result", "suc");
+            //logger.info(LoggerHelper.buildInfoMessage(Module.REGISTER, Function.INDEX, message));
+            sign = true;
+        } catch (Exception e) {
+            message.put("msg", "send email");
+            message.put("result", "fail");
+           // logger.info(LoggerHelper.buildInfoMessage(Module.REGISTER, Function.INDEX, message));
+            sign = false;
+        }
+
+        return sign;
     }
 
     public void setSessionAndErr(HttpServletRequest request, HttpServletResponse response, String errCode, String errMessage) {
