@@ -74,7 +74,7 @@ public class OrganCommentController  extends BaseController{
 			       String username=null;
 			       int anonymous=commentMain.getAnonymous();
 			       if(anonymous==0){
-			    	   username=userBasic.getName();
+			    	   username=userBasic.getUserName();
 			       }else{
 			    	   username="匿名用户";
 			       }
@@ -226,7 +226,7 @@ public class OrganCommentController  extends BaseController{
 					CommentPraise commentPraise=new CommentPraise();
 					commentPraise.setCommentid(commentid);
 					commentPraise.setUserid(userid);
-					commentPraise.setUsername(userBasic.getName());
+					commentPraise.setUsername(userBasic.getUserName());
 					commentPraise.setUserpic(userBasic.getPicPath());
 					commentPraise.setUsertype(usertype);
 					commentPraiseService.insertPraiseUser(commentPraise);
@@ -306,7 +306,7 @@ public class OrganCommentController  extends BaseController{
 				String username=null;
 				int anonymous = commentReply.getAnonymous();
 			       if(anonymous==0){
-			    	   username=userBasic.getName();
+			    	   username=userBasic.getUserName();
 			       }else{
 			    	   username="匿名用户";
 			       }
