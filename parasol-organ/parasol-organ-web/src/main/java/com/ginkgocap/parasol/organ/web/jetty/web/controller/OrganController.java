@@ -6,6 +6,7 @@ import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.OrganProfileVo;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.TemplateVo;
+import com.ginkgocap.ywxt.organ.model.Area;
 import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.SimpleCustomer;
 import com.ginkgocap.ywxt.organ.model.template.Template;
@@ -128,6 +129,116 @@ public class OrganController extends BaseController {
 				Customer customer = JSON.parseObject(requestJson,
 						Customer.class);
 
+				
+				
+				JSONArray moudles=customer.getMoudles();
+				JSONObject basiInfoMoudle=null;
+				JSONObject briefMoudle=null;
+				for(int i=0;i<moudles.size();i++){
+					 JSONObject jsonObject=moudles.getJSONObject(i);
+					 if(jsonObject.getInt("moudleId")==1||jsonObject.getInt("moudleId")==2){// 基本信息模块
+						 basiInfoMoudle=jsonObject;
+					 }
+					 
+					 if(jsonObject.getInt("moudleId")==3){// 企业简介模块
+						 briefMoudle=jsonObject;
+					 }
+					 if(briefMoudle!=null&&basiInfoMoudle!=null){
+						 break;
+					 }
+				}
+				
+				if(basiInfoMoudle!=null){
+					
+					JSONArray controlList=basiInfoMoudle.getJSONArray("controlList");
+					for(int i=0;i<controlList.size();i++){
+						JSONObject control=controlList.getJSONObject(i);
+						String name=control.getString("name");
+						if("name".equals(name)){
+							customer.setName(control.getString("value"));
+						}else if("shortName".equals(name)){
+							customer.setShotName(control.getString("value"));
+							
+						}else if("orgType".equals(name)){
+							
+							JSONArray  itemsArray=control.getJSONArray("items");
+							
+							for(int k=0;k<itemsArray.size();k++){
+								
+								JSONObject itemJsonObj=itemsArray.getJSONObject(k);
+								if(itemJsonObj.getBoolean("checked")){
+									
+									customer.setOrgType(itemJsonObj.getInt("value"));
+								}
+							}
+							
+						}else if("district".equals(name)){
+							
+							JSONObject valueJo=control.getJSONObject("value");
+							String province=valueJo.getString("province");
+							String city=valueJo.getString("city");
+							String county=valueJo.getString("county");
+							
+							if(province.equals(city)){
+								customer.setAreaString(city+"-"+county);
+
+							}else{
+								customer.setAreaString(province+"-"+city+"-"+county);
+							}
+							
+							Area area=new Area();
+							area.setCity(city);
+							area.setProvince(province);
+							area.setCounty(county);
+							customer.setArea(area);
+						}else if("industry".equals(name)){
+							JSONObject valueJo=control.getJSONObject("value");
+							customer.setIndustry(valueJo.getString("industry"));
+							if("".equals(valueJo.getString("industryId"))){
+								customer.setIndustryId(-1);
+							}else{
+								customer.setIndustryId(Long.parseLong(valueJo.getString("industryId")));
+							}
+							
+						}else if("isListing".equals(name)){
+							
+								JSONArray  itemsArray=control.getJSONArray("items");
+							
+								for(int k=0;k<itemsArray.size();k++){
+									
+									JSONObject itemJsonObj=itemsArray.getJSONObject(k);
+									if(itemJsonObj.getBoolean("checked")){
+										customer.setIsListing(itemJsonObj.getString("value"));
+									}
+								}
+								
+						}else if("stockNum".equals(name)){
+							
+							customer.setStockNum(control.getString("value"));
+						}
+					}
+					
+					
+				}else{
+					return returnFailMSGNew("01", "找不到基础信息模块");
+				}
+				
+				
+				if(briefMoudle!=null){
+					
+					JSONArray controlList=briefMoudle.getJSONArray("controlList");
+					JSONObject  briefObj=controlList.getJSONObject(0);
+					customer.setDiscribe(briefObj.getString("value"));
+					
+				}else{
+					return returnFailMSGNew("01", "找不到企业简介模块");
+				}
+				
+				
+				
+				
+				
+				
 				if ("1".equals(customer.getIsListing())
 						&& isNullOrEmpty(customer.getStockNum())) {
 					setSessionAndErr(request, response, "-1", "上市公司必须填写证券号码！");
