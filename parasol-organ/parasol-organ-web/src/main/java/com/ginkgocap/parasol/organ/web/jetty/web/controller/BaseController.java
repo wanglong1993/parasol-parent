@@ -271,7 +271,7 @@ public abstract class BaseController {
         System.out.println("无法获取用户");
         User user = new User();
         user.setId(1);
-        user.setName("yinxing");
+        user.setUserName("yinxing");
         user.setPicPath("/public/c/phoenix-fe/0.0.1/common/images/default200.jpg");
         return user;
         
@@ -288,7 +288,7 @@ public abstract class BaseController {
         	System.out.println("无法获取用户");
         	   user = new User();
               user.setId(1);
-              user.setName("yinxing");
+              user.setUserName("yinxing");
               user.setPicPath("/public/c/phoenix-fe/0.0.1/common/images/default200.jpg");
               return user;
         }
