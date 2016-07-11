@@ -87,7 +87,7 @@ public class OrganCommentController  extends BaseController{
  		}else{
  			setSessionAndErr(request, response, "-1", "请完善信息！");
  			 flag = false;
- 		}
+ 		} 
  		   responseDataMap.put("success", flag);
  	       notificationMap.put("notifCode", "0001");
  		   notificationMap.put("notifInfo", "hello mobile app!");
@@ -391,7 +391,7 @@ public class OrganCommentController  extends BaseController{
 			      commentMain.setPraiseUser(praiseUser);
 			      commentMain.setPraisecount(praisecount);
 			      commentMain.setPraiseresult(praiseresult);
-			      commentMain.setReplyMap(ommentReplyService.findByCommentid(id));
+			      commentMain.setReplyMap(ommentReplyService.findByCommentidDesc(id));
 			      commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
 			      responseDataMap.put("commentMain", commentMain);
 		}else{
