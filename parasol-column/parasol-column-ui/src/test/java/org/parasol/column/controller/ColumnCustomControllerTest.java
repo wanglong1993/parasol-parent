@@ -1,23 +1,16 @@
 package org.parasol.column.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.parasol.column.entity.ColumnCustom;
-import org.parasol.column.entity.ColumnSelf;
-import org.parasol.column.service.ColumnCustomService;
-import org.parasol.column.service.ColumnSelfService;
 import org.parasol.column.utils.HttpUtils;
-import org.parasol.column.utils.JsonUtils;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /*@ContextConfiguration(locations = "classpath:applicationContext.xml")  
 @RunWith(SpringJUnit4ClassRunner.class)*/
@@ -105,9 +98,34 @@ public class ColumnCustomControllerTest {
 		String jsonStr="{\"pid\":\"0\"}";
 		String url="http://192.168.101.41:8022/columncustom/showColumn.json";
 		Map<String,String> headers=new HashMap<String,String>();
-		headers.put("sessionID", "b75a0c09-cde8-4193-92ea-c23c057cd148");
-		headers.put("s", "web");
+		headers.put("sessionID", "9cf6c69b-2269-431f-92b6-7e3604455d7f");
+//		headers.put("s", "web");
 		String resp=HttpUtils.sendPost(url, jsonStr,"application/json",headers);
+		System.out.println(resp); 
+	}
+	
+	@Test
+	public void testLoadColumn() throws Exception{
+		String fileName="d:/testjson/column.json";
+//		InputStream fis = new BufferedInputStream(new FileInputStream("d:/testjson/column.json"));
+		StringBuilder sb = new StringBuilder();
+		BufferedReader in = new BufferedReader(new FileReader(new File(
+                fileName).getAbsoluteFile()));
+		try {
+            String s;
+            while ((s = in.readLine()) != null) {
+                sb.append(s);
+                sb.append("\n");
+            }
+         } finally {
+            in.close();
+         }
+		System.out.println(sb.toString());
+		Map<String,String> headers=new HashMap<String,String>();
+		headers.put("sessionID", "9cf6c69b-2269-431f-92b6-7e3604455d7f");
+//		headers.put("s", "web");
+		String url="http://localhost:8022/columncustom/replaceColumn";
+		String resp=HttpUtils.sendJsonPost(url, sb.toString());
 		System.out.println(resp); 
 	}
 	

@@ -9,11 +9,8 @@
 	<packaging>jar</packaging>
 	<name>parasol-column-ui Maven Webapp</name>
 	<url>http://maven.apache.org</url>
-	<!-- <parent>
-		<groupId>com.ginkgocap.parasol</groupId>
-		<artifactId>parasol-column</artifactId>
-		<version>1.0.2-SNAPSHOT</version>
-	</parent> -->
+	<!-- <parent> <groupId>com.ginkgocap.parasol</groupId> <artifactId>parasol-column</artifactId> 
+		<version>1.0.2-SNAPSHOT</version> </parent> -->
 	<parent>
 		<!-- Your own application should inherit from spring-boot-starter-parent -->
 		<groupId>org.springframework.boot</groupId>
@@ -27,7 +24,7 @@
 		<util.dependencied>5.6.3</util.dependencied>
 		<start-class>org.parasol.column.ColumnApplication</start-class>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -105,10 +102,10 @@
 			<version>3.1</version>
 		</dependency>
 		<dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-        </dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-column-api</artifactId>
@@ -120,10 +117,8 @@
 			<!-- <exclusions> <exclusion> <artifactId>jedis</artifactId> <groupId>redis.clients</groupId> 
 				</exclusion> </exclusions> -->
 		</dependency>
-		<!-- <dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency> -->
+		<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId> 
+			</dependency> -->
 		<!-- logging begin -->
 
 
@@ -196,22 +191,22 @@
 			<version>2.5.1</version>
 		</dependency>
 		<!-- file upload start -->
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-        <!-- file upload end -->
-        <dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-				<version>4.3.6</version>
-			</dependency>
 		<dependency>
-			 <groupId>org.hibernate</groupId>
-			 <artifactId>hibernate-validator</artifactId>
-			 <version>4.3.1.Final</version>
-			</dependency> 
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<!-- file upload end -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.3.1.Final</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -226,46 +221,16 @@
 					<useDefaultDelimiters>true</useDefaultDelimiters>
 				</configuration>
 			</plugin>
-			<!-- 
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<phase>package</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.ginkgocap.parasol</groupId>
-									<artifactId>parasol-mservice-bin</artifactId>
-									<version>1.0.1-SNAPSHOT</version>
-									<outputDirectory>${project.build.directory}/MicroService</outputDirectory>
-									<includes>META-INF/assembly/**</includes>
-								</artifactItem>
-							</artifactItems>
-						</configuration> 
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptor>src/main/assembly/assembly.xml</descriptor>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			 -->
+			<!-- <plugin> <artifactId>maven-dependency-plugin</artifactId> <executions> 
+				<execution> <id>unpack</id> <phase>package</phase> <goals> <goal>unpack</goal> 
+				</goals> <configuration> <artifactItems> <artifactItem> <groupId>com.ginkgocap.parasol</groupId> 
+				<artifactId>parasol-mservice-bin</artifactId> <version>1.0.1-SNAPSHOT</version> 
+				<outputDirectory>${project.build.directory}/MicroService</outputDirectory> 
+				<includes>META-INF/assembly/**</includes> </artifactItem> </artifactItems> 
+				</configuration> </execution> </executions> </plugin> <plugin> <artifactId>maven-assembly-plugin</artifactId> 
+				<configuration> <descriptor>src/main/assembly/assembly.xml</descriptor> </configuration> 
+				<executions> <execution> <id>make-assembly</id> <phase>package</phase> <goals> 
+				<goal>single</goal> </goals> </execution> </executions> </plugin> -->
 		</plugins>
 	</build>
 	<profiles>
@@ -276,6 +241,7 @@
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.protocol.port>8812</dubbo.protocol.port>
 				<user.cache.expiredTime>86400</user.cache.expiredTime>
 				<!-- redis地址 -->
 				<redis.host>192.168.101.131</redis.host>
@@ -290,6 +256,7 @@
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.protocol.port>8812</dubbo.protocol.port>
 				<user.cache.expiredTime>86400</user.cache.expiredTime>
 				<!-- redis地址 -->
 				<redis.host>192.168.101.42</redis.host>
