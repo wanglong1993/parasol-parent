@@ -74,7 +74,7 @@ public class OrganCommentController  extends BaseController{
 			       String username=null;
 			       int anonymous=commentMain.getAnonymous();
 			       if(anonymous==0){
-			    	   username=userBasic.getUserName();
+			    	   username=userBasic.getName();
 			       }else{
 			    	   username="匿名用户";
 			       }
@@ -87,7 +87,7 @@ public class OrganCommentController  extends BaseController{
  		}else{
  			setSessionAndErr(request, response, "-1", "请完善信息！");
  			 flag = false;
- 		}
+ 		} 
  		   responseDataMap.put("success", flag);
  	       notificationMap.put("notifCode", "0001");
  		   notificationMap.put("notifInfo", "hello mobile app!");
@@ -226,7 +226,7 @@ public class OrganCommentController  extends BaseController{
 					CommentPraise commentPraise=new CommentPraise();
 					commentPraise.setCommentid(commentid);
 					commentPraise.setUserid(userid);
-					commentPraise.setUsername(userBasic.getUserName());
+					commentPraise.setUsername(userBasic.getName());
 					commentPraise.setUserpic(userBasic.getPicPath());
 					commentPraise.setUsertype(usertype);
 					commentPraiseService.insertPraiseUser(commentPraise);
@@ -306,7 +306,7 @@ public class OrganCommentController  extends BaseController{
 				String username=null;
 				int anonymous = commentReply.getAnonymous();
 			       if(anonymous==0){
-			    	   username=userBasic.getUserName();
+			    	   username=userBasic.getName();
 			       }else{
 			    	   username="匿名用户";
 			       }
@@ -391,7 +391,7 @@ public class OrganCommentController  extends BaseController{
 			      commentMain.setPraiseUser(praiseUser);
 			      commentMain.setPraisecount(praisecount);
 			      commentMain.setPraiseresult(praiseresult);
-			      commentMain.setReplyMap(ommentReplyService.findByCommentid(id));
+			      commentMain.setReplyMap(ommentReplyService.findByCommentidDesc(id));
 			      commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
 			      responseDataMap.put("commentMain", commentMain);
 		}else{

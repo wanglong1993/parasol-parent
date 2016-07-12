@@ -133,6 +133,7 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 		ccd.deleteByUserId(uid);
 		List<ColumnCustom> list=new ArrayList<ColumnCustom>();
 		for(ColumnSelf source:newList){
+			source.setUserId(uid);
 			ColumnCustom dest=null;
 			try {
 				dest = this.buidColumnCustom(source);

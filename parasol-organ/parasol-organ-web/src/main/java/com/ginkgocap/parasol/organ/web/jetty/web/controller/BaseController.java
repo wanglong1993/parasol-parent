@@ -13,6 +13,7 @@ import com.ginkgocap.ywxt.email.service.EmailService;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.user.service.UserService;
 import com.ginkgocap.ywxt.util.*;
+
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.ImageUtils;
 /**
  * Created by jbqiu on 2016/6/10.
@@ -475,4 +477,32 @@ public abstract class BaseController {
 		}
 		return linkStr;
 	}
+	
+	
+	
+	// 组织用户切换为个人用户
+	protected boolean organSwitchToUser(long switchUserId, HttpServletRequest request) {
+		try {
+			User user = userService.selectByPrimaryKey(switchUserId);
+			String sessionId = request.getHeader("sessionID");
+			if (isWebRequest(request)) {
+				if (StringUtils.isNotBlank(sessionId)) {
+					cache.setByRedis(RedisKeyUtils.getSessionIdKey(sessionId), user, 60 * 60 * 24);
+					request.getSession().setAttribute("sessionUser", user);
+				}
+			} else {
+				if (sessionId != null && !"null".equals(sessionId) && !"".equals(sessionId)) {
+					String key = "user" + sessionId;
+					cache.setByRedis(key, user, 60 * 60 * 24);
+					request.getSession().setAttribute("sessionUser", user);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnFailMSGNew("存储组织信息到缓存异常,exp:{}", e.toString());
+			return false;
+		}
+		return true;
+	}
+
 }
