@@ -981,7 +981,7 @@
 
 				<user.imageUrl>http://www.baidu.com</user.imageUrl>
 				<user.cache.expiredTime>86400</user.cache.expiredTime>
-				<mobile.invit.url>http://local.gintong.com/</mobile.invit.url>
+				<mobile.invit.url>http://192.168.120.234:9000</mobile.invit.url>
 
                 <dubbo.application.name>parasol-organ-web</dubbo.application.name>
                 <dubbo.protocol.name>dubbo</dubbo.protocol.name>
