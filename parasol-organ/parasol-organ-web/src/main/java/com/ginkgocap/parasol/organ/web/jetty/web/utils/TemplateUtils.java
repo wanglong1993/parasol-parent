@@ -92,7 +92,9 @@ public class TemplateUtils {
             t.setTemplateExceptionHandler(TemplateExceptionHandler.IGNORE_HANDLER);
             content = FreeMarkerTemplateUtils.processTemplateIntoString(t, params);
         } catch (IOException e) {
+        	e.printStackTrace();
         }catch (TemplateException e) {
+        	e.printStackTrace();
         }
         return content;
     }

@@ -978,6 +978,11 @@
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>8827</dubbo.protocol.port>-->
 
+
+				<user.imageUrl>http://www.baidu.com</user.imageUrl>
+				<user.cache.expiredTime>86400</user.cache.expiredTime>
+				<mobile.invit.url>http://local.gintong.com/</mobile.invit.url>
+
                 <dubbo.application.name>parasol-organ-web</dubbo.application.name>
                 <dubbo.protocol.name>dubbo</dubbo.protocol.name>
                 <dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
