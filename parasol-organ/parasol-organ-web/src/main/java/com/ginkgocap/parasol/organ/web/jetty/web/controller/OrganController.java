@@ -412,29 +412,19 @@ public class OrganController extends BaseController {
 			organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
 			organProfileVo.setLinkManName(customer_temp.getLinkManName());
 			organProfileVo.setTemplateId(customer_temp.getTemplateId());
-			organProfileVo.setMoudles(customer_temp.getMoudles());
-			if (user.getId() == organId) {
+			
+			if(customer_temp.getMoudles()!=null&&customer_temp.getMoudles().size()>0){
 				organProfileVo.setMoudles(customer_temp.getMoudles());
-			} else {// 过滤
-				JSONArray moudles = customer_temp.getMoudles();
-				JSONArray moudltemp = new JSONArray();
-				for (int i = 0; i < moudles.size(); i++) {
-					JSONObject moudleJsonObject = moudles.getJSONObject(i);
-					String moudleType = moudleJsonObject.getString("type");
-					if ("complex".equals(moudleType)) {
-
-					} else {
-						int moudlepermissions = moudleJsonObject
-								.getInt("permissions");
-						if (moudlepermissions == 0) {// 公开
-							moudltemp.add(moudleJsonObject);
-						}
-					}
-
-				}
-				organProfileVo.setMoudles(moudltemp);
+			}else{
+				
+				
 			}
-
+		
+			
+			
+			
+			
+			
 			responseData.put("customer", organProfileVo);
 			responseData.put("bindUserId", customer_temp.getBindUserId());
 			responseData.put("id", organProfileVo.getId());
