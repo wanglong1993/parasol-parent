@@ -236,35 +236,41 @@ public class OrgAndCustomerController  extends BaseController {
 			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
-			
-			    String customerId = j.optString( "customerId");
-			    SimpleCustomer simpleCustomer =  simpleCustomerService.findByCustomerId(Long.valueOf(customerId));
-			 
-			    if(simpleCustomer == null  ||  simpleCustomer.getVirtual() == 0) {//删除客户
-			    	   if(simpleCustomer != null && simpleCustomer.getCreateById()!=user.getId()) {
-							  responseDataMap.put("success", false);
-							  responseDataMap.put("msg", "操作成功");
-							  notificationMap.put("notifCode", "0001");
-							  notificationMap.put("notifInfo", "操作失败,不能删除别人的客户");
-					    } else {
-					    	  customerService.deleteById(String.valueOf(customerId));
-							  responseDataMap.put("success", true);
-							  responseDataMap.put("msg", "操作成功");
-							  notificationMap.put("notifCode", "0001");
-							 notificationMap.put("notifInfo", "hello mobile app!");
-					    }
-			    } else {
-			    	//删除组织好友(列表中不允许删除)
-			    	responseDataMap.put("success", false);
-					responseDataMap.put("msg", "操作成功");
-					notificationMap.put("notifCode", "0001");
-					notificationMap.put("notifInfo", "列表中不允许删除好友");
-			    }
-			}
-
+					List<Long> custermIds = JsonUtil.getList(j, "ids", Long.class);
+				    
+				    for(Long id:custermIds){
+				      SimpleCustomer customer = simpleCustomerService.findById(id);
+				      String type = null;
+				      if(customer!=null){
+					      if(customer.getCreateById()==user.getId()){
+					    	    type="1";
+					    	 }else{
+					    	    type="2"; 
+					    	 }
+						  PermissionQuery p=new PermissionQuery();
+						  p.setResId(id);
+						  p.setUserId(user.getId());
+						  p.setResType((short)5);//  5 组织
+	                      if("1".equals(type)){
+								   simpleCustomerService.deleteById(id);
+								   customerService.deleteCustomerByCustomerId(id,p);	   
+							}else if("2".equals(type)){
+								 Map map = new HashMap();
+								 map.put("custermId", id);
+								 map.put("userId", user.getId());
+								 customerCollectService.deleteUserCustomerCollect(map);
+							}
+				      }else{
+				    	  returnFailMSGNew("-1", "客户不存在！");
+				      }
+				    }   
+			    }	
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
 		}
+		responseDataMap.put("success",true);
+		notificationMap.put("notifCode", "0001");
+		notificationMap.put("notifInfo", "hello mobile app!");
 		model.put("responseData", responseDataMap);
 		model.put("notification", notificationMap);
 		return model;
@@ -717,28 +723,30 @@ public class OrgAndCustomerController  extends BaseController {
 			if (user == null) {
 				setSessionAndErr(request, response, "-1", "请登录以后再操作");
 			} else {
-					List<Long> custermIds = JsonUtil.getList(j, "custermIds", Long.class);
-				    String type=j.optString("type");//1创建的客户，2收藏的客户
-				    Long appId = 1l;  
-	                if(!custermIds.isEmpty()){
-	                  for (Long custermId : custermIds) {
-						  PermissionQuery p=new PermissionQuery();
-						  p.setResId(custermId);
-						  p.setUserId(user.getId());
-						  p.setResType((short)5);//  5 组织
-	                       if("1".equals(type)){
-								   simpleCustomerService.deleteByIds(custermIds);
-								   customerService.deleteCustomerByCustomerId(custermId,p);
-							}else if("2".equals(type)){
-								 Map map = new HashMap();
-								 map.put("custermId", custermId);
-								 map.put("userId", user.getId());
-								 customerCollectService.deleteUserCustomerCollect(map);
-							}
-                    	    tagSourceService.removeTagSource(appId, user.getId(), custermId);
-                    	    directorySourceService.removeDirectorySourcesBySourceId(user.getId(), appId, 1, custermId);
-				        }
-	                }
+					List<Long> custermIds = JsonUtil.getList(j, "ids", Long.class);
+				    
+				    for(Long id:custermIds){
+				      SimpleCustomer customer = simpleCustomerService.findById(id);
+				      String type = null;
+				      if(customer.getCreateById()==user.getId()){
+				    	    type="1";
+				    	 }else{
+				    	    type="2"; 
+				    	 }
+					  PermissionQuery p=new PermissionQuery();
+					  p.setResId(id);
+					  p.setUserId(user.getId());
+					  p.setResType((short)5);//  5 组织
+                      if("1".equals(type)){
+							   simpleCustomerService.deleteById(id);
+							   customerService.deleteCustomerByCustomerId(id,p);	   
+						}else if("2".equals(type)){
+							 Map map = new HashMap();
+							 map.put("custermId", id);
+							 map.put("userId", user.getId());
+							 customerCollectService.deleteUserCustomerCollect(map);
+						}
+				    }   
 			    }	
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
