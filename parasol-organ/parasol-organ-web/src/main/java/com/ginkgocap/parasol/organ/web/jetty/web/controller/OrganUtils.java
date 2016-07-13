@@ -226,9 +226,9 @@ public class OrganUtils {
  	   JSONObject briefMoudle=new JSONObject();
  	   briefMoudle.put("level", 0);
  	   if(customer.getOrgType()==1||customer.getOrgType()==4){
- 		   briefMoudle.put("desc", "企业简称");
+ 		   briefMoudle.put("desc", "企业简介");
  	   }else{
- 		   briefMoudle.put("desc", "单位简称");
+ 		   briefMoudle.put("desc", "单位简介");
  	   }
  	
  	   briefMoudle.put("isVisible", 1);
