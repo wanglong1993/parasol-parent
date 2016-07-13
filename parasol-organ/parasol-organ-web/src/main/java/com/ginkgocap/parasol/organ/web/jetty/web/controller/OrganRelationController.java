@@ -372,6 +372,8 @@ public class OrganRelationController extends BaseController {
 			organRegisterrs = organRegisterService.getOrganRegisterByIds(ids);
 			System.out.println("organRegisterrs:"+organRegisterrs);
 			dealOrganImageNew(organRegisterrs);
+			responseDataMap.put("userId", userId);
+			responseDataMap.put("ids", ids);
 			
 		} catch (Exception e) {
 			logger.error("findMyOrgan.json 参数读取异常");
