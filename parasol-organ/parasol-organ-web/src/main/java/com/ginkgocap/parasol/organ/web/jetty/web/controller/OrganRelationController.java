@@ -366,9 +366,14 @@ public class OrganRelationController extends BaseController {
 		
 		try {
 			long userId = this.getUser(request).getId();
-			List<Long> ids = organRelationService.getOrganIdsByUserId(userId);
+			System.out.println("userId:"+userId);
+			List<Long> ids = organRelationService.getOrganIdsByUserId(127865);
+			System.out.println("ids:"+ids);
 			organRegisterrs = organRegisterService.getOrganRegisterByIds(ids);
+			System.out.println("organRegisterrs:"+organRegisterrs);
 			dealOrganImageNew(organRegisterrs);
+			responseDataMap.put("userId", userId);
+			responseDataMap.put("ids", ids);
 			
 		} catch (Exception e) {
 			logger.error("findMyOrgan.json 参数读取异常");

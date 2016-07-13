@@ -103,9 +103,9 @@ public class ColumnCustomControllerTest {
 	@Test
 	public void testShowColumn1(){
 		String jsonStr="{\"pid\":\"0\"}";
-		String url="http://localhost:8022/columncustom/showColumn.json";
+		String url="http://192.168.101.131:8022/columncustom/showColumn.json";
 		Map<String,String> headers=new HashMap<String,String>();
-		headers.put("sessionID", "8c8c2fcd-58d5-4fd0-b690-0318cf4bb657");
+		headers.put("sessionID", "009055c9-670a-4faf-a29d-284b1fdeb975");
 		headers.put("s", "web");
 		String resp=HttpUtils.sendPost(url, jsonStr,"application/json",headers);
 		System.out.println(resp);  

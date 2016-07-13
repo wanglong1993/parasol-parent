@@ -152,12 +152,19 @@ public abstract class BaseController {
 		 */
         boolean sign = false;
         try {
+        	System.out.println("to:"+to);
+        	System.out.println("subject:"+subject);
+        	System.out.println("content:"+content);
+        	System.out.println("attachment:"+attachment);
             emailService.push(to, null, "金桐", subject, content, attachment);
+            System.out.println("调用发送邮件成功");
             message.put("msg", "send email");
             message.put("result", "suc");
             //logger.info(LoggerHelper.buildInfoMessage(Module.REGISTER, Function.INDEX, message));
             sign = true;
         } catch (Exception e) {
+        	System.out.println("发送邮件失败-------------------");
+        	e.printStackTrace();
             message.put("msg", "send email");
             message.put("result", "fail");
            // logger.info(LoggerHelper.buildInfoMessage(Module.REGISTER, Function.INDEX, message));
