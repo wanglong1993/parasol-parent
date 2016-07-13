@@ -411,16 +411,28 @@ public class OrganController extends BaseController {
 			organProfileVo.setStatus(customer_temp.getStatus());
 			organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
 			organProfileVo.setLinkManName(customer_temp.getLinkManName());
-			organProfileVo.setTemplateId(customer_temp.getTemplateId());
+			
+			if(customer_temp.getTemplateId()==0){
+				 if(customer_temp.getOrgType()==1||customer_temp.getOrgType()==4){
+					 organProfileVo.setTemplateId(1);
+			        }else if(customer_temp.getOrgType()==2){
+			        	organProfileVo.setTemplateId(2);
+			        }else if(customer_temp.getOrgType()==3){
+			        	organProfileVo.setTemplateId(5);
+			        }
+			}else{
+				organProfileVo.setTemplateId(customer_temp.getTemplateId());
+			}
+		    
 			
 			if(customer_temp.getMoudles()!=null&&customer_temp.getMoudles().size()>0){
 				organProfileVo.setMoudles(customer_temp.getMoudles());
 			}else{
 				
+				organProfileVo.setMoudles(OrganUtils.createMoudles(customer_temp));
 				
 			}
 		
-			
 			
 			
 			
@@ -620,4 +632,9 @@ public class OrganController extends BaseController {
 		return result;
 	}
 
+	
+	
+	   
+   
+	
 }

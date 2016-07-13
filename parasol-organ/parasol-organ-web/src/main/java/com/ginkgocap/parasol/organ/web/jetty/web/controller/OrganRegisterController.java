@@ -589,11 +589,16 @@ public class OrganRegisterController extends BaseController {
         customer.setUserId(org.getId());
         customer.setEmail(org.getEmail());
         customer.setCurrent(true);
+
+        if(customer.getOrgType()==1||customer.getOrgType()==4){
+        	customer.setTemplateId(1);
+        }else if(customer.getOrgType()==2){
+        	customer.setTemplateId(2);
+        }else if(customer.getOrgType()==3){
+        	customer.setTemplateId(5);
+        }
         
-//        JSONArray moudles=new JSONArray();
-//        
-//        baisn
-//        customer.setMoudles(moudles);
+        customer.setMoudles(OrganUtils.createMoudles(customer));
         Customer cus = customerService.saveOrUpdate(customer);
         org.setMongoId(cus.getId());
         organRegisterService.updateOrganData(org);
@@ -603,131 +608,7 @@ public class OrganRegisterController extends BaseController {
     }
     
     
-//    "moudles" : [{
-//        "moudleId" : 1,
-//        "level" : 0,
-//        "desc" : "基本信息",
-//        "isVisible" : "1",
-//        "controlList" : [{
-//            "desc" : "企业名称",
-//            "maxlength" : 50,
-//            "name" : "name",
-//            "value" : "的",
-//            "type" : "text",
-//            "isMust" : true
-//          }, {
-//            "desc" : "简称",
-//            "maxlength" : 30,
-//            "name" : "shortName",
-//            "value" : "地方的",
-//            "type" : "text",
-//            "isMust" : false
-//          }, {
-//            "desc" : "类型",
-//            "items" : [{
-//                "name" : "企业",
-//                "value" : 1,
-//                "checked" : true
-//              }, {
-//                "name" : "政府/事业单位",
-//                "value" : 2,
-//                "checked" : false
-//              }, {
-//                "name" : "媒体",
-//                "value" : 3,
-//                "checked" : false
-//              }, {
-//                "name" : "其它",
-//                "value" : 4,
-//                "checked" : false
-//              }],
-//            "name" : "orgType",
-//            "value" : "",
-//            "type" : "select",
-//            "isMust" : false
-//          }, {
-//            "desc" : "所在地区",
-//            "name" : "district",
-//            "value" : {
-//              "county" : "",
-//              "province" : "",
-//              "city" : ""
-//            },
-//            "type" : "region",
-//            "isMust" : false
-//          }, {
-//            "desc" : "所属行业",
-//            "name" : "industry",
-//            "value" : {
-//              "industry" : "金融-保险",
-//              "industryId" : "1386"
-//            },
-//            "type" : "industry",
-//            "isMust" : false
-//          }, {
-//            "desc" : "是否上市",
-//            "items" : [{
-//                "name" : "是",
-//                "value" : 1,
-//                "checked" : false
-//              }, {
-//                "name" : "否",
-//                "value" : 0,
-//                "checked" : true
-//              }],
-//            "name" : "isListing",
-//            "value" : "0",
-//            "type" : "radio",
-//            "isMust" : false
-//          }, {
-//            "desc" : "股票代码",
-//            "maxlength" : 30,
-//            "name" : "stockNum",
-//            "value" : "",
-//            "type" : "text",
-//            "isMust" : false
-//          }],
-//        "name" : "basicInfo",
-//        "type" : "single"
-//      }, {
-//        "moudleId" : 3,
-//        "level" : 0,
-//        "desc" : "企业简介",
-//        "isVisible" : "1",
-//        "controlList" : [{
-//            "desc" : "企业简介",
-//            "name" : "brief",
-//            "value" : "地方的",
-//            "type" : "editor",
-//            "isMust" : false
-//          }],
-//        "name" : "brief",
-//        "type" : "single"
-//      }] 
-//    
-    
-    
-    public JSONArray  createMoudles(Customer customer){
-    	
-    	   JSONArray moudles=new JSONArray();
-    	   
-    	   JSONObject baiscInfoJobj=new JSONObject();
-    	    int orgType= customer.getOrgType();
-    	    
-    	    if(orgType==2){// 政府
-    	    	 baiscInfoJobj.put("moudleId", 2);
-    	    }else{
-    	    	 baiscInfoJobj.put("moudleId", 1);
-    	    }
-    	    
-    	    baiscInfoJobj.put("level", 0);
-    	    baiscInfoJobj.put("desc", "基本信息");
-    	    baiscInfoJobj.put("isVisible", 1);
-    	    baiscInfoJobj.put("name", "basicInfo");
-    	    baiscInfoJobj.put("type", "basicInfo");
-    	
-    	   return moudles;
-    }
+
     
     
     
