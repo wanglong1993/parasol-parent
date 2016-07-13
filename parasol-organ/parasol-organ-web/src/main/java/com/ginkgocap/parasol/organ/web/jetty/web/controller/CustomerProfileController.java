@@ -700,10 +700,10 @@ public class CustomerProfileController extends BaseController {
 		Map<String, Object> responseData = new HashMap<String, Object>();
 		System.out.println("json:" + requestJson);
 		JSONObject j = JSONObject.fromObject(requestJson);
-		long customerId = JsonUtil.getNodeToLong(j, "customerId");
+		String name = JsonUtil.getNodeToString(j, "name");
 		BigDataModel bigDataCustomer = new BigDataModel();
 
-		Customer customer_temp = customerService.findCustomerCurrentData(customerId, "2");
+		Customer customer_temp = customerService.findCustomerBigData(name, "2");
 				
 		if (customer_temp != null) {
 			bigDataCustomer.setId(customer_temp.getId());
@@ -752,10 +752,7 @@ public class CustomerProfileController extends BaseController {
 			bigDataCustomer.setShareholders(customer_temp.getShareholders());
 			responseData.put("customer", bigDataCustomer);
 			try {
-				customerCountService
-						.updateCustomerCount(
-								com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read
-										.getType(), customerId);
+				customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read.getType(), customer_temp.getId());
 			} catch (Exception e) {
 				logger.error("插入查询大数据客户功能报错,请求参数json: ", e);
 			}
