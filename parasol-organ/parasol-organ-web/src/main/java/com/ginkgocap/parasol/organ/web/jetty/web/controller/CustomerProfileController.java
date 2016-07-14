@@ -503,14 +503,14 @@ public class CustomerProfileController extends BaseController {
 			
 			long createById=customer_temp.getCreateById();
 			
-			if(createById!=userBasic.getId()){
-				String customerPermissions =customer_temp.getCustomerPermissions();
-				JSONObject  permissonJo=JSONObject.fromObject(customerPermissions);
-				int publicFlag= permissonJo.getInt("publicFlag");
-				if(publicFlag==0){
-					return returnFailMSGNew("-1", "该资源为私密资源，您没有权限查看");
-				}
-			}
+//			if(createById!=userBasic.getId()){
+//				String customerPermissions =customer_temp.getCustomerPermissions();
+//				JSONObject  permissonJo=JSONObject.fromObject(customerPermissions);
+//				int publicFlag= permissonJo.getInt("publicFlag");
+//				if(publicFlag==0){
+//					return returnFailMSGNew("-1", "该资源为私密资源，您没有权限查看");
+//				}
+//			}
 			
 			
 			sckNum = customer_temp.getStockNum();// 证券号码
