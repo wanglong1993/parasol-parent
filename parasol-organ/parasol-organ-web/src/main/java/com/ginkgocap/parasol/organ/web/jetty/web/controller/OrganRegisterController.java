@@ -361,7 +361,9 @@ public class OrganRegisterController extends BaseController {
             if (StringUtils.isNotBlank(requestJson)) {
                 JSONObject j = JSONObject.fromObject(requestJson);
                 String email = j.optString("email");
+                logger.info("77777777777777");
                 boolean isEmailExist = userService.isExistByEmail(email);
+                logger.info("99999999999999999999");
                 if (isEmailExist) {
                     OrganRegister org = organRegisterService.isStatus(email);
                     if (org != null) {
