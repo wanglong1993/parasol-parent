@@ -88,21 +88,21 @@ public class OrganRegisterController extends BaseController {
                     result.put("result", "邮箱地址格式不正确，请重新输入!");
                     return genRespBody(result, null);
                 }
-                if (StringUtils.isNotBlank(code)) { 
-                	logger.info("插入用户前-----------2222222222");
-                	
-                    // 校验验证码
-                    HttpSession hs = request.getSession();
-                    String cacheIdentifyCode = cacheManager.get(CacheType.IDENTIFY_CODE, hs.getId());
-                    logger.info("cacheIdentifyCode:"+cacheIdentifyCode);
-                    if (!code.equals(cacheIdentifyCode)) {
-                        result.put("result", "验证码不正确!");
-                        return genRespBody(result, null);
-                    }
-                } else {
-                    result.put("result", "验证码不为空!");
-                    return genRespBody(result, null);
-                }
+//                if (StringUtils.isNotBlank(code)) { 
+//                	logger.info("插入用户前-----------2222222222");
+//                	
+//                    // 校验验证码
+//                    HttpSession hs = request.getSession();
+//                    String cacheIdentifyCode = cacheManager.get(CacheType.IDENTIFY_CODE, hs.getId());
+//                    logger.info("cacheIdentifyCode:"+cacheIdentifyCode);
+//                    if (!code.equals(cacheIdentifyCode)) {
+//                        result.put("result", "验证码不正确!");
+//                        return genRespBody(result, null);
+//                    }
+//                } else {
+//                    result.put("result", "验证码不为空!");
+//                    return genRespBody(result, null);
+//                }
                 logger.info("插入用户前-----------333333333333");
                 User user = insertUserOne(email, orgpwd);
                 logger.info("插入用户后-------------4444444444");
