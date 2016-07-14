@@ -74,6 +74,8 @@ public class OrganRegisterController extends BaseController {
     @RequestMapping(value = "/registerOne.json", method = RequestMethod.POST)
     public Map<String, Object> insertUserLog(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("组织 注册第一步 用户名/密码 ");
+        logger.info("进入方法");
+        
         Map<String, Object> result = Maps.newHashMap();
         try {
             String requestJson = getJsonParamStr(request);
@@ -86,7 +88,9 @@ public class OrganRegisterController extends BaseController {
                     result.put("result", "邮箱地址格式不正确，请重新输入!");
                     return genRespBody(result, null);
                 }
-                if (StringUtils.isNotBlank(code)) {
+                if (StringUtils.isNotBlank(code)) { 
+                	logger.info("插入用户前-----------");
+                	
                     // 校验验证码
                     HttpSession hs = request.getSession();
                     String cacheIdentifyCode = cacheManager.get(CacheType.IDENTIFY_CODE, hs.getId());
