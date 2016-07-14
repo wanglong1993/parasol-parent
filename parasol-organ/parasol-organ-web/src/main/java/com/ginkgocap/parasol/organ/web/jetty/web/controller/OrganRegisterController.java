@@ -367,13 +367,13 @@ public class OrganRegisterController extends BaseController {
                 if (isEmailExist) {
                     logger.info("77777777777777");
 
-                    OrganRegister org = organRegisterService.isStatus(email);
+                   // OrganRegister org = organRegisterService.isStatus(email);
                     logger.info("99999999999999999999");
-                    if (org != null) {
-                        result.put("result", isEmailExist);
-                        result.put("organid", org.getId());
-                        result.put("status", org.getStatus());
-                    }
+//                    if (org != null) {
+//                        result.put("result", isEmailExist);
+//                        result.put("organid", org.getId());
+//                        result.put("status", org.getStatus());
+//                    }
                     return  genRespBody(result, null);
                 }
             }
