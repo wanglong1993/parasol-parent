@@ -69,20 +69,20 @@ public class WebConfig {
 		// super.addDefaultHttpMessageConverters(converters);
 	}
 
-//	@Bean
-//	public EmbeddedServletContainerCustomizer containerCustomizer() {
-//	  return new EmbeddedServletContainerCustomizer() {
-//	    @Override
-//	    public void customize(ConfigurableEmbeddedServletContainer container) {
-//	      Ssl ssl = new Ssl();
-//	      //Server.jks中包含服务器私钥和证书
-//	      ssl.setKeyStore("server.keystore");
-//	      ssl.setKeyStorePassword("111111");
-//	      container.setSsl(ssl);
-//	      container.setPort(443);
-//	    }
-//	  };
-//	}
+	@Bean
+	public EmbeddedServletContainerCustomizer containerCustomizer() {
+	  return new EmbeddedServletContainerCustomizer() {
+	    @Override
+	    public void customize(ConfigurableEmbeddedServletContainer container) {
+	      Ssl ssl = new Ssl();
+	      //Server.jks中包含服务器私钥和证书
+	      ssl.setKeyStore("server.keystore");
+	      ssl.setKeyStorePassword("111111");
+	      container.setSsl(ssl);
+	      container.setPort(443);
+	    }
+	  };
+	}
 
 
 }
