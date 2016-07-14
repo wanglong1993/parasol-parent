@@ -94,6 +94,7 @@ public class OrganRegisterController extends BaseController {
                     // 校验验证码
                     HttpSession hs = request.getSession();
                     String cacheIdentifyCode = cacheManager.get(CacheType.IDENTIFY_CODE, hs.getId());
+                    logger.info("cacheIdentifyCode:"+cacheIdentifyCode);
                     if (!code.equals(cacheIdentifyCode)) {
                         result.put("result", "验证码不正确!");
                         return genRespBody(result, null);
