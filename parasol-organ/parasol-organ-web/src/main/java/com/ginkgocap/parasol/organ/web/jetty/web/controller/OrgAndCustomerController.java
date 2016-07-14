@@ -258,7 +258,11 @@ public class OrgAndCustomerController  extends BaseController {
 								 Map map = new HashMap();
 								 map.put("custermId", id);
 								 map.put("userId", user.getId());
-								 customerCollectService.deleteUserCustomerCollect(map);
+								 if(customer.getVirtual()==1){
+									 friendsRelationService.deleteRUser(user.getId(), id); 
+								 }else{
+								      customerCollectService.deleteUserCustomerCollect(map);
+								 }
 							}
 				      }else{
 				    	  returnFailMSGNew("-1", "客户不存在！");
