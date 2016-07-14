@@ -46,7 +46,7 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 		// TODO Auto-generated method stub
 		ColumnCustomExample example=new ColumnCustomExample();
 		Criteria c=example.createCriteria();
-		c.andPcidEqualTo(pid);
+//		c.andPcidEqualTo(pid);
 		c.andUserIdEqualTo(uid);
 		List<ColumnCustom> list=ccm.selectByExample(example);
 		return list;
