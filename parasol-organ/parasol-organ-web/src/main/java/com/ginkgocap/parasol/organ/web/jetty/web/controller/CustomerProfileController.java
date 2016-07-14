@@ -53,6 +53,7 @@ import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.CustomerGroup;
 import com.ginkgocap.ywxt.organ.model.CustomerTag;
 import com.ginkgocap.ywxt.organ.model.SimpleCustomer;
+import com.ginkgocap.ywxt.organ.model.bigdata.BigDataReport;
 import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
 import com.ginkgocap.ywxt.organ.service.CustomerCountService;
@@ -748,7 +749,13 @@ public class CustomerProfileController extends BaseController {
 			bigDataCustomer.setInvestment(customer_temp.getInvestment());
 			bigDataCustomer.setPeople(customer_temp.getPeople());
 			bigDataCustomer.setFinfo(customer_temp.getFinfo());
-			bigDataCustomer.setReport(customer_temp.getReport());
+			List<BigDataReport> aa = customer_temp.getReport();
+			for (BigDataReport bigDataReport : aa) {
+				String report = bigDataReport.getReport();
+				String newreport=report.replace("</div>", "");
+				bigDataReport.setReport(newreport);
+			}
+			bigDataCustomer.setReport(aa);
 			bigDataCustomer.setShareholders(customer_temp.getShareholders());
 			responseData.put("customer", bigDataCustomer);
 			try {
