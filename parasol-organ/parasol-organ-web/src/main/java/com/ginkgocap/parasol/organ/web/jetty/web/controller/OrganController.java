@@ -544,8 +544,17 @@ public class OrganController extends BaseController {
 			organProfileVo.setStatus(customer_temp.getStatus());
 			organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
 			organProfileVo.setLinkManName(customer_temp.getLinkManName());
-			organProfileVo.setMoudles(customer_temp.getMoudles());
 			organProfileVo.setTemplateId(templateId);
+			
+			if(customer_temp.getMoudles()!=null&&customer_temp.getMoudles().size()>0){
+				organProfileVo.setMoudles(customer_temp.getMoudles());
+			}else{
+				
+				organProfileVo.setMoudles(OrganUtils.createMoudles(customer_temp));
+				
+			}
+		
+			
 			responseData.put("customer", organProfileVo);
 			responseData.put("bindUserId", customer_temp.getBindUserId());
 			responseData.put("id", organProfileVo.getId());

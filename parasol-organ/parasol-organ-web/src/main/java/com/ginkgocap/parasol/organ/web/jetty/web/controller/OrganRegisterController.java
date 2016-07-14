@@ -98,19 +98,21 @@ public class OrganRegisterController extends BaseController {
                     result.put("result", "验证码不为空!");
                     return genRespBody(result, null);
                 }
+                logger.info("插入用户前-----------");
                 User user = insertUserOne(email, orgpwd);
-                if (user != null) {
-                    OrganRegister org = new OrganRegister();
-                    org.setId(user.getId());
-                    org.setPassword(user.getPassword());
-                    org.setEmail(email);
-                    org.setStatus(Constants.OrganStatus.emailNoActive.v());
-                    org.setIsSwitch(0);
-                    result = organRegisterService.insertOrganRegister(org);
-                    result.put("id", user.getId());
-                    // 发送邮箱验证
-                    sendRegValidateEmail(user.getId(), email, 0, user.getId(), request, response);
-                }
+                logger.info("插入用户后-------------");
+//                if (user != null) {
+//                    OrganRegister org = new OrganRegister();
+//                    org.setId(user.getId());
+//                    org.setPassword(user.getPassword());
+//                    org.setEmail(email);
+//                    org.setStatus(Constants.OrganStatus.emailNoActive.v());
+//                    org.setIsSwitch(0);
+//                    result = organRegisterService.insertOrganRegister(org);
+//                    result.put("id", user.getId());
+//                    // 发送邮箱验证
+//                    sendRegValidateEmail(user.getId(), email, 0, user.getId(), request, response);
+//                }
             }
         } catch (Exception e) {
             logger.error("系统异常,请稍后再试", e);
