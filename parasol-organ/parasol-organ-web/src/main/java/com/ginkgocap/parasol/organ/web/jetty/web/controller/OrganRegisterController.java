@@ -98,9 +98,9 @@ public class OrganRegisterController extends BaseController {
                     result.put("result", "验证码不为空!");
                     return genRespBody(result, null);
                 }
-                System.out.println("插入用户前-----------");
+                logger.info("插入用户前-----------");
                 User user = insertUserOne(email, orgpwd);
-                System.out.println("插入用户后-------------");
+                logger.info("插入用户后-------------");
 //                if (user != null) {
 //                    OrganRegister org = new OrganRegister();
 //                    org.setId(user.getId());
