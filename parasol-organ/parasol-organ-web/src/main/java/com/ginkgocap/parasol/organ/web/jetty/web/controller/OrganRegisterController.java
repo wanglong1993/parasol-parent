@@ -89,7 +89,7 @@ public class OrganRegisterController extends BaseController {
                     return genRespBody(result, null);
                 }
                 if (StringUtils.isNotBlank(code)) { 
-                	logger.info("插入用户前-----------");
+                	logger.info("插入用户前-----------2222222222");
                 	
                     // 校验验证码
                     HttpSession hs = request.getSession();
@@ -102,9 +102,9 @@ public class OrganRegisterController extends BaseController {
                     result.put("result", "验证码不为空!");
                     return genRespBody(result, null);
                 }
-                logger.info("插入用户前-----------");
+                logger.info("插入用户前-----------333333333333");
                 User user = insertUserOne(email, orgpwd);
-                logger.info("插入用户后-------------");
+                logger.info("插入用户后-------------4444444444");
 //                if (user != null) {
 //                    OrganRegister org = new OrganRegister();
 //                    org.setId(user.getId());
