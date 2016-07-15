@@ -74,6 +74,8 @@ public class OrganRegisterController extends BaseController {
     @RequestMapping(value = "/registerOne.json", method = RequestMethod.POST)
     public Map<String, Object> insertUserLog(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("组织 注册第一步 用户名/密码 ");
+        logger.info("进入方法");
+        
         Map<String, Object> result = Maps.newHashMap();
         try {
             String requestJson = getJsonParamStr(request);
@@ -86,10 +88,13 @@ public class OrganRegisterController extends BaseController {
                     result.put("result", "邮箱地址格式不正确，请重新输入!");
                     return genRespBody(result, null);
                 }
-                if (StringUtils.isNotBlank(code)) {
+                if (StringUtils.isNotBlank(code)) { 
+                	logger.info("插入用户前-----------2222222222");
+                	
                     // 校验验证码
                     HttpSession hs = request.getSession();
                     String cacheIdentifyCode = cacheManager.get(CacheType.IDENTIFY_CODE, hs.getId());
+                    logger.info("cacheIdentifyCode:"+cacheIdentifyCode);
                     if (!code.equals(cacheIdentifyCode)) {
                         result.put("result", "验证码不正确!");
                         return genRespBody(result, null);
@@ -98,21 +103,21 @@ public class OrganRegisterController extends BaseController {
                     result.put("result", "验证码不为空!");
                     return genRespBody(result, null);
                 }
-                logger.info("插入用户前-----------");
+                logger.info("插入用户前-----------333333333333");
                 User user = insertUserOne(email, orgpwd);
-                logger.info("插入用户后-------------");
-//                if (user != null) {
-//                    OrganRegister org = new OrganRegister();
-//                    org.setId(user.getId());
-//                    org.setPassword(user.getPassword());
-//                    org.setEmail(email);
-//                    org.setStatus(Constants.OrganStatus.emailNoActive.v());
-//                    org.setIsSwitch(0);
-//                    result = organRegisterService.insertOrganRegister(org);
-//                    result.put("id", user.getId());
-//                    // 发送邮箱验证
-//                    sendRegValidateEmail(user.getId(), email, 0, user.getId(), request, response);
-//                }
+                logger.info("插入用户后-------------4444444444");
+                if (user != null) {
+                    OrganRegister org = new OrganRegister();
+                    org.setId(user.getId());
+                    org.setPassword(user.getPassword());
+                    org.setEmail(email);
+                    org.setStatus(Constants.OrganStatus.emailNoActive.v());
+                    org.setIsSwitch(0);
+                    result = organRegisterService.insertOrganRegister(org);
+                    result.put("id", user.getId());
+                    // 发送邮箱验证
+                    sendRegValidateEmail(user.getId(), email, 0, user.getId(), request, response);
+                }
             }
         } catch (Exception e) {
             logger.error("系统异常,请稍后再试", e);
@@ -357,8 +362,12 @@ public class OrganRegisterController extends BaseController {
                 JSONObject j = JSONObject.fromObject(requestJson);
                 String email = j.optString("email");
                 boolean isEmailExist = userService.isExistByEmail(email);
+               
+                logger.info("isEmailExist:"+isEmailExist);
                 if (isEmailExist) {
+
                     OrganRegister org = organRegisterService.isStatus(email);
+                    
                     if (org != null) {
                         result.put("result", isEmailExist);
                         result.put("organid", org.getId());
