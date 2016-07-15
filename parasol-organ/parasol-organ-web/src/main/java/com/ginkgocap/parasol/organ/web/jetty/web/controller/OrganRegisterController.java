@@ -217,18 +217,18 @@ public class OrganRegisterController extends BaseController {
                 JSONObject j = JSONObject.fromObject(requestJson);
                 OrganRegister org = JSON.parseObject(requestJson, OrganRegister.class);
                 // 验证手机验证码
-//                String code = j.getString("code");
-//                String key = cache.getCacheHelper().buildKey(CacheModule.COMMON, org.getContanctMobile());
-//                MobileCode value = (MobileCode) cache.get(key);
-//                if (value == null) {
-//                    setSessionAndErr(request, response, "-1", "验证码已过期,请重新发送！");
-//                    return returnFailMSGNew("01", "验证码已过期,请重新发送！");
-//                } else {
-//                    if (!value.getCode().equals(code)) {
-//                        setSessionAndErr(request, response, "-1", "验证码不正确！");
-//                        return returnFailMSGNew("01", "验证码不正确！");
-//                    }
-//                }
+                String code = j.getString("code");
+                String key = cache.getCacheHelper().buildKey(CacheModule.COMMON, org.getContanctMobile());
+                MobileCode value = (MobileCode) cache.get(key);
+                if (value == null) {
+                    setSessionAndErr(request, response, "-1", "验证码已过期,请重新发送！");
+                    return returnFailMSGNew("01", "验证码已过期,请重新发送！");
+                } else {
+                    if (!value.getCode().equals(code)) {
+                        setSessionAndErr(request, response, "-1", "验证码不正确！");
+                        return returnFailMSGNew("01", "验证码不正确！");
+                    }
+                }
 
                 updateUserValue(org);
                 result = organRegisterService.updateOrganInformation(org);
@@ -365,15 +365,14 @@ public class OrganRegisterController extends BaseController {
                
                 logger.info("isEmailExist:"+isEmailExist);
                 if (isEmailExist) {
-                    logger.info("77777777777777");
 
-                   // OrganRegister org = organRegisterService.isStatus(email);
-                    logger.info("99999999999999999999");
-//                    if (org != null) {
-//                        result.put("result", isEmailExist);
-//                        result.put("organid", org.getId());
-//                        result.put("status", org.getStatus());
-//                    }
+                    OrganRegister org = organRegisterService.isStatus(email);
+                    
+                    if (org != null) {
+                        result.put("result", isEmailExist);
+                        result.put("organid", org.getId());
+                        result.put("status", org.getStatus());
+                    }
                     return  genRespBody(result, null);
                 }
             }
