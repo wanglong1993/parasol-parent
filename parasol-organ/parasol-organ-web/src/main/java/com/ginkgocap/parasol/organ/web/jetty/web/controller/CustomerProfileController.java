@@ -358,8 +358,8 @@ public class CustomerProfileController extends BaseController {
 					responseDataMap.put("msg", "操作成功");
 					responseDataMap.put("customerId", customer.getCustomerId());
 					isAdd = true;
-					System.out
-							.println("增加客户" + customer.getCustomerId() + "成功");
+					System.out.println("增加客户" + customer.getCustomerId() + "成功");
+							
 				} else {
 
 					PermissionQuery p = new PermissionQuery();
@@ -428,14 +428,24 @@ public class CustomerProfileController extends BaseController {
 						per = permissionRepositoryService.selectByRes(
 								customer.getCustomerId(), ResourceType.ORG)
 								.getResponseData();
+						
+						if(per==null){
+							
+						}
 					}
-					per.setResOwnerId(user.getId());// 资源所有者id
-					per.setPublicFlag(customerPermissions.getInt("publicFlag"));// 公开-1，私密-0
-					per.setShareFlag(customerPermissions.getInt("shareFlag"));// 可分享-1,不可分享-0
-					per.setConnectFlag(customerPermissions
-							.getInt("connectFlag"));// 可对接-1,不可对接-0
-					per.setResType(ResourceType.ORG.getVal());// 资源类型
-					per.setResId(customer.getCustomerId());// 资源id
+					
+					
+					
+					if(per!=null){
+						per.setResOwnerId(user.getId());// 资源所有者id
+						per.setPublicFlag(customerPermissions.getInt("publicFlag"));// 公开-1，私密-0
+						per.setShareFlag(customerPermissions.getInt("shareFlag"));// 可分享-1,不可分享-0
+						per.setConnectFlag(customerPermissions
+								.getInt("connectFlag"));// 可对接-1,不可对接-0
+						per.setResType(ResourceType.ORG.getVal());// 资源类型
+						per.setResId(customer.getCustomerId());// 资源id
+					}
+					
 					if (isAdd) {
 						InterfaceResult<Boolean> result = permissionRepositoryService
 								.insert(per);
