@@ -218,17 +218,7 @@ public class OrganMeetController extends BaseController {
 				}else{
 					for (Long long1 : id) {
 						flag = customerMeetingDetailService.deleteById(long1);
-						   //查询当前会面在关联表中的信息
-		                List<Associate> associatlist = associateService.getAssociatesBySourceId(appId, userBasic.getId(), long1);
-						   //删除当前会面在关联表中的信息
-		                if(associatlist==null ||associatlist.isEmpty()){
-		                	
-		                }else{
-			                for (Associate associate : associatlist) {
-								   associateService.removeAssociate(appId,  userBasic.getId(), associate.getId());
-						    }
-		                }
-                    }
+					}
 				}
 			}
 		}else{  
