@@ -171,7 +171,7 @@ public class OrgAndCustomerController  extends BaseController {
 								bsn.put("page", page);
 								bsn.put("results", new ArrayList<SimpleCustomer>());
 							}
-					   }else if("3".equals(StringUtils.trimToEmpty(type))){//其他
+					   }else if("3".equals(StringUtils.trimToEmpty(type))){//组织好友
 						   if(ids!=null&&ids.size()>0){
 							    bsn=simpleCustomerService.findByOrgAndCustmer(-2,ids, null,StringUtils.trimToEmpty(name),currentPage, pageSize);
 						   }else{
