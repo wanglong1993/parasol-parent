@@ -334,9 +334,10 @@ public class CustomerProfileController extends BaseController {
 				
 					System.out.println("xxxxper:"+per);
 				
-					if (per.getPerId()!=null) {
+					if (per.getPerId()==null) {
 						InterfaceResult<Boolean> result = permissionRepositoryService
 								.insert(per);
+						System.out.println(" insert permission relsut :"+result.getNotification().getNotifInfo());
 					} else {
 						permissionRepositoryService.update(per);
 					}
