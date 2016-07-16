@@ -140,7 +140,7 @@ public class OrganEvaluateController extends BaseController {
 						setSessionAndErr(request, response, "-1", "当前用户不存在！");
 					}
 				}else if("2".equals(type)){
-					 Customer customer=customerService.findOne(homeId);
+					 Customer customer=customerService.findCustomerCurrentData(homeId, "1");
 					 if(customer!=null){
 						 long createHomeId=customer.getCreateById();
 						 if (userBlackService.isBlackRelation(userId, createHomeId)) {
@@ -227,7 +227,7 @@ public class OrganEvaluateController extends BaseController {
 						
 					}
 				}else if("2".equals(type)){
-					 Customer customer=customerService.findOne(homeUserId);
+					 Customer customer=customerService.findCustomerCurrentData(homeUserId, "1");
              	     realHomeUserId=customer.getCreateById();
              	     if(realHomeUserId!=user.getId()){
              	    	  String feedback=userSerivce.selectByPrimaryKey(customer.getCreateById()).getName()+"不允许别人对TA的人脉进行评价，试试其他功能吧！";
@@ -322,7 +322,7 @@ public class OrganEvaluateController extends BaseController {
 					}
 					
 				}else if("2".equals(type)){
-						realHomeUserId=customerService.findOne(homeUserId).getCreateById();
+						realHomeUserId=customerService.findCustomerCurrentData(homeUserId, "1").getCreateById();
 					    if(realHomeUserId!=user.getId()){
 					    	String feedback = "对方设置了评价权限";
 							if (userBlackService.isBlackRelation(realHomeUserId,
