@@ -113,6 +113,7 @@ public class OrganEvaluateController extends BaseController {
 				long homeId = CommonUtil.optLongFromJSONObject(j, "userId");
 				// 组织评价
 				String type=j.getString("type");
+				String virtual = j.optString("virtual");
 				if (type != null) {
 					responseDataMap.put("listUserComment",
 							customerEvaluateService.selectCustomerEvaluate(homeId, j.optBoolean("isSelf"), userId,type));
@@ -140,7 +141,7 @@ public class OrganEvaluateController extends BaseController {
 						setSessionAndErr(request, response, "-1", "当前用户不存在！");
 					}
 				}else if("2".equals(type)){
-					 Customer customer=customerService.findCustomerCurrentData(homeId, "1");
+					 Customer customer=customerService.findCustomerCurrentData(homeId, virtual);
 					 if(customer!=null){
 						 long createHomeId=customer.getCreateById();
 						 if (userBlackService.isBlackRelation(userId, createHomeId)) {
@@ -196,6 +197,7 @@ public class OrganEvaluateController extends BaseController {
 				long realHomeUserId=homeUserId;
 				String type=j.getString("type");
 				String comment = j.optString("comment");
+				String virtual = j.optString("virtual");
 				if(isNullOrEmpty(comment)){
 					setSessionAndErr(request, response, "-1", "评价内容不能为空！");
 					return genRespBody(responseDataMap, null);
@@ -227,7 +229,7 @@ public class OrganEvaluateController extends BaseController {
 						
 					}
 				}else if("2".equals(type)){
-					 Customer customer=customerService.findCustomerCurrentData(homeUserId, "1");
+					 Customer customer=customerService.findCustomerCurrentData(homeUserId, virtual);
              	     realHomeUserId=customer.getCreateById();
              	     if(realHomeUserId!=user.getId()){
              	    	  String feedback=userSerivce.selectByPrimaryKey(customer.getCreateById()).getName()+"不允许别人对TA的人脉进行评价，试试其他功能吧！";
@@ -299,6 +301,7 @@ public class OrganEvaluateController extends BaseController {
 				long homeUserId = CommonUtil.optLongFromJSONObject(j, "homeUserId");
 				long realHomeUserId=homeUserId;
 				String type=j.getString("type");
+				String virtual = j.optString("virtual");
 				if ("1".equals(type)&&homeUserId != user.getId()) {
 					String feedback = "对方设置了评价权限";
 					if (userBlackService.isBlackRelation(realHomeUserId,
@@ -322,7 +325,7 @@ public class OrganEvaluateController extends BaseController {
 					}
 					
 				}else if("2".equals(type)){
-						realHomeUserId=customerService.findCustomerCurrentData(homeUserId, "1").getCreateById();
+						realHomeUserId=customerService.findCustomerCurrentData(homeUserId, virtual).getCreateById();
 					    if(realHomeUserId!=user.getId()){
 					    	String feedback = "对方设置了评价权限";
 							if (userBlackService.isBlackRelation(realHomeUserId,
