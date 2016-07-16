@@ -592,15 +592,9 @@ public class CustomerProfileController extends BaseController {
 			customer_new.setCreateById(customer_temp.getCreateById());
 			// 修改组织来源
 			customer_new.setComeId(customer_temp.getComeId());
-			customer_new.setCreateType(getUserType(customer_temp
-					.getCreateById()) == true ? "2" : "1");
-
 			
-			 User createUser=userService.selectByPrimaryKey(customer_temp.getCreateById());
-			if(createUser!=null){
-				customer_new.setCreateName(createUser.getName());
-				System.out.println("customer createName:"+createUser.getName());
-			}
+
+			setCreateTypeAndName(customer_new, customer_temp.getCreateById());
 			
 			 
 			customer_new.setIndustryObj(customer_temp.getIndustryObj());
@@ -670,22 +664,7 @@ public class CustomerProfileController extends BaseController {
 		return returnSuccessMSG(responseData);
 	}
 
-	// 账号是否是组织 0:个人 1:组织
-	public boolean getUserType(long userId) {
 
-		
-//		  UserLoginRegister userLoginRegister; try { userLoginRegister =
-//		  userLoginRegisterService.getUserLoginRegister(userId); if
-//		 (userLoginRegister!=null) { return
-//		  userLoginRegister.getUsetType()==1; } } catch
-//		  (UserLoginRegisterServiceException e) { // TODO Auto-generated catch
-//		  block e.printStackTrace(); }
-		 
-
-		return false;
-	}
-
-	
 	
 	
 	
@@ -838,9 +817,8 @@ public class CustomerProfileController extends BaseController {
 			customer_new.setCreateById(customer_temp.getCreateById());
 			// 修改组织来源
 			customer_new.setComeId(customer_temp.getComeId());
-			customer_new.setCreateType(getUserType(customer_temp
-					.getCreateById()) == true ? "2" : "1");
-
+			setCreateTypeAndName(customer_new, customer_temp.getCreateById());
+			
 			customer_new.setDirectory(customer_temp.getDirectory());
 
 			// customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));
@@ -1104,6 +1082,18 @@ public class CustomerProfileController extends BaseController {
 
     
     
+    
+    public void setCreateTypeAndName(CustomerProfileVoNew customer_new,long createById){
+    	
+    	 User createUser=userService.selectByPrimaryKey(createById);
+			if(createUser!=null){
+				customer_new.setCreateName(createUser.getName());
+				System.out.println("customer createName:"+createUser.getName());
+				customer_new.setCreateType(createUser.getType()+"");
+				
+			}
+    }
+    
 	public void findFourModule(Customer customer_temp,Map responseData){
 			
 		try{
@@ -1170,6 +1160,8 @@ public class CustomerProfileController extends BaseController {
 		
 	}
 
+	
+	
 	
 	
 }
