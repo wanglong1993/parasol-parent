@@ -177,7 +177,8 @@ public class OrganCommentController  extends BaseController{
 			    	  }
 			    	  commentMain.setPraisecount(praisecount);
 			    	  commentMain.setPraiseresult(praiseresult);
-			    	  commentMain.setReplyMap(ommentReplyService.findByCommentid(id));
+			    	  List<CommentReply> replyList = ommentReplyService.findByCommentid(id);
+			    	  commentMain.setReplyMap(replyList);
 			    	  commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
 			       }
 			       UserConfig config = userConfigService.getByUserId(userBasic.getId());
@@ -185,12 +186,12 @@ public class OrganCommentController  extends BaseController{
 			       responseDataMap.put("Jurisdiction", quanixan);
 			       responseDataMap.put("commentMap", commentMainlist);
 		}else{
-			setSessionAndErr(request, response, "-1", "请完善信息！");
 			 flag = false;
+			 returnFailMSGNew("-1", "参数异常！");
 		}
 		   responseDataMap.put("success", flag);
 	       notificationMap.put("notifCode", "0001");
-			notificationMap.put("notifInfo", "hello mobile app!");
+		   notificationMap.put("notifInfo", "hello mobile app!");
 		model.put("responseData", responseDataMap);
 		model.put("notification", notificationMap);
 		return model;

@@ -1,6 +1,7 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -697,7 +698,8 @@ public class CustomerProfileController extends BaseController {
 		Map<String, Object> responseData = new HashMap<String, Object>();
 		System.out.println("json:" + requestJson);
 		JSONObject j = JSONObject.fromObject(requestJson);
-		String name = JsonUtil.getNodeToString(j, "name");
+		String name1 = JsonUtil.getNodeToString(j, "name");
+		String name=URLDecoder.decode(name1,"UTF-8");
 		BigDataModel bigDataCustomer = new BigDataModel();
 
 		Customer customer_temp = customerService.findCustomerBigData(name, "2");
