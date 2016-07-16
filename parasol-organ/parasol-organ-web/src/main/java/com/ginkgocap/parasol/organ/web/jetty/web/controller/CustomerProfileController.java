@@ -152,132 +152,22 @@ public class CustomerProfileController extends BaseController {
 		;
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		User user = null;
+		boolean isAdd = false; // 是否增加
+		Customer customer=null;
+		Permission per=null;
 		if (requestJson != null && !"".equals(requestJson)) {
 			try {
 				JSONObject jo = JSONObject.fromObject(requestJson);
-				// android端多传的属性
-				jo.remove("relevance");
-				jo.remove("directory");
-				jo.remove("lableList");
-				jo.remove("customerPermissions");
-				jo.remove("friends");
-				jo.remove("tagList");
-				jo.remove("directory");
-				jo.remove("associateList");
-				jo.remove("templateName");
-				jo.remove("templateType");
-				jo.remove("columns");// 不知道什么东西暂时去掉
+			
+				removeUnSerilabeAndUseLessField(jo);
 				user = getUser(request);
 
 				System.out.println("requestJson:" + requestJson);
 				ObjectMapper objectMapper = new ObjectMapper();
-				Customer customer = objectMapper.readValue(jo.toString(),
+				 customer = objectMapper.readValue(jo.toString(),
 						Customer.class);
-				JSONArray moudles=customer.getMoudles();
-				JSONObject basiInfoMoudle=null;
-				JSONObject briefMoudle=null;
-				for(int i=0;i<moudles.size();i++){
-					 JSONObject jsonObject=moudles.getJSONObject(i);
-					 if(jsonObject.getInt("moudleId")==1||jsonObject.getInt("moudleId")==2){// 基本信息模块
-						 basiInfoMoudle=jsonObject;
-					 }
-					 
-					 if(jsonObject.getInt("moudleId")==3){// 企业简介模块
-						 briefMoudle=jsonObject;
-					 }
-					 if(briefMoudle!=null&&basiInfoMoudle!=null){
-						 break;
-					 }
-				}
-				
-				if(basiInfoMoudle!=null){
-					
-					JSONArray controlList=basiInfoMoudle.getJSONArray("controlList");
-					for(int i=0;i<controlList.size();i++){
-						JSONObject control=controlList.getJSONObject(i);
-						String name=control.getString("name");
-						if("name".equals(name)){
-							customer.setName(control.getString("value"));
-						}else if("shortName".equals(name)){
-							customer.setShotName(control.getString("value"));
-							
-						}else if("orgType".equals(name)){
-							
-							JSONArray  itemsArray=control.getJSONArray("items");
-							
-							for(int k=0;k<itemsArray.size();k++){
-								
-								JSONObject itemJsonObj=itemsArray.getJSONObject(k);
-								if(itemJsonObj.getBoolean("checked")){
-									
-									customer.setOrgType(itemJsonObj.getInt("value"));
-								}
-							}
-							
-						}else if("district".equals(name)){
-							
-							JSONObject valueJo=control.getJSONObject("value");
-							String province=valueJo.getString("province");
-							String city=valueJo.getString("city");
-							String county=valueJo.getString("county");
-							
-							if(province.equals(city)){
-								customer.setAreaString(city+"-"+county);
-
-							}else{
-								customer.setAreaString(province+"-"+city+"-"+county);
-							}
-							
-							Area area=new Area();
-							area.setCity(city);
-							area.setProvince(province);
-							area.setCounty(county);
-							customer.setArea(area);
-						}else if("industry".equals(name)){
-							JSONObject valueJo=control.getJSONObject("value");
-							customer.setIndustry(valueJo.getString("industry"));
-							if("".equals(valueJo.getString("industryId"))){
-								customer.setIndustryId(-1);
-							}else{
-								customer.setIndustryId(Long.parseLong(valueJo.getString("industryId")));
-							}
-							
-						}else if("isListing".equals(name)){
-							
-								JSONArray  itemsArray=control.getJSONArray("items");
-							
-								for(int k=0;k<itemsArray.size();k++){
-									
-									JSONObject itemJsonObj=itemsArray.getJSONObject(k);
-									if(itemJsonObj.getBoolean("checked")){
-										customer.setIsListing(itemJsonObj.getString("value"));
-									}
-								}
-								
-						}else if("stockNum".equals(name)){
-							
-							customer.setStockNum(control.getString("value"));
-						}
-					}
-					
-					
-				}else{
-					return returnFailMSGNew("01", "找不到基础信息模块");
-				}
-				
-				
-				if(briefMoudle!=null){
-					
-					JSONArray controlList=briefMoudle.getJSONArray("controlList");
-					JSONObject  briefObj=controlList.getJSONObject(0);
-					customer.setDiscribe(briefObj.getString("value"));
-					
-				}else{
-					return returnFailMSGNew("01", "找不到企业简介模块");
-				}
-				
-				
-				
+			     initCustomerOldField(customer);// 初始化老子段
+				 
 				Customer oldCustomer = customerService
 						.findOne(customer.getId());
 				if (oldCustomer != null
@@ -338,9 +228,6 @@ public class CustomerProfileController extends BaseController {
 				 customer.setLableList(tagList);
 
 				 
-				
-				 
-				 
 				if (oldCustomer != null) {
 					customer.setCustomerId(oldCustomer.getCustomerId());
 				}
@@ -350,7 +237,7 @@ public class CustomerProfileController extends BaseController {
 				
 				customer.setCustomerPermissions(customerPermissions.toString());
 				
-				boolean isAdd = false; // 是否增加
+			
 				if (customer.getCustomerId() == 0) {
 
 					customer = customerService.addCustomerData(customer);
@@ -409,11 +296,7 @@ public class CustomerProfileController extends BaseController {
 					rCustomerTagService.saveAll(customer.getCustomerId(), tagJson, user.getId());
 				//}
 				
-					
-				
-				
 				System.out.println("客户e:" + customer.getCustomerId());
-				jo = JSONObject.fromObject(requestJson);
 
 				// 保存权限
 			
@@ -421,7 +304,7 @@ public class CustomerProfileController extends BaseController {
 
 					System.out.println("customerPermissions:"
 							+ customerPermissions);
-					Permission per = new Permission();
+					
 					if (!isAdd) {
 						System.out.println("查找权限：资源ID"
 								+ customer.getCustomerId());
@@ -429,24 +312,28 @@ public class CustomerProfileController extends BaseController {
 								customer.getCustomerId(), ResourceType.ORG)
 								.getResponseData();
 						
-						if(per==null){
-							
+						if(per!=null){
+							System.out.println("查到权限：perId"
+									+ per.getPerId());
 						}
 					}
 					
-					
-					
-					if(per!=null){
-						per.setResOwnerId(user.getId());// 资源所有者id
-						per.setPublicFlag(customerPermissions.getInt("publicFlag"));// 公开-1，私密-0
-						per.setShareFlag(customerPermissions.getInt("shareFlag"));// 可分享-1,不可分享-0
-						per.setConnectFlag(customerPermissions
-								.getInt("connectFlag"));// 可对接-1,不可对接-0
-						per.setResType(ResourceType.ORG.getVal());// 资源类型
-						per.setResId(customer.getCustomerId());// 资源id
+					if(per==null){
+						per = new Permission();
 					}
 					
-					if (isAdd) {
+					
+					per.setResOwnerId(user.getId());// 资源所有者id
+					per.setPublicFlag(customerPermissions.getInt("publicFlag"));// 公开-1，私密-0
+					per.setShareFlag(customerPermissions.getInt("shareFlag"));// 可分享-1,不可分享-0
+					per.setConnectFlag(customerPermissions
+							.getInt("connectFlag"));// 可对接-1,不可对接-0
+					per.setResType(ResourceType.ORG.getVal());// 资源类型
+					per.setResId(customer.getCustomerId());// 资源id
+				
+					
+				
+					if (per.getPerId()==0) {
 						InterfaceResult<Boolean> result = permissionRepositoryService
 								.insert(per);
 					} else {
@@ -461,10 +348,20 @@ public class CustomerProfileController extends BaseController {
 //				saveCustomerDynamicNews(getUser(request),customer,customerPermissions.toString());
 
 			} catch (Exception e) {
-				setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
+	
+				
+				if(isAdd&&customer.getCustomerId()!=0){
+					PermissionQuery pQuery= new PermissionQuery();
+					pQuery.setResId(customer.getId());
+					pQuery.setUserId(user.getId());
+					pQuery.setResType((short) 3);// 3组织
+					customerService.deleteCustomerByCustomerId(customer.getCustomerId(), pQuery);
+				}
+				
 				e.printStackTrace();
-				return returnFailMSGNew("01", e.getMessage());
+				return returnFailMSGNew("01", "系统异常,请稍后再试");
 			}
+			
 		} else {
 			setSessionAndErr(request, response, "-1", "非法操作！");
 			return returnFailMSGNew("01", "非法操作！");
@@ -472,6 +369,141 @@ public class CustomerProfileController extends BaseController {
 
 		return returnSuccessMSG(responseDataMap);
 	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * 初始化老子段
+	 * @param customer
+	 */
+	private void initCustomerOldField(Customer customer){
+		JSONArray moudles=customer.getMoudles();
+		JSONObject basiInfoMoudle=null;
+		JSONObject briefMoudle=null;
+		for(int i=0;i<moudles.size();i++){
+			 JSONObject jsonObject=moudles.getJSONObject(i);
+			 if(jsonObject.getInt("moudleId")==1||jsonObject.getInt("moudleId")==2){// 基本信息模块
+				 basiInfoMoudle=jsonObject;
+			 }
+			 
+			 if(jsonObject.getInt("moudleId")==3){// 企业简介模块
+				 briefMoudle=jsonObject;
+			 }
+			 if(briefMoudle!=null&&basiInfoMoudle!=null){
+				 break;
+			 }
+		}
+		
+		if(basiInfoMoudle!=null){
+			
+			JSONArray controlList=basiInfoMoudle.getJSONArray("controlList");
+			for(int i=0;i<controlList.size();i++){
+				JSONObject control=controlList.getJSONObject(i);
+				String name=control.getString("name");
+				if("name".equals(name)){
+					customer.setName(control.getString("value"));
+				}else if("shortName".equals(name)){
+					customer.setShotName(control.getString("value"));
+					
+				}else if("orgType".equals(name)){
+					
+					JSONArray  itemsArray=control.getJSONArray("items");
+					
+					for(int k=0;k<itemsArray.size();k++){
+						
+						JSONObject itemJsonObj=itemsArray.getJSONObject(k);
+						if(itemJsonObj.getBoolean("checked")){
+							
+							customer.setOrgType(itemJsonObj.getInt("value"));
+						}
+					}
+					
+				}else if("district".equals(name)){
+					
+					JSONObject valueJo=control.getJSONObject("value");
+					String province=valueJo.getString("province");
+					String city=valueJo.getString("city");
+					String county=valueJo.getString("county");
+					
+					if(province.equals(city)){
+						customer.setAreaString(city+"-"+county);
+
+					}else{
+						customer.setAreaString(province+"-"+city+"-"+county);
+					}
+					
+					Area area=new Area();
+					area.setCity(city);
+					area.setProvince(province);
+					area.setCounty(county);
+					customer.setArea(area);
+				}else if("industry".equals(name)){
+					JSONObject valueJo=control.getJSONObject("value");
+					customer.setIndustry(valueJo.getString("industry"));
+					if("".equals(valueJo.getString("industryId"))){
+						customer.setIndustryId(-1);
+					}else{
+						customer.setIndustryId(Long.parseLong(valueJo.getString("industryId")));
+					}
+					
+				}else if("isListing".equals(name)){
+					
+						JSONArray  itemsArray=control.getJSONArray("items");
+					
+						for(int k=0;k<itemsArray.size();k++){
+							
+							JSONObject itemJsonObj=itemsArray.getJSONObject(k);
+							if(itemJsonObj.getBoolean("checked")){
+								customer.setIsListing(itemJsonObj.getString("value"));
+							}
+						}
+						
+				}else if("stockNum".equals(name)){
+					
+					customer.setStockNum(control.getString("value"));
+				}
+			}
+			
+			
+		}
+		
+		
+		if(briefMoudle!=null){
+			
+			JSONArray controlList=briefMoudle.getJSONArray("controlList");
+			JSONObject  briefObj=controlList.getJSONObject(0);
+			customer.setDiscribe(briefObj.getString("value"));
+		}
+		
+	}
+	
+	
+	
+	/**
+	 * 去掉一下 不能 反序列化 和 没有的字段
+	 * @param jo
+	 */
+	private void removeUnSerilabeAndUseLessField(JSONObject jo){
+		
+		// android端多传的属性
+		jo.remove("relevance");
+		jo.remove("directory");
+		jo.remove("lableList");
+		jo.remove("customerPermissions");
+		jo.remove("friends");
+		jo.remove("tagList");
+		jo.remove("directory");
+		jo.remove("associateList");
+		jo.remove("templateName");
+		jo.remove("templateType");
+		jo.remove("columns");// 不知道什么东西暂时去掉
+	}
+	
+	
+	
 
 	/**
 	 * 查询客户详情(新客户详情)
@@ -612,53 +644,6 @@ public class CustomerProfileController extends BaseController {
 			customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));//标签
 
 			findFourModule(customer_temp,responseData);// 目录 和关联
-			
-			
-			// permissionRepositoryService.selectByRes(customer_temp.getCustomerId(),
-			// ResourceType.);
-
-			// List<TagSource>
-			// tagSources=tagSourceService.getTagSourcesByAppIdSourceIdSourceType(appId,
-			// customer_temp.getCustomerId(), sourceType);
-			// List<Map<String,String>> tagList=new
-			// ArrayList<Map<String,String>>();
-			//
-			// for(TagSource tagSource:tagSources){
-			// Map map=new HashMap<String,String>();
-			// map.put("name", tagSource.getTagName());
-			// map.put("id", tagSource.getId());
-			// }
-
-			// customer_new.setTagList(tagList); // 设置标签
-			//
-			//
-			// List<DirectorySource>
-			// directorySources=directorySourceService.getDirectorySourcesBySourceId(user.getId(),
-			// appId, (int)sourceType, customer_temp.getCustomerId());
-			//
-			// for(DirectorySource directorySource:directorySources){
-			//
-			// }
-			//
-
-			// //设置权限
-			// InterfaceResult<Permission> permissionInterfaceResult=
-			// permissionRepositoryService.selectByRes(customer_temp.getCustomerId(),
-			// ResourceType.ORG);
-			// Permission
-			// permission=permissionInterfaceResult.getResponseData();
-			// if(permissionInterfaceResult.getNotification().getNotifCode().equals("0")){
-			//
-			// Map permissionMap=new HashMap();
-			// permissionMap.put("publicFlag", permission.getPublicFlag());
-			// permissionMap.put("shareFlag", permission.getShareFlag());
-			// permissionMap.put("connectFlag", permission.getConnectFlag());
-			// customer_new.setCustomerPermissions(permissionMap);
-			// }
-			//
-			// associateService.getAssociatesBy(appId, sourceType,
-			// customer_temp.getCustomerId());
-			//
 
 			System.out.println(customer_temp);
 			responseData.put("customer", customer_new);
