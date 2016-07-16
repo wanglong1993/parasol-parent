@@ -331,7 +331,7 @@ public class CustomerProfileController extends BaseController {
 					per.setResType(ResourceType.ORG.getVal());// 资源类型
 					per.setResId(customer.getCustomerId());// 资源id
 				
-					System.out.println("xxxxper:"+per.getPerId());
+					System.out.println("xxxxper:"+per);
 				
 					if (per.getPerId()==0) {
 						InterfaceResult<Boolean> result = permissionRepositoryService
