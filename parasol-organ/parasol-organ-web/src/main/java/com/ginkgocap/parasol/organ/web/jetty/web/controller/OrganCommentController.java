@@ -178,7 +178,6 @@ public class OrganCommentController  extends BaseController{
 			    	  }
 			    	  commentMain.setPraisecount(praisecount);
 			    	  commentMain.setPraiseresult(praiseresult);
-			    	  System.out.println("id++========="+id);
 			    	  List<CommentReply> replyList = ommentReplyService.findByCommentid(id);
 			    	  commentMain.setReplyMap(replyList);
 			    	  commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));

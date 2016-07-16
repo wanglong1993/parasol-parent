@@ -367,7 +367,7 @@ public class OrganRelationController extends BaseController {
 		try {
 			long userId = this.getUser(request).getId();
 			System.out.println("userId:"+userId);
-			List<Long> ids = organRelationService.getOrganIdsByUserId(127865);
+			List<Long> ids = organRelationService.getOrganIdsByUserId(userId);
 			System.out.println("ids:"+ids);
 			organRegisterrs = organRegisterService.getOrganRegisterByIds(ids);
 			System.out.println("organRegisterrs:"+organRegisterrs);
