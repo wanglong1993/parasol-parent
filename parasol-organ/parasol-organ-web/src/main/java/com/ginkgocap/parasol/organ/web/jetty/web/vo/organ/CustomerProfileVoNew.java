@@ -71,8 +71,11 @@ public class CustomerProfileVoNew implements Serializable {
 	private String linkManName;// 联系人姓名
 	private String organNumber;// 组织号
 	
-	 private String relevance;//关联信息
+	private String relevance;//关联信息
 	 
+	private String createName;
+
+
 
 	public String getRelevance() {
 		return relevance;
@@ -470,6 +473,14 @@ public class CustomerProfileVoNew implements Serializable {
 	public void setCustomerPermissions(Map customerPermissions) {
 		this.customerPermissions = (customerPermissions == null ? new HashMap()
 				: customerPermissions);
+	}
+	
+	public String getCreateName() {
+		return createName;
+	}
+
+	public void setCreateName(String createName) {
+		this.createName = createName;
 	}
 
 }

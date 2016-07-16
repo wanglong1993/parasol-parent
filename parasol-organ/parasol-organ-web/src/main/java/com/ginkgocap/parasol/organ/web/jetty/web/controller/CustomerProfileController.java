@@ -596,7 +596,12 @@ public class CustomerProfileController extends BaseController {
 					.getCreateById()) == true ? "2" : "1");
 
 			
-           
+			 User createUser=userService.selectByPrimaryKey(customer_temp.getCreateById());
+			if(createUser!=null){
+				customer_new.setCreateName(createUser.getName());
+				System.out.println("customer createName:"+createUser.getName());
+			}
+			
 			 
 			customer_new.setIndustryObj(customer_temp.getIndustryObj());
 
@@ -668,18 +673,22 @@ public class CustomerProfileController extends BaseController {
 	// 账号是否是组织 0:个人 1:组织
 	public boolean getUserType(long userId) {
 
-		/*
-		 * UserLoginRegister userLoginRegister; try { userLoginRegister =
-		 * userLoginRegisterService.getUserLoginRegister(userId); if
-		 * (userLoginRegister!=null) { return
-		 * userLoginRegister.getUsetType()==1; } } catch
-		 * (UserLoginRegisterServiceException e) { // TODO Auto-generated catch
-		 * block e.printStackTrace(); }
-		 */
+		
+//		  UserLoginRegister userLoginRegister; try { userLoginRegister =
+//		  userLoginRegisterService.getUserLoginRegister(userId); if
+//		 (userLoginRegister!=null) { return
+//		  userLoginRegister.getUsetType()==1; } } catch
+//		  (UserLoginRegisterServiceException e) { // TODO Auto-generated catch
+//		  block e.printStackTrace(); }
+		 
 
 		return false;
 	}
 
+	
+	
+	
+	
 	/**
 	 * 查询客户详情(大数据客户)
 	 * 
@@ -959,7 +968,7 @@ public class CustomerProfileController extends BaseController {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
 			System.out.println("没有参数");
 		}
-
+		
 		return responseDataMap;
 	}
 
