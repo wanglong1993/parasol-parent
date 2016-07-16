@@ -404,6 +404,7 @@ public class CustomerProfileController extends BaseController {
 			JSONArray controlList=basiInfoMoudle.getJSONArray("controlList");
 			for(int i=0;i<controlList.size();i++){
 				JSONObject control=controlList.getJSONObject(i);
+				System.out.println("control:"+control);
 				String name=control.getString("name");
 				if("name".equals(name)){
 					customer.setName(control.getString("value"));
