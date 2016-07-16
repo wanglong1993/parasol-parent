@@ -159,6 +159,7 @@ public class OrganCommentController  extends BaseController{
 				   if("".equals(ordertype)){
 					   ordertype=2;
 				   }
+				   System.out.println("参数========="+orgid+"=="+currentPage+"=="+pageSize+"=="+ordertype);
 				   canshu.put("orgid", orgid);
 				   canshu.put("currentPage", (currentPage-1)*pageSize);
 				   canshu.put("pageSize", pageSize);
@@ -177,6 +178,7 @@ public class OrganCommentController  extends BaseController{
 			    	  }
 			    	  commentMain.setPraisecount(praisecount);
 			    	  commentMain.setPraiseresult(praiseresult);
+			    	  System.out.println("id++========="+id);
 			    	  List<CommentReply> replyList = ommentReplyService.findByCommentid(id);
 			    	  commentMain.setReplyMap(replyList);
 			    	  commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
