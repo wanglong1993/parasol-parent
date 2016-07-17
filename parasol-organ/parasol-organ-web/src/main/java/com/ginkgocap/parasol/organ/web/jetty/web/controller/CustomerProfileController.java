@@ -347,7 +347,7 @@ public class CustomerProfileController extends BaseController {
 				
 				
 				// 生成动态
-				saveCustomerDynamicNews(getUser(request),customer,customerPermissions.toString());
+//				saveCustomerDynamicNews(getUser(request),customer,customerPermissions.toString());
 
 			} catch (Exception e) {
 	
