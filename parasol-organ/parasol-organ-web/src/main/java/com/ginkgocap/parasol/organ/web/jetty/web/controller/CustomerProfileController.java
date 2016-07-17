@@ -347,7 +347,7 @@ public class CustomerProfileController extends BaseController {
 				
 				
 				// 生成动态
-//				saveCustomerDynamicNews(getUser(request),customer,customerPermissions.toString());
+				saveCustomerDynamicNews(getUser(request),customer,customerPermissions.toString());
 
 			} catch (Exception e) {
 	
@@ -862,7 +862,7 @@ public class CustomerProfileController extends BaseController {
 		templateVo.setTemplateId(template.getTemplateId());
 		templateVo.setTemplateType(template.getType());
 		templateVo.setMoudles(template.getMoudles());
-		
+		templateVo.setVisibleMoudles(template.getVisibleMoudles());
 		responseData.put("template", templateVo);
 
 		return returnSuccessMSG(responseData);

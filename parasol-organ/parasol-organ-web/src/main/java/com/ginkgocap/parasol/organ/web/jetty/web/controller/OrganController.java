@@ -580,7 +580,7 @@ public class OrganController extends BaseController {
 		templateVo.setTemplateId(template.getTemplateId());
 		templateVo.setTemplateType(template.getType());
 		templateVo.setMoudles(template.getMoudles());
-
+		templateVo.setVisibleMoudles(template.getMoudles());
 		responseData.put("template", templateVo);
 
 		return returnSuccessMSG(responseData);
