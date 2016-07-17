@@ -32,6 +32,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openqa.selenium.internal.seleniumemulation.GetValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -580,7 +581,7 @@ public class OrganController extends BaseController {
 		templateVo.setTemplateId(template.getTemplateId());
 		templateVo.setTemplateType(template.getType());
 		templateVo.setMoudles(template.getMoudles());
-		templateVo.setVisibleMoudles(template.getMoudles());
+		templateVo.setVisibleMoudles(template.getVisibleMoudles());
 		responseData.put("template", templateVo);
 
 		return returnSuccessMSG(responseData);
