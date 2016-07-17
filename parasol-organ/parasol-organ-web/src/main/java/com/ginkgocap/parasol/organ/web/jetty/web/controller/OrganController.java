@@ -487,6 +487,11 @@ public class OrganController extends BaseController {
 		OrganRegister organ = organRegisterService
 				.getOrganRegisterById(organId);
 		// User organ=userService.selectByPrimaryKey(organId);
+		
+		if(organ==null){
+			return returnFailMSGNew("-1", "请检查参数,组织未找到");
+		}
+		
 		long orgId = organ.getId();
 		Customer customer_temp = customerService.findOrganDataInTemplate(
 				organId, templateId);// 组织详情基本资料
