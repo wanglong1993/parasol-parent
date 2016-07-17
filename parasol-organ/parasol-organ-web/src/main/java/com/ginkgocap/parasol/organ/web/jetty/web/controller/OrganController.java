@@ -130,6 +130,10 @@ public class OrganController extends BaseController {
 				Customer customer = JSON.parseObject(requestJson,
 						Customer.class);
 
+				Customer  oldCustomer=customerService.findOrganDataInTemplate(userBasic.getId(), customer.getTemplateId());
+				if(oldCustomer!=null){
+					customer.setId(oldCustomer.getId());
+				}
 				
 				
 				JSONArray moudles=customer.getMoudles();

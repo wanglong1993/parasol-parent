@@ -169,13 +169,25 @@ public class CustomerProfileController extends BaseController {
 						Customer.class);
 			     initCustomerOldField(customer);// 初始化老子段
 				 
-				Customer oldCustomer = customerService
-						.findOne(customer.getId());
+				Customer oldCustomer = null;
+				
+				if(customer.getCustomerId()!=0){
+				    oldCustomer=customerService.findCustomerDataInTemplate(customer.getCustomerId(), customer.getTemplateId());
+				    
+				}
+				
+			
 				if (oldCustomer != null
 						&& user.getId() != oldCustomer.getCreateById()) {// 修改
 					setSessionAndErr(request, response, "-1", "您没有权限进行此操作");
 					return returnFailMSGNew("01", "您没有权限进行此操作");
 				}
+				
+				if(oldCustomer!=null){
+					customer.setId(oldCustomer.getId());
+				}
+				
+				
 				if (isNullOrEmpty(customer.getName())) {
 					setSessionAndErr(request, response, "-1", "客户名称必须填写");
 					return returnFailMSGNew("01", "客户名称必须填写");
