@@ -164,10 +164,12 @@ public class OrganController extends BaseController {
 						JSONObject control=controlList.getJSONObject(i);
 						String name=control.getString("name");
 						if("name".equals(name)){
-							customer.setName(control.getString("value"));
+						
 							customer.setOrganAllName(control.getString("value"));
+						
 						}else if("shortName".equals(name)){
 							customer.setShotName(control.getString("value"));
+							customer.setName(control.getString("value"));
 							
 						}else if("orgType".equals(name)){
 							
