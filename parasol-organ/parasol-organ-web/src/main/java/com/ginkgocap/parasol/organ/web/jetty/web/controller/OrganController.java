@@ -255,6 +255,7 @@ public class OrganController extends BaseController {
 						: Utils.alterImageUrl(customer.getPicLogo()));
 				customer.setCreateById(userBasic.getId());
 				customer.setUserId(userBasic.getId());
+				System.out.println("保存组织 userId:"+userBasic.getId());
 				customer.setVirtual("1");
 				customer.setUtime(DateFunc.getDate());
 				// 数据类型 组织数据
@@ -492,6 +493,7 @@ public class OrganController extends BaseController {
 			return returnFailMSGNew("-1", "请检查参数,组织未找到");
 		}
 		
+	
 		long orgId = organ.getId();
 		Customer customer_temp = customerService.findOrganDataInTemplate(
 				organId, templateId);// 组织详情基本资料

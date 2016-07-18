@@ -69,7 +69,6 @@ public class OrganUtils {
  	    orgTypeObject.put("name", "orgType");
  	    orgTypeObject.put("isMust", false);
  	    orgTypeObject.put("type", "select");
- 	    orgTypeObject.put("value", customer.getShotName());
  	 
  	    
  	    JSONArray  itemArray=new JSONArray();
