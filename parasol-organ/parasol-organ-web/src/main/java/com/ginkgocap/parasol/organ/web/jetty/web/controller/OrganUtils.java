@@ -42,7 +42,7 @@ public class OrganUtils {
  	    nameObject.put("isMust", true);
  	    nameObject.put("maxlength", 50);
  	    nameObject.put("type", "text");
- 	    nameObject.put("value", customer.getName());
+ 	    nameObject.put("value", customer.getOrganAllName());
  	    basicControlList.add(nameObject);
  	    
  	    
@@ -58,7 +58,7 @@ public class OrganUtils {
  	    shortNameObject.put("isMust", false);
  	    shortNameObject.put("maxlength", 30);
  	    shortNameObject.put("type", "text");
- 	    shortNameObject.put("value", customer.getShotName());
+ 	    shortNameObject.put("value", customer.getName());
  	    basicControlList.add(shortNameObject);
  	    
  	    
