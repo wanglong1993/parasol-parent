@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.OrganProfileVo;
@@ -263,7 +264,7 @@ public class OrganController extends BaseController {
 		Customer customer_temp = customerService.findOrganCurrentData(organId);// 组织详情基本资料
 
 	
-
+       System.out.println("Is From web:"+CommonUtil.getRequestIsFromWebFlag());
 		if (customer_temp != null) {
 			OrganProfileVo organProfileVo = createOrganProfileVo(customer_temp, user,organId);
 			responseData.put("customer", organProfileVo);
