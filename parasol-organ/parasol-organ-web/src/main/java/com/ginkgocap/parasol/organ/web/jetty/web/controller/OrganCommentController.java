@@ -192,28 +192,9 @@ public class OrganCommentController  extends BaseController{
 			    	  commentMain.setReplyMap(replyList);
 			    	  commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
 			       }
-			        boolean isEvaluated = true;
-					User homeUser = userSerivce.selectByPrimaryKey(orgid);
-					if(homeUser!=null){
-						System.out.println(userBasic.getId()+"==========="+orgid);
-						if (userBlackService.isBlackRelation(userBasic.getId(), orgid)) {
-							isEvaluated = false;
-						}
-						
 						UserConfig uc = userConfigService.getByUserId(orgid);
 						
-						if (uc!=null&&uc.getEvaluateVisible()!=null &&1 ==uc.getEvaluateVisible() ) {
-							
-							if (!friendsRelationService.isExistFriends(userBasic.getId(),
-									orgid)) {
-								isEvaluated = false;
-							}
-						}
-						
-					}else{
-						setSessionAndErr(request, response, "-1", "当前用户不存在！");
-					}
-			       responseDataMap.put("Jurisdiction", isEvaluated);
+			       responseDataMap.put("Jurisdiction", uc.getEvaluateVisible());
 			       responseDataMap.put("commentMap", commentMainlist);
 		}else{
 			 flag = false;
