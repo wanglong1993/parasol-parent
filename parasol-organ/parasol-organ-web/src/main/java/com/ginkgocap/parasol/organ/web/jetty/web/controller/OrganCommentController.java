@@ -195,6 +195,7 @@ public class OrganCommentController  extends BaseController{
 			        boolean isEvaluated = true;
 					User homeUser = userSerivce.selectByPrimaryKey(orgid);
 					if(homeUser!=null){
+						System.out.println(userBasic.getId()+"==========="+orgid);
 						if (userBlackService.isBlackRelation(userBasic.getId(), orgid)) {
 							isEvaluated = false;
 						}
