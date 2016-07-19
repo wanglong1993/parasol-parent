@@ -48,6 +48,7 @@ import com.ginkgocap.ywxt.organ.service.template.TemplateService;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.user.model.UserConfig;
 import com.ginkgocap.ywxt.user.service.FriendsRelationService;
+import com.ginkgocap.ywxt.user.service.UserBlackService;
 import com.ginkgocap.ywxt.user.service.UserConfigService;
 import com.ginkgocap.ywxt.user.service.UserService;
 import com.ginkgocap.ywxt.util.DateFunc;
@@ -80,7 +81,8 @@ public class OrganController extends BaseController {
 
 	@Autowired
 	// 用户黑名单
-	// private UserBlackListService userBlackService;
+	private UserBlackService userBlackService;
+	
 	@Resource
 	private UserService userService;
 
@@ -297,6 +299,11 @@ public class OrganController extends BaseController {
 
 		if (customer_temp != null) {
 			OrganProfileVo organProfileVo = new OrganProfileVo();
+			
+			
+			
+			boolean isblack = userBlackService.isBlackRelation(user.getId(), customer_temp.getUserId());
+			organProfileVo.setBlack(isblack);// 黑名单关系
 			// 查看组织对应的用户个人设置 看其主页是否允许查看
 			UserConfig uc = userConfigService.getByUserId(organId);
 
