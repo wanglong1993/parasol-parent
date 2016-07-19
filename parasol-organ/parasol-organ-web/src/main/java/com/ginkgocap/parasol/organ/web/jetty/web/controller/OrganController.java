@@ -473,6 +473,9 @@ public class OrganController extends BaseController {
 
 		try {
 			status = friendsRelationService.getFriendsStatus(userId, toUserId);
+			if (status == 0 || status == -1) {
+				status = 3;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
