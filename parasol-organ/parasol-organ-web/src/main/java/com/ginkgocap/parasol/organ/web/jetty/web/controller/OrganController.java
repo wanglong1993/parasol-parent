@@ -133,11 +133,7 @@ public class OrganController extends BaseController {
 				Customer customer = JSON.parseObject(requestJson,
 						Customer.class);
 				
-				if (isNullOrEmpty(customer.getName())) {
-					setSessionAndErr(request, response, "-1", "组织简称必须天填写");
-					return returnFailMSGNew("01", "组织简称必须天填写");
-				}
-
+				
 				Customer  oldCustomer=customerService.findOrganDataInTemplate(userBasic.getId(), customer.getTemplateId());
 				if(oldCustomer!=null){
 					customer.setId(oldCustomer.getId());
@@ -146,6 +142,12 @@ public class OrganController extends BaseController {
 				
 				
 				OrganUtils.initCustomerOldField(customer);
+				
+				if (isNullOrEmpty(customer.getName())) {
+					setSessionAndErr(request, response, "-1", "组织简称必须填写");
+					return returnFailMSGNew("01", "组织简称必须天填写");
+				}
+
 				System.out.println("organ templateId:"+customer.getTemplateId());
 				
 				

@@ -31,21 +31,6 @@ public class OrganUtils {
  	    
  	    JSONArray basicControlList=new JSONArray();
  	    
- 	    // 增加简称模块
- 	    JSONObject nameObject=new JSONObject();
- 	    if(orgType==1||orgType==4){
- 	    	   nameObject.put("desc", "企业名称");
- 	    }else{
- 	    	nameObject.put("desc", "单位名称");
- 	    }
- 	 
- 	    nameObject.put("name", "name");
- 	    nameObject.put("isMust", true);
- 	    nameObject.put("maxlength", 50);
- 	    nameObject.put("type", "text");
- 	    nameObject.put("value", customer.getOrganAllName());
- 	    basicControlList.add(nameObject);
- 	    
  	    
  	    // 增加简组建
  	    JSONObject shortNameObject=new JSONObject();
@@ -56,11 +41,31 @@ public class OrganUtils {
  	    }
  	   
  	    shortNameObject.put("name", "shortName");
- 	    shortNameObject.put("isMust", false);
+ 	    shortNameObject.put("isMust", true);
  	    shortNameObject.put("maxlength", 30);
  	    shortNameObject.put("type", "text");
  	    shortNameObject.put("value", customer.getName());
  	    basicControlList.add(shortNameObject);
+ 	    
+ 	    
+ 	    
+ 	    // 增加简称模块
+ 	    JSONObject nameObject=new JSONObject();
+ 	    if(orgType==1||orgType==4){
+ 	    	   nameObject.put("desc", "企业名称");
+ 	    }else{
+ 	    	nameObject.put("desc", "单位名称");
+ 	    }
+ 	 
+ 	    nameObject.put("name", "name");
+ 	    nameObject.put("isMust", false);
+ 	    nameObject.put("maxlength", 50);
+ 	    nameObject.put("type", "text");
+ 	    nameObject.put("value", customer.getOrganAllName());
+ 	    basicControlList.add(nameObject);
+ 	    
+ 	    
+ 	
  	    
  	    
  	    
