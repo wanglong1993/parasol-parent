@@ -756,6 +756,7 @@ public class CustomerProfileController extends BaseController {
 			}
 			bigDataCustomer.setReport(aa);
 			bigDataCustomer.setShareholders(customer_temp.getShareholders());
+			System.out.println("大数据客户id==========="+customer_temp.getId()+"====名称====="+customer_temp.getName());
 			responseData.put("customer", bigDataCustomer);
 			try {
 				customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read.getType(), customer_temp.getId());
