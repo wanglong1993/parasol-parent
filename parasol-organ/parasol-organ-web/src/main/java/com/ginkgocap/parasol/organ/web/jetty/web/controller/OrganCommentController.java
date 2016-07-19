@@ -11,7 +11,10 @@ import com.ginkgocap.ywxt.organ.service.comment.CommentReplyService;
 import com.ginkgocap.ywxt.organ.service.template.TemplateService;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.user.model.UserConfig;
+import com.ginkgocap.ywxt.user.service.FriendsRelationService;
+import com.ginkgocap.ywxt.user.service.UserBlackService;
 import com.ginkgocap.ywxt.user.service.UserConfigService;
+import com.ginkgocap.ywxt.user.service.UserService;
 import com.ginkgocap.ywxt.util.PageUtil;
 
 import net.sf.json.JSONObject;
@@ -49,6 +52,13 @@ public class OrganCommentController  extends BaseController{
  	public TemplateService templateService;
  	@Resource
  	public UserConfigService userConfigService;
+	@Autowired
+	private UserService userSerivce;
+	// 用户黑名单
+	private UserBlackService userBlackService;
+	@Autowired
+	// 好友关系服务
+	private FriendsRelationService friendsRelationService;
      /**保存发布评论
  	 * @author zbb
  	 */
@@ -182,9 +192,27 @@ public class OrganCommentController  extends BaseController{
 			    	  commentMain.setReplyMap(replyList);
 			    	  commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
 			       }
-			       UserConfig config = userConfigService.getByUserId(userBasic.getId());
-			       int quanixan=config.getEvaluateVisible();
-			       responseDataMap.put("Jurisdiction", quanixan);
+			        boolean isEvaluated = true;
+					User homeUser = userSerivce.selectByPrimaryKey(orgid);
+					if(homeUser!=null){
+						if (userBlackService.isBlackRelation(userBasic.getId(), orgid)) {
+							isEvaluated = false;
+						}
+						
+						UserConfig uc = userConfigService.getByUserId(orgid);
+						
+						if (uc!=null&&uc.getEvaluateVisible()!=null &&1 ==uc.getEvaluateVisible() ) {
+							
+							if (!friendsRelationService.isExistFriends(userBasic.getId(),
+									orgid)) {
+								isEvaluated = false;
+							}
+						}
+						
+					}else{
+						setSessionAndErr(request, response, "-1", "当前用户不存在！");
+					}
+			       responseDataMap.put("Jurisdiction", isEvaluated);
 			       responseDataMap.put("commentMap", commentMainlist);
 		}else{
 			 flag = false;
