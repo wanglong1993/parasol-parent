@@ -1,5 +1,28 @@
 package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.alibaba.fastjson.JSON;
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
@@ -10,7 +33,11 @@ import com.ginkgocap.ywxt.organ.model.Area;
 import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.SimpleCustomer;
 import com.ginkgocap.ywxt.organ.model.template.Template;
-import com.ginkgocap.ywxt.organ.service.*;
+import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
+import com.ginkgocap.ywxt.organ.service.CustomerCountService;
+import com.ginkgocap.ywxt.organ.service.CustomerGroupService;
+import com.ginkgocap.ywxt.organ.service.CustomerService;
+import com.ginkgocap.ywxt.organ.service.SimpleCustomerService;
 import com.ginkgocap.ywxt.organ.service.notice.CustomerNoticeService;
 import com.ginkgocap.ywxt.organ.service.privilege.CustomerPermissionService;
 import com.ginkgocap.ywxt.organ.service.profile.CustomerProfileService;
@@ -26,30 +53,6 @@ import com.ginkgocap.ywxt.util.DateFunc;
 import com.ginkgocap.ywxt.util.JsonUtil;
 import com.gintong.ywxt.organization.model.OrganRegister;
 import com.gintong.ywxt.organization.service.OrganRegisterService;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.openqa.selenium.internal.seleniumemulation.GetValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by jbqiu on 2016/6/10. controller 组织controller
@@ -133,9 +136,10 @@ public class OrganController extends BaseController {
 				Customer  oldCustomer=customerService.findOrganDataInTemplate(userBasic.getId(), customer.getTemplateId());
 				if(oldCustomer!=null){
 					customer.setId(oldCustomer.getId());
+					System.out.println("old organ:"+oldCustomer.getId());
 				}
 				
-				
+				System.out.println("organ templateId:"+customer.getTemplateId());
 				JSONArray moudles=customer.getMoudles();
 				JSONObject basiInfoMoudle=null;
 				JSONObject briefMoudle=null;
@@ -160,9 +164,12 @@ public class OrganController extends BaseController {
 						JSONObject control=controlList.getJSONObject(i);
 						String name=control.getString("name");
 						if("name".equals(name)){
-							customer.setName(control.getString("value"));
+						
+							customer.setOrganAllName(control.getString("value"));
+						
 						}else if("shortName".equals(name)){
 							customer.setShotName(control.getString("value"));
+							customer.setName(control.getString("value"));
 							
 						}else if("orgType".equals(name)){
 							
@@ -255,6 +262,7 @@ public class OrganController extends BaseController {
 						: Utils.alterImageUrl(customer.getPicLogo()));
 				customer.setCreateById(userBasic.getId());
 				customer.setUserId(userBasic.getId());
+				System.out.println("保存组织 userId:"+userBasic.getId());
 				customer.setVirtual("1");
 				customer.setUtime(DateFunc.getDate());
 				// 数据类型 组织数据
@@ -282,7 +290,7 @@ public class OrganController extends BaseController {
 		OrganRegister organ = organRegisterService
 				.getOrganRegisterById(customer.getCreateById());
 		if (organ != null) {
-			organ.setOrganName(customer.getName());
+			organ.setOrganName(customer.getShotName());
 			organ.setOrgType(customer.getOrgType());
 			organ.setIslisted("1".equals(customer.getIsListing()) ? true
 					: false);
@@ -353,6 +361,39 @@ public class OrganController extends BaseController {
 		long organId = JsonUtil.getNodeToLong(j, "organId");
 
 		Customer customer_temp = customerService.findOrganCurrentData(organId);// 组织详情基本资料
+
+	
+
+		if (customer_temp != null) {
+			OrganProfileVo organProfileVo = createOrganProfileVo(customer_temp, user,organId);
+			responseData.put("customer", organProfileVo);
+			responseData.put("id", organProfileVo.getId());
+			responseData.put("organNumber", organProfileVo.getOrganNumber());
+			responseData.put("bindUserId", customer_temp.getBindUserId());
+
+			try {
+				customerCountService
+						.updateCustomerCount(
+								com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read
+										.getType(), organId);
+			} catch (Exception e) {
+				logger.error("插入组织数据统计功能报错,请求参数json: ", e);
+			}
+
+		} else {
+			setSessionAndErr(request, response, "-1", "查询组织为空");
+			return returnFailMSGNew("01", "查询组织为空");
+		}
+
+		return returnSuccessMSG(responseData);
+	}
+	
+	
+	
+	
+	public OrganProfileVo createOrganProfileVo(Customer customer_temp,User user,long organId) {
+		
+
 		if (customer_temp != null) {
 			OrganProfileVo organProfileVo = new OrganProfileVo();
 			// 查看组织对应的用户个人设置 看其主页是否允许查看
@@ -416,52 +457,41 @@ public class OrganController extends BaseController {
 			organProfileVo.setStatus(customer_temp.getStatus());
 			organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
 			organProfileVo.setLinkManName(customer_temp.getLinkManName());
-			
-			if(customer_temp.getTemplateId()==0){
-				 if(customer_temp.getOrgType()==1||customer_temp.getOrgType()==4){
-					 organProfileVo.setTemplateId(1);
-			        }else if(customer_temp.getOrgType()==2){
-			        	organProfileVo.setTemplateId(2);
-			        }else if(customer_temp.getOrgType()==3){
-			        	organProfileVo.setTemplateId(5);
-			        }
-			}else{
+
+			if (customer_temp.getTemplateId() == 0) {
+				if (customer_temp.getOrgType() == 1
+						|| customer_temp.getOrgType() == 4) {
+					organProfileVo.setTemplateId(1);
+				} else if (customer_temp.getOrgType() == 2) {
+					organProfileVo.setTemplateId(2);
+				} else if (customer_temp.getOrgType() == 3) {
+					organProfileVo.setTemplateId(5);
+				}
+			} else {
 				organProfileVo.setTemplateId(customer_temp.getTemplateId());
 			}
-		    
-			
-			if(customer_temp.getMoudles()!=null&&customer_temp.getMoudles().size()>0){
-				organProfileVo.setMoudles(customer_temp.getMoudles());
-			}else{
-				
-				organProfileVo.setMoudles(OrganUtils.createMoudles(customer_temp));
-				
-			}
-		
-			
-			
-			
-			
-			responseData.put("customer", organProfileVo);
-			responseData.put("bindUserId", customer_temp.getBindUserId());
-			responseData.put("id", organProfileVo.getId());
-			responseData.put("organNumber", customer_temp.getOrganNumber());
-			try {
-				customerCountService
-						.updateCustomerCount(
-								com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read
-										.getType(), organId);
-			} catch (Exception e) {
-				logger.error("插入组织数据统计功能报错,请求参数json: ", e);
-			}
 
-		} else {
-			setSessionAndErr(request, response, "-1", "查询组织为空");
-			return returnFailMSGNew("01", "查询组织为空");
+			if (customer_temp.getMoudles() != null
+					&& customer_temp.getMoudles().size() > 0) {
+				organProfileVo.setMoudles(customer_temp.getMoudles());
+			} else {
+
+				organProfileVo.setMoudles(OrganUtils
+						.createMoudles(customer_temp));
+
+			}
+			
+			return organProfileVo;
 		}
 
-		return returnSuccessMSG(responseData);
+		return null;
 	}
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * 返回组织详情和模板 数据 切换模板时使用
@@ -491,80 +521,12 @@ public class OrganController extends BaseController {
 		if(organ==null){
 			return returnFailMSGNew("-1", "请检查参数,组织未找到");
 		}
-		
-		long orgId = organ.getId();
+	
 		Customer customer_temp = customerService.findOrganDataInTemplate(
 				organId, templateId);// 组织详情基本资料
 		if (customer_temp != null) {
-			OrganProfileVo organProfileVo = new OrganProfileVo();
-			// 查看组织对应的用户个人设置 看其主页是否允许查看
-			UserConfig uc = userConfigService.getByUserId(organId);
-			if (uc != null) {
-				if (uc.getHomePageVisible() == null)
-					uc.setHomePageVisible(2);
-				organProfileVo.setUserConfig(uc.getHomePageVisible());
-			}
-			// 看是否是对方的黑名单
-			/*
-			 * boolean isblack = userBlackService.isBlackUser(loginUserId,
-			 * customer_temp.getUserId(), 0l);
-			 * organProfileVo.setBlack(isblack);// 黑名单关系 if (isblack) { return
-			 * returnFailMSGNew("01", "请查看其它组织"); }
-			 */
-			organProfileVo.setLoginUserId(user.getId());
-			// 组织可以收藏吗？？？
-			// 新增是否收藏
-			// customer_new.setIsCollect(customerCollectService.findByUserIdAndCustomerId(loginUserId,
-			// customer_temp.getId()) != null ? "1" : "0");
-			Customer temps = customerService.getCustomerByComeidAndCreateId(
-					customer_temp.getId(), user.getId());
-			if (temps != null) {
-				organProfileVo.setComeId(temps.getId());
-			}
-			organProfileVo.setFriends(isFriend(user.getId(),
-					customer_temp.getUserId()));
-
-			String sckNum = customer_temp.getStockNum();// 证券号码
-			// organProfileVo.setCustomerId(customer_temp.getId());
-			organProfileVo.setId(customer_temp.getId());
-			organProfileVo.setName(customer_temp.getName());
-			organProfileVo.setIndustry(customer_temp.getIndustry());
-			organProfileVo.setIndustryId(customer_temp.getIndustryId());
-			organProfileVo.setPropertyList(customer_temp.getPropertyList());
-			organProfileVo.setUserId(customer_temp.getUserId());
-			organProfileVo.setIsListing(customer_temp.getIsListing());
-			organProfileVo.setLinkMobile(customer_temp.getLinkMobile());
-			organProfileVo.setCreateType("1");
-			organProfileVo.setStockNum(sckNum); // 改过的
-			organProfileVo.setDiscribe(customer_temp.getDiscribe());
-			organProfileVo.setOrganNumber(customer_temp.getOrganNumber());
-
-			organProfileVo.setPersonalPlateList(customer_temp
-					.getPersonalPlateList());
-			organProfileVo.setVirtual(customer_temp.getVirtual());
-			organProfileVo.setCreateById(customer_temp.getCreateById());
-			organProfileVo.setPicLogo(rpe.getNginxRoot()
-					+ Utils.alterImageUrl(customer_temp.getPicLogo()));
-
-			organProfileVo.setOrgType(customer_temp.getOrgType());
-			organProfileVo.setOrganAllName(customer_temp.getOrganAllName());
-			organProfileVo.setAreaString(customer_temp.getAreaString());
-			organProfileVo.setAreaid(customer_temp.getAreaid());
-			organProfileVo.setAddress(customer_temp.getAddress());
-			organProfileVo.setStatus(customer_temp.getStatus());
-			organProfileVo.setLinkEmail(customer_temp.getLinkEmail());
-			organProfileVo.setLinkManName(customer_temp.getLinkManName());
-			organProfileVo.setTemplateId(templateId);
 			
-			if(customer_temp.getMoudles()!=null&&customer_temp.getMoudles().size()>0){
-				organProfileVo.setMoudles(customer_temp.getMoudles());
-			}else{
-				
-				organProfileVo.setMoudles(OrganUtils.createMoudles(customer_temp));
-				
-			}
-		
-			
+			OrganProfileVo organProfileVo=createOrganProfileVo(customer_temp, user, organId);
 			responseData.put("customer", organProfileVo);
 			responseData.put("bindUserId", customer_temp.getBindUserId());
 			responseData.put("id", organProfileVo.getId());
@@ -573,7 +535,7 @@ public class OrganController extends BaseController {
 				customerCountService
 						.updateCustomerCount(
 								com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read
-										.getType(), orgId);
+										.getType(), organId);
 			} catch (Exception e) {
 				logger.error("插入组织数据统计功能报错,请求参数json: ", e);
 			}
