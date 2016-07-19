@@ -510,7 +510,7 @@ public class OrganRegisterController extends BaseController {
             return result;
         }
         user.setOrganStatus(Constants.OrganStatus.informationRegistered.v());
-        user.setName(org.getOrganAllName());
+        user.setName(org.getOrganName());
         user.setOrganType(org.getOrgType());
         user.setIsListing(org.getIslisted() ? "1" : "0");
         user.setStkcd(org.getStockNumber());

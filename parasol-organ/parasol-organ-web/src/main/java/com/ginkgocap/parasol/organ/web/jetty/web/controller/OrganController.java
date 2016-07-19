@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.OrganProfileVo;
@@ -133,11 +134,7 @@ public class OrganController extends BaseController {
 				Customer customer = JSON.parseObject(requestJson,
 						Customer.class);
 				
-				if (isNullOrEmpty(customer.getName())) {
-					setSessionAndErr(request, response, "-1", "组织简称必须天填写");
-					return returnFailMSGNew("01", "组织简称必须天填写");
-				}
-
+				
 				Customer  oldCustomer=customerService.findOrganDataInTemplate(userBasic.getId(), customer.getTemplateId());
 				if(oldCustomer!=null){
 					customer.setId(oldCustomer.getId());
@@ -146,6 +143,12 @@ public class OrganController extends BaseController {
 				
 				
 				OrganUtils.initCustomerOldField(customer);
+				
+				if (isNullOrEmpty(customer.getName())) {
+					setSessionAndErr(request, response, "-1", "组织简称必须填写");
+					return returnFailMSGNew("01", "组织简称必须天填写");
+				}
+
 				System.out.println("organ templateId:"+customer.getTemplateId());
 				
 				
@@ -261,7 +264,7 @@ public class OrganController extends BaseController {
 		Customer customer_temp = customerService.findOrganCurrentData(organId);// 组织详情基本资料
 
 	
-
+       System.out.println("Is From web:"+CommonUtil.getRequestIsFromWebFlag());
 		if (customer_temp != null) {
 			OrganProfileVo organProfileVo = createOrganProfileVo(customer_temp, user,organId);
 			responseData.put("customer", organProfileVo);
@@ -471,6 +474,9 @@ public class OrganController extends BaseController {
 
 		try {
 			status = friendsRelationService.getFriendsStatus(userId, toUserId);
+			if (status == 0 || status == -1) {
+				status = 3;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
