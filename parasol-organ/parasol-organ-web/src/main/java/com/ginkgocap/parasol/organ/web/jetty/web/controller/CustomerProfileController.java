@@ -600,7 +600,7 @@ public class CustomerProfileController extends BaseController {
 		Customer customer_temp = customerService.findCustomerBigData(name, "2");
 				
 		if (customer_temp != null) {
-			bigDataCustomer.setId(customer_temp.getId());
+			bigDataCustomer.setId(Long.toString(customer_temp.getId()));
 			bigDataCustomer.setName(customer_temp.getName());
 			bigDataCustomer.setCreateById(customer_temp.getCreateById());
 			bigDataCustomer.setCustomerId(customer_temp.getCustomerId());
