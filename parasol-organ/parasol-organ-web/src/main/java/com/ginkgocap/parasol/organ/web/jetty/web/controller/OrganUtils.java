@@ -297,7 +297,7 @@ public class OrganUtils {
 					customer.setOrganAllName(control.getString("value"));
 				}else if("shortName".equals(name)){
 					customer.setName(control.getString("value"));
-					
+					customer.setShotName(control.getString("value"));
 				}else if("orgType".equals(name)){
 					
 					JSONArray  itemsArray=control.getJSONArray("items");
