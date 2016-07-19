@@ -167,7 +167,7 @@ public class CustomerProfileController extends BaseController {
 				ObjectMapper objectMapper = new ObjectMapper();
 				 customer = objectMapper.readValue(jo.toString(),
 						Customer.class);
-			     initCustomerOldField(customer);// 初始化老子段
+			     OrganUtils.initCustomerOldField(customer);// 初始化老子段
 				 
 				Customer oldCustomer = null;
 				
@@ -190,7 +190,7 @@ public class CustomerProfileController extends BaseController {
 				
 				if (isNullOrEmpty(customer.getName())) {
 					setSessionAndErr(request, response, "-1", "客户名称必须填写");
-					return returnFailMSGNew("01", "客户名称必须填写");
+					return returnFailMSGNew("01", "客户简称必须填写");
 				}
 				if (isNullOrEmpty(customer.getPicLogo())) {
 					customer.setPicLogo(Constants.ORGAN_DEFAULT_PIC_PATH);
@@ -388,114 +388,7 @@ public class CustomerProfileController extends BaseController {
 	
 	
 	
-	
-	/**
-	 * 初始化老子段
-	 * @param customer
-	 */
-	private void initCustomerOldField(Customer customer){
-		JSONArray moudles=customer.getMoudles();
-		JSONObject basiInfoMoudle=null;
-		JSONObject briefMoudle=null;
-		for(int i=0;i<moudles.size();i++){
-			 JSONObject jsonObject=moudles.getJSONObject(i);
-			 if(jsonObject.getInt("moudleId")==1||jsonObject.getInt("moudleId")==2){// 基本信息模块
-				 basiInfoMoudle=jsonObject;
-			 }
-			 
-			 if(jsonObject.getInt("moudleId")==3){// 企业简介模块
-				 briefMoudle=jsonObject;
-			 }
-			 if(briefMoudle!=null&&basiInfoMoudle!=null){
-				 break;
-			 }
-		}
-		
-		if(basiInfoMoudle!=null){
-			
-			JSONArray controlList=basiInfoMoudle.getJSONArray("controlList");
-			for(int i=0;i<controlList.size();i++){
-				JSONObject control=controlList.getJSONObject(i);
-				System.out.println("control:"+control);
-				String name=control.getString("name");
-				if("name".equals(name)){
-					customer.setOrganAllName(control.getString("value"));
-				}else if("shortName".equals(name)){
-					customer.setShotName(control.getString("value"));
-					customer.setName(control.getString("value"));
-					
-				}else if("orgType".equals(name)){
-					
-					JSONArray  itemsArray=control.getJSONArray("items");
-					
-					for(int k=0;k<itemsArray.size();k++){
-						
-						JSONObject itemJsonObj=itemsArray.getJSONObject(k);
-						if(itemJsonObj.getBoolean("checked")){
-							
-							customer.setOrgType(itemJsonObj.getInt("value"));
-						}
-					}
-					
-				}else if("district".equals(name)){
-					
-					JSONObject valueJo=control.getJSONObject("value");
-					String province=valueJo.getString("province");
-					String city=valueJo.getString("city");
-					String county=valueJo.getString("county");
-					
-					if(province.equals(city)){
-						customer.setAreaString(city+"-"+county);
 
-					}else{
-						customer.setAreaString(province+"-"+city+"-"+county);
-					}
-					
-					Area area=new Area();
-					area.setCity(city);
-					area.setProvince(province);
-					area.setCounty(county);
-					customer.setArea(area);
-				}else if("industry".equals(name)){
-					JSONObject valueJo=control.getJSONObject("value");
-					customer.setIndustry(valueJo.getString("industry"));
-					if("".equals(valueJo.getString("industryId"))){
-						customer.setIndustryId(-1);
-					}else{
-						customer.setIndustryId(Long.parseLong(valueJo.getString("industryId")));
-					}
-					
-				}else if("isListing".equals(name)){
-					
-						JSONArray  itemsArray=control.getJSONArray("items");
-					
-						for(int k=0;k<itemsArray.size();k++){
-							
-							JSONObject itemJsonObj=itemsArray.getJSONObject(k);
-							if(itemJsonObj.getBoolean("checked")){
-								customer.setIsListing(itemJsonObj.getString("value"));
-							}
-						}
-						
-				}else if("stockNum".equals(name)){
-					
-					customer.setStockNum(control.getString("value"));
-				}
-			}
-			
-			
-		}
-		
-		
-		if(briefMoudle!=null){
-			
-			JSONArray controlList=briefMoudle.getJSONArray("controlList");
-			JSONObject  briefObj=controlList.getJSONObject(0);
-			customer.setDiscribe(briefObj.getString("value"));
-		}
-		
-	}
-	
 	
 	
 	/**
