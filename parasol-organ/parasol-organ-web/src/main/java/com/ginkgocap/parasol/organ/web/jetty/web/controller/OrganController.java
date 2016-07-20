@@ -144,7 +144,10 @@ public class OrganController extends BaseController {
 				}
 				
 				
-				OrganUtils.initCustomerOldField(customer);
+				if(!OrganUtils.initCustomerOldField(customer)){
+					
+					return returnFailMSGNew("01", "保存失败,请检查传入参数");
+				}
 				
 				if (isNullOrEmpty(customer.getName())) {
 					setSessionAndErr(request, response, "-1", "组织简称必须填写");
