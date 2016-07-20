@@ -136,6 +136,7 @@ public class CustomerProfileController extends BaseController {
 	@Resource
 	private DealCustomerConnectInfoService dealCustomerConnectInfoService;
 	
+	
 	long appId = 1;
 	long sourceType = 3;
 
@@ -477,8 +478,6 @@ public class CustomerProfileController extends BaseController {
 			customer_new.setIsCollect(customerCollectService
 					.findByUserIdAndCustomerId(userBasic.getId(),
 							customer_temp.getCustomerId()) != null ? "1" : "0");
-			// cusotmerCommonService.findCustomerAuth(view, customer_new,
-			// customer_temp,user);
 
 			customer_new.setStockNum(sckNum);
 			customer_new.setLinkMobile(customer_temp.getLinkMobile());

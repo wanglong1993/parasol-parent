@@ -175,7 +175,15 @@ public class AppFilter implements Filter {
 			}
 		}
 
-/*		if (loginFlag && null == user) {
+		System.out.println("------------------"+this.getClass().getName()+"-------------------");
+		System.out.println("loginFlag:"+loginFlag);
+		System.out.println("user:"+user);
+		if(user!=null){
+			System.out.println("userId:"+user.getId());
+			System.out.println("userName:"+user.getName());
+		}
+	
+	 if (loginFlag && null == user) {
 			response.setCharacterEncoding("utf-8");
 			res.setHeader("errorCode", "-1");
 			try {
@@ -188,7 +196,7 @@ public class AppFilter implements Filter {
 					.write("{\"notification\":{\"notifCode\": \"1000\",\"notifInfo\": \"用户长时间未操作或已过期,请重新登录\"}}");
 			CommonUtil.setRequestIsFromWebFlag(false);
 			return;
-		}*/
+		}
 
 		// 敏感词过滤
 		BufferedReader reader = request.getReader();
