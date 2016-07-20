@@ -175,6 +175,14 @@ public class AppFilter implements Filter {
 			}
 		}
 
+		System.out.println("------------------"+this.getClass().getName()+"-------------------");
+		System.out.println("loginFlag:"+loginFlag);
+		System.out.println("user:"+user);
+		if(user!=null){
+			System.out.println("userId:"+user.getId());
+			System.out.println("userName:"+user.getName());
+		}
+	
 	 if (loginFlag && null == user) {
 			response.setCharacterEncoding("utf-8");
 			res.setHeader("errorCode", "-1");
