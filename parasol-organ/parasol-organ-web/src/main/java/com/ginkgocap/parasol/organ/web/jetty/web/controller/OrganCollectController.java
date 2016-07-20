@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.ginkgocap.ywxt.organ.model.CustomerCollect;
 import com.ginkgocap.ywxt.organ.model.CustomerInform;
 import com.ginkgocap.ywxt.organ.model.SimpleCustomer;
@@ -70,7 +71,8 @@ public class OrganCollectController extends BaseController {
 				    if(!isNullOrEmpty(ids)){
 				    		 if("1".equals(type)){//收藏
 				    			  for(int i=0;i<ids.size();i++){
-				    				  SimpleCustomer sc=simpleCustomerService.findById(ids.get(i));
+				    				  Long id = ids.get(i);
+				    				  SimpleCustomer sc=simpleCustomerService.findById(id);
 				    				  if(sc!=null){
 				    					  if(sc.getVirtual()==0){
 					    					  CustomerCollect cc=new CustomerCollect();
