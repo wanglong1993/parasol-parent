@@ -66,11 +66,11 @@ public class OrganCollectController extends BaseController {
 					JSONObject jo = JSONObject.fromObject(requestJson);
 					String type=jo.getString("type");
 				    User user=getUser(request);
-				    List<Object> ids = JsonUtil.getList(jo, "customerIds", List.class);
+				    List<Long> ids = JsonUtil.getList(jo, "customerIds", Long.class);
 				    if(!isNullOrEmpty(ids)){
 				    		 if("1".equals(type)){//收藏
 				    			  for(int i=0;i<ids.size();i++){
-				    				  SimpleCustomer sc=simpleCustomerService.findByCustomerId(Long.parseLong(ids.get(i).toString()));
+				    				  SimpleCustomer sc=simpleCustomerService.findByCustomerId(ids.get(i));
 				    				  if(sc!=null){
 				    					  if(sc.getVirtual()==0){
 					    					  CustomerCollect cc=new CustomerCollect();
