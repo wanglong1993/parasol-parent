@@ -120,10 +120,7 @@ public class OrgAndCustomerController  extends BaseController {
 			    String groupId = j.optString( "groupId");
 			    String tagId =  j.optString( "tagId");
 			    String type=j.optString("type");
-			    String sort=j.optString("sort");
-			    if(sort=="" || sort==null){
-			    	sort="2";
-			    }
+			    int sort=j.optInt("sort");
 			    String name="";
 			    if(j.has("name")){
 			    	name =j.optString("name");
