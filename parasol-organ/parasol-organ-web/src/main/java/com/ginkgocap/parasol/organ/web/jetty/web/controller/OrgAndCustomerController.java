@@ -121,7 +121,7 @@ public class OrgAndCustomerController  extends BaseController {
 			    String tagId =  j.optString( "tagId");
 			    String type=j.optString("type");
 			    String sort=j.optString("sort");
-			    if(sort=="" ||sort==null){
+			    if(sort=="" || sort==null){
 			    	sort="2";
 			    }
 			    String name="";
