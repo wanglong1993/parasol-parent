@@ -2,6 +2,7 @@ package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 
 import com.ginkgocap.parasol.associate.exception.AssociateServiceException;
 import com.ginkgocap.parasol.associate.model.Associate;
+import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateService;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.CommonUtil;
 import com.ginkgocap.ywxt.organ.model.meet.CustomerMeetingDetail;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +78,7 @@ public class OrganMeetController extends BaseController {
 						Associate associate = new Associate();
 						associate.setUserId(userBasic.getId());
 						associate.setAppId(appId);
-						associate.setSourceTypeId(10);
+						associate.setSourceTypeId(11);
 						associate.setSourceId(meetDetail.getId());
 						associate.setAssocDesc(jsonObject2.getLabel());
 						associate.setAssocId(jsonObject2.getRelateId());
@@ -86,11 +88,11 @@ public class OrganMeetController extends BaseController {
 						if (type.equals("p")) {
 							associate.setAssocTypeId(2);
 						}else if(type.equals("o")){
-							associate.setAssocTypeId(3);
+							associate.setAssocTypeId(4);
 						}else if(type.equals("k")){
 							associate.setAssocTypeId(8);
 						}else if(type.equals("r")){
-							associate.setAssocTypeId(777);
+							associate.setAssocTypeId(7);
 						}
 						associateService.createAssociate(appId, userBasic.getId(), associate);
 					}
@@ -176,6 +178,12 @@ public class OrganMeetController extends BaseController {
 				JSONObject j = JSONObject.fromObject(requestJson);
 				long id = CommonUtil.getLongFromJSONObject(j, "id");
 				CustomerMeetingDetail cmd = customerMeetingDetailService.findOne(id);
+				Map<AssociateType, List<Associate>> ass = associateService.getAssociatesBy(1l, 11l, id);
+				List<MeetAssociate> associate = new ArrayList<MeetAssociate>();
+				List<Associate> per = ass.get("2");
+				List<Associate> org = ass.get("4");
+				List<Associate> kno = ass.get("8");
+				List<Associate> xuqiu = ass.get("7");
 				responseDataMap.put("customerMeetingDetail", cmd);
 			}
 		}else{

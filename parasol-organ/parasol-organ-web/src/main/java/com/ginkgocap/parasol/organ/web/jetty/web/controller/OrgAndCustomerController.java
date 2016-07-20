@@ -120,6 +120,10 @@ public class OrgAndCustomerController  extends BaseController {
 			    String groupId = j.optString( "groupId");
 			    String tagId =  j.optString( "tagId");
 			    String type=j.optString("type");
+			    String sort=j.optString("sort");
+			    if(sort=="" || sort==null){
+			    	sort="2";
+			    }
 			    String name="";
 			    if(j.has("name")){
 			    	name =j.optString("name");
@@ -158,14 +162,14 @@ public class OrgAndCustomerController  extends BaseController {
 						//分页列表
 					   Map<String,Object>   bsn=new HashMap<String,Object>();
 					   if("".equals(StringUtils.trimToEmpty(type))||"-2".equals(StringUtils.trimToEmpty(type))){//全部客户和我的组织好友
-						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),ids, customerIds,StringUtils.trimToEmpty(name),currentPage, pageSize);
+						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),ids, customerIds,StringUtils.trimToEmpty(name),sort,currentPage, pageSize);
 					   }else if("-1".equals(StringUtils.trimToEmpty(type))){//全部客户
-						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),null, customerIds,StringUtils.trimToEmpty(name),currentPage, pageSize);
+						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),null, customerIds,StringUtils.trimToEmpty(name),sort,currentPage, pageSize);
 					   }else if("1".equals(StringUtils.trimToEmpty(type))){//我创建的
-						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),null, null,StringUtils.trimToEmpty(name),currentPage, pageSize);
+						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),null, null,StringUtils.trimToEmpty(name),sort,currentPage, pageSize);
 					   }else if("2".equals(StringUtils.trimToEmpty(type))){//我收藏的
 							if(customerIds!=null&&customerIds.size()>0){
-								 bsn=simpleCustomerService.findByOrgAndCustmer(-2,null, customerIds,StringUtils.trimToEmpty(name),currentPage, pageSize);
+								 bsn=simpleCustomerService.findByOrgAndCustmer(-2,null, customerIds,StringUtils.trimToEmpty(name),sort,currentPage, pageSize);
 							}else{//如果没有收藏，直接返回
 								PageUtil page = new PageUtil(0, 1, 20);
 								bsn.put("page", page);
@@ -173,14 +177,14 @@ public class OrgAndCustomerController  extends BaseController {
 							}
 					   }else if("3".equals(StringUtils.trimToEmpty(type))){//组织好友
 						   if(ids!=null&&ids.size()>0){
-							    bsn=simpleCustomerService.findByOrgAndCustmer(-2,ids, null,StringUtils.trimToEmpty(name),currentPage, pageSize);
+							    bsn=simpleCustomerService.findByOrgAndCustmer(-2,ids, null,StringUtils.trimToEmpty(name),sort,currentPage, pageSize);
 						   }else{
 							    PageUtil page = new PageUtil(0, 1, 20);
 								bsn.put("page", page);
 								bsn.put("results", new ArrayList<SimpleCustomer>());
 						   }
 					   }else if("4".equals(StringUtils.trimToEmpty(type))){//好友和我创建的客户
-						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),ids, null,StringUtils.trimToEmpty(name),currentPage, pageSize);
+						   bsn=simpleCustomerService.findByOrgAndCustmer(user.getId(),ids, null,StringUtils.trimToEmpty(name),sort,currentPage, pageSize);
 					   }
 					   
 						PageUtil pageUtil= (PageUtil) bsn.get("page");
