@@ -72,16 +72,18 @@ public class OrganCollectController extends BaseController {
 				    			  for(int i=0;i<ids.size();i++){
 				    				  SimpleCustomer sc=simpleCustomerService.findByCustomerId(Long.parseLong(ids.get(i).toString()));
 				    				  if(sc!=null){
-				    					  CustomerCollect cc=new CustomerCollect();
-					    				  cc.setCustomerId(sc.getCustomerId());
-					    				  cc.setType(sc.getVirtual()==0?0:1);
-					    				  cc.setUserId(user.getId());
-					    				  customerCollectService.saveCustomerCollect(cc);
-					    				    try{
-					    		    			customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.collect.getType(), sc.getCustomerId());
-					    		    		}catch(Exception e){
-					    		    			logger.error("插入组织数据统计功能报错,请求参数json: ",e);
-					    		    		}
+				    					  if(sc.getVirtual()==0){
+					    					  CustomerCollect cc=new CustomerCollect();
+						    				  cc.setCustomerId(sc.getId());
+						    				  cc.setType(sc.getVirtual());
+						    				  cc.setUserId(user.getId());
+						    				  customerCollectService.saveCustomerCollect(cc);
+						    				    try{
+						    		    			customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.collect.getType(), sc.getId());
+						    		    		}catch(Exception e){
+						    		    			logger.error("插入组织数据统计功能报错,请求参数json: ",e);
+						    		    		}
+				    					  }
 				    				  }
 				    			  }
 				    		  }else if("2".equals(type)){//取消收藏
