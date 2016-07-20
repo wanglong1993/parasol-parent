@@ -70,7 +70,7 @@ public class OrganCollectController extends BaseController {
 				    if(!isNullOrEmpty(ids)){
 				    		 if("1".equals(type)){//收藏
 				    			  for(int i=0;i<ids.size();i++){
-				    				  SimpleCustomer sc=simpleCustomerService.findByCustomerId(ids.get(i));
+				    				  SimpleCustomer sc=simpleCustomerService.findById(ids.get(i));
 				    				  if(sc!=null){
 				    					  if(sc.getVirtual()==0){
 					    					  CustomerCollect cc=new CustomerCollect();
