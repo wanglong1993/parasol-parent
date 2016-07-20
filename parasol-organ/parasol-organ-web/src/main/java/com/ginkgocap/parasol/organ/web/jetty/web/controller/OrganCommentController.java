@@ -193,8 +193,11 @@ public class OrganCommentController  extends BaseController{
 			    	  commentMain.setReplyCount(ommentReplyService.findByCommentIdCount(id));
 			       }
 						UserConfig uc = userConfigService.getByUserId(orgid);
-						
-			       responseDataMap.put("Jurisdiction", uc.getEvaluateVisible());
+						int Jurisdiction=2;
+						if(uc!=null){
+							Jurisdiction= uc.getEvaluateVisible();
+						}
+			       responseDataMap.put("Jurisdiction",Jurisdiction);
 			       responseDataMap.put("commentMap", commentMainlist);
 		}else{
 			 flag = false;
