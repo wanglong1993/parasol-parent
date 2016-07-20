@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.ginkgocap.ywxt.organ.model.CustomerCollect;
 import com.ginkgocap.ywxt.organ.model.CustomerInform;
 import com.ginkgocap.ywxt.organ.model.SimpleCustomer;
@@ -66,22 +67,25 @@ public class OrganCollectController extends BaseController {
 					JSONObject jo = JSONObject.fromObject(requestJson);
 					String type=jo.getString("type");
 				    User user=getUser(request);
-				    List<Object> ids = JsonUtil.getList(jo, "customerIds", List.class);
+				    List<Long> ids = JsonUtil.getList(jo, "customerIds", Long.class);
 				    if(!isNullOrEmpty(ids)){
 				    		 if("1".equals(type)){//收藏
 				    			  for(int i=0;i<ids.size();i++){
-				    				  SimpleCustomer sc=simpleCustomerService.findByCustomerId(Long.parseLong(ids.get(i).toString()));
+				    				  Long id = ids.get(i);
+				    				  SimpleCustomer sc=simpleCustomerService.findById(id);
 				    				  if(sc!=null){
-				    					  CustomerCollect cc=new CustomerCollect();
-					    				  cc.setCustomerId(sc.getCustomerId());
-					    				  cc.setType(sc.getVirtual()==0?0:1);
-					    				  cc.setUserId(user.getId());
-					    				  customerCollectService.saveCustomerCollect(cc);
-					    				    try{
-					    		    			customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.collect.getType(), sc.getCustomerId());
-					    		    		}catch(Exception e){
-					    		    			logger.error("插入组织数据统计功能报错,请求参数json: ",e);
-					    		    		}
+				    					  if(sc.getVirtual()==0){
+					    					  CustomerCollect cc=new CustomerCollect();
+						    				  cc.setCustomerId(sc.getId());
+						    				  cc.setType(sc.getVirtual());
+						    				  cc.setUserId(user.getId());
+						    				  customerCollectService.saveCustomerCollect(cc);
+						    				    try{
+						    		    			customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.collect.getType(), sc.getId());
+						    		    		}catch(Exception e){
+						    		    			logger.error("插入组织数据统计功能报错,请求参数json: ",e);
+						    		    		}
+				    					  }
 				    				  }
 				    			  }
 				    		  }else if("2".equals(type)){//取消收藏
