@@ -3,6 +3,7 @@ package com.ginkgocap.parasol.directory.web.jetty.utils;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.sso.session.SessionManager;
 import org.apache.commons.lang3.StringUtils;
+import com.ginkgocap.ywxt.util.Constants;
 
 /**
  * 
