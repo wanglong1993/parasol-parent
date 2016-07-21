@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringUtils;
+
 public class CommonUtil {
 
 	public static final String JTMOBILE_SERVER_ROOT = ResourceBundle.getBundle("application").getString("jtmobileserver.root");

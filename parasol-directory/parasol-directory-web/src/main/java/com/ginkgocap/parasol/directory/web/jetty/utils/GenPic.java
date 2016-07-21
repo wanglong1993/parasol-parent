@@ -1,6 +1,9 @@
 package com.ginkgocap.parasol.directory.web.jetty.utils;
 
 import org.apache.commons.io.FileUtils;
+import com.ginkgocap.ywxt.util.ImageUtils;
+import org.apache.commons.lang.StringUtils;
+
 
 import java.io.File;
 
