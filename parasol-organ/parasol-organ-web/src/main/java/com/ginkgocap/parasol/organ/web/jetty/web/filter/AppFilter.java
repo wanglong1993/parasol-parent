@@ -66,7 +66,7 @@ public class AppFilter implements Filter {
 			"/organ/registerThird.json", "/organ/registerFourth.json",
 			"/organ/registerFourthAPP.json", "/organ/isExistEmail.json",
 			"/organ/isExistOrganNumber.json",
-			"/organ/isExistOrganAllName.json", "/organ/getVcode.json",
+			"/organ/isExistOrganAllName.json", "/organ/getVcode.json","organization_found","/organ/organ/getDiscoverList.json",
 			"/organ/getMobileVCode.json", "/organ/queryIndustry.json" };
 
 	@Override
