@@ -73,29 +73,6 @@ public class OrganMeetController extends BaseController {
 			       CustomerMeetingDetail meetDetail=objectMapper.readValue(jo.toString(),CustomerMeetingDetail.class);
 			       meetDetail.setCreatorId(userBasic.getId());
 				   meetDetail =  customerMeetingDetailService.saveOrUpdate(meetDetail);
-					for (int i = 0; i < meetDetail.getRelations().size(); i++) {
-						MeetAssociate jsonObject2 = meetDetail.getRelations().get(i); 
-						Associate associate = new Associate();
-						associate.setUserId(userBasic.getId());
-						associate.setAppId(appId);
-						associate.setSourceTypeId(11);
-						associate.setSourceId(meetDetail.getId());
-						associate.setAssocDesc(jsonObject2.getLabel());
-						associate.setAssocId(jsonObject2.getRelateId());
-						associate.setAssocTitle(jsonObject2.getTitle());
-						associate.setAssocMetadata("");
-						String type = jsonObject2.getType();
-						if (type.equals("p")) {
-							associate.setAssocTypeId(2);
-						}else if(type.equals("o")){
-							associate.setAssocTypeId(4);
-						}else if(type.equals("k")){
-							associate.setAssocTypeId(8);
-						}else if(type.equals("r")){
-							associate.setAssocTypeId(7);
-						}
-						associateService.createAssociate(appId, userBasic.getId(), associate);
-					}
 			       responseDataMap.put("id", meetDetail.getId());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -178,12 +155,6 @@ public class OrganMeetController extends BaseController {
 				JSONObject j = JSONObject.fromObject(requestJson);
 				long id = CommonUtil.getLongFromJSONObject(j, "id");
 				CustomerMeetingDetail cmd = customerMeetingDetailService.findOne(id);
-				Map<AssociateType, List<Associate>> ass = associateService.getAssociatesBy(1l, 11l, id);
-				List<MeetAssociate> associate = new ArrayList<MeetAssociate>();
-				List<Associate> per = ass.get("2");
-				List<Associate> org = ass.get("4");
-				List<Associate> kno = ass.get("8");
-				List<Associate> xuqiu = ass.get("7");
 				responseDataMap.put("customerMeetingDetail", cmd);
 			}
 		}else{
