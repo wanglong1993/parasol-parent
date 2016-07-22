@@ -66,7 +66,7 @@ public class AppFilter implements Filter {
 			"/organ/registerThird.json", "/organ/registerFourth.json",
 			"/organ/registerFourthAPP.json", "/organ/isExistEmail.json",
 			"/organ/isExistOrganNumber.json",
-			"/organ/isExistOrganAllName.json", "/organ/getVcode.json",
+			"/organ/isExistOrganAllName.json", "/organ/getVcode.json","organization_found","/organ/organ/getDiscoverList.json",
 			"/organ/getMobileVCode.json", "/organ/queryIndustry.json" };
 
 	@Override
@@ -176,8 +176,10 @@ public class AppFilter implements Filter {
 		}
 
 		System.out.println("------------------"+this.getClass().getName()+"-------------------");
+		System.out.println("url:"+url);
 		System.out.println("loginFlag:"+loginFlag);
 		System.out.println("user:"+user);
+		
 		if(user!=null){
 			System.out.println("userId:"+user.getId());
 			System.out.println("userName:"+user.getName());

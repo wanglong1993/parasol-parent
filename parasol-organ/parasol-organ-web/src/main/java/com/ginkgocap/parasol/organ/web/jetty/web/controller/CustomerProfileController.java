@@ -168,7 +168,11 @@ public class CustomerProfileController extends BaseController {
 				ObjectMapper objectMapper = new ObjectMapper();
 				 customer = objectMapper.readValue(jo.toString(),
 						Customer.class);
-			     OrganUtils.initCustomerOldField(customer);// 初始化老子段
+						
+			     if(!OrganUtils.initCustomerOldField(customer)){
+			    	 
+			    	 return returnFailMSGNew("01", "保存失败,请检查传入参数");
+			     }
 				 
 				Customer oldCustomer = null;
 				
