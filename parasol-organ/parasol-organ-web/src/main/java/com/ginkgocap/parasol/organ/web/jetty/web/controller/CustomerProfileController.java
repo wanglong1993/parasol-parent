@@ -473,6 +473,7 @@ public class CustomerProfileController extends BaseController {
 			sckNum = customer_temp.getStockNum();// 证券号码
 			customer_new.setCustomerId(customer_temp.getCustomerId());
 			customer_new.setName(customer_temp.getName());
+			customer_new.setOrganAllName(customer_temp.getOrganAllName());
 			customer_new.setIndustry(customer_temp.getIndustry());
 			customer_new.setIndustryId(customer_temp.getIndustryId());
 			customer_new.setIsListing(customer_temp.getIsListing());
@@ -698,6 +699,7 @@ public class CustomerProfileController extends BaseController {
 			sckNum = customer_temp.getStockNum();// 证券号码
 			customer_new.setCustomerId(customer_temp.getCustomerId());
 			customer_new.setName(customer_temp.getName());
+			customer_new.setOrganAllName(customer_temp.getOrganAllName());
 			customer_new.setIndustry(customer_temp.getIndustry());
 			customer_new.setIndustryId(customer_temp.getIndustryId());
 			customer_new.setIsListing(customer_temp.getIsListing());
