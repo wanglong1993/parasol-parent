@@ -301,20 +301,25 @@ public class OrganUtils {
 					}else if("shortName".equals(name)){
 						customer.setName(control.getString("value"));
 						customer.setShotName(control.getString("value"));
-					}else if("orgType".equals(name)){
-						
-						JSONArray  itemsArray=control.getJSONArray("items");
-						
-						for(int k=0;k<itemsArray.size();k++){
-							
-							JSONObject itemJsonObj=itemsArray.getJSONObject(k);
-							if(itemJsonObj.getBoolean("checked")){
-								
-								customer.setOrgType(itemJsonObj.getInt("value"));
-							}
-						}
-						
-					}else if("district".equals(name)){
+					}
+					
+//					else if("orgType".equals(name)){
+//						
+//						JSONArray  itemsArray=control.getJSONArray("items");
+//						
+//						for(int k=0;k<itemsArray.size();k++){
+//							
+//							JSONObject itemJsonObj=itemsArray.getJSONObject(k);
+//							if(itemJsonObj.getBoolean("checked")){
+//								
+//								customer.setOrgType(itemJsonObj.getInt("value"));
+//							}
+//						}
+//						
+//					
+//					}
+					
+					else if("district".equals(name)){
 						
 						JSONObject valueJo=control.getJSONObject("value");
 						String province=valueJo.getString("province");
@@ -369,12 +374,28 @@ public class OrganUtils {
 				JSONObject  briefObj=controlList.getJSONObject(0);
 				customer.setDiscribe(briefObj.getString("value"));
 			}
+			
+			
+			
 		}catch(Exception e){
 			
 			e.printStackTrace();
 			return false;
 		}
 	
+		
+		long tempalteId=customer.getTemplateId();
+		
+		if(tempalteId==1){
+			customer.setOrgType(1);
+		}else if(tempalteId==2){
+			customer.setOrgType(2);
+		}else if(tempalteId==5){
+			customer.setOrgType(3);
+		}else {
+			customer.setOrgType(4);
+		}
+			
 		return true;
 	}
 	
