@@ -12,6 +12,7 @@ CREATE TABLE `tb_associate_type` (
 CREATE TABLE `tb_associate` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '关联ID',
   `userId` bigint(20) NOT NULL COMMENT '用户ID（Ower）',
+  `userName` varchar(30) NOT NULL COMMENT '用户名字（OwerName）',
   `appId` bigint(20) NOT NULL COMMENT '应用ID',
   `sourceTypeId` bigint(20) NOT NULL COMMENT '表示知识, 人脉ID,组织ID，等资源类型',
   `sourceId` bigint(20) NOT NULL COMMENT '知识ID, 人脉ID,组织ID，等资源ID',
@@ -24,3 +25,11 @@ CREATE TABLE `tb_associate` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `userId_appId_sourceTypeId_sourceId_assocDesc_assocTypeId_assocId` (`userId`, `appId`,`sourceTypeId`,`sourceId`,`assocDesc`,`assocTypeId`,`assocId`) 
 ) ENGINE=InnoDB AUTO_INCREMENT=1445 DEFAULT CHARSET=utf8 COMMENT='关联信息表'
+
+INSERT INTO `tb_associate_type` VALUES ('2', '1', '人脉', '1456293335672');
+INSERT INTO `tb_associate_type` VALUES ('3', '1', ' 客户', '1456383660925');
+INSERT INTO `tb_associate_type` VALUES ('4', '1', '组织', '1456293335918');
+INSERT INTO `tb_associate_type` VALUES ('7', '1', '需求', '1456293336450');
+INSERT INTO `tb_associate_type` VALUES ('8', '1', '知识', '1456293336251');
+INSERT INTO `tb_associate_type` VALUES ('9', '1', '事务', '1456293336251');
+INSERT INTO `tb_associate_type` VALUES ('11', '1', '会面', '1456293336251');
