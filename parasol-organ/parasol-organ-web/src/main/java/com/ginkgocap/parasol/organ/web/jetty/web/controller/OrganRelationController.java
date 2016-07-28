@@ -363,18 +363,23 @@ public class OrganRelationController extends BaseController {
 		/** 获取json参数串 */
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		List<OrganRegister> organRegisterrs = null;
-		
+		JSONObject j = null;
 		try {
+			j = JSONObject.fromObject(getJsonParamStr(request));
 			long userId = this.getUser(request).getId();
-			System.out.println("userId:"+userId);
-			List<Long> ids = organRelationService.getOrganIdsByUserId(userId);
-			System.out.println("ids:"+ids);
-			organRegisterrs = organRegisterService.getOrganRegisterByIds(ids);
-			System.out.println("organRegisterrs:"+organRegisterrs);
+			long currentUserId = j.optLong("currentUserId");
+			System.out.println("currentUserId========="+currentUserId);
+			List<Long> ids = null;
+			if(currentUserId==0){
+				 ids = organRelationService.getOrganIdsByUserId(userId);
+				organRegisterrs = organRegisterService.getOrganRegisterByIds(ids);
+			}else{
+				 ids = organRelationService.getOrganIdsByUserId(currentUserId);
+				 organRegisterrs = organRegisterService.getOrganRegisterByIds(ids);
+			}
 			dealOrganImageNew(organRegisterrs);
 			responseDataMap.put("userId", userId);
-			responseDataMap.put("ids", ids);
-			
+			responseDataMap.put("ids", ids);			
 		} catch (Exception e) {
 			logger.error("findMyOrgan.json 参数读取异常");
 		}
