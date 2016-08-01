@@ -577,6 +577,7 @@ public class OrganRegisterController extends BaseController {
      */
     public long updateCustomerValue(long orgId, long userId) {
         OrganRegister org = organRegisterService.getOrganRegisterById(orgId);
+        System.out.println("绑定用户  templateType:"+org.getTemplateType());
         Customer customer = customerService.findOne(org.getMongoId());
         if (customer == null)
             customer = new Customer();
