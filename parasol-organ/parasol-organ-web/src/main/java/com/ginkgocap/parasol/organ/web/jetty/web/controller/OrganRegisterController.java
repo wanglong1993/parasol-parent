@@ -601,13 +601,33 @@ public class OrganRegisterController extends BaseController {
         customer.setEmail(org.getEmail());
         customer.setCurrent(true);
 
-        if(customer.getOrgType()==1||customer.getOrgType()==4){
-        	customer.setTemplateId(1);
-        }else if(customer.getOrgType()==2){
-        	customer.setTemplateId(2);
-        }else if(customer.getOrgType()==3){
-        	customer.setTemplateId(5);
+        int templateType=  org.getTemplateType();
+        
+        if(templateType!=0){
+        	
+        	if(templateType==1){// 学校 模板
+        		customer.setTemplateId(3);
+        	}else if(templateType==2){
+        		
+        		customer.setTemplateId(4);
+        	}else if(templateType==3){// 其它用 企业
+        		
+        		customer.setTemplateId(1);
+        	}
+        	
+        	
+        	
+        }else{
+        	 if(customer.getOrgType()==1||customer.getOrgType()==4){
+              	customer.setTemplateId(1);
+              }else if(customer.getOrgType()==2){
+              	customer.setTemplateId(2);
+              }else if(customer.getOrgType()==3){
+              	customer.setTemplateId(5);
+              }
+        	
         }
+       
         
         customer.setMoudles(OrganUtils.createMoudles(customer));
         Customer cus = customerService.saveOrUpdate(customer);

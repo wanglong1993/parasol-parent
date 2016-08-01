@@ -135,7 +135,7 @@ public class OrganController extends BaseController {
 
 				Customer customer = JSON.parseObject(requestJson,
 						Customer.class);
-				
+				customer.setBindUserId(organRegister.getUserId());
 				
 				Customer  oldCustomer=customerService.findOrganDataInTemplate(userBasic.getId(), customer.getTemplateId());
 				if(oldCustomer!=null){
@@ -268,14 +268,20 @@ public class OrganController extends BaseController {
 
 		Customer customer_temp = customerService.findOrganCurrentData(organId);// 组织详情基本资料
 
-	
        System.out.println("Is From web:"+CommonUtil.getRequestIsFromWebFlag());
 		if (customer_temp != null) {
+			
+
+			OrganRegister organRegister = organRegisterService
+					.getOrganRegisterById(user.getId());
+			
+			
+			
 			OrganProfileVo organProfileVo = createOrganProfileVo(customer_temp, user,organId);
 			responseData.put("customer", organProfileVo);
 			responseData.put("id", organProfileVo.getId());
 			responseData.put("organNumber", organProfileVo.getOrganNumber());
-			responseData.put("bindUserId", customer_temp.getBindUserId());
+			responseData.put("bindUserId", organRegister.getUserId());
 
 			try {
 				customerCountService
