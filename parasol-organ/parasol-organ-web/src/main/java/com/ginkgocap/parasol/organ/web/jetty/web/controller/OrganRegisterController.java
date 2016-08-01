@@ -232,6 +232,7 @@ public class OrganRegisterController extends BaseController {
 
                 updateUserValue(org);
                 result = organRegisterService.updateOrganInformation(org);
+                System.out.println("组织注册  templateType:"+org.getTemplateType());
                 result.put("id", org.getId());
             }
         } catch (Exception e) {
