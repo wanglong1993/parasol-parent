@@ -1,4 +1,4 @@
-create database parasol_directory;
+﻿create database parasol_directory;
 use parasol_directory;
 CREATE TABLE `tb_directory_type` (
   `id` bigint(20) NOT NULL COMMENT '主键',
@@ -43,4 +43,10 @@ CREATE TABLE `tb_directory_source` (
   UNIQUE INDEX `directoryId_appId_userId_sourceId_sourceType` (`directoryId`, `appId`,`userId`,`sourceId`,`sourceType`) 
 ) ENGINE=InnoDB AUTO_INCREMENT=1307 DEFAULT CHARSET=utf8;
 
-
+INSERT INTO `tb_directory_type` VALUES ('2', '1', '人脉', '1456293335672');
+INSERT INTO `tb_directory_type` VALUES ('3', '1', ' 客户', '1456383660925');
+INSERT INTO `tb_directory_type` VALUES ('4', '1', '组织', '1456293335918');
+INSERT INTO `tb_directory_type` VALUES ('7', '1', '需求', '1456293336450');
+INSERT INTO `tb_directory_type` VALUES ('8', '1', '知识', '1456293336251');
+INSERT INTO `tb_directory_type` VALUES ('9', '1', '事务', '1456293336251');
+INSERT INTO `tb_directory_type` VALUES ('11', '1', '会面', '1456293336251');

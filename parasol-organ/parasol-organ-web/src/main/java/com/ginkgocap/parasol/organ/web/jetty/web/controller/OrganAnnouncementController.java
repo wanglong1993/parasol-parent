@@ -150,7 +150,7 @@ public class OrganAnnouncementController extends BaseController {
 			if(null != ca && null != ca.getCreateId() && !"".equals(ca.getCreateId())) {
 				OrganRegister organ = organRegisterService.getOrganRegisterById(ca.getCreateId());
 				if(null != organ) {
-					organAllName = organ.getOrganAllName();
+					organAllName = organ.getOrganName();
 				}
 			}
 			responseDataMap.put("organAllName", organAllName);
