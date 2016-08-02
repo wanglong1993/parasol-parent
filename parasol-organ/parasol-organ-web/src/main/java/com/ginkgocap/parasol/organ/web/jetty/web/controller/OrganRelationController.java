@@ -370,16 +370,15 @@ public class OrganRelationController extends BaseController {
 			long currentUserId = j.optLong("currentUserId");
 			System.out.println("currentUserId========="+currentUserId);
 			List<Long> ids = null;
-			if(currentUserId==0l){
+			if(currentUserId==0){
 				 ids = organRelationService.getOrganIdsByUserId(userId);
 				organRegisterrs = organRegisterService.getOrganRegisterByIds(ids);
-				responseDataMap.put("userId", userId);
 			}else{
 				 ids = organRelationService.getOrganIdsByUserId(currentUserId);
 				 organRegisterrs = organRegisterService.getOrganRegisterByIds(ids);
-				 responseDataMap.put("userId", currentUserId);
 			}
 			dealOrganImageNew(organRegisterrs);
+			responseDataMap.put("userId", userId);
 			responseDataMap.put("ids", ids);			
 		} catch (Exception e) {
 			logger.error("findMyOrgan.json 参数读取异常");
