@@ -273,7 +273,7 @@ public class OrganController extends BaseController {
 			
 
 			OrganRegister organRegister = organRegisterService
-					.getOrganRegisterById(user.getId());
+					.getOrganRegisterById(organId);
 			
 			
 			
