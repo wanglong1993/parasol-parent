@@ -12,7 +12,7 @@ CREATE TABLE `tb_associate_type` (
 CREATE TABLE `tb_associate` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '关联ID',
   `userId` bigint(20) NOT NULL COMMENT '用户ID（Ower）',
-  `userName` varchar(30) NOT NULL COMMENT '用户名字（OwerName）',
+  `userName` varchar(30) DEFAULT NULL COMMENT '用户名字（OwerName）',
   `appId` bigint(20) NOT NULL COMMENT '应用ID',
   `sourceTypeId` bigint(20) NOT NULL COMMENT '表示知识, 人脉ID,组织ID，等资源类型',
   `sourceId` bigint(20) NOT NULL COMMENT '知识ID, 人脉ID,组织ID，等资源ID',
