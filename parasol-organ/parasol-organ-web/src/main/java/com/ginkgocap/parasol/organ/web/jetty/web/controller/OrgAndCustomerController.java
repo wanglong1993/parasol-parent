@@ -131,7 +131,7 @@ public class OrgAndCustomerController  extends BaseController {
 			    
 			    //接照分组查询
 			    if(!StringUtils.isBlank(groupId)) {
-			    	Map<String, Object> bsn = customerService.findByParam(user.getId(), groupId, "", "", currentPage, pageSize);
+			    	Map<String, Object> bsn = customerService.findByParam(user.getId(), groupId, "", "",sort, currentPage, pageSize);
 			    	PageUtil pageUtil= (PageUtil) bsn.get("page");
 					int total=pageUtil.getCount();
 					mapPage.put("total", total);
