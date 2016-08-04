@@ -43,6 +43,10 @@ public class OrganProfileVo implements Serializable {
 	private long createById;// 创建者id
 	private boolean black;// 是否是黑名单
 	private int userConfig;// 用户设置 0对自己可见1 对好友可见2所有人可见
+	private int whetherShare;
+	private int whetherDocking;
+	
+
 	private long loginUserId;// 当前登陆用户id
 	// 自定义板块
 	private List<CustomerPersonalPlate> personalPlateList;
@@ -446,6 +450,20 @@ public class OrganProfileVo implements Serializable {
 
 	
     
-	
+	public int getWhetherShare() {
+		return whetherShare;
+	}
+
+	public void setWhetherShare(int whetherShare) {
+		this.whetherShare = whetherShare;
+	}
+
+	public int getWhetherDocking() {
+		return whetherDocking;
+	}
+
+	public void setWhetherDocking(int whetherDocking) {
+		this.whetherDocking = whetherDocking;
+	}
 	
 }

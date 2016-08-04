@@ -320,6 +320,8 @@ public class OrganController extends BaseController {
 				if (uc.getHomePageVisible() == null)
 					uc.setHomePageVisible(2);
 				organProfileVo.setUserConfig(uc.getHomePageVisible());
+				organProfileVo.setWhetherShare(uc.getWhetherShare());
+				organProfileVo.setWhetherDocking(uc.getWhetherDocking());
 			}
 			// 看是否是对方的黑名单
 			/*
