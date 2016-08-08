@@ -19,31 +19,26 @@ public class ColumnSysDaoImpl implements ColumnSysDao {
 
 	@Override
 	public int deleteByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public int insert(ColumnSys record) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public ColumnSys selectByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return csm.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByPrimaryKey(ColumnSys record) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public List<ColumnSys> selectAll() {
-		// TODO Auto-generated method stub
 		ColumnSysExample example=new ColumnSysExample();
 		Criteria c=example.createCriteria();
 		c.andUserIdEqualTo(0l);

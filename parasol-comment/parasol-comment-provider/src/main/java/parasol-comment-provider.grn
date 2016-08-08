@@ -1,0 +1,18 @@
+<uml>
+   <greenVersion="30500"/>
+   <type>
+      <name="=./src\/main\/java<com.ginkgocap.parasol.comment.service{ResReviewCommObjService.java[ResReviewCommObjService"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="0"/>
+      <y="0"/>
+   </type>
+   <type>
+      <name="=./src\/main\/java<com.ginkgocap.parasol.comment.service{CommObjService.java[CommObjService"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="421"/>
+      <y="116"/>
+   </type>
+</uml>
+
