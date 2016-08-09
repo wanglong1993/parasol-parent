@@ -993,8 +993,8 @@ public class CustomerProfileController extends BaseController {
 	    
 	    params.put("picPath", user.getPicPath());
 	    
-	    dynamicNewService.insert(params);
-	    System.out.println("插入动态成功");
+	    long id=dynamicNewService.insert(params);
+	    System.out.println("插入动态成功:id"+id);
     }
 
     
