@@ -16,7 +16,7 @@ CREATE TABLE `tb_associate` (
   `appId` bigint(20) NOT NULL COMMENT '应用ID',
   `sourceTypeId` bigint(20) NOT NULL COMMENT '表示知识, 人脉ID,组织ID，等资源类型',
   `sourceId` bigint(20) NOT NULL COMMENT '知识ID, 人脉ID,组织ID，等资源ID',
-  `assocDesc` varchar(30) NOT NULL COMMENT '关联描述，比如文章的作者，或者编辑等；关联标签描述',
+  `assocDesc` varchar(100) NOT NULL COMMENT '关联描述，比如文章的作者，或者编辑等；关联标签描述',
   `assocTypeId` bigint(20) NOT NULL COMMENT '关联类型 比如管理的类型是知识、人脉、组织等',
   `assocId` bigint(20) NOT NULL COMMENT '关联数据ID',
   `assocTitle` varchar(255) NOT NULL COMMENT '标题',
