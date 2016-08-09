@@ -1,7 +1,9 @@
 package org.parasol.column.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -14,7 +16,6 @@ import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.service.ColumnCustomService;
 import org.parasol.column.service.ColumnSelfService;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component("columnCustomService")
 public class ColumnCustomServiceImpl implements ColumnCustomService {
@@ -29,31 +30,26 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	
 	@Override
 	public int deleteByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return ccd.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public int insert(ColumnCustom record) {
-		// TODO Auto-generated method stub
 		return ccd.insert(record);
 	}
 
 	@Override
 	public ColumnCustom selectByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return ccd.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByPrimaryKey(ColumnCustom record) {
-		// TODO Auto-generated method stub
 		return ccd.updateByPrimaryKey(record);
 	}
 
 	@Override
 	public List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid) {
-		// TODO Auto-generated method stub
 		List<ColumnSelf> result=null;
 		if (pid == 0) {
 			List<ColumnCustom> list = ccd.queryListByPidAndUserId(pid, uid);
@@ -68,8 +64,7 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 					dest = this.buidColumnSelf(source);
 					result.add(dest);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					log.error(e);
+					log.error(e.getMessage(),e);
 				}
 			}
 		}
@@ -82,19 +77,31 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 
 	@Override
 	public int init(Long uid) {
-		// TODO Auto-generated method stub
 		List<ColumnCustom> list=ccd.queryListByPidAndUserId(0l, uid);
+		Set<Long> set=new HashSet<Long>();
 		if(list==null||list.size()==0){
 			list=new ArrayList<ColumnCustom>();
+			//系统栏目
 			List<ColumnSelf> listSelf=css.queryListByPidAndUserId(0l, 0l);
+			List<ColumnSelf> listSelf1=css.queryListByPidAndUserId(0l, uid);
+			if(listSelf1!=null){
+				listSelf.addAll(listSelf1);
+			}
 			for(ColumnSelf source:listSelf){
 				try {
+					if(source==null||source.getDelStatus()==1){
+						continue;
+					}
+					if(set.contains(source.getId())){
+						continue;
+					}else{
+						set.add(source.getId());
+					}
 					ColumnCustom dest=buidColumnCustom(source);
 					dest.setUserId(uid);
 					list.add(dest);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					log.error(e);
+					log.error(e.getMessage(),e);
 				}
 			}
 			for(ColumnCustom cc:list){
@@ -123,13 +130,11 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 
 	@Override
 	public ColumnCustom queryByCid(Long cid) {
-		// TODO Auto-generated method stub
 		return ccd.queryByCid(cid);
 	}
 
 	@Override
 	public int replace(Long uid, List<ColumnSelf> newList) {
-		// TODO Auto-generated method stub
 		ccd.deleteByUserId(uid);
 		List<ColumnCustom> list=new ArrayList<ColumnCustom>();
 		for(ColumnSelf source:newList){
@@ -138,8 +143,7 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 			try {
 				dest = this.buidColumnCustom(source);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				log.error(e);
+				log.error(e.getMessage(),e);
 			}
 			list.add(dest);
 		}

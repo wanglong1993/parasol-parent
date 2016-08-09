@@ -19,31 +19,26 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 
 	@Override
 	public int deleteByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return ccm.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public int insert(ColumnCustom record) {
-		// TODO Auto-generated method stub
 		return ccm.insert(record);
 	}
 
 	@Override
 	public ColumnCustom selectByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return ccm.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByPrimaryKey(ColumnCustom record) {
-		// TODO Auto-generated method stub
 		return ccm.updateByPrimaryKey(record);
 	}
 
 	@Override
 	public List<ColumnCustom> queryListByPidAndUserId(Long pid, Long uid) {
-		// TODO Auto-generated method stub
 		ColumnCustomExample example=new ColumnCustomExample();
 		Criteria c=example.createCriteria();
 //		c.andPcidEqualTo(pid);
@@ -54,7 +49,6 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 
 	@Override
 	public ColumnCustom queryByCid(Long cid) {
-		// TODO Auto-generated method stub
 		ColumnCustomExample example=new ColumnCustomExample();
 		Criteria c=example.createCriteria();
 		c.andCidEqualTo(cid);
@@ -67,7 +61,6 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 
 	@Override
 	public int deleteByUserId(Long uid) {
-		// TODO Auto-generated method stub
 		ColumnCustomExample example=new ColumnCustomExample();
 		Criteria c=example.createCriteria();
 		c.andUserIdEqualTo(uid);
@@ -77,7 +70,6 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 
 	@Override
 	public int insertBatch(List<ColumnCustom> list) {
-		// TODO Auto-generated method stub
 		return ccm.insertBatch(list);
 	}
 

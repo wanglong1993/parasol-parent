@@ -420,4 +420,36 @@ public class OrganCommentController  extends BaseController{
 		model.put("notification", notificationMap);
 		return model;
 	}
+	
+	/**查询组织用户评价星级
+	 * @author zbb
+	 */
+	@ResponseBody
+	@RequestMapping(value="/selectStar.json",method=RequestMethod.POST)
+	public Map<String, Object> selectStar(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		 String requestJson = getJsonParamStr(request);
+		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
+		Map<String, Object> notificationMap = new HashMap<String, Object>();
+        User userBasic=null;
+        userBasic=getUser(request);
+		boolean flag = true;
+		if (requestJson != null && !"".equals(requestJson)){
+			JSONObject jo = JSONObject.fromObject(requestJson);
+				  long id = CommonUtil.getLongFromJSONObject(jo, "id");  //需要查询星级的组织用户id
+				  int svgstar = commentMainService.findStar(id);
+
+			      responseDataMap.put("star", svgstar);
+		}else{
+			setSessionAndErr(request, response, "-1", "请完善信息！");
+			 flag = false;
+		}
+		   responseDataMap.put("success", flag);
+	       notificationMap.put("notifCode", "0001");
+			notificationMap.put("notifInfo", "hello mobile app!");
+		model.put("responseData", responseDataMap);
+		model.put("notification", notificationMap);
+		return model;
+	}
 }

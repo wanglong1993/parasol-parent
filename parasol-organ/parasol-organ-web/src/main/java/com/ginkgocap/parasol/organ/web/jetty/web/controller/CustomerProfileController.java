@@ -363,9 +363,13 @@ public class CustomerProfileController extends BaseController {
 		
 				
 				
-				// 生成动态
-//				saveCustomerDynamicNews(getUser(request),customer,customerPermissions.toString());
+				JSONObject permissionJo=JSONObject.fromObject(customerPermissions.toString());
+				if(permissionJo.getInt("publicFlag")==1){
+					// 生成动态
+					saveCustomerDynamicNews(getUser(request),customer);
 
+				}
+				
 			} catch (Exception e) {
 	
 				
@@ -904,13 +908,13 @@ public class CustomerProfileController extends BaseController {
      * @param customerPermissions
      * @author wfl
      */
-    protected  void saveCustomerDynamicNews(User user,Customer customer,String customerPermissions){
+    protected  void saveCustomerDynamicNews(User user,Customer customer){
     	Map<String, Object> params =new HashMap<String,Object>();
 	    params.put("type", "62");
 	    if(user.getType()==2){
 	    	  params.put("lowType", "61");//组织
 	    	  params.put("createType","2");
-	    	  params.put("gender", 0);
+	    	  params.put("gender", user.getSex());
 	    }
 	    if(user.getType()==1){
 	    	  params.put("lowType", "60");//个人
@@ -930,56 +934,56 @@ public class CustomerProfileController extends BaseController {
 	    params.put("imgPath", Utils.alterImageUrl(customer.getPicLogo()));
 	    params.put("picPath", Utils.alterImageUrl(user.getPicPath()));
 	    params.put("virtual", "1");// 0 表示客户  1 表示组织
-	    Map<String, List<Long>> receiverIds =new HashMap<String,List<Long>>();
-	    JSONObject dyna=JSONObject.fromObject(customerPermissions);
-	    List<Long> dales=new ArrayList<Long>();
-	    List<Long> zhongles=new ArrayList<Long>();
-	    boolean dule=dyna.getBoolean("dule");
-	    if(!dule){
-	    	JSONArray jarray=JsonUtil.getJsonArray(dyna, "dales");
-	    	if(jarray!=null&&jarray.size()>0){
-	    		 for(int i=0;i<jarray.size();i++){
-	    			 JSONObject jso=jarray.getJSONObject(i);
-		    			 if(!jso.isNullObject()){
-		    				 if("-1".equals(jso.getString("id"))){//全平台
-		    				      List<User> users=friendsRelationService.findAllFriendsByUserId(user.getId());
-		    				      if(users!=null&&users.size()>0){
-		    				    	  for(int j=0;j<users.size();j++){
-		    				    		  User ruser=users.get(j);
-		    				    		  dales.add(ruser.getId());
-		    				    	  }
-		    				      }
-		    				 }
-	    				 dales.add(JsonUtil.getNodeToLong(jso, "id"));
-	    			 }
-	    		 }
-	    	}
-	    	
-	    	JSONArray zls=JsonUtil.getJsonArray(dyna, "zhongles");
-	    	if(zls!=null&&zls.size()>0){
-	    		 for(int i=0;i<zls.size();i++){
-	    			 JSONObject jso=zls.getJSONObject(i);
-	    			 if(!jso.isNullObject()){
-	    				 
-	    				 if("-1".equals(jso.getString("id"))){//全平台
-	    				      List<User> users=friendsRelationService.findAllFriendsByUserId(user.getId());
-	    				      if(users!=null&&users.size()>0){
-	    				    	  for(int j=0;j<users.size();j++){
-	    				    		  User ruser=users.get(j);
-	    				    		  zhongles.add(ruser.getId());
-	    				    	  }
-	    				      }
-	    				 }
-	    				 
-	    				 zhongles.add(JsonUtil.getNodeToLong(jso, "id"));
-	    			 }
-	    		 }
-	    	}
-	    	
-	    }
-	    receiverIds.put("dale", dales);
-	    receiverIds.put("zhongle", zhongles);
-	    params.put("receiverIds", receiverIds);
+//	    Map<String, List<Long>> receiverIds =new HashMap<String,List<Long>>();
+//	    JSONObject dyna=JSONObject.fromObject(customerPermissions);
+//	    List<Long> dales=new ArrayList<Long>();
+//	    List<Long> zhongles=new ArrayList<Long>();
+//	    boolean dule=dyna.getBoolean("dule");
+//	    if(!dule){
+//	    	JSONArray jarray=JsonUtil.getJsonArray(dyna, "dales");
+//	    	if(jarray!=null&&jarray.size()>0){
+//	    		 for(int i=0;i<jarray.size();i++){
+//	    			 JSONObject jso=jarray.getJSONObject(i);
+//		    			 if(!jso.isNullObject()){
+//		    				 if("-1".equals(jso.getString("id"))){//全平台
+//		    				      List<User> users=friendsRelationService.findAllFriendsByUserId(user.getId());
+//		    				      if(users!=null&&users.size()>0){
+//		    				    	  for(int j=0;j<users.size();j++){
+//		    				    		  User ruser=users.get(j);
+//		    				    		  dales.add(ruser.getId());
+//		    				    	  }
+//		    				      }
+//		    				 }
+//	    				 dales.add(JsonUtil.getNodeToLong(jso, "id"));
+//	    			 }
+//	    		 }
+//	    	}
+//	    	
+//	    	JSONArray zls=JsonUtil.getJsonArray(dyna, "zhongles");
+//	    	if(zls!=null&&zls.size()>0){
+//	    		 for(int i=0;i<zls.size();i++){
+//	    			 JSONObject jso=zls.getJSONObject(i);
+//	    			 if(!jso.isNullObject()){
+//	    				 
+//	    				 if("-1".equals(jso.getString("id"))){//全平台
+//	    				      List<User> users=friendsRelationService.findAllFriendsByUserId(user.getId());
+//	    				      if(users!=null&&users.size()>0){
+//	    				    	  for(int j=0;j<users.size();j++){
+//	    				    		  User ruser=users.get(j);
+//	    				    		  zhongles.add(ruser.getId());
+//	    				    	  }
+//	    				      }
+//	    				 }
+//	    				 
+//	    				 zhongles.add(JsonUtil.getNodeToLong(jso, "id"));
+//	    			 }
+//	    		 }
+//	    	}
+//	    	
+//	    }
+//	    receiverIds.put("dale", dales);
+//	    receiverIds.put("zhongle", zhongles);
+//	    params.put("receiverIds", receiverIds);
 	    params.put("createrId", String.valueOf(user.getId()));
 	    if(!"".equals(StringUtils.trimToEmpty(user.getShortName()))){
 	    	params.put("createrName", user.getShortName());
@@ -989,8 +993,8 @@ public class CustomerProfileController extends BaseController {
 	    
 	    params.put("picPath", user.getPicPath());
 	    
-	    dynamicNewService.insert(params);
-	    System.out.println("插入动态成功");
+	    long id=dynamicNewService.insert(params);
+	    System.out.println("插入动态成功:id"+id);
     }
 
     

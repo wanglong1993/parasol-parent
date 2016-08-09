@@ -17,13 +17,11 @@ public class ColumnSysServiceImpl implements ColumnSysService {
 
 	@Override
 	public ColumnSys selectByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return csd.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public List<ColumnSys> selectAll() {
-		// TODO Auto-generated method stub
 		return csd.selectAll();
 	}
 
