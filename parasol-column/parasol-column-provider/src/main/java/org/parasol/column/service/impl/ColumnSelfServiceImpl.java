@@ -36,16 +36,12 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 	private ColumnCustomService ccs;
 	
 	private ColumnCustom loadByCid(Long id){
-		ColumnCustomExample exa=new ColumnCustomExample();
-		ColumnCustomExample.Criteria c=exa.createCriteria();
-		c.andCidEqualTo(id);
 		ColumnCustom cc=ccs.queryByCid(id);
 		return cc;
 	}
 	
 	@Override
 	public int deleteByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		//int n= csd.deleteByPrimaryKey(id);
 		ColumnSelf cs=this.selectByPrimaryKey(id);
 		if(cs.getUserOrSystem().shortValue()==ColumnFlag.sys.getVal()){
@@ -64,7 +60,6 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 
 	@Override
 	public ColumnSelf insert(ColumnSelf record) {
-		// TODO Auto-generated method stub
 		int n = csd.insert(record);
 		if(n>0&&record.getUserOrSystem().shortValue()==ColumnFlag.user.getVal()){
 			ColumnCustom dest=new ColumnCustom();
@@ -75,11 +70,9 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 				dest.setId(null);
 				ccs.insert(dest);
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				log.error(e);
+				log.error(e.getMessage(),e);
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				log.error(e);
+				log.error(e.getMessage(),e);
 			}
 		}
 		return record;
@@ -87,13 +80,11 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 
 	@Override
 	public ColumnSelf selectByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return csd.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByPrimaryKey(ColumnSelf record) {
-		// TODO Auto-generated method stub
 		ColumnSelf self=csd.selectByPrimaryKey(record.getId());
 		if(self.getUserOrSystem().shortValue()==ColumnFlag.sys.getVal()){
 			return 0;
@@ -109,11 +100,9 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 					cc.setId(id);
 					ccs.updateByPrimaryKey(cc);
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					log.error(e);
+					log.error(e.getMessage(),e);
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					log.error(e);
+					log.error(e.getMessage(),e);
 				}
 				
 			}
@@ -123,7 +112,6 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 
 	@Override
 	public List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid) {
-		// TODO Auto-generated method stub
 		return csd.queryListByPidAndUserId(pid, uid);
 	}
 
@@ -137,13 +125,11 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 
 	@Override
 	public ColumnSelf selectMaxOrderColumn(Long pid, Long uid) {
-		// TODO Auto-generated method stub
 		return csd.selectMaxOrderColumn(pid, uid);
 	}
 
 	@Override
 	public List<ColumnSelf> queryListByPid(Long pid) {
-		// TODO Auto-generated method stub
 		return csd.queryListByPid(pid);
 	}
 

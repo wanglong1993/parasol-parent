@@ -19,31 +19,26 @@ public class ColumnSelfDaoImpl implements ColumnSelfDao {
 
 	@Override
 	public int deleteByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return csm.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public int insert(ColumnSelf record) {
-		// TODO Auto-generated method stub
 		return csm.insert(record);
 	}
 
 	@Override
 	public ColumnSelf selectByPrimaryKey(Long id) {
-		// TODO Auto-generated method stub
 		return csm.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByPrimaryKey(ColumnSelf record) {
-		// TODO Auto-generated method stub
 		return csm.updateByPrimaryKey(record);
 	}
 
 	@Override
 	public List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid) {
-		// TODO Auto-generated method stub
 		ColumnSelfExample example=new ColumnSelfExample();
 		Criteria c=example.createCriteria();
 		c.andParentIdEqualTo(pid);
@@ -55,7 +50,6 @@ public class ColumnSelfDaoImpl implements ColumnSelfDao {
 
 	@Override
 	public ColumnSelf selectMaxOrderColumn(Long pid, Long uid) {
-		// TODO Auto-generated method stub
 		ColumnSelfExample example=new ColumnSelfExample();
 		Criteria c=example.createCriteria();
 		c.andParentIdEqualTo(pid);
@@ -71,7 +65,6 @@ public class ColumnSelfDaoImpl implements ColumnSelfDao {
 
 	@Override
 	public List<ColumnSelf> queryListByPid(Long pid) {
-		// TODO Auto-generated method stub
 		ColumnSelfExample example=new ColumnSelfExample();
 		Criteria c=example.createCriteria();
 		c.andParentIdEqualTo(pid);
