@@ -403,10 +403,10 @@
 				<jdbc.username>zhangwei</jdbc.username>
 				<jdbc.password>zhangwei</jdbc.password>
 				<!-- memcached -->
-				<memcached.list_1.ip>192.168.101.22</memcached.list_1.ip>
-				<memcached.list_1.port>11211</memcached.list_1.port>
-				<memcached.object_1.ip>192.168.101.22</memcached.object_1.ip>
-				<memcached.object_1.port>11211</memcached.object_1.port>
+				<memcached.list1.ip>192.168.101.22</memcached.list1.ip>
+				<memcached.list1.port>11211</memcached.list1.port>
+				<memcached.object1.ip>192.168.101.22</memcached.object1.ip>
+				<memcached.object1.port>11211</memcached.object1.port>
 				
 				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
 				<log4j.level>debug</log4j.level>
@@ -437,10 +437,10 @@
 				<jdbc.username>ph_kfpt</jdbc.username>
 				<jdbc.password>Cual17jc5qd4</jdbc.password>
 				<!-- memcached -->
-				<memcached.list_1.ip>192.168.101.22</memcached.list_1.ip>
-				<memcached.list_1.port>11211</memcached.list_1.port>
-				<memcached.object_1.ip>192.168.101.22</memcached.object_1.ip>
-				<memcached.object_1.port>11211</memcached.object_1.port>
+				<memcached.list1.ip>192.168.101.22</memcached.list1.ip>
+				<memcached.list1.port>11211</memcached.list1.port>
+				<memcached.object1.ip>192.168.101.22</memcached.object1.ip>
+				<memcached.object1.port>11211</memcached.object1.port>
 				
 				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
 				<log4j.level>debug</log4j.level>
