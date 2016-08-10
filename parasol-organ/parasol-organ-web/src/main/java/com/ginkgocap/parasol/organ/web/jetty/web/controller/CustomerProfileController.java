@@ -12,10 +12,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.fastjson.JSON;
-import com.ginkgocap.ywxt.user.service.FriendsRelationService;
-import com.ginkgocap.ywxt.user.service.UserService;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -30,10 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ginkgocap.parasol.associate.model.Associate;
+import com.alibaba.fastjson.JSON;
 import com.ginkgocap.parasol.associate.service.AssociateService;
-import com.ginkgocap.parasol.directory.model.Directory;
-import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
@@ -43,18 +37,13 @@ import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.BigDataModel;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.CustomerProfileVoNew;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.TemplateVo;
-import com.ginkgocap.parasol.tags.model.Tag;
-import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagService;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.ywxt.dynamic.service.DynamicNewsService;
-import com.ginkgocap.ywxt.organ.model.Area;
-import com.ginkgocap.ywxt.organ.model.ConnectionInfo;
 import com.ginkgocap.ywxt.organ.model.Constants2;
 import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.CustomerGroup;
 import com.ginkgocap.ywxt.organ.model.CustomerTag;
-import com.ginkgocap.ywxt.organ.model.SimpleCustomer;
 import com.ginkgocap.ywxt.organ.model.bigdata.BigDataReport;
 import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
@@ -65,6 +54,8 @@ import com.ginkgocap.ywxt.organ.service.SimpleCustomerService;
 import com.ginkgocap.ywxt.organ.service.tag.RCustomerTagService;
 import com.ginkgocap.ywxt.organ.service.template.TemplateService;
 import com.ginkgocap.ywxt.user.model.User;
+import com.ginkgocap.ywxt.user.service.FriendsRelationService;
+import com.ginkgocap.ywxt.user.service.UserService;
 import com.ginkgocap.ywxt.util.DateFunc;
 import com.ginkgocap.ywxt.util.JsonUtil;
 import com.gintong.common.phoenix.permission.ResourceType;
@@ -73,7 +64,6 @@ import com.gintong.common.phoenix.permission.entity.PermissionQuery;
 import com.gintong.common.phoenix.permission.service.PermissionRepositoryService;
 import com.gintong.frame.util.dto.InterfaceResult;
 import com.gintong.frame.util.dto.Notification;
-import com.google.gson.JsonObject;
 
 /**
  * Created by jbqiu on 2016/6/10. controller 组织点评controller
@@ -367,7 +357,7 @@ public class CustomerProfileController extends BaseController {
 				JSONObject permissionJo=JSONObject.fromObject(customerPermissions.toString());
 				if(permissionJo.getInt("publicFlag")==1){
 					// 生成动态
-					saveCustomerDynamicNews(getUser(request),customer);
+//					saveCustomerDynamicNews(getUser(request),customer);
 
 				}
 				
@@ -941,23 +931,55 @@ public class CustomerProfileController extends BaseController {
 	    
 	    
 	    
-//	    Dynamic news = new DynamicNews();
 	    Map news = new HashMap();
-	    news.put("title","这是我的测试动态");
-	    news.put("content","测试动态很好玩。");
+	   // news.put("title","这是我的测试动态");
+	    
+	    if(!"".equals(StringUtils.trimToEmpty(customer.getShotName()))){
+	    	 params.put("title", customer.getShotName());
+	    }else{
+	    	params.put("title", customer.getName());
+	    }
+	    
+	    
+	    
+//	    news.put("content","测试动态很好玩。");
+	    news.put("content", customer.getArea().getCity()+"#"+Utils.listToString(customer.getIndustrys()));
 	    news.put("contentPath","");
-	    news.put("lowType","1");
-	    news.put("targetId",64545);
-	    news.put("clearContent","11111");
+//	    news.put("lowType","1");
+	    news.put("virtual", "0");// 0 表示客户  1 表示组织
+//	    news.put("targetId",64545);
+	    news.put("targetId",String.valueOf(customer.getCustomerId()));
+	    news.put("clearContent","");
 	    news.put("ctime",new Date().getTime());
-	    news.put("imagePath","/7349/3456");
+	    news.put("imagePath", Utils.alterImageUrl(user.getPicPath()));
+	    
+	    
+	    news.put("type", "62");
+	    
+	    if(user.getType()==2){
+	    	news.put("lowType", "61");//组织
+	    	news.put("createType","2");
+	    	news.put("gender", user.getSex());
+	    }
+	    if(user.getType()==1){
+	    	news.put("lowType", "60");//个人
+	    	news.put("createType","1");
+	    	news.put("gender", user.getSex());
+	    }
+	    
+	    
+	    
+	    
 	    
 //	    DynamicRelation relation = new DynamicRelation();
 	    Map relation = new HashMap();
 	    relation.put("ctime",new Date().getTime());
 	    relation.put("lowType","1");
-	    relation.put("type","3243");
-	    relation.put("targetId",54657);
+	    if(user.getType()==1){
+	    	
+	    }
+	    relation.put("type","62");
+	    relation.put("targetId",String.valueOf(customer.getCustomerId()));
 	    List relations = new ArrayList();
 	    relations.add(relation);
 	    news.put("targetRelations", relations);
