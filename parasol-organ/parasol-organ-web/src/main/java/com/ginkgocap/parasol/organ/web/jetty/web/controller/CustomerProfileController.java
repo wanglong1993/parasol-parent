@@ -3,6 +3,7 @@ package com.ginkgocap.parasol.organ.web.jetty.web.controller;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -934,6 +935,37 @@ public class CustomerProfileController extends BaseController {
 	    params.put("imgPath", Utils.alterImageUrl(customer.getPicLogo()));
 	    params.put("picPath", Utils.alterImageUrl(user.getPicPath()));
 	    params.put("virtual", "1");// 0 表示客户  1 表示组织
+	    
+	    
+	    
+	    
+	    
+	    
+//	    Dynamic news = new DynamicNews();
+	    Map news = new HashMap();
+	    news.put("title","这是我的测试动态");
+	    news.put("content","测试动态很好玩。");
+	    news.put("contentPath","");
+	    news.put("lowType","1");
+	    news.put("targetId",64545);
+	    news.put("clearContent","11111");
+	    news.put("ctime",new Date().getTime());
+	    news.put("imagePath","/7349/3456");
+	    
+//	    DynamicRelation relation = new DynamicRelation();
+	    Map relation = new HashMap();
+	    relation.put("ctime",new Date().getTime());
+	    relation.put("lowType","1");
+	    relation.put("type","3243");
+	    relation.put("targetId",54657);
+	    List relations = new ArrayList();
+	    relations.add(relation);
+	    news.put("targetRelations", relations);
+	    long result = dynamicNewService.insert(news);
+	  
+	    
+	    
+	    
 //	    Map<String, List<Long>> receiverIds =new HashMap<String,List<Long>>();
 //	    JSONObject dyna=JSONObject.fromObject(customerPermissions);
 //	    List<Long> dales=new ArrayList<Long>();
@@ -984,17 +1016,17 @@ public class CustomerProfileController extends BaseController {
 //	    receiverIds.put("dale", dales);
 //	    receiverIds.put("zhongle", zhongles);
 //	    params.put("receiverIds", receiverIds);
-	    params.put("createrId", String.valueOf(user.getId()));
-	    if(!"".equals(StringUtils.trimToEmpty(user.getShortName()))){
-	    	params.put("createrName", user.getShortName());
-	    }else{
-	    	params.put("createrName", user.getName());
-	    }
-	    
-	    params.put("picPath", user.getPicPath());
-	    
-	    long id=dynamicNewService.insert(params);
-	    System.out.println("插入动态成功:id"+id);
+//	    params.put("createrId", String.valueOf(user.getId()));
+//	    if(!"".equals(StringUtils.trimToEmpty(user.getShortName()))){
+//	    	params.put("createrName", user.getShortName());
+//	    }else{
+//	    	params.put("createrName", user.getName());
+//	    }
+//	    
+//	    params.put("picPath", user.getPicPath());
+//	    
+//	    long id=dynamicNewService.insert(params);
+//	    System.out.println("插入动态成功:id"+id);
     }
 
     
