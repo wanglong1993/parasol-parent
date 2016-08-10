@@ -964,7 +964,7 @@ public class CustomerProfileController extends BaseController {
 	    long result = dynamicNewService.insert(news);
 	  
 	    
-	    
+	    System.out.println("插入动态成功:id"+result);
 	    
 //	    Map<String, List<Long>> receiverIds =new HashMap<String,List<Long>>();
 //	    JSONObject dyna=JSONObject.fromObject(customerPermissions);
