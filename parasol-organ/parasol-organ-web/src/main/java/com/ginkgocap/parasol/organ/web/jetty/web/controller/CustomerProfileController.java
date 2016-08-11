@@ -900,31 +900,31 @@ public class CustomerProfileController extends BaseController {
      * @author wfl
      */
     protected  void saveCustomerDynamicNews(User user,Customer customer){
-    	Map<String, Object> params =new HashMap<String,Object>();
-	    params.put("type", "62");
-	    if(user.getType()==2){
-	    	  params.put("lowType", "61");//组织
-	    	  params.put("createType","2");
-	    	  params.put("gender", user.getSex());
-	    }
-	    if(user.getType()==1){
-	    	  params.put("lowType", "60");//个人
-	    	  params.put("createType","1");
-	    	  params.put("gender", user.getSex());
-	    }
-	    
-	    params.put("createrId",String.valueOf(user.getId()));
-	    if(!"".equals(StringUtils.trimToEmpty(customer.getShotName()))){
-	    	 params.put("title", customer.getShotName());
-	    }else{
-	    	params.put("title", customer.getName());
-	    }
-	    
-	    params.put("content", customer.getArea().getCity()+"#"+Utils.listToString(customer.getIndustrys()));
-	    params.put("targetId", String.valueOf(customer.getId()));
-	    params.put("imgPath", Utils.alterImageUrl(customer.getPicLogo()));
-	    params.put("picPath", Utils.alterImageUrl(user.getPicPath()));
-	    params.put("virtual", "1");// 0 表示客户  1 表示组织
+//    	Map<String, Object> params =new HashMap<String,Object>();
+//	    params.put("type", "62");
+//	    if(user.getType()==2){
+//	    	  params.put("lowType", "61");//组织
+//	    	  params.put("createType","2");
+//	    	  params.put("gender", user.getSex());
+//	    }
+//	    if(user.getType()==1){
+//	    	  params.put("lowType", "60");//个人
+//	    	  params.put("createType","1");
+//	    	  params.put("gender", user.getSex());
+//	    }
+//	    
+//	    params.put("createrId",String.valueOf(user.getId()));
+//	    if(!"".equals(StringUtils.trimToEmpty(customer.getShotName()))){
+//	    	 params.put("title", customer.getShotName());
+//	    }else{
+//	    	params.put("title", customer.getName());
+//	    }
+//	    
+//	    params.put("content", customer.getArea().getCity()+"#"+Utils.listToString(customer.getIndustrys()));
+//	    params.put("targetId", String.valueOf(customer.getId()));
+//	    params.put("imgPath", Utils.alterImageUrl(customer.getPicLogo()));
+//	    params.put("picPath", Utils.alterImageUrl(user.getPicPath()));
+//	    params.put("virtual", "1");// 0 表示客户  1 表示组织
 	    
 	    
 	    
@@ -935,9 +935,9 @@ public class CustomerProfileController extends BaseController {
 	   // news.put("title","这是我的测试动态");
 	    
 	    if(!"".equals(StringUtils.trimToEmpty(customer.getShotName()))){
-	    	 params.put("title", customer.getShotName());
+	    	news.put("title", customer.getShotName());
 	    }else{
-	    	params.put("title", customer.getName());
+	    	news.put("title", customer.getName());
 	    }
 	    
 	    
@@ -976,7 +976,9 @@ public class CustomerProfileController extends BaseController {
 	    relation.put("ctime",new Date().getTime());
 	    relation.put("lowType","1");
 	    if(user.getType()==1){
-	    	
+	    	  relation.put("lowType","1");
+	    }else{
+	    	relation.put("lowType","2");
 	    }
 	    relation.put("type","62");
 	    relation.put("targetId",String.valueOf(customer.getCustomerId()));

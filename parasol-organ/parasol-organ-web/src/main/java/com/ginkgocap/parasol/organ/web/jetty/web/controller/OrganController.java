@@ -174,8 +174,8 @@ public class OrganController extends BaseController {
 				// 数据类型 组织数据
 				customerService.saveOrUpdateOrgData(customer);
 
-				updateOrganRegister(customer, customer.getCreateById());
-
+				updateOrganRegister(customer);
+				updateUser(customer);
 				responseDataMap.put("success", true);
 				responseDataMap.put("msg", "操作成功");
 
@@ -192,7 +192,7 @@ public class OrganController extends BaseController {
 		return responseDataMap;
 	}
 
-	public void updateOrganRegister(Customer customer, long organId) {
+	public void updateOrganRegister(Customer customer) {
 		OrganRegister organ = organRegisterService
 				.getOrganRegisterById(customer.getCreateById());
 		if (organ != null) {
@@ -209,6 +209,18 @@ public class OrganController extends BaseController {
 			organRegisterService.updateOrganData(organ);
 		}
 
+	}
+	
+	
+	public void updateUser(Customer customer){
+		
+		User user=userService.selectByPrimaryKey(customer.getCreateById());
+		if(user!=null){
+			user.setName(customer.getName());
+			user.setIndustry(customer.getIndustry());
+			userService.updateUser(user);
+		}
+		
 	}
 
 	/**
