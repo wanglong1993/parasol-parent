@@ -1147,7 +1147,7 @@ public class CustomerProfileController extends BaseController {
      * @author wfl
      */
     @ResponseBody
-	@RequestMapping(value = "/getId.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/customer/getId.json", method = RequestMethod.POST)
 	public Map<String, Object> customerGetId(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String requestJson = "";
