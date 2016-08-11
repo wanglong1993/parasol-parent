@@ -49,6 +49,7 @@ import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
 import com.ginkgocap.ywxt.organ.service.CustomerCountService;
 import com.ginkgocap.ywxt.organ.service.CustomerGroupService;
+import com.ginkgocap.ywxt.organ.service.CustomerIdService;
 import com.ginkgocap.ywxt.organ.service.CustomerService;
 import com.ginkgocap.ywxt.organ.service.SimpleCustomerService;
 import com.ginkgocap.ywxt.organ.service.tag.RCustomerTagService;
@@ -127,7 +128,8 @@ public class CustomerProfileController extends BaseController {
 	@Resource
 	private DealCustomerConnectInfoService dealCustomerConnectInfoService;
 	
-	
+	 @Resource
+	 private CustomerIdService customerIdService;
 	long appId = 1;
 	long sourceType = 3;
 
@@ -440,9 +442,12 @@ public class CustomerProfileController extends BaseController {
 				customerId, "0");// 组织详情基本资料
 		
 		
-	
+	   if(customer_temp==null){// 兼容关联老数据
+		   customer_temp= customerService.findOne(customerId);
+	   }
 		
 		
+	   
 		User userBasic = getUser(request);
 		
 		
@@ -687,6 +692,10 @@ public class CustomerProfileController extends BaseController {
 		CustomerProfileVoNew customer_new = new CustomerProfileVoNew();
 		Customer customer_temp = customerService.findCustomerDataInTemplate(
 				customerId, templateId);// 组织详情基本资料
+		
+		  if(customer_temp==null){//  兼容关联老数据
+			   customer_temp= customerService.findOne(customerId);
+		   }
 		String sckNum = "";
 		User userBasic = null;
 		if (customer_temp != null) {
@@ -1133,7 +1142,27 @@ public class CustomerProfileController extends BaseController {
 		
 	}
 
-	
+	  /**
+     * 得到一个不重复的客户主键
+     * @author wfl
+     */
+    @ResponseBody
+	@RequestMapping(value = "/getId.json", method = RequestMethod.POST)
+	public Map<String, Object> customerGetId(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		String requestJson = "";
+		requestJson = getJsonParamStr(request);
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
+			try {
+				long orgId=customerIdService.getCustomerId();
+				responseDataMap.put("orgId", orgId);
+			} catch (Exception e) {
+				setSessionAndErr(request, response, "-1", "系统异常,请稍后再试");
+				logger.error("得到一个不重复的客户主键报错,请求参数:{}"+requestJson,e);
+				return returnFailMSGNew("01", "系统异常,请稍后再试");
+			}
+		return returnSuccessMSG(responseDataMap);
+	}
 	
 	
 	

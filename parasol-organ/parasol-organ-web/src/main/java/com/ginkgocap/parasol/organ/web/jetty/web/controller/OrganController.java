@@ -280,6 +280,12 @@ public class OrganController extends BaseController {
 
 		Customer customer_temp = customerService.findOrganCurrentData(organId);// 组织详情基本资料
 
+		
+		  if(customer_temp==null){// 兼容关联老数据
+			   customer_temp= customerService.findOne(organId);
+		  }
+		   
+		   
        System.out.println("Is From web:"+CommonUtil.getRequestIsFromWebFlag());
 		if (customer_temp != null) {
 			
@@ -455,6 +461,11 @@ public class OrganController extends BaseController {
 	
 		Customer customer_temp = customerService.findOrganDataInTemplate(
 				organId, templateId);// 组织详情基本资料
+		
+		if(customer_temp==null){// 兼容老数据
+			   customer_temp= customerService.findOne(organId);
+		 }
+		   
 		if (customer_temp != null) {
 			
 			OrganProfileVo organProfileVo=createOrganProfileVo(customer_temp, user, organId);
