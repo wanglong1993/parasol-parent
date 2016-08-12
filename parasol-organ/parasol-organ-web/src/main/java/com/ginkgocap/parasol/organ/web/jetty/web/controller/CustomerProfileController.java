@@ -45,6 +45,7 @@ import com.ginkgocap.ywxt.organ.model.Customer;
 import com.ginkgocap.ywxt.organ.model.CustomerGroup;
 import com.ginkgocap.ywxt.organ.model.CustomerTag;
 import com.ginkgocap.ywxt.organ.model.bigdata.BigDataReport;
+import com.ginkgocap.ywxt.organ.model.profile.CustomerPersonalLine;
 import com.ginkgocap.ywxt.organ.model.template.Template;
 import com.ginkgocap.ywxt.organ.service.CustomerCollectService;
 import com.ginkgocap.ywxt.organ.service.CustomerCountService;
@@ -588,11 +589,10 @@ public class CustomerProfileController extends BaseController {
 
 	
 	
-	
 	/**
 	 * 查询客户详情(大数据客户)
 	 * 
-	 * @param customerId
+	 * @param name
 	 *            查询考客户详情
 	 * @return
 	 * @throws Exception
@@ -614,6 +614,127 @@ public class CustomerProfileController extends BaseController {
 		Customer customer_temp = customerService.findCustomerBigData(name, "2");
 				
 		if (customer_temp != null) {
+			String xukezheng="";
+			String fuzeren="";
+			List<CustomerPersonalLine> pro = customer_temp.getPropertyList();
+	    	if(!pro.isEmpty()){
+		    	for (CustomerPersonalLine customerPersonalLine : pro) {
+		    		String namee = customerPersonalLine.getName();
+		    		if(namee.equals("许可证号")){
+		    			 xukezheng = customerPersonalLine.getContent();
+		    		}
+		    		if(namee.equals("负责人")){
+		    			fuzeren =customerPersonalLine.getContent();
+		    		}
+				}
+	    	}
+			bigDataCustomer.setId(Long.toString(customer_temp.getId()));
+			bigDataCustomer.setName(customer_temp.getName());
+			bigDataCustomer.setCreateById(customer_temp.getCreateById());
+			bigDataCustomer.setCustomerId(customer_temp.getCustomerId());
+			bigDataCustomer.setCtime(customer_temp.getCtime());
+			bigDataCustomer.setCurrent(customer_temp.isCurrent());
+			bigDataCustomer.setVirtual(customer_temp.getVirtual());
+			bigDataCustomer.setUrl(customer_temp.getUrl());
+			bigDataCustomer.setUtime(customer_temp.getUtime());
+			bigDataCustomer.setSource(customer_temp.getSource());
+			bigDataCustomer.setTaskid(customer_temp.getTaskid());
+			bigDataCustomer
+					.setCrawl_datetime(customer_temp.getCrawl_datetime());
+			bigDataCustomer.setRegistration_number(customer_temp
+					.getRegistration_number()+xukezheng);
+			bigDataCustomer.setOrganization_code(customer_temp
+					.getOrganization_code());
+			bigDataCustomer.setCredit_code(customer_temp.getCredit_code());
+			bigDataCustomer.setOperating_state(customer_temp
+					.getOperating_state());
+			bigDataCustomer.setCtype(customer_temp.getCtype());
+			bigDataCustomer.setSet_up_time(customer_temp.getSet_up_time());
+			bigDataCustomer.setLegal_representative(customer_temp
+					.getLegal_representative()+fuzeren);
+			bigDataCustomer.setRegistered_capital(customer_temp
+					.getRegistered_capital());
+			bigDataCustomer.setBusiness_term(customer_temp.getBusiness_term());
+			bigDataCustomer.setRegistration_authority(customer_temp
+					.getRegistration_authority());
+			bigDataCustomer.setDate_issue(customer_temp.getDate_issue());
+			bigDataCustomer.setAddress(customer_temp.getAddress());
+			bigDataCustomer.setIndustry_involved(customer_temp
+					.getIndustry_involved());
+			bigDataCustomer
+					.setBusiness_scope(customer_temp.getBusiness_scope());
+			bigDataCustomer.setCompany_profile(customer_temp
+					.getCompany_profile());
+			bigDataCustomer.setComment(customer_temp.getComment());
+			bigDataCustomer.setChange(customer_temp.getChange());
+			bigDataCustomer.setInvestment(customer_temp.getInvestment());
+			bigDataCustomer.setPeople(customer_temp.getPeople());
+			bigDataCustomer.setFinfo(customer_temp.getFinfo());
+			List<BigDataReport> aa = customer_temp.getReport();
+			for (BigDataReport bigDataReport : aa) {
+				String report = bigDataReport.getReport();
+				String newreport=report.replace("</div>", "");
+				bigDataReport.setReport(newreport);
+			}
+			bigDataCustomer.setReport(aa);
+			bigDataCustomer.setShareholders(customer_temp.getShareholders());
+			System.out.println("大数据客户id==========="+customer_temp.getId()+"====名称====="+customer_temp.getName());
+			responseData.put("customer", bigDataCustomer);
+			try {
+				customerCountService.updateCustomerCount(com.ginkgocap.ywxt.organ.model.Constants.customerCountType.read.getType(), customer_temp.getId());
+			} catch (Exception e) {
+				logger.error("插入查询大数据客户功能报错,请求参数json: ", e);
+			}
+
+		} else {
+			setSessionAndErr(request, response, "-1", "客户不存在!");
+			return returnFailMSGNew("01", "客户不存在!");
+		}
+		return returnSuccessMSG(responseData);
+	}
+	
+	/**
+	 * 查询客户详情(大数据客户)
+	 * 
+	 * @param customerId
+	 *            查询考客户详情
+	 * @return
+	 * @throws Exception
+	 * @author zbb
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/customer/findDigDataById.json", method = RequestMethod.POST)
+	public Map<String, Object> findDigDataById(
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String requestJson = getJsonParamStr(request);
+		Map<String, Object> responseData = new HashMap<String, Object>();
+		System.out.println("json:" + requestJson);
+		JSONObject j = JSONObject.fromObject(requestJson);
+		Long customerId = j.getLong("customerId");
+		BigDataModel bigDataCustomer = new BigDataModel();
+
+		Customer customer_temp = customerService.findCustomerCurrentData(customerId, "2");
+		if(customer_temp == null){
+		    Customer oldCustomer = customerService.findOne(customerId);
+		    if(oldCustomer!=null){
+		    	List<CustomerPersonalLine> pro = oldCustomer.getPropertyList();
+		    	if(!pro.isEmpty()){
+			    	for (CustomerPersonalLine customerPersonalLine : pro) {
+			    		String namee = customerPersonalLine.getName();
+			    		if(namee.equals("许可证号")){
+			    			bigDataCustomer.setRegistration_number(customerPersonalLine.getContent());
+			    		}
+			    		if(namee.equals("负责人")){
+			    			bigDataCustomer.setLegal_representative(customerPersonalLine.getContent());
+			    		}
+					}
+		    	}
+		    }else{
+				setSessionAndErr(request, response, "-1", "客户不存在!");
+				return returnFailMSGNew("01", "客户不存在!");
+		    }
+		}else if (customer_temp != null) {
 			bigDataCustomer.setId(Long.toString(customer_temp.getId()));
 			bigDataCustomer.setName(customer_temp.getName());
 			bigDataCustomer.setCreateById(customer_temp.getCreateById());
@@ -671,14 +792,9 @@ public class CustomerProfileController extends BaseController {
 			} catch (Exception e) {
 				logger.error("插入查询大数据客户功能报错,请求参数json: ", e);
 			}
-
-		} else {
-			setSessionAndErr(request, response, "-1", "客户不存在!");
-			return returnFailMSGNew("01", "客户不存在!");
-		}
+		} 
 		return returnSuccessMSG(responseData);
 	}
-
 	/**
 	 * 返回 客户 数据 和 模板 切换模板时 用
 	 * 
