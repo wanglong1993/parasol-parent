@@ -248,13 +248,10 @@ public class OrgAndCustomerController  extends BaseController {
 					    	 }else{
 					    	    type="2"; 
 					    	 }
-						  PermissionQuery p=new PermissionQuery();
-						  p.setResId(id);
-						  p.setUserId(user.getId());
-						  p.setResType((short)5);//  5 组织
+						
 	                      if("1".equals(type)){
 								   simpleCustomerService.deleteById(id);
-								   customerService.deleteCustomerByCustomerId(id,p);	   
+								   customerService.deleteCustomerByCustomerId(id);	   
 							}else if("2".equals(type)){
 								 Map map = new HashMap();
 								 map.put("custermId", id);
@@ -734,13 +731,10 @@ public class OrgAndCustomerController  extends BaseController {
 				    	 }else{
 				    	    type="2"; 
 				    	 }
-					  PermissionQuery p=new PermissionQuery();
-					  p.setResId(id);
-					  p.setUserId(user.getId());
-					  p.setResType((short)5);//  5 组织
+					
                       if("1".equals(type)){
 							   simpleCustomerService.deleteById(id);
-							   customerService.deleteCustomerByCustomerId(id,p);	   
+							   customerService.deleteCustomerByCustomerId(id);	   
 						}else if("2".equals(type)){
 							 Map map = new HashMap();
 							 map.put("custermId", id);
@@ -752,7 +746,7 @@ public class OrgAndCustomerController  extends BaseController {
 		} else {
 			setSessionAndErr(request, response, "-1", "输入参数不合法");
 		}
-		responseDataMap.put("success",true);
+		responseDataMap.put("success",true); 
 		notificationMap.put("notifCode", "0001");
 		notificationMap.put("notifInfo", "hello mobile app!");
 		model.put("responseData", responseDataMap);

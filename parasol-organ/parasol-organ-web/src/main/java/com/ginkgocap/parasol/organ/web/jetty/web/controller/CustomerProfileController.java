@@ -381,7 +381,7 @@ public class CustomerProfileController extends BaseController {
 					pQuery.setResId(customer.getId());
 					pQuery.setUserId(user.getId());
 					pQuery.setResType((short) 3);// 3组织
-					customerService.deleteCustomerByCustomerId(customer.getCustomerId(), pQuery);
+					customerService.deleteCustomerByCustomerId(customer.getCustomerId());
 				}
 				
 				e.printStackTrace();
@@ -835,20 +835,13 @@ public class CustomerProfileController extends BaseController {
 
 					boolean isDelCustomer = simpleCustomerService
 							.deleteByIds(customerId + "");
+					
+					
+					boolean result = customerService
+							.deleteCustomerByCustomerId(customerId);
+				
 
-					PermissionQuery p = new PermissionQuery();
-					p.setResId(customerId);
-					p.setUserId(userBasic.getId());
-					p.setResType((short) 3);// 3组织
-
-					InterfaceResult<Boolean> interfaceResult = customerService
-							.deleteCustomerByCustomerId(customerId, p);
-					Notification notifacation = interfaceResult
-							.getNotification();
-					boolean isDelCustomerDataTag = interfaceResult
-							.getResponseData();
-
-					if (isDelCustomerDataTag && isDelCustomer) {
+					if (result) {
 						responseDataMap.put("success", true);
 						responseDataMap.put("msg", "操作成功");
 
@@ -858,6 +851,14 @@ public class CustomerProfileController extends BaseController {
 						responseDataMap.put("msg", "删除失败");
 
 					}
+					
+					InterfaceResult<Permission> intre=permissionRepositoryService.selectByRes(customerId,  ResourceType.ORG );
+					if(intre!=null){
+						Permission permission=intre.getResponseData();
+						if(permission!=null){
+							permissionRepositoryService.delete(permission);
+						}
+					}
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -866,7 +867,6 @@ public class CustomerProfileController extends BaseController {
 					responseDataMap.put("msg", "系统异常");
 					return responseDataMap;
 				}
-
 			}
 
 		} else {
