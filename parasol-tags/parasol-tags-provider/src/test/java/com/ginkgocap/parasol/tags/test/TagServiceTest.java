@@ -101,6 +101,13 @@ public class TagServiceTest extends TestBase implements Test {
 		source.setSourceTitle("TestTitle");
 		source.setCreateAt(System.currentTimeMillis());
 		Long tagSourceId2 = tagSourceService.createTagSource(source);
+		
+		List<TagSource> sourceList = tagSourceService.getTagSourcesByAppIdTagIdAndType(System_AppId, tagId, tagType, 0, 8);
+		Assert.assertTrue(sourceList != null && sourceList.size() > 0);
+		
+		List<Long> ids = tagSourceService.getTagSourceIdListByAppIdTagIdAndType(System_AppId, tagId, tagType, 0, 8);
+		Assert.assertTrue(ids != null && ids.size() > 0);
+		
 		//删除第二个资源上的Tag
 		tagSourceService.removeTagSource(System_AppId, userId, tagSourceId);
 

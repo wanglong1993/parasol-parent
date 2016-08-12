@@ -41,7 +41,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	private static final String LIST_BY_APPID_TAGID_SOURCETYPE = "List_By_AppId_TagId_SourceType";
 	private static final String DELETE_BY_APPID_SOURCEID_SOURCETYPE = "Delete_By_AppId_SourceId_SourceType";
 
-	private static int MAX_TAG = 20; // 一个资源下最多创建的标签数
+	private static int MAX_TAG = 10; // 一个资源下最多创建的标签数
 
 	@Autowired
 	private TagService tagService;
