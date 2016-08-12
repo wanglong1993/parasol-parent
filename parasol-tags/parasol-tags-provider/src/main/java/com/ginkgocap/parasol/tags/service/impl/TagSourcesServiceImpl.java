@@ -244,11 +244,25 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	}
 
 	@Override
-	public List<TagSource> getTagSourcesByAppIdTagIdAndType(Long appId, Long tagId, Long sourceType, Integer iStart, Integer iCount) throws TagSourceServiceException {
-		ServiceError.assertTagIdIsNullForTagSource(tagId);
-		ServiceError.assertAppidIsNullForTagSource(appId);
+	public List<Long> getTagSourceIdListByAppIdTagIdAndType(Long appId, Long tagId, Long sourceType, Integer iStart, Integer iCount) throws TagSourceServiceException {
+		ServiceError.assertTagIdIsNullForTagSource(appId);
+		ServiceError.assertAppidIsNullForTagSource(tagId);
+		ServiceError.assertAppidIsNullForTagSource(sourceType);
 		try {
-			return this.getSubEntitys(LIST_BY_APPID_TAGID_SOURCETYPE, iStart, iCount, new Object[]{appId, tagId, sourceType});
+			return this.getSubIds(LIST_BY_APPID_TAGID_SOURCETYPE, iStart.intValue(), iCount.intValue(), appId, tagId, sourceType);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new TagSourceServiceException(e);
+		}
+	}
+	
+	@Override
+	public List<TagSource> getTagSourcesByAppIdTagIdAndType(Long appId, Long tagId, Long sourceType, Integer iStart, Integer iCount) throws TagSourceServiceException {
+		ServiceError.assertTagIdIsNullForTagSource(appId);
+		ServiceError.assertAppidIsNullForTagSource(tagId);
+		ServiceError.assertAppidIsNullForTagSource(sourceType);
+		try {
+			return this.getSubEntitys(LIST_BY_APPID_TAGID_SOURCETYPE, iStart, iCount, appId, tagId, sourceType);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new TagSourceServiceException(e);

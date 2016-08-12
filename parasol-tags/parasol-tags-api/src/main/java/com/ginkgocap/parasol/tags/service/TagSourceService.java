@@ -54,6 +54,17 @@ public interface TagSourceService {
 	public TagSource getTagSource(Long appId, Long tagSourceId) throws TagSourceServiceException;
 
 	/**
+	 * 查询一个资源下边的所有标签Id，比如查询一篇文章下边的所有标签。
+	 * 
+	 * @param appId
+	 * @param sourceId
+	 * @param sourceType
+	 * @return
+	 * @throws TagSourceServiceException
+	 */
+	public List<Long> getTagSourceIdListByAppIdTagIdAndType(Long appId, Long tagId, Long sourceType, Integer iStart, Integer iCount) throws TagSourceServiceException;
+	
+	/**
 	 * 查询一个资源下边的所有标签，比如查询一篇文章下边的所有标签。
 	 * 
 	 * @param appId
