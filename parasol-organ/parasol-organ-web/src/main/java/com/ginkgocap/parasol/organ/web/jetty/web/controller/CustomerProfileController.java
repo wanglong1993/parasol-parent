@@ -946,17 +946,16 @@ public class CustomerProfileController extends BaseController {
 			} else {
 
 				long customerId = j.getLong("customerId");
+				Customer customer=customerService.findCustomerCurrentData(customerId, "0");
+				if(customer.getCreateById()!=userBasic.getId()){
+					return returnFailMSGNew("01","您没有权利力删除该客户");
+				}
 
 				try {
 
-					boolean isDelCustomer = simpleCustomerService
-							.deleteByIds(customerId + "");
-					
-					
 					boolean result = customerService
 							.deleteCustomerByCustomerId(customerId);
 				
-
 					if (result) {
 						responseDataMap.put("success", true);
 						responseDataMap.put("msg", "操作成功");
@@ -967,7 +966,6 @@ public class CustomerProfileController extends BaseController {
 						responseDataMap.put("msg", "删除失败");
 
 					}
-					
 					InterfaceResult<Permission> intre=permissionRepositoryService.selectByRes(customerId,  ResourceType.ORG );
 					if(intre!=null){
 						Permission permission=intre.getResponseData();
