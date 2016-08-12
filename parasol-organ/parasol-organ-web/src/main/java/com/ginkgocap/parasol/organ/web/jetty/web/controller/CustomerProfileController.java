@@ -249,45 +249,55 @@ public class CustomerProfileController extends BaseController {
 				customer.setCustomerPermissions(customerPermissions.toString());
 				
 			
-				if (customer.getCustomerId() == 0) {
-
-					customer = customerService.addCustomerData(customer);
-					responseDataMap.put("success", true);
-					responseDataMap.put("msg", "操作成功");
-					responseDataMap.put("customerId", customer.getCustomerId());
-					isAdd = true;
-					System.out.println("增加客户" + customer.getCustomerId() + "成功");
-							
-				} else {
-
-					PermissionQuery p = new PermissionQuery();
-					p.setUserId(user.getId());
-					p.setResId(customer.getCustomerId());
-					p.setResType((short) sourceType);
-					InterfaceResult interfaceReslut = customerService
-							.updateCustomerData(customer, p);
-					System.out.println("interfaceReslut:" + interfaceReslut);
-					System.out.println("responseData:"
-							+ interfaceReslut.getResponseData());
-
-					Notification notification = interfaceReslut
-							.getNotification();
-					if (notification.getNotifCode().equals("0")) {
-
-						responseDataMap.put("success", true);
-						responseDataMap.put("msg", "操作成功");
-					
-						System.out.println("修改客户:" + customer.getCustomerId()
-								+ "成功");
-
-					} else {
-
-						responseDataMap.put("success", false);
-						responseDataMap.put("msg", notification.getNotifInfo());
-						return responseDataMap;
-					}
-
-				}
+				customer=customerService.saveOrUpdateCustomerData(customer);
+				
+				
+				responseDataMap.put("success", true);
+				responseDataMap.put("msg", "操作成功");
+				responseDataMap.put("customerId", customer.getCustomerId());
+				isAdd = true;
+				System.out.println("增加客户" + customer.getCustomerId() + "成功");
+				
+			
+//				if (customer.getCustomerId() == 0) {
+//
+//					customer = customerService.addCustomerData(customer);
+//					responseDataMap.put("success", true);
+//					responseDataMap.put("msg", "操作成功");
+//					responseDataMap.put("customerId", customer.getCustomerId());
+//					isAdd = true;
+//					System.out.println("增加客户" + customer.getCustomerId() + "成功");
+//							
+//				} else {
+//
+//					PermissionQuery p = new PermissionQuery();
+//					p.setUserId(user.getId());
+//					p.setResId(customer.getCustomerId());
+//					p.setResType((short) sourceType);
+//					InterfaceResult interfaceReslut = customerService
+//							.updateCustomerData(customer, p);
+//					System.out.println("interfaceReslut:" + interfaceReslut);
+//					System.out.println("responseData:"
+//							+ interfaceReslut.getResponseData());
+//
+//					Notification notification = interfaceReslut
+//							.getNotification();
+//					if (notification.getNotifCode().equals("0")) {
+//
+//						responseDataMap.put("success", true);
+//						responseDataMap.put("msg", "操作成功");
+//					
+//						System.out.println("修改客户:" + customer.getCustomerId()
+//								+ "成功");
+//
+//					} else {
+//
+//						responseDataMap.put("success", false);
+//						responseDataMap.put("msg", notification.getNotifInfo());
+//						return responseDataMap;
+//					}
+//
+//				}
 
 				
 				if(!isNullOrEmpty(relevance)){  // 保存关联
