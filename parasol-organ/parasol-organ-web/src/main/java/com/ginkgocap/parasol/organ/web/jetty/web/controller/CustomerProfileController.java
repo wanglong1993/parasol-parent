@@ -370,7 +370,7 @@ public class CustomerProfileController extends BaseController {
 				JSONObject permissionJo=JSONObject.fromObject(customerPermissions.toString());
 				if(permissionJo.getInt("publicFlag")==1){
 					// 生成动态
-//					saveCustomerDynamicNews(getUser(request),customer);
+					saveCustomerDynamicNews(getUser(request),customer);
 
 				}
 				
@@ -641,8 +641,12 @@ public class CustomerProfileController extends BaseController {
 			bigDataCustomer.setTaskid(customer_temp.getTaskid());
 			bigDataCustomer
 					.setCrawl_datetime(customer_temp.getCrawl_datetime());
-			bigDataCustomer.setRegistration_number(customer_temp
-					.getRegistration_number()+xukezheng);
+			String zhucehao=customer_temp.getRegistration_number();
+			if(zhucehao==null){
+				bigDataCustomer.setRegistration_number(xukezheng);
+			}else{
+				bigDataCustomer.setRegistration_number(zhucehao);
+			}
 			bigDataCustomer.setOrganization_code(customer_temp
 					.getOrganization_code());
 			bigDataCustomer.setCredit_code(customer_temp.getCredit_code());
@@ -650,8 +654,12 @@ public class CustomerProfileController extends BaseController {
 					.getOperating_state());
 			bigDataCustomer.setCtype(customer_temp.getCtype());
 			bigDataCustomer.setSet_up_time(customer_temp.getSet_up_time());
-			bigDataCustomer.setLegal_representative(customer_temp
-					.getLegal_representative()+fuzeren);
+			String faren=customer_temp.getLegal_representative();
+			if(faren==null){
+				bigDataCustomer.setLegal_representative(fuzeren);
+			}else{
+				bigDataCustomer.setLegal_representative(faren);
+			}
 			bigDataCustomer.setRegistered_capital(customer_temp
 					.getRegistered_capital());
 			bigDataCustomer.setBusiness_term(customer_temp.getBusiness_term());
