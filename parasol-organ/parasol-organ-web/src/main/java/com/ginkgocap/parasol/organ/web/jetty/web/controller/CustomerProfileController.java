@@ -39,6 +39,11 @@ import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.CustomerProfileVoNew;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.TemplateVo;
 import com.ginkgocap.parasol.tags.service.TagService;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
+import com.ginkgocap.ywxt.dynamic.model.DynamicComment;
+import com.ginkgocap.ywxt.dynamic.model.DynamicNews;
+import com.ginkgocap.ywxt.dynamic.model.Location;
+import com.ginkgocap.ywxt.dynamic.model.Picture;
+import com.ginkgocap.ywxt.dynamic.model.RelationUserInfo;
 import com.ginkgocap.ywxt.dynamic.service.DynamicNewsService;
 import com.ginkgocap.ywxt.organ.model.Constants2;
 import com.ginkgocap.ywxt.organ.model.Customer;
@@ -369,8 +374,7 @@ public class CustomerProfileController extends BaseController {
 				
 				JSONObject permissionJo=JSONObject.fromObject(customerPermissions.toString());
 				
-				saveCustomerDynamicNews(getUser(request),customer);
-
+				createDynamicNews(user, customer);
 				
 			} catch (Exception e) {
 	
@@ -1193,6 +1197,52 @@ public class CustomerProfileController extends BaseController {
     }
 
     
+    
+    
+    
+    private void createDynamicNews(User user,Customer customer)
+    {
+        DynamicNews dynamic = new DynamicNews();
+        dynamic.setType("62"); //创建客户
+     
+        dynamic.setTargetId(customer.getCustomerId());
+        dynamic.setTitle(customer.getShotName());
+       // dynamic.setContent(customer.getArea().getCity()+"#"+Utils.listToString(customer.getIndustrys()));
+//        dynamic.setContentPath(detail.getS_addr());
+        dynamic.setCreaterId(user.getId());
+       // String clearContent = HtmlToText.html2Text(detail.getContent());
+//        clearContent = clearContent.length() > 250 ? clearContent.substring(0,250) : clearContent;
+//        dynamic.setClearContent(clearContent);
+        dynamic.setPicPath(user.getPicPath());
+        dynamic.setCreaterName(user.getName());
+        dynamic.setCtime(new Date().getTime());
+        //dynamic.setDemandCount());
+        //dynamic.setId();
+        dynamic.setImgPath(customer.getPicLogo());
+        dynamic.setKnowledgeCount(0);
+        
+        dynamic.setCreateType(user.getType()+"");
+        dynamic.setScope(String.valueOf(0));
+        Location location = new Location();
+        location.setDetailName("");
+        location.setDimension("");
+        location.setMobile("");
+        location.setName("");
+        location.setSecondLevel("");
+        location.setType("");
+        dynamic.setLocation(location);
+        dynamic.setPeopleRelation(new ArrayList<RelationUserInfo>(0));
+        dynamic.setComments(new ArrayList<DynamicComment>(0));
+        dynamic.setPicturePaths(new ArrayList<Picture>(0));
+        //dynamic.setVirtual(knowledge.getVirtual());
+        
+		ObjectMapper objectMapper = new ObjectMapper();
+	    Map 	dynamicMap=objectMapper.convertValue(dynamic, Map.class);
+        
+	    dynamicMap.put("asso", new HashMap<String,Object>(1));
+        long id=dynamicNewService.insert(dynamicMap);
+        System.out.println("创建客户生成动态:"+id);
+    }
     
     
     public void setCreateTypeAndName(CustomerProfileVoNew customer_new,long createById){
