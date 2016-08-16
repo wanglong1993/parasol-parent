@@ -260,7 +260,7 @@ public class CustomerProfileController extends BaseController {
 				customer.setCustomerPermissions(customerPermissions.toString());
 				
 			
-				if(customer.getCustomerId()!=0){
+				if(customer.getCustomerId()==0){
 					isAdd=true;
 				}
 				customer=customerService.saveOrUpdateCustomerData(customer);
