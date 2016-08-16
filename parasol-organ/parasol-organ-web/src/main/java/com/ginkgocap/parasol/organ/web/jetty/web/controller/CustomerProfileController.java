@@ -156,9 +156,14 @@ public class CustomerProfileController extends BaseController {
 		boolean isAdd = false; // 是否增加
 		Customer customer=null;
 		Permission per=null;
+		int updateDynamic=0;
 		if (requestJson != null && !"".equals(requestJson)) {
 			try {
 				JSONObject jo = JSONObject.fromObject(requestJson);
+				
+				if(jo.has("updateDynamic")){// 是否同步到动态   无许保存数据库 在  removeUnSerilabeAndUseLessField 方法中 会把 jo 中的updateDynamic去掉
+					updateDynamic=jo.getInt("updateDynamic");
+				}
 			
 				removeUnSerilabeAndUseLessField(jo);
 				user = getUser(request);
@@ -255,13 +260,16 @@ public class CustomerProfileController extends BaseController {
 				customer.setCustomerPermissions(customerPermissions.toString());
 				
 			
+				if(customer.getCustomerId()!=0){
+					isAdd=true;
+				}
 				customer=customerService.saveOrUpdateCustomerData(customer);
 				
 				
 				responseDataMap.put("success", true);
 				responseDataMap.put("msg", "操作成功");
 				responseDataMap.put("customerId", customer.getCustomerId());
-				isAdd = true;
+				
 				System.out.println("增加客户" + customer.getCustomerId() + "成功");
 				
 			
@@ -370,11 +378,11 @@ public class CustomerProfileController extends BaseController {
 
 				}
 		
+				 if(customerPermissions.getInt("publicFlag")==1&&updateDynamic==1&&isAdd){// 同步到动态
+						createDynamicNews(user, customer);
+				 }
 				
-				
-				JSONObject permissionJo=JSONObject.fromObject(customerPermissions.toString());
-				
-				createDynamicNews(user, customer);
+			
 				
 			} catch (Exception e) {
 	
@@ -424,6 +432,7 @@ public class CustomerProfileController extends BaseController {
 		jo.remove("templateName");
 		jo.remove("templateType");
 		jo.remove("columns");// 不知道什么东西暂时去掉
+		jo.remove("updateDynamic");
 	}
 	
 	
