@@ -1222,6 +1222,8 @@ public class CustomerProfileController extends BaseController {
        // String clearContent = HtmlToText.html2Text(detail.getContent());
 //        clearContent = clearContent.length() > 250 ? clearContent.substring(0,250) : clearContent;
 //        dynamic.setClearContent(clearContent);
+        
+        dynamic.setClearContent(customer.getIndustry() +"   "+customer.getAreaString());
         dynamic.setPicPath(user.getPicPath());
         dynamic.setCreaterName(user.getName());
         dynamic.setCtime(new Date().getTime());
