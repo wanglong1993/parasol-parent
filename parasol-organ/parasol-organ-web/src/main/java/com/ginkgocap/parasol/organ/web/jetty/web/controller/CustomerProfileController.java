@@ -368,11 +368,9 @@ public class CustomerProfileController extends BaseController {
 				
 				
 				JSONObject permissionJo=JSONObject.fromObject(customerPermissions.toString());
-				if(permissionJo.getInt("publicFlag")==1){
-					// 生成动态
-					saveCustomerDynamicNews(getUser(request),customer);
+				
+				saveCustomerDynamicNews(getUser(request),customer);
 
-				}
 				
 			} catch (Exception e) {
 	
