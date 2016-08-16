@@ -1219,7 +1219,7 @@ public class CustomerProfileController extends BaseController {
         //dynamic.setDemandCount());
         //dynamic.setId();
         dynamic.setImgPath(customer.getPicLogo());
-        dynamic.setKnowledgeCount(0);
+//        dynamic.setKnowledgeCount(0);
         
         dynamic.setCreateType(user.getType()+"");
         dynamic.setScope(String.valueOf(0));
@@ -1240,8 +1240,34 @@ public class CustomerProfileController extends BaseController {
 	    Map 	dynamicMap=objectMapper.convertValue(dynamic, Map.class);
         
 	    dynamicMap.put("asso", new HashMap<String,Object>(1));
-        long id=dynamicNewService.insert(dynamicMap);
-        System.out.println("创建客户生成动态:"+id);
+	    
+	    
+	    
+	    try{
+            List<Long> receiverIds = null;
+            long user_id = user.getId() > 0 ? user.getId() : 1l;
+            Map<Long, String> friends = friendsRelationService.findAllFriend2Map(user_id);
+            if (friends != null && friends.size() > 0){
+                receiverIds = new ArrayList<Long>(friends.size()+1);
+                receiverIds.addAll(friends.keySet());
+            }
+
+            if (receiverIds == null) {
+                receiverIds = new ArrayList<Long>(1);
+                receiverIds.add(user_id);
+            }
+            else if(!receiverIds.contains(user_id)) {
+                receiverIds.add(user_id);//加上自己
+            }
+           
+            long id=dynamicNewService.insertNewsAndRelation(dynamicMap,receiverIds);
+            System.out.println("创建客户生成动态:"+id);
+	    
+	    }catch(Exception e){
+	    	e.printStackTrace();
+	    }
+	    
+       
     }
     
     
