@@ -155,20 +155,20 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>test</id>
+			<id>testOnline</id>
 			<properties>
 				<!-- database -->
-				<jdbc.url>jdbc:mysql://192.168.101.187:3306/parasol_directory?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8&amp;amp;autoReconnect=true</jdbc.url>
-				<jdbc.username>root</jdbc.username>
-				<jdbc.password>bunengshiyong</jdbc.password>
+				<jdbc.url>jdbc:mysql://192.168.101.42:3306/parasol_directory?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8&amp;amp;autoReconnect=true</jdbc.url>
+				<jdbc.username>ph_kfpt</jdbc.username>
+				<jdbc.password>Cual17jc5qd4</jdbc.password>
 				<!-- memcached -->
-				<memcached.list1.ip>192.168.101.187</memcached.list1.ip>
+				<memcached.list1.ip>192.168.101.22</memcached.list1.ip>
 				<memcached.list1.port>11211</memcached.list1.port>
-				<memcached.object1.ip>192.168.101.187</memcached.object1.ip>
+				<memcached.object1.ip>192.168.101.22</memcached.object1.ip>
 				<memcached.object1.port>11211</memcached.object1.port>				
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
-				<dubbo.registry.address>zookeeper://192.168.101.223:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>20885</dubbo.protocol.port>
 			</properties>

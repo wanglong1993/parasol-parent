@@ -123,7 +123,7 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 		Object[] parameter = new Object[]{441713, System_AppId, 8, 3991724208947840L};
 		List<DirectorySource> souceList = null;
 		try {
-			souceList = directorySourceService.getSourcesByDirectoryIdAndSourceType(0, 2, parameter);
+			souceList = directorySourceService.getSourcesByDirectoryIdAndSourceType(0, 10, parameter);
 		} catch (DirectorySourceServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
