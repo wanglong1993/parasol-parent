@@ -116,5 +116,20 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 //		}
 
 	}
+	
+	@org.junit.Test
+	public void testGetDirectorySource()
+	{
+		Object[] parameter = new Object[]{441713, System_AppId, 8, 3991724208947840L};
+		List<DirectorySource> souceList = null;
+		try {
+			souceList = directorySourceService.getSourcesByDirectoryIdAndSourceType(0, 2, parameter);
+		} catch (DirectorySourceServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Assert.assertTrue(souceList != null && souceList.size() > 0);
+		System.err.println(souceList);
+	}
 
 }
