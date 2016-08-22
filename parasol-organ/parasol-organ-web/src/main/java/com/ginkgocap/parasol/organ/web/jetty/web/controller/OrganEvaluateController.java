@@ -466,7 +466,7 @@ public class OrganEvaluateController extends BaseController {
 				if (u != null)
 
 				{
-					amn.setImageUrl(getUserImg(request, u.getId(), 1));
+					amn.setImageUrl(u.getPicPath());
 					amn.setIsonline(u.isVirtual());
 				}
 
