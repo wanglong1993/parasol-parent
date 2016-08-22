@@ -189,6 +189,7 @@ public class OrganRegisterController extends BaseController {
                 updateUserStatus(id, Constants.OrganStatus.emailActivate.v());
                 result = organRegisterService.updateOrganRegisterStatus(id, Constants.OrganStatus.emailActivate.v());
                 result.put("id", id);
+                result.put("email", org.getEmail());
             }
         } catch (Exception e) {
             logger.error("系统异常,请稍后再试", e);

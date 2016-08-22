@@ -39,6 +39,11 @@ import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.CustomerProfileVoNew;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.TemplateVo;
 import com.ginkgocap.parasol.tags.service.TagService;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
+import com.ginkgocap.ywxt.dynamic.model.DynamicComment;
+import com.ginkgocap.ywxt.dynamic.model.DynamicNews;
+import com.ginkgocap.ywxt.dynamic.model.Location;
+import com.ginkgocap.ywxt.dynamic.model.Picture;
+import com.ginkgocap.ywxt.dynamic.model.RelationUserInfo;
 import com.ginkgocap.ywxt.dynamic.service.DynamicNewsService;
 import com.ginkgocap.ywxt.organ.model.Constants2;
 import com.ginkgocap.ywxt.organ.model.Customer;
@@ -151,9 +156,14 @@ public class CustomerProfileController extends BaseController {
 		boolean isAdd = false; // 是否增加
 		Customer customer=null;
 		Permission per=null;
+		int updateDynamic=0;
 		if (requestJson != null && !"".equals(requestJson)) {
 			try {
 				JSONObject jo = JSONObject.fromObject(requestJson);
+				
+				if(jo.has("updateDynamic")){// 是否同步到动态   无许保存数据库 在  removeUnSerilabeAndUseLessField 方法中 会把 jo 中的updateDynamic去掉
+					updateDynamic=jo.getInt("updateDynamic");
+				}
 			
 				removeUnSerilabeAndUseLessField(jo);
 				user = getUser(request);
@@ -250,13 +260,16 @@ public class CustomerProfileController extends BaseController {
 				customer.setCustomerPermissions(customerPermissions.toString());
 				
 			
+				if(customer.getCustomerId()==0){
+					isAdd=true;
+				}
 				customer=customerService.saveOrUpdateCustomerData(customer);
 				
 				
 				responseDataMap.put("success", true);
 				responseDataMap.put("msg", "操作成功");
 				responseDataMap.put("customerId", customer.getCustomerId());
-				isAdd = true;
+				
 				System.out.println("增加客户" + customer.getCustomerId() + "成功");
 				
 			
@@ -365,14 +378,11 @@ public class CustomerProfileController extends BaseController {
 
 				}
 		
+				 if(customerPermissions.getInt("publicFlag")==1&&updateDynamic==1&&isAdd){// 同步到动态
+						createDynamicNews(user, customer);
+				 }
 				
-				
-				JSONObject permissionJo=JSONObject.fromObject(customerPermissions.toString());
-				if(permissionJo.getInt("publicFlag")==1){
-					// 生成动态
-//					saveCustomerDynamicNews(getUser(request),customer);
-
-				}
+			
 				
 			} catch (Exception e) {
 	
@@ -422,6 +432,7 @@ public class CustomerProfileController extends BaseController {
 		jo.remove("templateName");
 		jo.remove("templateType");
 		jo.remove("columns");// 不知道什么东西暂时去掉
+		jo.remove("updateDynamic");
 	}
 	
 	
@@ -1195,6 +1206,80 @@ public class CustomerProfileController extends BaseController {
     }
 
     
+    
+    
+    
+    private void createDynamicNews(User user,Customer customer)
+    {
+        DynamicNews dynamic = new DynamicNews();
+        dynamic.setType("62"); //创建客户
+     
+        dynamic.setTargetId(customer.getCustomerId());
+        dynamic.setTitle(customer.getShotName());
+       // dynamic.setContent(customer.getArea().getCity()+"#"+Utils.listToString(customer.getIndustrys()));
+//        dynamic.setContentPath(detail.getS_addr());
+        dynamic.setCreaterId(user.getId());
+       // String clearContent = HtmlToText.html2Text(detail.getContent());
+//        clearContent = clearContent.length() > 250 ? clearContent.substring(0,250) : clearContent;
+//        dynamic.setClearContent(clearContent);
+        
+        dynamic.setClearContent(customer.getIndustry() +"   "+customer.getAreaString());
+        dynamic.setPicPath(user.getPicPath());
+        dynamic.setCreaterName(user.getName());
+        dynamic.setCtime(new Date().getTime());
+        //dynamic.setDemandCount());
+        //dynamic.setId();
+        dynamic.setImgPath(customer.getPicLogo());
+//        dynamic.setKnowledgeCount(0);
+        
+        dynamic.setCreateType(user.getType()+"");
+        dynamic.setScope(String.valueOf(0));
+        Location location = new Location();
+        location.setDetailName("");
+        location.setDimension("");
+        location.setMobile("");
+        location.setName("");
+        location.setSecondLevel("");
+        location.setType("");
+        dynamic.setLocation(location);
+        dynamic.setPeopleRelation(new ArrayList<RelationUserInfo>(0));
+        dynamic.setComments(new ArrayList<DynamicComment>(0));
+        dynamic.setPicturePaths(new ArrayList<Picture>(0));
+        //dynamic.setVirtual(knowledge.getVirtual());
+        
+		ObjectMapper objectMapper = new ObjectMapper();
+	    Map 	dynamicMap=objectMapper.convertValue(dynamic, Map.class);
+        
+	    dynamicMap.put("asso", new HashMap<String,Object>(1));
+	    
+	    
+	    
+	    try{
+            List<Long> receiverIds = null;
+            long user_id = user.getId() > 0 ? user.getId() : 1l;
+            Map<Long, String> friends = friendsRelationService.findAllFriend2Map(user_id);
+            if (friends != null && friends.size() > 0){
+                receiverIds = new ArrayList<Long>(friends.size()+1);
+                receiverIds.addAll(friends.keySet());
+            }
+
+            if (receiverIds == null) {
+                receiverIds = new ArrayList<Long>(1);
+                receiverIds.add(user_id);
+            }
+            else if(!receiverIds.contains(user_id)) {
+                receiverIds.add(user_id);//加上自己
+            }
+           
+            long id=dynamicNewService.insertNewsAndRelation(dynamicMap,receiverIds);
+            System.out.println("创建客户生成动态:"+id);
+	    
+	    }catch(Exception e){
+	    	e.printStackTrace();
+	    }
+	    
+       
+    }
     
     
     public void setCreateTypeAndName(CustomerProfileVoNew customer_new,long createById){

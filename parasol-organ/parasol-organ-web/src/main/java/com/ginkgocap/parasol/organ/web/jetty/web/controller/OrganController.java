@@ -218,6 +218,7 @@ public class OrganController extends BaseController {
 		if(user!=null){
 			user.setName(customer.getName());
 			user.setIndustry(customer.getIndustry());
+			user.setPicPath(customer.getPicLogo());
 			userService.updateUser(user);
 		}
 		
