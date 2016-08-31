@@ -259,6 +259,8 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<!-- docker 中使用 -->
+        <finalName>app</finalName>
 		<resources>
 			<resource>
 				<filtering>true</filtering>
@@ -278,42 +280,58 @@
 				<directory>src/test/resources</directory>
 			</testResource>
 		</testResources>
+		
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>		
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
             <!-- docker 打包 -->
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.0.9</version>
+                <version>0.3.8</version>
+                <executions>
+                    <execution>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>tag</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <imageName>${project.name}:${project.version}</imageName>
-                    <imageTags>
-                        <imageTag>${project.version}</imageTag>
-                        <imageTag>latest</imageTag>
-                    </imageTags>
-                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
-                    <skipDockerBuild>false</skipDockerBuild>
+                    <dockerHost>http://172.17.42.1:2375</dockerHost>
+                    <imageName>registry.****.com/demo:${project.artifactId}</imageName>
+                    <baseImage>docker.io/java:latest</baseImage>
+                    <registryUrl>https://registry.****.com</registryUrl>
+                    <env>
+                        <TZ>'Asia/Shanghai'</TZ>
+                        <LC_ALL>en_US.UTF-8</LC_ALL>
+                    </env>
                     <resources>
                         <resource>
+                            <targetPath>/</targetPath>
                             <directory>${project.build.directory}</directory>
                             <include>${project.build.finalName}.jar</include>
                         </resource>
+                        <!--<resource>-->
+                            <!--<targetPath>/web</targetPath>-->
+                            <!--<directory>${project.build.directory}/web</directory>-->
+                        <!--</resource>-->
                     </resources>
+                    <exposes>
+                        <expose>8080</expose>
+                    </exposes>
+                    <cmd>["java", "-jar", "/${project.build.finalName}.jar"]</cmd>
+                    <image>registry.****.com/demo:${project.artifactId}</image>
+                    <newName>registry.****.com/demo</newName>
+                    <forceTags>true</forceTags>
+                    <pushImage>false</pushImage>
                 </configuration>
-
-                <!--直接在package的时候执行docker build-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>build</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
             </plugin>
+
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
