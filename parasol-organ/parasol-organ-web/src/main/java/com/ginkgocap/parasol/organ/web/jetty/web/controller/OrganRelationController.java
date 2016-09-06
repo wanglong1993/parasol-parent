@@ -452,7 +452,15 @@ public class OrganRelationController extends BaseController {
 	private void dealOrganImageNew(List<OrganRegister> organ) {
 		if(organ != null && !organ.isEmpty()) {
 			for (OrganRegister or : organ) {
-				or.setOrganLogo(rpe.getNginxRoot()+ObjectUtils.alterImageUrl(or.getOrganLogo()));
+				if(or.getOrganLogo()==null||"".equals(or.getOrganLogo())){
+					or.setOrganLogo(rpe.getNginxRoot()+ObjectUtils.alterImageUrl(Constants.USER_DEFAULT_PIC_PATH_MALE));
+					
+				}else{
+					or.setOrganLogo(rpe.getNginxRoot()+ObjectUtils.alterImageUrl(or.getOrganLogo()));
+				}
+				
+				
+				
 			}
 		}
 	}
