@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
 import com.ginkgocap.ywxt.organ.model.bigdata.BigDataChange;
 import com.ginkgocap.ywxt.organ.model.bigdata.BigDataFinfo;
 import com.ginkgocap.ywxt.organ.model.bigdata.BigDataInvestment;
@@ -50,7 +51,15 @@ public class BigDataModel implements Serializable{
   	private List<BigDataReport> report;
   	private List<BigDataInvestment> investment;
   	private List<BigDataFinfo> finfo;
+  	private String picLogo=Constants.ORGAN_DEFAULT_PIC_PATH;
   	
+  	
+  	public String getPicLogo() {
+		return picLogo;
+	}
+	public void setPicLogo(String picLogo) {
+		this.picLogo = picLogo;
+	}
   	
   	public String getId() {
 		return id;
