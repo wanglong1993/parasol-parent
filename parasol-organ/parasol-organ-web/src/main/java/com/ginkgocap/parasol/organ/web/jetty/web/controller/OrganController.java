@@ -384,9 +384,18 @@ public class OrganController extends BaseController {
 					.getPersonalPlateList());
 			organProfileVo.setVirtual(customer_temp.getVirtual());
 			organProfileVo.setCreateById(customer_temp.getCreateById());
-			organProfileVo.setPicLogo(rpe.getNginxRoot()
-					+ Utils.alterImageUrl(customer_temp.getPicLogo()));
+			
+			
+			if(customer_temp.getPicLogo()==null||"".equals(customer_temp.getPicLogo())){
+				
+				organProfileVo.setPicLogo(rpe.getNginxRoot()
+						+ Constants.ORGAN_DEFAULT_PIC_PATH);
+			}else{
+				organProfileVo.setPicLogo(rpe.getNginxRoot()
+						+ Utils.alterImageUrl(customer_temp.getPicLogo()));
 
+			}
+			
 			organProfileVo.setOrgType(customer_temp.getOrgType());
 			organProfileVo.setOrganAllName(customer_temp.getOrganAllName());
 			organProfileVo.setAreaString(customer_temp.getAreaString());
@@ -465,8 +474,13 @@ public class OrganController extends BaseController {
 		
 		if(customer_temp==null){// 兼容老数据
 			   customer_temp= customerService.findOne(organId);
+			   if(customer_temp!=null&&customer_temp.getTemplateId()!=templateId){
+				   customer_temp=null;
+			   }
 		 }
 		   
+		
+		
 		if (customer_temp != null) {
 			
 			OrganProfileVo organProfileVo=createOrganProfileVo(customer_temp, user, organId);

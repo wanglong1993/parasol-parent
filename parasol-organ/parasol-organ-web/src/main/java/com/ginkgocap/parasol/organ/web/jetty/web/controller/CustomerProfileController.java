@@ -840,6 +840,9 @@ public class CustomerProfileController extends BaseController {
 		
 		  if(customer_temp==null){//  兼容关联老数据
 			   customer_temp= customerService.findOne(customerId);
+			   if(customer_temp!=null&&customer_temp.getTemplateId()!=templateId){
+				   customer_temp=null;
+			   }
 		   }
 		String sckNum = "";
 		User userBasic = null;
