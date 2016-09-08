@@ -69,8 +69,15 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 			}
 		}
 		else{
-			//当pid不为0时，查询子系统栏目
-			result=css.queryListByPid(pid);
+			//当pid不为0时，查询子系统栏目,同时为系统栏目
+			List<ColumnSelf> resultTmp=css.queryListByPid(pid);
+			result=new ArrayList<ColumnSelf>();
+			if(resultTmp!=null){
+				for(ColumnSelf c:resultTmp){
+					if(c.getUserOrSystem().shortValue()==1)
+						result.add(c);
+				}
+			}
 		}
 		return result;
 	}

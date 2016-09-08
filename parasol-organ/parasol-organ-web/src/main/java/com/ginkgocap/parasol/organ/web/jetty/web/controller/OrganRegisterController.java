@@ -459,7 +459,7 @@ public class OrganRegisterController extends BaseController {
             logger.error("系统异常,请稍后再试", e);
             return returnFailMSGNew("01", "系统异常,请稍后再试");
         }
-        return genRespBody(result, null);
+        return genRespBody(result, null); 
     }
 
     private User getUserByAccount(String username) {
