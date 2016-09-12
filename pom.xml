@@ -28,6 +28,7 @@
  	   	<module>parasol-associate</module>
  	   	<module>parasol-comment</module>
 
+ 	   	<module>parasol</module>
 	</modules>
 	<repositories>
 		<repository>
