@@ -48,22 +48,7 @@ public class OrganUtils {
  	    // 增加简称组建
  	    JSONObject shortNameObject=new JSONObject();
  	    
- 	    if(templateId!=0){
- 	    	if(templateId==5){
- 	    		 shortNameObject.put("desc", "别名");
-	    	}else{
-	    		shortNameObject.put("desc", "简称");
-	    	}
- 	    	
- 	    }else{
- 	    	
- 	    	if(orgType==3){
- 	 	    	 shortNameObject.put("desc", "别名");
- 	 	    }else{
- 	 	    	shortNameObject.put("desc", "简称");
- 	 	    }
- 	    }
- 	   
+ 	    shortNameObject.put("desc", "简称");
  	   
  	    shortNameObject.put("name", "shortName");
  	    shortNameObject.put("isMust", true);
@@ -77,29 +62,7 @@ public class OrganUtils {
  	    // 增加名称模块
  	    JSONObject nameObject=new JSONObject();
  	    
- 	   if(templateId!=0){
- 		   
- 		    if(templateId==1){
- 		    	nameObject.put("desc", "企业名称");
-	    	}else  if(templateId==2||templateId==5){
-	    		nameObject.put("desc", "单位名称");
-	    	}else  if(templateId==3){
-	    		nameObject.put("desc", "学校名称");
-	    	}else if(templateId==4){
-	    		nameObject.put("desc", "医院名称");
-	    	}
-	    			
- 		   
- 	   }else{
- 		   
- 		   if(orgType==1||orgType==4){
-	    	   nameObject.put("desc", "企业名称");
-		    }else{
-		    	nameObject.put("desc", "单位名称");
-		    }
- 	   }
- 	   
- 	 
+ 	    nameObject.put("desc", "全称");
  	    nameObject.put("name", "name");
  	    nameObject.put("isMust", false);
  	    nameObject.put("maxlength", 50);
