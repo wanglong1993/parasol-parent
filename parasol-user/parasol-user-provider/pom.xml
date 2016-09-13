@@ -35,24 +35,29 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
-			<artifactId>parasol-user-api</artifactId>
+			<artifactId>parasol-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-user-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency> -->
+<!-- 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-sms-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-email-api</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-file-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
-		</dependency>				
+		</dependency>	 -->			
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-metadata-api</artifactId>
