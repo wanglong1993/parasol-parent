@@ -27,9 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
-import com.ginkgocap.parasol.associate.service.AssociateService;
-import com.ginkgocap.parasol.directory.service.DirectoryService;
-import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.organ.web.jetty.web.resource.ResourcePathExposer;
 import com.ginkgocap.parasol.organ.web.jetty.web.service.DealCustomerConnectInfoService;
 import com.ginkgocap.parasol.organ.web.jetty.web.utils.Constants;
@@ -37,8 +34,6 @@ import com.ginkgocap.parasol.organ.web.jetty.web.utils.Utils;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.BigDataModel;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.CustomerProfileVoNew;
 import com.ginkgocap.parasol.organ.web.jetty.web.vo.organ.TemplateVo;
-import com.ginkgocap.parasol.tags.service.TagService;
-import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.ywxt.dynamic.model.DynamicComment;
 import com.ginkgocap.ywxt.dynamic.model.DynamicNews;
 import com.ginkgocap.ywxt.dynamic.model.Location;
@@ -90,21 +85,6 @@ public class CustomerProfileController extends BaseController {
 
 	@Autowired
 	PermissionRepositoryService permissionRepositoryService;
-
-	@Autowired
-	DirectorySourceService directorySourceService;
-
-	@Autowired
-	DirectoryService directoryService;
-
-	@Autowired
-	TagSourceService tagSourceService;
-
-	@Autowired
-	TagService tagService;
-
-	@Autowired
-	AssociateService associateService;
 
 	@Resource
 	private CustomerCollectService customerCollectService;
@@ -544,7 +524,19 @@ public class CustomerProfileController extends BaseController {
 			customer_new.setTemplateId(customer_temp.getTemplateId());
 			// 设置模块
 
-			customer_new.setMoudles(customer_temp.getMoudles());
+			
+		
+			
+			if (customer_temp.getMoudles() != null
+					&& customer_temp.getMoudles().size() > 0) {
+				customer_new.setMoudles(customer_temp.getMoudles());
+			} else {
+
+				customer_new.setMoudles(OrganUtils
+						.createMoudles(customer_temp));
+
+			}
+			
 			
 			customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));// 权限
 			String  permissonsStr=customer_temp.getCustomerPermissions();
@@ -840,6 +832,7 @@ public class CustomerProfileController extends BaseController {
 		
 		  if(customer_temp==null){//  兼容关联老数据
 			   customer_temp= customerService.findOne(customerId);
+			   
 			   if(customer_temp!=null&&customer_temp.getTemplateId()!=templateId){
 				   customer_temp=null;
 			   }
