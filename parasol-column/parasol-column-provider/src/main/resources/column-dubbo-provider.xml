@@ -32,9 +32,9 @@
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
 	<dubbo:monitor protocol="registry" />
-    <dubbo:application name="${dubbo.application.name}" />
-	<dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />
-    <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
+    <dubbo:application name="${column.dubbo.application.name}" />
+	<dubbo:protocol name="${column.dubbo.protocol.name}" port="${column.dubbo.protocol.port}" />
+    <dubbo:registry address="${column.dubbo.registry.address}" protocol="${column.dubbo.protocol.name}"/>
     <dubbo:service  interface="org.parasol.column.service.ColumnCustomService" ref="columnCustomService" version="1.0.1"/>
     <dubbo:service  interface="org.parasol.column.service.ColumnSelfService" ref="columnSelfService" version="1.0.1"/>
     <dubbo:service  interface="org.parasol.column.service.ColumnSysService" ref="columnSysService" version="1.0.1"/>
