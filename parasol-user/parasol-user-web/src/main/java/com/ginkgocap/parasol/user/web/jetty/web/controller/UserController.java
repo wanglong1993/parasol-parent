@@ -229,6 +229,7 @@ public class UserController extends BaseControl {
 		}
 		resultMap.put("unionid", json.has("unionid")?json.get("unionid"):"");
 		resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
+		resultMap.put("sex", json.has("sex")?json.get("sex"):"");
 		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
 		
 		return new MappingJacksonValue(resultMap);
