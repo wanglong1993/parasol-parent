@@ -228,7 +228,7 @@ public class UserController extends BaseControl {
 		resultMap.put("unionid", json.has("openid")?json.get("unionid"):"");
 		resultMap.put("nickname", json.has("nickname")?json.get("nickname"):"");
 		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
-		return (MappingJacksonValue) resultMap;
+		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
 	public JSONObject getWeixinInfo(HttpServletRequest request,
