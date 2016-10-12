@@ -177,6 +177,105 @@ public class UserController extends BaseControl {
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
 
+	/**
+	 * 第三方登录入口
+	 */
+	@RequestMapping(path = { "/user/user/weixinentry" }, method = { RequestMethod.GET })
+	public void weixinentry(HttpServletRequest request,HttpServletResponse response
+			)throws Exception {
+		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri=http://open.gintong.com&response_type=code&scope=snsapi_login&state="+request.getSession().getId()+"#wechat_redirect";
+		response.sendRedirect(code_url);
+	}    
+	/**
+	 * 第三方登录回调并获取用户信息
+	 */
+	@RequestMapping(path = { "/user/user/weixin" }, method = { RequestMethod.GET })
+	public MappingJacksonValue weixin(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "code",required = true) String code
+			,@RequestParam(name = "state",required = true) String state
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		String access_token_url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxa8d92f54c4a0e3f6&secret=ff44fd61ef8774b6d9f51f324149ebb0&code="+code+"&grant_type=authorization_code";
+		//获取access_token
+		JSONObject json=getWeixinInfo(request,access_token_url);
+		if(json==null){
+			resultMap.put( "message", Prompt.get_access_token_is_null);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(!json.has("access_token")){
+			resultMap.put( "message", Prompt.get_access_token_failed);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		//获取微信用户信息
+		String access_token=null;
+		String openid=null;
+		if(json.has("access_token")) access_token=json.getString("access_token");
+		if(json.has("openid")) openid=json.getString("openid");
+		String user_info_url=" https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
+		json=getWeixinInfo(request,user_info_url);
+		if(json==null){
+			resultMap.put( "message", Prompt.get_access_token_is_null);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(!json.has("openid")){
+			resultMap.put( "message", Prompt.get_access_token_failed);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		resultMap.put("unionid", json.has("openid")?json.get("unionid"):"");
+		resultMap.put("nickname", json.has("nickname")?json.get("nickname"):"");
+		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
+		return (MappingJacksonValue) resultMap;
+	}
+	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
+	public JSONObject getWeixinInfo(HttpServletRequest request,
+			@RequestParam(name = "access_token_url",required = true) String access_token_url
+			)throws Exception {
+		CloseableHttpClient httpClient = null;  
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+    	HttpEntity entity =null;
+    	JSONObject json = null;
+    	try{
+	        try{
+	        	RequestConfig defaultRequestConfig = RequestConfig.custom()
+	        			  .setSocketTimeout(5000)
+	        			  .setConnectTimeout(5000)
+	        			  .setConnectionRequestTimeout(5000)
+	        			  .setStaleConnectionCheckEnabled(true)
+	        			  .build();
+	        	httpClient = HttpClients.custom()
+	        			.setDefaultRequestConfig(defaultRequestConfig)
+	        			.build();
+	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+        	    .build();
+	            HttpGet httpGet = new HttpGet(access_token_url);
+	            httpGet.setConfig(requestConfig);
+	            CloseableHttpResponse response = httpClient.execute(httpGet);  
+	            try {  
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						resultMap.put("status", response.getStatusLine().getStatusCode());
+						entity = response.getEntity();
+						String respJson = EntityUtils.toString(entity);
+						json = JSONObject.fromObject(respJson);
+						logger.info("json:"+respJson);
+					}
+	                return json;
+	            } finally {  
+	                response.close();  
+	            }  
+	        }finally{  
+	            httpClient.close();  
+	        }
+    	}catch(Exception  e){
+    		logger.info(e.getMessage());
+    		throw e;
+    	}
+	        
+	}
+    
     /**
 	 * 完善个人用户信息
 	 * @picId 个人或组织LOGOID
