@@ -261,7 +261,7 @@ public class UserController extends BaseControl {
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 						resultMap.put("status", response.getStatusLine().getStatusCode());
 						entity = response.getEntity();
-						String respJson = EntityUtils.toString(entity,"GBK");
+						String respJson = EntityUtils.toString(entity,"UTF-8");
 						json = JSONObject.fromObject(respJson);
 						logger.info("json:"+respJson);
 					}
