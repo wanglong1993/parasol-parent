@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -184,7 +185,7 @@ public class UserController extends BaseControl {
 	public void weixinentry(HttpServletRequest request,HttpServletResponse response
 			)throws Exception {
 		String state=request.getSession().getId();
-		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri=http://open.gintong.com&response_type=code&scope=snsapi_login&state="+state+"#wechat_redirect";
+		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri="+URLEncoder.encode("http://api.test.gintong.com/user/user/weixin", "utf-8") +"&response_type=code&scope=snsapi_login&state="+state+"#wechat_redirect";
 		userLoginRegisterService.setCache(state+"_state", state, 1 * 60 * 1);
 		response.sendRedirect(code_url);
 	}    
