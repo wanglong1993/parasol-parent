@@ -213,7 +213,7 @@ public class UserController extends BaseControl {
 		String openid=null;
 		if(json.has("access_token")) access_token=json.getString("access_token");
 		if(json.has("openid")) openid=json.getString("openid");
-		String user_info_url=" https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
+		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
 		json=getWeixinInfo(request,user_info_url);
 		if(json==null){
 			resultMap.put( "message", Prompt.get_access_token_is_null);
