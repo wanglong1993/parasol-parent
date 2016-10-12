@@ -183,7 +183,9 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/weixinentry" }, method = { RequestMethod.GET })
 	public void weixinentry(HttpServletRequest request,HttpServletResponse response
 			)throws Exception {
-		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri=http://open.gintong.com&response_type=code&scope=snsapi_login&state="+request.getSession().getId()+"#wechat_redirect";
+		String state=request.getSession().getId();
+		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri=http://open.gintong.com&response_type=code&scope=snsapi_login&state="+state+"#wechat_redirect";
+		userLoginRegisterService.setCache(state+"_state", state, 1 * 60 * 1);
 		response.sendRedirect(code_url);
 	}    
 	/**
@@ -225,9 +227,10 @@ public class UserController extends BaseControl {
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
-		resultMap.put("unionid", json.has("openid")?json.get("unionid"):"");
+		resultMap.put("unionid", json.has("unionid")?json.get("unionid"):"");
 		resultMap.put("nickname", json.has("nickname")?json.get("nickname"):"");
 		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
+		
 		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
@@ -258,7 +261,7 @@ public class UserController extends BaseControl {
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 						resultMap.put("status", response.getStatusLine().getStatusCode());
 						entity = response.getEntity();
-						String respJson = EntityUtils.toString(entity);
+						String respJson = EntityUtils.toString(entity,"GBK");
 						json = JSONObject.fromObject(respJson);
 						logger.info("json:"+respJson);
 					}
