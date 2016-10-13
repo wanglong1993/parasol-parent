@@ -250,10 +250,10 @@ public class UserController extends BaseControl {
 		nickname.setDomain(".gintong.com");
 		headimgurl.setDomain(".gintong.com");
 		sex.setDomain(".gintong.com");
-		unionid.setPath("/");
-		nickname.setPath("/");
-		headimgurl.setPath("/");
-		sex.setPath("/");
+//		unionid.setPath("/");
+//		nickname.setPath("/");
+//		headimgurl.setPath("/");
+//		sex.setPath("/");
 		response.sendRedirect("http://cloud.gintong.com/weixin/index.html");
 //		return new MappingJacksonValue(resultMap);
 	}
