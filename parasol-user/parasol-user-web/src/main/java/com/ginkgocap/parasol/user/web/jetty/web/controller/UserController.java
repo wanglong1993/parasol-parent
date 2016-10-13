@@ -246,10 +246,10 @@ public class UserController extends BaseControl {
 		response.addCookie(nickname);
 		response.addCookie(headimgurl);
 		response.addCookie(sex);
-		unionid.setDomain(".jintong.com");
-		nickname.setDomain(".jintong.com");
-		headimgurl.setDomain(".jintong.com");
-		sex.setDomain(".jintong.com");
+		unionid.setDomain(".gintong.com");
+		nickname.setDomain(".gintong.com");
+		headimgurl.setDomain(".gintong.com");
+		sex.setDomain(".gintong.com");
 		unionid.setPath("/");
 		nickname.setPath("/");
 		headimgurl.setPath("/");
