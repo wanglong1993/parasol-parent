@@ -197,7 +197,7 @@ public class UserController extends BaseControl {
 	 * 第三方登录回调并获取用户信息
 	 */
 	@RequestMapping(path = { "/user/user/weixin" }, method = { RequestMethod.GET })
-	public String weixin(HttpServletRequest request,HttpServletResponse response
+	public void weixin(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "code",required = true) String code
 			,@RequestParam(name = "state",required = true) String state
 			)throws Exception {
@@ -250,9 +250,8 @@ public class UserController extends BaseControl {
 		nickname.setPath("/");
 		headimgurl.setPath("/");
 		sex.setPath("/");
-//		response.sendRedirect("http://cloud.gintong.com/weixin/index.html");
+		response.sendRedirect("http://cloud.gintong.com/weixin/index.html");
 //		return new MappingJacksonValue(resultMap);
-		return "forward:http://cloud.gintong.com/weixin/index.html";
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
 	public JSONObject getWeixinInfo(
