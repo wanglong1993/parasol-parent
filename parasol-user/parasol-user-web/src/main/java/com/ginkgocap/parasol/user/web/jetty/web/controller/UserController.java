@@ -185,31 +185,34 @@ public class UserController extends BaseControl {
 	public void weixinentry(HttpServletRequest request,HttpServletResponse response
 			)throws Exception {
 		String state=request.getSession().getId();
+		System.out.println("sessionid===="+state);
 		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri="+URLEncoder.encode("http://api.test.gintong.com/user/user/weixin", "utf-8") +"&response_type=code&scope=snsapi_login&state="+state+"#wechat_redirect";
+		String url= getUrl(request);
 		userLoginRegisterService.setCache(state+"_state", state, 1 * 60 * 1);
+		userLoginRegisterService.setCache(state+"_url", url, 1 * 60 * 1);
 		response.sendRedirect(code_url);
 	}    
 	/**
 	 * 第三方登录回调并获取用户信息
 	 */
 	@RequestMapping(path = { "/user/user/weixin" }, method = { RequestMethod.GET })
-	public MappingJacksonValue weixin(HttpServletRequest request,HttpServletResponse response
+	public void weixin(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "code",required = true) String code
 			,@RequestParam(name = "state",required = true) String state
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String access_token_url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxa8d92f54c4a0e3f6&secret=ff44fd61ef8774b6d9f51f324149ebb0&code="+code+"&grant_type=authorization_code";
 		//获取access_token
-		JSONObject json=getWeixinInfo(request,access_token_url);
+		JSONObject json=getWeixinInfo(access_token_url);
 		if(json==null){
 			resultMap.put( "message", Prompt.get_access_token_is_null);
 			resultMap.put( "status", 0);
-			return new MappingJacksonValue(resultMap);
+//			return new MappingJacksonValue(resultMap);
 		}
 		if(!json.has("access_token")){
 			resultMap.put( "message", Prompt.get_access_token_failed);
 			resultMap.put( "status", 0);
-			return new MappingJacksonValue(resultMap);
+//			return new MappingJacksonValue(resultMap);
 		}
 		//获取微信用户信息
 		String access_token=null;
@@ -217,26 +220,27 @@ public class UserController extends BaseControl {
 		if(json.has("access_token")) access_token=json.getString("access_token");
 		if(json.has("openid")) openid=json.getString("openid");
 		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
-		json=getWeixinInfo(request,user_info_url);
+		json=getWeixinInfo(user_info_url);
 		if(json==null){
 			resultMap.put( "message", Prompt.get_access_token_is_null);
 			resultMap.put( "status", 0);
-			return new MappingJacksonValue(resultMap);
+//			return new MappingJacksonValue(resultMap);
 		}
 		if(!json.has("openid")){
 			resultMap.put( "message", Prompt.get_access_token_failed);
 			resultMap.put( "status", 0);
-			return new MappingJacksonValue(resultMap);
+//			return new MappingJacksonValue(resultMap);
 		}
 		resultMap.put("unionid", json.has("unionid")?json.get("unionid"):"");
 		resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
 		resultMap.put("sex", json.has("sex")?json.get("sex"):"");
 		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
-		
-		return new MappingJacksonValue(resultMap);
+		String url= getUrl(request);
+		response.sendRedirect(url);
+//		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
-	public JSONObject getWeixinInfo(HttpServletRequest request,
+	public JSONObject getWeixinInfo(
 			@RequestParam(name = "access_token_url",required = true) String access_token_url
 			)throws Exception {
 		CloseableHttpClient httpClient = null;  
@@ -280,7 +284,15 @@ public class UserController extends BaseControl {
     	}
 	        
 	}
-    
+	public String getUrl(HttpServletRequest request)throws Exception {
+		String url = "";
+		url = request.getScheme() +"://" + request.getServerName()+ ":" +request.getServerPort() + request.getServletPath();
+        if (request.getQueryString() != null){
+            url += "?" + request.getQueryString();
+        }
+        System.out.println("url====="+url);
+        return url;
+	}  
     /**
 	 * 完善个人用户信息
 	 * @picId 个人或组织LOGOID
