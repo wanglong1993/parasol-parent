@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -237,7 +238,15 @@ public class UserController extends BaseControl {
 		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
 		String url= getUrl(request);
 		System.out.println("sessionid===="+request.getSession().getId());
-		response.sendRedirect("http://localhost/weixin/index.html");
+		Cookie unionid= new Cookie("unionid",json.get("unionid").toString());
+		Cookie nickname= new Cookie("nickname",json.get("nickname").toString());
+		Cookie headimgurl= new Cookie("headimgurl",json.get("headimgurl").toString());
+		Cookie sex= new Cookie("sex",json.get("sex").toString());
+		response.addCookie(unionid);
+		response.addCookie(nickname);
+		response.addCookie(headimgurl);
+		response.addCookie(sex);
+		response.sendRedirect("http://cloud.gintong.com/weixin/index.html");
 //		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
