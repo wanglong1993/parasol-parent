@@ -187,7 +187,7 @@ public class UserController extends BaseControl {
 			)throws Exception {
 		String state=request.getSession().getId();
 		System.out.println("sessionid===="+state);
-		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri="+URLEncoder.encode("http://api.test.gintong.com/user/user/weixin", "utf-8") +"&response_type=code&scope=snsapi_login&state="+state+"#wechat_redirect";
+		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri="+URLEncoder.encode("http://jt.tangrammy.com/", "utf-8") +"&response_type=code&scope=snsapi_login&state="+state+"#wechat_redirect";
 		String url= getUrl(request);
 		userLoginRegisterService.setCache(state+"_state", state, 1 * 60 * 1);
 		userLoginRegisterService.setCache(state+"_url", url, 1 * 60 * 1);
@@ -197,7 +197,7 @@ public class UserController extends BaseControl {
 	 * 第三方登录回调并获取用户信息
 	 */
 	@RequestMapping(path = { "/user/user/weixin" }, method = { RequestMethod.GET })
-	public void weixin(HttpServletRequest request,HttpServletResponse response
+	public MappingJacksonValue weixin(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "code",required = true) String code
 			,@RequestParam(name = "state",required = true) String state
 			)throws Exception {
@@ -208,12 +208,12 @@ public class UserController extends BaseControl {
 		if(json==null){
 			resultMap.put( "message", Prompt.get_access_token_is_null);
 			resultMap.put( "status", 0);
-//			return new MappingJacksonValue(resultMap);
+			return new MappingJacksonValue(resultMap);
 		}
 		if(!json.has("access_token")){
 			resultMap.put( "message", Prompt.get_access_token_failed);
 			resultMap.put( "status", 0);
-//			return new MappingJacksonValue(resultMap);
+			return new MappingJacksonValue(resultMap);
 		}
 		//获取微信用户信息
 		String access_token=null;
@@ -225,12 +225,12 @@ public class UserController extends BaseControl {
 		if(json==null){
 			resultMap.put( "message", Prompt.get_access_token_is_null);
 			resultMap.put( "status", 0);
-//			return new MappingJacksonValue(resultMap);
+			return new MappingJacksonValue(resultMap);
 		}
 		if(!json.has("openid")){
 			resultMap.put( "message", Prompt.get_access_token_failed);
 			resultMap.put( "status", 0);
-//			return new MappingJacksonValue(resultMap);
+			return new MappingJacksonValue(resultMap);
 		}
 		resultMap.put("unionid", json.has("unionid")?json.get("unionid"):"");
 		resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
@@ -238,24 +238,24 @@ public class UserController extends BaseControl {
 		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
 		String url= getUrl(request);
 		System.out.println("sessionid===="+request.getSession().getId());
-		Cookie unionid= new Cookie("unionid",json.get("unionid").toString());
-		Cookie nickname= new Cookie("nickname",json.get("nickname").toString());
-		Cookie headimgurl= new Cookie("headimgurl",json.get("headimgurl").toString());
-		Cookie sex= new Cookie("sex",json.get("sex").toString());
-		response.addCookie(unionid);
-		response.addCookie(nickname);
-		response.addCookie(headimgurl);
-		response.addCookie(sex);
+//		Cookie unionid= new Cookie("unionid",json.get("unionid").toString());
+//		Cookie nickname= new Cookie("nickname",json.get("nickname").toString());
+//		Cookie headimgurl= new Cookie("headimgurl",json.get("headimgurl").toString());
+//		Cookie sex= new Cookie("sex",json.get("sex").toString());
+//		response.addCookie(unionid);
+//		response.addCookie(nickname);
+//		response.addCookie(headimgurl);
+//		response.addCookie(sex);
 //		unionid.setDomain(".gintong.com");
 //		nickname.setDomain(".gintong.com");
 //		headimgurl.setDomain(".gintong.com");
 //		sex.setDomain(".gintong.com");
-		unionid.setPath("/");
-		nickname.setPath("/");
-		headimgurl.setPath("/");
-		sex.setPath("/");
-		response.sendRedirect("http://cloud.gintong.com/weixin/index.html");
-//		return new MappingJacksonValue(resultMap);
+//		unionid.setPath("/");
+//		nickname.setPath("/");
+//		headimgurl.setPath("/");
+//		sex.setPath("/");
+//		response.sendRedirect("http://cloud.gintong.com/weixin/index.html");
+		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
 	public JSONObject getWeixinInfo(
