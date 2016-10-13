@@ -246,14 +246,14 @@ public class UserController extends BaseControl {
 		response.addCookie(nickname);
 		response.addCookie(headimgurl);
 		response.addCookie(sex);
-		unionid.setDomain(".gintong.com");
-		nickname.setDomain(".gintong.com");
-		headimgurl.setDomain(".gintong.com");
-		sex.setDomain(".gintong.com");
-//		unionid.setPath("/");
-//		nickname.setPath("/");
-//		headimgurl.setPath("/");
-//		sex.setPath("/");
+//		unionid.setDomain(".gintong.com");
+//		nickname.setDomain(".gintong.com");
+//		headimgurl.setDomain(".gintong.com");
+//		sex.setDomain(".gintong.com");
+		unionid.setPath("/");
+		nickname.setPath("/");
+		headimgurl.setPath("/");
+		sex.setPath("/");
 		response.sendRedirect("http://cloud.gintong.com/weixin/index.html");
 //		return new MappingJacksonValue(resultMap);
 	}
