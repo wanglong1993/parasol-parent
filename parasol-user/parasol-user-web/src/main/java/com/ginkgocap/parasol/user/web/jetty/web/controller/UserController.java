@@ -236,7 +236,8 @@ public class UserController extends BaseControl {
 		resultMap.put("sex", json.has("sex")?json.get("sex"):"");
 		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
 		String url= getUrl(request);
-		response.sendRedirect(url);
+		System.out.println("sessionid===="+request.getSession().getId());
+		response.sendRedirect("http://localhost/weixin/index.html");
 //		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
