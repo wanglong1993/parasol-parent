@@ -202,6 +202,13 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "state",required = true) String state
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		String access_token=null;
+		String openid=null;
+		String passport=null;
+		String password=null;
+		UserLoginRegister userLoginRegister=null;
+		Long appId =0l;
+		Long id=0l;
 		String access_token_url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxa8d92f54c4a0e3f6&secret=ff44fd61ef8774b6d9f51f324149ebb0&code="+code+"&grant_type=authorization_code";
 		//获取access_token
 		if(StringUtils.isEmpty(state)){
@@ -226,9 +233,6 @@ public class UserController extends BaseControl {
 			return new MappingJacksonValue(resultMap);
 		}
 		//获取微信用户信息
-		String access_token=null;
-		String openid=null;
-		String unionid=null;
 		if(json.has("access_token")) access_token=json.getString("access_token");
 		if(json.has("openid")) openid=json.getString("openid");
 		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
@@ -243,14 +247,31 @@ public class UserController extends BaseControl {
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
+		if(json.has("unionid")){
+			passport=json.getString("unionid");
+		}
+		userLoginRegister= new UserLoginRegister();
+		userLoginRegister.setPassport(passport);
+		if(userLoginRegisterService.passportIsExist(passport)){
+			String salt=userLoginRegisterService.setSalt();
+			password=userLoginRegisterService.setSha256Hash(salt, new String("123456"));
+			userLoginRegister.setSalt(salt);
+			userLoginRegister.setPassword(password);
+			userLoginRegister.setUsetType(new Byte("0"));
+			userLoginRegister.setIp(getIpAddr(request));
+			userLoginRegister.setSource(appId.toString());
+			userLoginRegister.setCtime(System.currentTimeMillis());
+			userLoginRegister.setUtime(System.currentTimeMillis());
+			userLoginRegister.setUserName(passport);
+			id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
+		}
+		MappingJacksonValue mjv=login(request,response,passport,"MTIzNDU2",null,null,null);
+		resultMap=(HashMap)mjv.getValue();
+		userLoginRegisterService.setCache(resultMap.get("unionid").toString(), resultMap, 60*60*24);
 		resultMap.put("unionid", json.has("unionid")?json.get("unionid"):"");
 		resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
 		resultMap.put("sex", json.has("sex")?json.get("sex"):"");
 		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
-		if(json.has("unionid")){
-			unionid=json.getString("unionid");
-		}
-		userLoginRegisterService.setCache(resultMap.get("unionid").toString(), resultMap, 60*60*24);
 		String url= getUrl(request);
 		System.out.println("sessionid===="+request.getSession().getId());
 		return new MappingJacksonValue(resultMap);
@@ -3553,5 +3574,11 @@ public class UserController extends BaseControl {
 			ip = request.getRemoteAddr();
 		}
 		return ip;
+	}
+	public static void main(String[] args) {
+		byte[] bt1 = Base64.encode(new String("12345678").getBytes());
+		byte[] bt = Base64.decode(bt1);
+		
+		System.out.println();
 	}
 }
