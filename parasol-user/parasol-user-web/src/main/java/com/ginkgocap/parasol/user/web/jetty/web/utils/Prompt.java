@@ -35,6 +35,9 @@ public final class Prompt {
 	public static final  String userId_is_not_exist_in_UserBasic="用户id在用户基本信息中不存在";
 	public static final  String incorrect_password="密码不正确";
 	public static final  String get_access_token_is_null="获取access_token为空";
+	public static final  String weixin_userinfo_is_null="获微信用户信息为空";
+	public static final  String weixin_userinfo_is_error="获微信用户信息出错";
+	public static final  String weixin_login_is_error="微信注册用户登录出错";
 	public static final  String get_access_token_failed="获取access_token失败";
 	public static final  String invild_code="code无效或者该code已经使用过";
 	public static final  String mobile_phone_number_is_not_correct="手机格式不正确";
