@@ -241,8 +241,8 @@ public class UserController extends BaseControl {
 			passport=json.getString("unionid");
 		}
 		userLoginRegister= new UserLoginRegister();
-		if(userLoginRegisterService.passportIsExist(passport)){
-			userLoginRegister.setPassport(passport);
+		if(userLoginRegisterService.passportIsExist(passport+"@weixin.com")){
+			userLoginRegister.setPassport(passport+"@weixin.com");
 			String salt=userLoginRegisterService.setSalt();
 			password=userLoginRegisterService.setSha256Hash(salt, new String("123456"));
 			userLoginRegister.setSalt(salt);
