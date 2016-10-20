@@ -253,7 +253,7 @@ public class UserController extends BaseControl {
 			userLoginRegister.setSource(appId.toString());
 			userLoginRegister.setCtime(System.currentTimeMillis());
 			userLoginRegister.setUtime(System.currentTimeMillis());
-			userLoginRegister.setUserName(passport);
+			userLoginRegister.setUserName("");
 			id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 		}
 		MappingJacksonValue mjv=login(request,response,passport,"MTIzNDU2",null,null,null);
