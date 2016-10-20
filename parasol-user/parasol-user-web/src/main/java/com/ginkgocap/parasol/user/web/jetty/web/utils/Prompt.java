@@ -81,6 +81,8 @@ public final class Prompt {
 	public static final  String findpwd="找回密码"; 
 	public static final  String bindEmail="邮箱绑定"; 
 	public static final  String changeOldTitle="更改邮箱-验证旧邮箱"; 
+	public static final  String state_is_null="验证码state为空"; 
+	public static final  String state_is_expired_or_not_exists="验证码state已经过期或者不存在"; 
 	
 	
 
