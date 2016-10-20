@@ -221,18 +221,8 @@ public class UserController extends BaseControl {
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
-		JSONObject json=getWeixinInfo(access_token_url);
-		if(json==null){
-			resultMap.put( "message", Prompt.get_access_token_is_null);
-			resultMap.put( "status", 0);
-			return new MappingJacksonValue(resultMap);
-		}
-		if(json.has("errcode")){
-			resultMap.put( "message", Prompt.invild_code);
-			resultMap.put( "status", 0);
-			return new MappingJacksonValue(resultMap);
-		}
 		//获取微信用户信息
+		JSONObject json=getWeixinInfo(access_token_url);
 		if(json.has("access_token")) access_token=json.getString("access_token");
 		if(json.has("openid")) openid=json.getString("openid");
 		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
@@ -251,8 +241,8 @@ public class UserController extends BaseControl {
 			passport=json.getString("unionid");
 		}
 		userLoginRegister= new UserLoginRegister();
-		userLoginRegister.setPassport(passport);
 		if(userLoginRegisterService.passportIsExist(passport)){
+			userLoginRegister.setPassport(passport);
 			String salt=userLoginRegisterService.setSalt();
 			password=userLoginRegisterService.setSha256Hash(salt, new String("123456"));
 			userLoginRegister.setSalt(salt);
@@ -3574,11 +3564,5 @@ public class UserController extends BaseControl {
 			ip = request.getRemoteAddr();
 		}
 		return ip;
-	}
-	public static void main(String[] args) {
-		byte[] bt1 = Base64.encode(new String("12345678").getBytes());
-		byte[] bt = Base64.decode(bt1);
-		
-		System.out.println();
 	}
 }
