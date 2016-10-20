@@ -207,10 +207,11 @@ public class UserController extends BaseControl {
 		String passport=null;
 		String password=null;
 		UserLoginRegister userLoginRegister=null;
+		JSONObject json=null;
 		Long appId =0l;
 		Long id=0l;
+		//检验状态state
 		String access_token_url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxa8d92f54c4a0e3f6&secret=ff44fd61ef8774b6d9f51f324149ebb0&code="+code+"&grant_type=authorization_code";
-		//获取access_token
 		if(StringUtils.isEmpty(state)){
 			resultMap.put( "message", Prompt.state_is_null);
 			resultMap.put( "status", 0);
@@ -221,14 +222,10 @@ public class UserController extends BaseControl {
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
-		//获取微信用户信息
-		JSONObject json=getWeixinInfo(access_token_url);
-		if(json.has("access_token")) access_token=json.getString("access_token");
-		if(json.has("openid")) openid=json.getString("openid");
-		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
-		json=getWeixinInfo(user_info_url);
+		//获取access_token
+		json=getWeixinInfo(access_token_url);
 		if(json==null){
-			resultMap.put( "message", Prompt.weixin_userinfo_is_null);
+			resultMap.put( "message", Prompt.get_access_token_is_null);
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
@@ -237,9 +234,22 @@ public class UserController extends BaseControl {
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
-		if(json.has("unionid")){
-			passport=json.getString("unionid");
+		if(json.has("access_token")) access_token=json.getString("access_token");
+		if(json.has("openid")) openid=json.getString("openid");
+		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
+		//获取微信用户信息
+		json=getWeixinInfo(user_info_url);
+		if(json==null){
+			resultMap.put( "message", Prompt.weixin_userinfo_is_null);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
 		}
+		if(!json.has("unionid")){
+			resultMap.put( "message", Prompt.weixin_userinfo_is_error);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(json.has("unionid"))passport=json.getString("unionid");
 		//注册
 		passport=passport+"@weixin.com";
 		if(!userLoginRegisterService.passportIsExist(passport)){
