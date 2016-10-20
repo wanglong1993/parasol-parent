@@ -207,10 +207,12 @@ public class UserController extends BaseControl {
 		if(StringUtils.isEmpty(state)){
 			resultMap.put( "message", Prompt.state_is_null);
 			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
 		}
 		if(ObjectUtils.isEmpty(userLoginRegisterService.getCache(state+"_state"))){
 			resultMap.put( "message", Prompt.state_is_expired_or_not_exists);
 			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
 		}
 		JSONObject json=getWeixinInfo(access_token_url);
 		if(json==null){
@@ -218,14 +220,15 @@ public class UserController extends BaseControl {
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
-		if(!json.has("access_token")){
-			resultMap.put( "message", Prompt.get_access_token_failed);
+		if(json.has("errcode")){
+			resultMap.put( "message", Prompt.invild_code);
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
 		//获取微信用户信息
 		String access_token=null;
 		String openid=null;
+		String unionid=null;
 		if(json.has("access_token")) access_token=json.getString("access_token");
 		if(json.has("openid")) openid=json.getString("openid");
 		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
@@ -244,25 +247,12 @@ public class UserController extends BaseControl {
 		resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
 		resultMap.put("sex", json.has("sex")?json.get("sex"):"");
 		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
+		if(json.has("unionid")){
+			unionid=json.getString("unionid");
+		}
+		userLoginRegisterService.setCache(resultMap.get("unionid").toString(), resultMap, 60*60*24);
 		String url= getUrl(request);
 		System.out.println("sessionid===="+request.getSession().getId());
-//		Cookie unionid= new Cookie("unionid",json.get("unionid").toString());
-//		Cookie nickname= new Cookie("nickname",json.get("nickname").toString());
-//		Cookie headimgurl= new Cookie("headimgurl",json.get("headimgurl").toString());
-//		Cookie sex= new Cookie("sex",json.get("sex").toString());
-//		response.addCookie(unionid);
-//		response.addCookie(nickname);
-//		response.addCookie(headimgurl);
-//		response.addCookie(sex);
-//		unionid.setDomain(".gintong.com");
-//		nickname.setDomain(".gintong.com");
-//		headimgurl.setDomain(".gintong.com");
-//		sex.setDomain(".gintong.com");
-//		unionid.setPath("/");
-//		nickname.setPath("/");
-//		headimgurl.setPath("/");
-//		sex.setPath("/");
-//		response.sendRedirect("http://cloud.gintong.com/weixin/index.html");
 		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
