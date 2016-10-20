@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 public class ParasolUserApplication{
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception { 
 		
 		//SpringApplication.run(SampleJettyApplication.class, args);
 		SpringApplication.run(new Object[]{"classpath:/applicationContext.xml"}, args);
