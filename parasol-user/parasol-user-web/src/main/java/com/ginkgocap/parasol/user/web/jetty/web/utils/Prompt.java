@@ -36,6 +36,7 @@ public final class Prompt {
 	public static final  String incorrect_password="密码不正确";
 	public static final  String get_access_token_is_null="获取access_token为空";
 	public static final  String get_access_token_failed="获取access_token失败";
+	public static final  String invild_code="code无效或者该code已经使用过";
 	public static final  String mobile_phone_number_is_not_correct="手机格式不正确";
 	public static final  String email_is_not_exists_in_UserLogniRegister="邮箱地址在用户登录信息中不存在";
 	public static final  String email_is_not_exists_in_UserBasic="邮箱地址在用户基本信息中不存在";
