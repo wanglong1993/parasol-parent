@@ -228,21 +228,22 @@ public class UserController extends BaseControl {
 		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
 		json=getWeixinInfo(user_info_url);
 		if(json==null){
-			resultMap.put( "message", Prompt.get_access_token_is_null);
+			resultMap.put( "message", Prompt.weixin_userinfo_is_null);
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
-		if(!json.has("openid")){
-			resultMap.put( "message", Prompt.get_access_token_failed);
+		if(json.has("errormsg")){
+			resultMap.put( "message", Prompt.invild_code);
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
 		if(json.has("unionid")){
 			passport=json.getString("unionid");
 		}
-		userLoginRegister= new UserLoginRegister();
+		//注册
 		passport=passport+"@weixin.com";
 		if(!userLoginRegisterService.passportIsExist(passport)){
+			userLoginRegister= new UserLoginRegister();
 			userLoginRegister.setPassport(passport);
 			String salt=userLoginRegisterService.setSalt();
 			password=userLoginRegisterService.setSha256Hash(salt, new String("123456"));
@@ -256,15 +257,24 @@ public class UserController extends BaseControl {
 			userLoginRegister.setUserName("");
 			id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
 		}
+		//登录
 		MappingJacksonValue mjv=login(request,response,passport,"MTIzNDU2",null,null,null);
+		if(ObjectUtils.isEmpty(mjv)){
+			resultMap.put( "message", Prompt.weixin_login_is_error);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
 		resultMap=(HashMap)mjv.getValue();
-//		userLoginRegisterService.setCache(resultMap.get("unionid").toString(), resultMap, 60*60*24);
-		resultMap.put("unionid", json.has("unionid")?json.get("unionid"):"");
-		resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
-		resultMap.put("sex", json.has("sex")?json.get("sex"):"");
-		resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
-		String url= getUrl(request);
-		System.out.println("sessionid===="+request.getSession().getId());
+		if(!resultMap.containsKey("access_token")){
+			resultMap.put( "message", Prompt.weixin_login_is_error);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(resultMap.containsKey("access_token")){
+			resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
+			resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
+		}
+		userLoginRegisterService.setCache(id.toString(), resultMap, 60*60*24);
 		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
