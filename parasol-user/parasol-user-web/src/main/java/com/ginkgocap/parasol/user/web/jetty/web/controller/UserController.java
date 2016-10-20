@@ -257,7 +257,7 @@ public class UserController extends BaseControl {
 		}
 		MappingJacksonValue mjv=login(request,response,passport,"MTIzNDU2",null,null,null);
 		resultMap=(HashMap)mjv.getValue();
-		userLoginRegisterService.setCache(resultMap.get("unionid").toString(), resultMap, 60*60*24);
+//		userLoginRegisterService.setCache(resultMap.get("unionid").toString(), resultMap, 60*60*24);
 		resultMap.put("unionid", json.has("unionid")?json.get("unionid"):"");
 		resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
 		resultMap.put("sex", json.has("sex")?json.get("sex"):"");
