@@ -204,6 +204,14 @@ public class UserController extends BaseControl {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String access_token_url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxa8d92f54c4a0e3f6&secret=ff44fd61ef8774b6d9f51f324149ebb0&code="+code+"&grant_type=authorization_code";
 		//获取access_token
+		if(StringUtils.isEmpty(state)){
+			resultMap.put( "message", Prompt.state_is_null);
+			resultMap.put( "status", 0);
+		}
+		if(ObjectUtils.isEmpty(userLoginRegisterService.getCache(state+"_state"))){
+			resultMap.put( "message", Prompt.state_is_expired_or_not_exists);
+			resultMap.put( "status", 0);
+		}
 		JSONObject json=getWeixinInfo(access_token_url);
 		if(json==null){
 			resultMap.put( "message", Prompt.get_access_token_is_null);
