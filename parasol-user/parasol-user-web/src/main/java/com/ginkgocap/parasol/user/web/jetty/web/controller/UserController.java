@@ -234,6 +234,11 @@ public class UserController extends BaseControl {
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
+		if(!json.has("access_token")){
+			resultMap.put( "message", Prompt.access_token_inviild);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
 		if(json.has("access_token")) access_token=json.getString("access_token");
 		if(json.has("openid")) openid=json.getString("openid");
 		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
