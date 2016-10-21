@@ -238,7 +238,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	public void setGid(String gid) {
 		this.gid = gid;
 	}
-	@Column(name = "orgId")
+	@Column(name = "orgId",nullable = true)
 	public long getOrgId() {
 		return orgId;
 	}
