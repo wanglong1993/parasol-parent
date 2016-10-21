@@ -389,7 +389,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			boolean bl=false;
 			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
-			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4 && type!=5 && type!=6 && type!=7) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
+			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4 && type!=5 && type!=6 && type!=7 && type!=8) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
 			if(type==0) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-code-emai.ftl");
 			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerCoopertTitle, null, map, "reg-activate-emai-coopert.ftl");
 			if(type==2) bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
