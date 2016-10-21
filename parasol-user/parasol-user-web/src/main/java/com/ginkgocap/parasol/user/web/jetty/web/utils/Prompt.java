@@ -40,7 +40,7 @@ public final class Prompt {
 	public static final  String weixin_login_is_error="微信注册用户登录出错";
 	public static final  String get_access_token_failed="获取access_token失败";
 	public static final  String invild_code="code无效或者该code已经使用过";
-	public static final  String access_token_inviild="access_token未获取到";
+	public static final  String access_token_inviild="微信access_token未获取到";
 	public static final  String mobile_phone_number_is_not_correct="手机格式不正确";
 	public static final  String email_is_not_exists_in_UserLogniRegister="邮箱地址在用户登录信息中不存在";
 	public static final  String email_is_not_exists_in_UserBasic="邮箱地址在用户基本信息中不存在";
@@ -84,6 +84,7 @@ public final class Prompt {
 	public static final  String appId_is_empty="appId不能为空！"; 
 	public static final  String gId_length_error="金桐号长度大于5且小于50"; 
 	public static final  String findpwd="找回密码"; 
+	public static final  String register="注册金桐"; 
 	public static final  String bindEmail="邮箱绑定"; 
 	public static final  String changeOldTitle="更改邮箱-验证旧邮箱"; 
 	public static final  String state_is_null="验证码state为空"; 
