@@ -195,7 +195,7 @@ public class UserController extends BaseControl {
 	/**
 	 * 第三方登录回调并获取用户信息
 	 */
-	@RequestMapping(path = { "/user/user/weixin" }, method = { RequestMethod.GET })
+	@RequestMapping(path = { "/user/user/weixin" }, method = { RequestMethod.POST })
 	public MappingJacksonValue weixin(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "code",required = true) String code
 			,@RequestParam(name = "state",required = true) String state
