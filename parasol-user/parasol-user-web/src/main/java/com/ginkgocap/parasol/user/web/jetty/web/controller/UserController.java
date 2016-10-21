@@ -229,7 +229,7 @@ public class UserController extends BaseControl {
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
 		}
-		if(json.has("errormsg")){
+		if(json.has("errmsg")){
 			resultMap.put( "message", Prompt.invild_code);
 			resultMap.put( "status", 0);
 			return new MappingJacksonValue(resultMap);
