@@ -187,10 +187,9 @@ public class UserController extends BaseControl {
 			)throws Exception {
 		String state=request.getSession().getId();
 		System.out.println("sessionid===="+state);
-		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri="+URLEncoder.encode("http://jt.tangrammy.com/", "utf-8") +"&response_type=code&scope=snsapi_login&state="+state+"#wechat_redirect";
+		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri="+URLEncoder.encode("http://open.gintong.com/", "utf-8") +"&response_type=code&scope=snsapi_login&state="+state+"#wechat_redirect";
 		String url= getUrl(request);
 		userLoginRegisterService.setCache(state+"_state", state, 2 * 60 * 1);
-		userLoginRegisterService.setCache(state+"_url", url, 1 * 60 * 1);
 		response.sendRedirect(code_url);
 	}    
 	/**
@@ -289,7 +288,6 @@ public class UserController extends BaseControl {
 			resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
 			resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
 		}
-		userLoginRegisterService.setCache(id.toString(), resultMap, 60*60*24);
 		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
