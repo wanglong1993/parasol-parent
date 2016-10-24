@@ -1036,10 +1036,10 @@ public class UserController extends BaseControl {
 			resultMap.put("userLoginRegister", userLoginRegister);
 			resultMap.put("status",1);
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,passport,ctime,utime,status,ip");
-//			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserLoginRegister.class.getName(), 
-//					SimpleBeanPropertyFilter.filterOutAllExcept("id")));
-			mappingJacksonValue.setFilters(filterProvider);
+//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,passport,ctime,utime,status,ip");
+			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserLoginRegister.class.getName(), 
+					SimpleBeanPropertyFilter.filterOutAllExcept("id,passport,ctime,utime,status,ip")));
+//			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		}catch (Exception e ){
 			logger.info("获取用户资料失败:"+userId);
