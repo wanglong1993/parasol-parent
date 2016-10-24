@@ -79,6 +79,14 @@ public class UserLoginRegister implements java.io.Serializable {
 	 * 用户绑定组织ID.
 	 */
 	private long orgId;
+	/**
+	 * 用户角色.0.普通用户，1.服务商
+	 */
+	private Byte userRole;
+	/**
+	 * 用户状态.0.正常，1.无效
+	 */
+	private Byte status;
 
 	public UserLoginRegister() {
 	}
@@ -245,6 +253,22 @@ public class UserLoginRegister implements java.io.Serializable {
 
 	public void setOrgId(long orgId) {
 		this.orgId = orgId;
+	}
+
+	public Byte getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(Byte userRole) {
+		this.userRole = userRole;
+	}
+
+	public Byte getStatus() {
+		return status;
+	}
+
+	public void setStatus(Byte status) {
+		this.status = status;
 	}
 
 }
