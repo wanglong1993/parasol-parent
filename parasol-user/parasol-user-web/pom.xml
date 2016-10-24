@@ -170,11 +170,11 @@
 		</dependency>
 
 		<!-- business -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-user-api</artifactId>
