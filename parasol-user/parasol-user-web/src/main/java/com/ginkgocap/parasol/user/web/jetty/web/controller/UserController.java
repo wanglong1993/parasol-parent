@@ -1038,7 +1038,7 @@ public class UserController extends BaseControl {
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 //			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
 			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserLoginRegister.class.getName(), 
-					SimpleBeanPropertyFilter.filterOutAllExcept("password","userName","gid","orgId","userType","ip")));
+					SimpleBeanPropertyFilter.filterOutAllExcept("id","passport","ctime","utime","status","ip")));
 			return mappingJacksonValue;
 		}catch (Exception e ){
 			logger.info("获取用户资料失败:"+userId);
