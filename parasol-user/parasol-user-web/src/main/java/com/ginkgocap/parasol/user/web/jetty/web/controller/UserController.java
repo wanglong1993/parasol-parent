@@ -1036,7 +1036,7 @@ public class UserController extends BaseControl {
 			resultMap.put("userLoginRegister", userLoginRegister);
 			resultMap.put("status",1);
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,passport,ctime,utime,status,ip");
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("passport");
 //			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserLoginRegister.class.getName(), 
 //					SimpleBeanPropertyFilter.filterOutAllExcept("id")));
 			mappingJacksonValue.setFilters(filterProvider);
