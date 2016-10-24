@@ -11,9 +11,12 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * 用户注册登录表
  */
+@JsonFilter("com.ginkgocap.parasol.user.model.UserLoginRegister")
 @Entity
 @Table(name = "tb_user_login_register", catalog = "parasol_user", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "passport"),
