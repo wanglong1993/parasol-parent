@@ -1036,10 +1036,10 @@ public class UserController extends BaseControl {
 			resultMap.put("userLoginRegister", userLoginRegister);
 			resultMap.put("status",1);
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
-//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,passport,ctime,utime,status,ip");
-			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserLoginRegister.class.getName(), 
-					SimpleBeanPropertyFilter.filterOutAllExcept("id,passport,ctime,utime,status,ip")));
-//			mappingJacksonValue.setFilters(filterProvider);
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(new String[]{"id","passport","ctime","utime","status","ip"});
+//			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserLoginRegister.class.getName(), 
+//					SimpleBeanPropertyFilter.filterOutAllExcept("id,passport,ctime,utime,status,ip")));
+			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		}catch (Exception e ){
 			logger.info("获取用户资料失败:"+userId);
@@ -1054,10 +1054,11 @@ public class UserController extends BaseControl {
 	 * @param fileds
 	 * @return
 	 */
-	private SimpleFilterProvider builderSimpleFilterProvider(String fileds) {
+	private SimpleFilterProvider builderSimpleFilterProvider(String[] fileds) {
 		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
 		// 请求指定字段
-		String[] filedNames = StringUtils.split(fileds, ",");
+//		String[] filedNames = StringUtils.split(fileds, ",");
+		String[] filedNames =fileds;
 		Set<String> filter = new HashSet<String>();
 		if (filedNames != null && filedNames.length > 0) {
 			for (int i = 0; i < filedNames.length; i++) {
