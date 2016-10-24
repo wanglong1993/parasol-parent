@@ -89,7 +89,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	/**
 	 * 用户状态.0.正常，1.无效
 	 */
-	private Byte status;
+	private Byte statu;
 
 	public UserLoginRegister() {
 	}
@@ -257,7 +257,7 @@ public class UserLoginRegister implements java.io.Serializable {
 	public void setOrgId(long orgId) {
 		this.orgId = orgId;
 	}
-
+	@Column(name = "user_role")
 	public Byte getUserRole() {
 		return userRole;
 	}
@@ -265,13 +265,13 @@ public class UserLoginRegister implements java.io.Serializable {
 	public void setUserRole(Byte userRole) {
 		this.userRole = userRole;
 	}
-
-	public Byte getStatus() {
-		return status;
+	@Column(name = "statu")
+	public Byte getStatu() {
+		return statu;
 	}
 
-	public void setStatus(Byte status) {
-		this.status = status;
+	public void setStatus(Byte statu) {
+		this.statu = statu;
 	}
 
 }
