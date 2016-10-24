@@ -1036,9 +1036,10 @@ public class UserController extends BaseControl {
 			resultMap.put("userLoginRegister", userLoginRegister);
 			resultMap.put("status",1);
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
-//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,tagName");
-			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserLoginRegister.class.getName(), 
-					SimpleBeanPropertyFilter.filterOutAllExcept("id")));
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider("id,passport,ctime,utime,status,ip");
+//			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserLoginRegister.class.getName(), 
+//					SimpleBeanPropertyFilter.filterOutAllExcept("id")));
+			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		}catch (Exception e ){
 			logger.info("获取用户资料失败:"+userId);
@@ -1067,14 +1068,12 @@ public class UserController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // id',
-			filter.add("sourceId"); // 资源ID
-			filter.add("sourceType"); // 资源类型
-			filter.add("tagName"); // 标签名称
+			filter.add("passport"); 
+			filter.add("ctime"); 
+			filter.add("status"); 
 		}
 
-		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
-		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("id","directoryId","sourceTitle","sourceUrl"));
-		filterProvider.addFilter(Associate.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("id","assocTitle"));
+		filterProvider.addFilter(UserLoginRegister.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}	
 	/**
