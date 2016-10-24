@@ -90,6 +90,10 @@ public class UserLoginRegister implements java.io.Serializable {
 	 * 用户状态.0.正常，1.无效
 	 */
 	private Byte statu;
+	/**
+	 * 服务商审核标识 1.审核通过；2.审不通过；0.待审核
+	 */
+	private Byte auth;
 
 	public UserLoginRegister() {
 	}
@@ -270,8 +274,16 @@ public class UserLoginRegister implements java.io.Serializable {
 		return statu;
 	}
 
-	public void setStatus(Byte statu) {
+	public void setStatu(Byte statu) {
 		this.statu = statu;
+	}
+	@Column(name = "auth")
+	public Byte getAuth() {
+		return auth;
+	}
+
+	public void setAuth(Byte auth) {
+		this.auth = auth;
 	}
 
 }
