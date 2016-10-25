@@ -1047,6 +1047,55 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}	
+	/**
+	 * 获取用户列表
+	 * 
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserList" }, method = { RequestMethod.POST})
+	public MappingJacksonValue getUserList(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "statu",required = false) int statu
+			,@RequestParam(name = "auth",required = false) int auth
+			,@RequestParam(name = "passport",required = false) String passport
+			,@RequestParam(name = "from",required = false) long from
+			,@RequestParam(name = "to",required = false) long to
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserLoginRegister> list = null;
+		Long userId=null;
+		Long appId =0l;
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+//			userId = LoginUserContextHolder.getUserId();
+//			if(userId==null){
+//				resultMap.put("message", Prompt.userId_is_null_or_empty);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			appId = LoginUserContextHolder.getAppKey();
+//			if(ObjectUtils.isEmpty(appId)){
+//				resultMap.put( "message", Prompt.appId_is_empty);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}			
+			list=userLoginRegisterService.getUserList(statu, auth, passport, from, to);
+			if(list==null){
+				resultMap.put("message", Prompt.passport_is_not_exists);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			resultMap.put("userlist", list);
+			resultMap.put("status",1);
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(new String[]{"id","passport","email","mobile","ctime","utime","statu","auth","ip"});
+			mappingJacksonValue.setFilters(filterProvider);
+			return mappingJacksonValue;
+		}catch (Exception e ){
+			logger.info("获取用户资料失败:"+userId);
+			logger.info(e.getStackTrace());
+			throw e;
+		}
+	}	
 	
 	/**
 	 * 指定显示那些字段
