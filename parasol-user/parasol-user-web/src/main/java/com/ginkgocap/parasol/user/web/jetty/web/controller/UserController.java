@@ -288,6 +288,8 @@ public class UserController extends BaseControl {
 			resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
 			resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
 		}
+		//设置缓存用户信息 30分钟过期
+		userLoginRegisterService.setCache(resultMap.get("access_token").toString(), userLoginRegisterService.getUserLoginRegister(id), 30*60*1);
 		return new MappingJacksonValue(resultMap);
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
@@ -2480,6 +2482,8 @@ public class UserController extends BaseControl {
 			resultMap.put("expires_in", json.has("expires_in")?json.get("expires_in"):"");
 			resultMap.put("scope", json.has("scope")?json.get("scope"):"");
 			resultMap.put("status",1);
+			//设置缓存用户信息 30分钟过期
+			userLoginRegisterService.setCache(resultMap.get("access_token").toString(), userLoginRegister, 30*60*1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("登录失败:"+passport);
