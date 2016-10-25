@@ -509,8 +509,8 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
 			ids =getIds(UserLoginRegister_List_By_P,start, count, new Object[]{passport});
 			}
-			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>=0 || to>=0)){
-			ids =getIds(UserLoginRegister_List_By_C,start, count, new Object[]{passport});
+			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
+			ids =getIds(UserLoginRegister_List_By_C,start, count, new Object[]{from,to});
 			}
 			if(ids==null || ids.size()==0 )return null;
 			list=getEntityByIds(ids);
