@@ -478,6 +478,28 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && from>=0 && to>=0)
 			ids =getIds(UserLoginRegister_List_By_Sapc, new Object[]{statu,auth,passport,from,to});
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0))
+			ids =getIds(UserLoginRegister_List_By_Sap, new Object[]{statu,auth,passport});
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from>=0 || to>=0))
+			ids =getIds(UserLoginRegister_List_By_Sac, new Object[]{statu,auth,from,to});
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from>=0 || to>=0))
+			ids =getIds(UserLoginRegister_List_By_Spc, new Object[]{statu,passport,from,to});
+			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from>=0 || to>=0))
+			ids =getIds(UserLoginRegister_List_By_Apc, new Object[]{auth,passport,from,to});
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0))
+			ids =getIds(UserLoginRegister_List_By_Sp, new Object[]{statu,passport});
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0))
+			ids =getIds(UserLoginRegister_List_By_Sa, new Object[]{statu,auth});
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>=0 || to>=0))
+			ids =getIds(UserLoginRegister_List_By_Sc, new Object[]{statu,from,to});
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0))
+			ids =getIds(UserLoginRegister_List_By_S, new Object[]{statu});
+			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0))
+			ids =getIds(UserLoginRegister_List_By_A, new Object[]{auth});
+			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0))
+			ids =getIds(UserLoginRegister_List_By_P, new Object[]{passport});
+			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>=0 || to>=0))
+			ids =getIds(UserLoginRegister_List_By_C, new Object[]{passport});
 			if(ids==null || ids.size()==0 )return null;
 			list=getEntityByIds(ids);
 			return list;
@@ -497,6 +519,6 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private static final String UserLoginRegister_List_By_Sc = "UserLoginRegister_List_By_Sc"; 
 	private static final String UserLoginRegister_List_By_S = "UserLoginRegister_List_By_S"; 
 	private static final String UserLoginRegister_List_By_A = "UserLoginRegister_List_By_A"; 
-	private static final String UserLoginRegister_List_By_p = "UserLoginRegister_List_By_p"; 
-	private static final String UserLoginRegister_List_By_c = "UserLoginRegister_List_By_c"; 
+	private static final String UserLoginRegister_List_By_P = "UserLoginRegister_List_By_P"; 
+	private static final String UserLoginRegister_List_By_C = "UserLoginRegister_List_By_C"; 
 }
