@@ -37,7 +37,7 @@
                  sqlType="hsql" keyProperty="userName" valueProperty="id"  update="true"/>
          <!-- 根据状态获，审核状态，或者passport,及注册时间取用户列表 --> 
 		  <list name="UserLoginRegister_List_By_Sapc"
-                 sqlitem="select id from tb_user_login_register where statu =? and auth=? and passport=? and ctime>? and ctime <? order by utime desc"
+                 sqlitem="select id from tb_user_login_register where statu =? and auth=? and passport=?  order by utime desc"
                  sqlType="hsql" keyProperty="statu,auth,passport,ctime,ctime" valueProperty="id"  update="true"/>
                                                                   
 		</object>
