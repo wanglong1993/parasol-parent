@@ -66,10 +66,10 @@
           <list name="UserLoginRegister_List_By_A"
                  sqlitem="select id from tb_user_login_register where auth =? order by ctime desc"
                  sqlType="hsql" keyProperty="auth" valueProperty="id"  update="true"/>                   
-          <list name="UserLoginRegister_List_By_p"
+          <list name="UserLoginRegister_List_By_P"
                  sqlitem="select id from tb_user_login_register where passport =? order by ctime desc"
                  sqlType="hsql" keyProperty="passport" valueProperty="id"  update="true"/>                   
-          <list name="UserLoginRegister_List_By_c"
+          <list name="UserLoginRegister_List_By_C"
                  sqlitem="select id from tb_user_login_register where ctime between ? and ? order by ctime desc"
                  sqlType="hsql" keyProperty="ctime,ctime" valueProperty="id"  update="true"/>                   
                                                                   
