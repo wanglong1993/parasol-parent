@@ -476,39 +476,51 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		List<UserLoginRegister> list =null;
 		List<Long> ids =null;
 		try {
+			//根据用户状态，审核状态，通行证，起止时间查
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && from>0 && to>0){
 			ids =getIds(UserLoginRegister_List_By_Sapc, start, count,new Object[]{statu,auth,passport,from,to});
 			}
+			//根据用户状态，审核状态，通行证查
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
 			ids =getIds(UserLoginRegister_List_By_Sap,start, count, new Object[]{statu,auth,passport});
 			}
+			//根据用户状态，审核状态，起止时间查
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
 			ids =getIds(UserLoginRegister_List_By_Sac,start, count, new Object[]{statu,auth,from,to});
 			}
+			//根据用户状态，通行证，起止时间查
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from>0 || to>0)){
 			ids =getIds(UserLoginRegister_List_By_Spc,start, count, new Object[]{statu,passport,from,to});
 			}
+			//根据审核状态，通行证，起止时间查
 			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from>0 || to>0)){
 			ids =getIds(UserLoginRegister_List_By_Apc,start, count, new Object[]{auth,passport,from,to});
 			}
+			//根据用户状态，审核状态查
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
 			ids =getIds(UserLoginRegister_List_By_Sp,start, count, new Object[]{statu,passport});
 			}
+			//根据用户状态，审核状态查
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
 			ids =getIds(UserLoginRegister_List_By_Sa,start, count, new Object[]{statu,auth});
 			}
+			//根据用户状态，起止时间查
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
 			ids =getIds(UserLoginRegister_List_By_Sc,start, count, new Object[]{statu,from,to});
 			}
+			//根据用户状态查
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
 			ids =getIds(UserLoginRegister_List_By_S,start, count, new Object[]{statu});
 			}
+			//根据审核状态查
 			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
 			ids =getIds(UserLoginRegister_List_By_A,start, count, new Object[]{auth});
 			}
+			//根据通行证查
 			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
 			ids =getIds(UserLoginRegister_List_By_P,start, count, new Object[]{passport});
 			}
+			//根据用起止时间查
 			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
 			ids =getIds(UserLoginRegister_List_By_C,start, count, new Object[]{from,to});
 			}
