@@ -476,6 +476,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		List<UserLoginRegister> list =null;
 		List<Long> ids =null;
 		try {
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && from!=0 && to!=0)
 			ids =getIds(UserLoginRegister_List_By_Sapc, new Object[]{statu,auth,passport,from,to});
 			if(ids==null || ids.size()==0 )return null;
 			list=getEntityByIds(ids);
@@ -487,4 +488,15 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			throw new UserLoginRegisterServiceException(e);
 		}
 	}
+	private static final String UserLoginRegister_List_By_Sap = "UserLoginRegister_List_By_Sap"; 
+	private static final String UserLoginRegister_List_By_Sac = "UserLoginRegister_List_By_Sac"; 
+	private static final String UserLoginRegister_List_By_Spc = "UserLoginRegister_List_By_Spc"; 
+	private static final String UserLoginRegister_List_By_Apc = "UserLoginRegister_List_By_Apc"; 
+	private static final String UserLoginRegister_List_By_Sp = "UserLoginRegister_List_By_Sp"; 
+	private static final String UserLoginRegister_List_By_Sa = "UserLoginRegister_List_By_Sa"; 
+	private static final String UserLoginRegister_List_By_Sc = "UserLoginRegister_List_By_Sc"; 
+	private static final String UserLoginRegister_List_By_S = "UserLoginRegister_List_By_S"; 
+	private static final String UserLoginRegister_List_By_A = "UserLoginRegister_List_By_A"; 
+	private static final String UserLoginRegister_List_By_p = "UserLoginRegister_List_By_p"; 
+	private static final String UserLoginRegister_List_By_c = "UserLoginRegister_List_By_c"; 
 }
