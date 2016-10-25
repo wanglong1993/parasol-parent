@@ -23,7 +23,9 @@ import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.email.service.EmailService;
 import com.ginkgocap.parasol.sms.service.ShortMessageService;
+import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
+import com.ginkgocap.parasol.user.model.UserFriendly;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 @Service("userLoginRegisterService")
@@ -50,6 +52,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private static final String USER_LOGIN_REGISTER_MAP_MOBILE = "UserLoginRegister_Map_Mobile"; 
 	private static final String USER_LOGIN_REGISTER_MAP_EMAIL = "UserLoginRegister_Map_Email"; 
 	private static final String USER_LOGIN_REGISTER_MAP_USER_NAME = "UserLoginRegister_Map_User_Name"; 
+	private static final String UserLoginRegister_List_By_Sapc = "UserLoginRegister_List_By_Sapc"; 
 	private static Logger logger = Logger.getLogger(UserLoginRegisterServiceImpl.class);
 	
 	private static synchronized SecureRandomNumberGenerator getSecureRandomNumberGeneratorInstance(){
@@ -467,5 +470,21 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	public Object getCache(String key) throws UserLoginRegisterServiceException {
 		Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, key));
 		return value!=null?value:null;
+	}
+	@Override
+	public List<UserLoginRegister> getUserList(int statu, int auth,String passport, long from, long to)throws UserLoginRegisterServiceException {
+		List<UserLoginRegister> list =null;
+		List<Long> ids =null;
+		try {
+			ids =getIds(UserLoginRegister_List_By_Sapc, new Object[]{statu,auth,passport,from,to});
+			if(ids==null || ids.size()==0 )return null;
+			list=getEntityByIds(ids);
+			return list;
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
 	}
 }
