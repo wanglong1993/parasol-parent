@@ -476,7 +476,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		List<UserLoginRegister> list =null;
 		List<Long> ids =null;
 		try {
-			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && from!=0 && to!=0)
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && from>=0 && to>=0)
 			ids =getIds(UserLoginRegister_List_By_Sapc, new Object[]{statu,auth,passport,from,to});
 			if(ids==null || ids.size()==0 )return null;
 			list=getEntityByIds(ids);
