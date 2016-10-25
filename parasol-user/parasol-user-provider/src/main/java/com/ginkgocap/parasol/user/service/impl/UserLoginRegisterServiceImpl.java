@@ -476,19 +476,19 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		List<UserLoginRegister> list =null;
 		List<Long> ids =null;
 		try {
-			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && from>=0 && to>=0){
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && from>0 && to>0){
 			ids =getIds(UserLoginRegister_List_By_Sapc, new Object[]{statu,auth,passport,from,to});
 			}
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
 			ids =getIds(UserLoginRegister_List_By_Sap, new Object[]{statu,auth,passport});
 			}
-			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from>=0 || to>=0)){
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
 			ids =getIds(UserLoginRegister_List_By_Sac, new Object[]{statu,auth,from,to});
 			}
-			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from>=0 || to>=0)){
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from>0 || to>0)){
 			ids =getIds(UserLoginRegister_List_By_Spc, new Object[]{statu,passport,from,to});
 			}
-			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from>=0 || to>=0)){
+			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from>0 || to>0)){
 			ids =getIds(UserLoginRegister_List_By_Apc, new Object[]{auth,passport,from,to});
 			}
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
@@ -497,7 +497,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
 			ids =getIds(UserLoginRegister_List_By_Sa, new Object[]{statu,auth});
 			}
-			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>=0 || to>=0)){
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
 			ids =getIds(UserLoginRegister_List_By_Sc, new Object[]{statu,from,to});
 			}
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
