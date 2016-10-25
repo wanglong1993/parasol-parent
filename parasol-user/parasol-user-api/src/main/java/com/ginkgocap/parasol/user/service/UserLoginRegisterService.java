@@ -201,6 +201,9 @@ public interface UserLoginRegisterService {
 	
 	/**
 	 * 根据状态获，审核状态，或者passport,及注册时间取用户列表
+	 * 
+	 * @param start 起始位置
+	 * @param count 每页数量
 	 * @param statu 用户状态
 	 * @param auth 审核状态
 	 * @param passport 通行证
@@ -208,6 +211,6 @@ public interface UserLoginRegisterService {
 	 * @param to 结束时间
 	 * @throws UserLoginRegisterServiceException
 	 */
-	public List<UserLoginRegister> getUserList(int statu,int auth,String passport,long from,long to) throws UserLoginRegisterServiceException;	
+	public List<UserLoginRegister> getUserList(int start,int count,int statu,int auth,String passport,long from,long to) throws UserLoginRegisterServiceException;	
 
 }
