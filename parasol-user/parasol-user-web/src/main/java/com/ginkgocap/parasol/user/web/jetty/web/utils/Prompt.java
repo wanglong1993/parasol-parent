@@ -14,6 +14,7 @@ public final class Prompt {
 	public static final  String paramter_type_or_userType_error="参数type或userType的值不正确";
 	public static final  String userId_is_null_or_empty="用户id不能为空";
 	public static final  String passport_is_not_exists="手机或邮箱不存在";
+	public static final  String search_no_result="未查找数据";
 	public static final  String userId_is_null_or_empty_please_first_authentication_and_get_access_token="请先oauth认证获取用户access_token";
 	public static final  String passport_is_not_exists_in_UserLoginRegister="用户登录信息中不存在该手机号或邮箱";
 	public static final  String gid_is_exists_in_UserLoginRegister="金桐号已经存在";

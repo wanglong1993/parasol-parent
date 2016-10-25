@@ -1082,14 +1082,14 @@ public class UserController extends BaseControl {
 //			}			
 			list=userLoginRegisterService.getUserList(start,count,statu, auth, passport, from, to);
 			if(list==null){
-				resultMap.put("message", Prompt.passport_is_not_exists);
+				resultMap.put("message", Prompt.search_no_result);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
 			resultMap.put("userlist", list);
 			resultMap.put("status",1);
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(new String[]{"id","passport","email","mobile","ctime","utime","statu","auth","ip"});
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(new String[]{"id","passport","source","email","mobile","ctime","utime","statu","auth","ip"});
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		}catch (Exception e ){
