@@ -1059,6 +1059,8 @@ public class UserController extends BaseControl {
 			,@RequestParam(name = "passport",required = false) String passport
 			,@RequestParam(name = "from",required = false) long from
 			,@RequestParam(name = "to",required = false) long to
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true) int count
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		List<UserLoginRegister> list = null;
@@ -1078,7 +1080,7 @@ public class UserController extends BaseControl {
 //				resultMap.put( "status", 0);
 //				return new MappingJacksonValue(resultMap);
 //			}			
-			list=userLoginRegisterService.getUserList(statu, auth, passport, from, to);
+			list=userLoginRegisterService.getUserList(start,count,statu, auth, passport, from, to);
 			if(list==null){
 				resultMap.put("message", Prompt.passport_is_not_exists);
 				resultMap.put("status",0);

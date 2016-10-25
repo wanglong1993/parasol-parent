@@ -472,45 +472,45 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		return value!=null?value:null;
 	}
 	@Override
-	public List<UserLoginRegister> getUserList(int statu, int auth,String passport, long from, long to)throws UserLoginRegisterServiceException {
+	public List<UserLoginRegister> getUserList(int start,int count,int statu, int auth,String passport, long from, long to)throws UserLoginRegisterServiceException {
 		List<UserLoginRegister> list =null;
 		List<Long> ids =null;
 		try {
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && from>0 && to>0){
-			ids =getIds(UserLoginRegister_List_By_Sapc, new Object[]{statu,auth,passport,from,to});
+			ids =getIds(UserLoginRegister_List_By_Sapc, start, count,new Object[]{statu,auth,passport,from,to});
 			}
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
-			ids =getIds(UserLoginRegister_List_By_Sap, new Object[]{statu,auth,passport});
+			ids =getIds(UserLoginRegister_List_By_Sap,start, count, new Object[]{statu,auth,passport});
 			}
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
-			ids =getIds(UserLoginRegister_List_By_Sac, new Object[]{statu,auth,from,to});
+			ids =getIds(UserLoginRegister_List_By_Sac,start, count, new Object[]{statu,auth,from,to});
 			}
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from>0 || to>0)){
-			ids =getIds(UserLoginRegister_List_By_Spc, new Object[]{statu,passport,from,to});
+			ids =getIds(UserLoginRegister_List_By_Spc,start, count, new Object[]{statu,passport,from,to});
 			}
 			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from>0 || to>0)){
-			ids =getIds(UserLoginRegister_List_By_Apc, new Object[]{auth,passport,from,to});
+			ids =getIds(UserLoginRegister_List_By_Apc,start, count, new Object[]{auth,passport,from,to});
 			}
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
-			ids =getIds(UserLoginRegister_List_By_Sp, new Object[]{statu,passport});
+			ids =getIds(UserLoginRegister_List_By_Sp,start, count, new Object[]{statu,passport});
 			}
 			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
-			ids =getIds(UserLoginRegister_List_By_Sa, new Object[]{statu,auth});
+			ids =getIds(UserLoginRegister_List_By_Sa,start, count, new Object[]{statu,auth});
 			}
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
-			ids =getIds(UserLoginRegister_List_By_Sc, new Object[]{statu,from,to});
+			ids =getIds(UserLoginRegister_List_By_Sc,start, count, new Object[]{statu,from,to});
 			}
 			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
-			ids =getIds(UserLoginRegister_List_By_S, new Object[]{statu});
+			ids =getIds(UserLoginRegister_List_By_S,start, count, new Object[]{statu});
 			}
 			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
-			ids =getIds(UserLoginRegister_List_By_A, new Object[]{auth});
+			ids =getIds(UserLoginRegister_List_By_A,start, count, new Object[]{auth});
 			}
 			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
-			ids =getIds(UserLoginRegister_List_By_P, new Object[]{passport});
+			ids =getIds(UserLoginRegister_List_By_P,start, count, new Object[]{passport});
 			}
 			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>=0 || to>=0)){
-			ids =getIds(UserLoginRegister_List_By_C, new Object[]{passport});
+			ids =getIds(UserLoginRegister_List_By_C,start, count, new Object[]{passport});
 			}
 			if(ids==null || ids.size()==0 )return null;
 			list=getEntityByIds(ids);
