@@ -1005,12 +1005,11 @@ public class UserController extends BaseControl {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/getUserLoginRegister" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getUserLoginRegister(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/user/user/getUserDetail" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserLoginRegister userLoginRegister= null;
-		UserBasic userBasic= null;
 		Long userId=null;
 		Long appId =0l;
 		MappingJacksonValue mappingJacksonValue = null;
@@ -1037,8 +1036,6 @@ public class UserController extends BaseControl {
 			resultMap.put("status",1);
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(new String[]{"id","passport","email","mobile","ctime","utime","statu","auth","ip"});
-//			mappingJacksonValue.setFilters(new SimpleFilterProvider().addFilter(UserLoginRegister.class.getName(), 
-//					SimpleBeanPropertyFilter.filterOutAllExcept("id,passport,ctime,utime,status,ip")));
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		}catch (Exception e ){
@@ -1048,8 +1045,15 @@ public class UserController extends BaseControl {
 		}
 	}	
 	/**
-	 * 获取用户列表
+	 * 根据状态获，审核状态，或者passport,及注册时间取用户列表
 	 * 
+	 * @param start 起始位置
+	 * @param count 每页数量
+	 * @param statu 用户状态
+	 * @param auth 审核状态
+	 * @param passport 通行证
+	 * @param from 开始时间 类型为long型
+	 * @param to 结束时间 类型为long型
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/user/user/getUserList" }, method = { RequestMethod.POST})
@@ -1067,19 +1071,7 @@ public class UserController extends BaseControl {
 		Long userId=null;
 		Long appId =0l;
 		MappingJacksonValue mappingJacksonValue = null;
-		try {
-//			userId = LoginUserContextHolder.getUserId();
-//			if(userId==null){
-//				resultMap.put("message", Prompt.userId_is_null_or_empty);
-//				resultMap.put("status",0);
-//				return new MappingJacksonValue(resultMap);
-//			}
-//			appId = LoginUserContextHolder.getAppKey();
-//			if(ObjectUtils.isEmpty(appId)){
-//				resultMap.put( "message", Prompt.appId_is_empty);
-//				resultMap.put( "status", 0);
-//				return new MappingJacksonValue(resultMap);
-//			}			
+		try {		
 			list=userLoginRegisterService.getUserList(start,count,statu, auth, passport, from, to);
 			if(list==null){
 				resultMap.put("message", Prompt.search_no_result);
