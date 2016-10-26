@@ -1157,8 +1157,13 @@ public class UserController extends BaseControl {
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			if(isEmail(email)){
+			if(!isEmail(email)){
 				resultMap.put("message", Prompt.email_format_is_error);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(ObjectUtils.isEmpty(file)){
+				resultMap.put("message", Prompt.head_image_is_null);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
