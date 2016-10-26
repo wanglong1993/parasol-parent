@@ -1171,21 +1171,26 @@ public class UserController extends BaseControl {
 			if(json==null){
 				resultMap.put( "message", Prompt.upload_user_head_image_error);
 				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(!json.has("id")){
+				resultMap.put( "message", Prompt.upload_user_head_image_error);
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
 			}
 			UserLoginRegister userLoginRegister =(UserLoginRegister)userLoginRegisterService.getUserLoginRegister(userId);
 			userLoginRegister.setMobile(mobile);
 			userLoginRegister.setEmail(email);
+			userLoginRegister.setHeadImageId(json.getLong("id"));
 			boolean bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
-			if(list==null){
-				resultMap.put("message", Prompt.search_no_result);
+			if(!bl){
+				resultMap.put("message", Prompt.Operation_failed);
 				resultMap.put("status",0);
 				return new MappingJacksonValue(resultMap);
 			}
-			resultMap.put("userlist", list);
+			resultMap.put("message", Prompt.Operation_succeeded);
 			resultMap.put("status",1);
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(new String[]{"id","passport","source","email","mobile","ctime","utime","statu","auth","ip"});
-			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		}catch (Exception e ){
 			logger.info("完善用户资料:"+userId);

@@ -97,6 +97,8 @@ public final class Prompt {
 	public static final  String email_format_is_error="邮箱格式不正确"; 
 	public static final  String mobile_format_is_error="手机号格式不正确"; 
 	public static final  String head_image_is_null="头像文件不能为空"; 
+	public static final  String operation_error="操作失败"; 
+	
 	
 	
 
