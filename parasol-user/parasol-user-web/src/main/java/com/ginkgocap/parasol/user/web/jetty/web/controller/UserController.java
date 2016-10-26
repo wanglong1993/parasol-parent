@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -53,6 +56,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -63,6 +67,7 @@ import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
+import com.ginkgocap.parasol.file.web.jetty.web.controller.FileController;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
 import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
@@ -176,6 +181,8 @@ public class UserController extends BaseControl {
 	private String dfsGintongCom; 	
 	@Value("${vcode.url.gintong}")  
 	private String vcodeUrlGintong; 	
+	@Value("${upload.web.url}")  
+    private String uploadWebUrl;  
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
 
@@ -1107,7 +1114,152 @@ public class UserController extends BaseControl {
 //			throw e;
 		}
 	}	
-	
+	/**
+	 * 完善用户资料
+	 * 
+	 * @param mobile 手机号
+	 * @param email 邮箱
+	 * @param file 用户头像
+	 * @param access_token 开始时间 类型为long型
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/updateUser" }, method = { RequestMethod.POST})
+	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "mobile",required = true) String mobile
+			,@RequestParam(name = "email",required = true) String email
+			,@RequestParam(name = "file", required = true) MultipartFile file
+			,@RequestParam(name = "access_token", required = true) String access_token			
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserLoginRegister> list = null;
+		Long userId=null;
+		Long appId =0l;
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			appId = LoginUserContextHolder.getAppKey();
+			if(ObjectUtils.isEmpty(appId)){
+				resultMap.put( "message", Prompt.appId_is_empty);
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(StringUtils.isEmpty(mobile)){
+				resultMap.put("message", Prompt.mobile_is_null);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(!isMobileNo(mobile)){
+				resultMap.put("message", Prompt.mobile_format_is_error);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			if(isEmail(email)){
+				resultMap.put("message", Prompt.email_format_is_error);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			JSONObject json=upload(appId.toString(),userId.toString(),file);
+			if(json==null){
+				resultMap.put( "message", Prompt.upload_user_head_image_error);
+				resultMap.put( "status", 0);
+			}
+			UserLoginRegister userLoginRegister =(UserLoginRegister)userLoginRegisterService.getUserLoginRegister(userId);
+			userLoginRegister.setMobile(mobile);
+			userLoginRegister.setEmail(email);
+			boolean bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
+			if(list==null){
+				resultMap.put("message", Prompt.search_no_result);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			resultMap.put("userlist", list);
+			resultMap.put("status",1);
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(new String[]{"id","passport","source","email","mobile","ctime","utime","statu","auth","ip"});
+			mappingJacksonValue.setFilters(filterProvider);
+			return mappingJacksonValue;
+		}catch (Exception e ){
+			logger.info("完善用户资料:"+userId);
+			logger.info(e.getStackTrace());
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+//			throw e;
+		}
+	}	
+
+	/**
+	 * 上传头像
+	 * 
+	 * @param file  数据流
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/upload" }, method = { RequestMethod.POST})
+	public JSONObject upload(
+			@RequestParam(name = "source",required = true) String source
+			,@RequestParam(name = "userId",required = true) String userId
+			,@RequestParam(name = "file", required = true) MultipartFile file
+			)throws Exception {
+		CloseableHttpClient httpClient = null;  
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+    	HttpEntity entity =null;
+    	JSONObject json = null;
+    	try{
+	        try{
+	        	RequestConfig defaultRequestConfig = RequestConfig.custom()
+	        			  .setSocketTimeout(5000)
+	        			  .setConnectTimeout(5000)
+	        			  .setConnectionRequestTimeout(5000)
+	        			  .setStaleConnectionCheckEnabled(true)
+	        			  .build();
+	        	httpClient = HttpClients.custom()
+	        			.setDefaultRequestConfig(defaultRequestConfig)
+	        			.build();
+//	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+//	        		.setProxy(new HttpHost("192.168.130.100", 8091))
+//	        	    .build();
+	        	InputStreamBody file2 = new InputStreamBody(file.getInputStream(),file.getName());
+	            HttpPost httpPost = new HttpPost(uploadWebUrl);
+	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
+	            .addPart("file", file2)
+	            .addPart("appKey",  new StringBody(source, ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("userId", new StringBody(userId, ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("fileType", new StringBody("1", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("moduleType", new StringBody("1", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("taskId", new StringBody(String.valueOf(System.currentTimeMillis()), ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("fileExtName", new StringBody("jpg", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("name", new StringBody("", ContentType.create("text/plain", Consts.UTF_8)))
+	            .build();  
+	            httpPost.setEntity(reqEntity);  
+//	            httpPost.setConfig(requestConfig);
+	            CloseableHttpResponse response = httpClient.execute(httpPost);  
+	            try {  
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						resultMap.put("status", response.getStatusLine().getStatusCode());
+						entity = response.getEntity();
+						String respJson = EntityUtils.toString(entity);
+						json = JSONObject.fromObject(respJson);
+						logger.info("json:"+respJson);
+					}
+	                EntityUtils.consume(entity);
+	                return json;
+	            } finally {  
+	                response.close();  
+	            }  
+	        }finally{  
+	            httpClient.close();  
+	        }
+    	}catch(Exception  e){
+    		throw e;
+    	}
+	        
+	}	
 	/**
 	 * 指定显示那些字段
 	 * 

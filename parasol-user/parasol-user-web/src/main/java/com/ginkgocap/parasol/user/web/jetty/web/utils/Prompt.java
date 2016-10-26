@@ -87,10 +87,15 @@ public final class Prompt {
 	public static final  String gId_length_error="金桐号长度大于5且小于50"; 
 	public static final  String findpwd="找回密码"; 
 	public static final  String register="注册金桐"; 
+	public static final  String upload_user_head_image_error="上传用户头像失败"; 
 	public static final  String bindEmail="邮箱绑定"; 
 	public static final  String changeOldTitle="更改邮箱-验证旧邮箱"; 
 	public static final  String state_is_null="验证码state为空"; 
 	public static final  String state_is_expired_or_not_exists="验证码state已经过期或者不存在"; 
+	public static final  String mobile_is_null="手机号不能为空"; 
+	public static final  String email_is_null="邮箱不能为空"; 
+	public static final  String email_format_is_error="邮箱格式不正确"; 
+	public static final  String mobile_format_is_error="手机号格式不正确"; 
 	
 	
 
