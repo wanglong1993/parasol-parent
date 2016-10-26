@@ -210,6 +210,7 @@ public class UserController extends BaseControl {
 		Long appId =0l;
 		Long id=0l;
 		//检验状态state
+		try{
 		String access_token_url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxa8d92f54c4a0e3f6&secret=ff44fd61ef8774b6d9f51f324149ebb0&code="+code+"&grant_type=authorization_code";
 		if(StringUtils.isEmpty(state)){
 			resultMap.put( "message", Prompt.state_is_null);
@@ -291,6 +292,11 @@ public class UserController extends BaseControl {
 		//设置缓存用户信息 30分钟过期
 		userLoginRegisterService.setCache(resultMap.get("access_token").toString(), userLoginRegisterService.getUserLoginRegister(id), 30*60*1);
 		return new MappingJacksonValue(resultMap);
+		}catch(Exception e){
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+		}
 	}
 	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
 	public JSONObject getWeixinInfo(
@@ -950,7 +956,10 @@ public class UserController extends BaseControl {
 			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
 			logger.info("注册失败:"+passport);
 			logger.info(e.getStackTrace());
-			throw e;
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+//			throw e;
 		}
 	}
 
@@ -1043,7 +1052,10 @@ public class UserController extends BaseControl {
 		}catch (Exception e ){
 			logger.info("获取用户资料失败:"+userId);
 			logger.info(e.getStackTrace());
-			throw e;
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+//			throw e;
 		}
 	}	
 	/**
@@ -1074,8 +1086,6 @@ public class UserController extends BaseControl {
 		Long appId =0l;
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			String a=null;
-			a.charAt(1);
 			list=userLoginRegisterService.getUserList(start,count,statu, auth, passport, from, to);
 			if(list==null){
 				resultMap.put("message", Prompt.search_no_result);

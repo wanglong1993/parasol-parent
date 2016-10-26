@@ -274,6 +274,7 @@
 					<include>**/imService.properties</include>
 					<include>**/*.xml</include>
 					<include>**/*.jps</include>
+					<include>**/*.html</include>
 				</includes>
 			</resource>
 		</resources>
