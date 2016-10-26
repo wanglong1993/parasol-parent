@@ -67,7 +67,6 @@ import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.service.FileIndexService;
-import com.ginkgocap.parasol.file.web.jetty.web.controller.FileController;
 import com.ginkgocap.parasol.message.service.MessageRelationService;
 import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
