@@ -1073,7 +1073,8 @@ public class UserController extends BaseControl {
 		Long userId=null;
 		Long appId =0l;
 		MappingJacksonValue mappingJacksonValue = null;
-		try {		
+		try {
+			new Exception();
 			list=userLoginRegisterService.getUserList(start,count,statu, auth, passport, from, to);
 			if(list==null){
 				resultMap.put("message", Prompt.search_no_result);
@@ -1089,7 +1090,10 @@ public class UserController extends BaseControl {
 		}catch (Exception e ){
 			logger.info("获取用户资料失败:"+userId);
 			logger.info(e.getStackTrace());
-			throw e;
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+//			throw e;
 		}
 	}	
 	
