@@ -1074,7 +1074,8 @@ public class UserController extends BaseControl {
 		Long appId =0l;
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			new Exception();
+			String a=null;
+			a.charAt(1);
 			list=userLoginRegisterService.getUserList(start,count,statu, auth, passport, from, to);
 			if(list==null){
 				resultMap.put("message", Prompt.search_no_result);
