@@ -1122,8 +1122,8 @@ public class UserController extends BaseControl {
 	 * @param access_token 开始时间 类型为long型
 	 * @throws Exception
 	 */
-	@RequestMapping(path = { "/user/user/updateUser" }, method = { RequestMethod.POST})
-	public MappingJacksonValue updateUser(HttpServletRequest request,HttpServletResponse response
+	@RequestMapping(path = { "/user/user/updateUserLoginRegister" }, method = { RequestMethod.POST})
+	public MappingJacksonValue updateUserLoginRegister(HttpServletRequest request,HttpServletResponse response
 			,@RequestParam(name = "mobile",required = true) String mobile
 			,@RequestParam(name = "email",required = true) String email
 			,@RequestParam(name = "file", required = true) MultipartFile file
