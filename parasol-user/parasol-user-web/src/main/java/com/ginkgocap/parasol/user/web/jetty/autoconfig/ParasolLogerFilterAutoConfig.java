@@ -38,7 +38,7 @@ public class ParasolLogerFilterAutoConfig {
 		return filterRegistrationBean;
 	}
 	@Bean
-	public FilterRegistrationBean filterRegistrationBean(HttpPutFormContentFilter httpPutFormContentFilter) {
+	public FilterRegistrationBean filterRegistrationBean2(HttpPutFormContentFilter httpPutFormContentFilter) {
 		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
 		filterRegistrationBean.setFilter(httpPutFormContentFilter);
 		filterRegistrationBean.setEnabled(true);
