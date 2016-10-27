@@ -2,19 +2,17 @@ package com.ginkgocap.parasol.user.web.jetty.autoconfig;
 
 import java.util.List;
 
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.Ssl;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -68,7 +66,12 @@ public class WebConfig {
 		converters.add(customJackson2HttpMessageConverter());
 		// super.addDefaultHttpMessageConverters(converters);
 	}
-
+	 
+	@Bean
+	public HttpPutFormContentFilter initializeHttpPutFormContentFilter() {
+		 HttpPutFormContentFilter filter = new HttpPutFormContentFilter();
+	     return filter;
+	}
 //	@Bean
 //	public EmbeddedServletContainerCustomizer containerCustomizer() {
 //	  return new EmbeddedServletContainerCustomizer() {
