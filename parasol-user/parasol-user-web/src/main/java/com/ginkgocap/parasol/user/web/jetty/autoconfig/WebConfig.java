@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
@@ -71,6 +71,11 @@ public class WebConfig {
 	public HttpPutFormContentFilter initializeHttpPutFormContentFilter() {
 		 HttpPutFormContentFilter filter = new HttpPutFormContentFilter();
 	     return filter;
+	}
+	@Bean
+	public HiddenHttpMethodFilter initializeHiddenHttpMethodFilter() {
+		HiddenHttpMethodFilter filter = new HiddenHttpMethodFilter();
+		return filter;
 	}
 //	@Bean
 //	public EmbeddedServletContainerCustomizer containerCustomizer() {
