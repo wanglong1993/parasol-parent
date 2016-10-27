@@ -8,8 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -52,6 +49,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,9 +59,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.ginkgocap.parasol.associate.model.Associate;
 import com.ginkgocap.parasol.associate.service.AssociateService;
-import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
@@ -72,7 +69,6 @@ import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
 import com.ginkgocap.parasol.metadata.service.CodeRegionService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
-import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.parasol.user.model.User;
 import com.ginkgocap.parasol.user.model.UserBasic;
@@ -1124,10 +1120,11 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/updateUserLoginRegister" }, method = { RequestMethod.PUT})
 	public MappingJacksonValue updateUserLoginRegister(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "mobile",required = true) String mobile
-			,@RequestParam(name = "email",required = true) String email
-			,@RequestParam(name = "file", required = true) MultipartFile file
-			,@RequestParam(name = "access_token", required = true) String access_token			
+//			,@RequestParam(name = "mobile",required = true) String mobile
+//			,@RequestParam(name = "email",required = true) String email
+//			,@RequestParam(name = "file", required = true) MultipartFile file
+			,@ModelAttribute UserLoginRegister userLoginRegister
+			,@PathVariable Long access_token			
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		List<UserLoginRegister> list = null;
@@ -1147,47 +1144,48 @@ public class UserController extends BaseControl {
 				resultMap.put( "status", 0);
 				return new MappingJacksonValue(resultMap);
 			}
-			if(StringUtils.isEmpty(mobile)){
-				resultMap.put("message", Prompt.mobile_is_null);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(!isMobileNo(mobile)){
-				resultMap.put("message", Prompt.mobile_format_is_error);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(!isEmail(email)){
-				resultMap.put("message", Prompt.email_format_is_error);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(ObjectUtils.isEmpty(file)){
-				resultMap.put("message", Prompt.head_image_is_null);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			JSONObject json=upload(appId.toString(),userId.toString(),file);
-			if(json==null){
-				resultMap.put( "message", Prompt.upload_user_head_image_error);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-			if(!json.has("id")){
-				resultMap.put( "message", Prompt.upload_user_head_image_error);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
-			UserLoginRegister userLoginRegister =(UserLoginRegister)userLoginRegisterService.getUserLoginRegister(userId);
-			userLoginRegister.setMobile(mobile);
-			userLoginRegister.setEmail(email);
-			userLoginRegister.setHeadImageId(json.getLong("id"));
-			boolean bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
-			if(!bl){
-				resultMap.put("message", Prompt.Operation_failed);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
+//			if(StringUtils.isEmpty(mobile)){
+//				resultMap.put("message", Prompt.mobile_is_null);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(!isMobileNo(mobile)){
+//				resultMap.put("message", Prompt.mobile_format_is_error);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(!isEmail(email)){
+//				resultMap.put("message", Prompt.email_format_is_error);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(ObjectUtils.isEmpty(file)){
+//				resultMap.put("message", Prompt.head_image_is_null);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			JSONObject json=upload(appId.toString(),userId.toString(),file);
+//			if(json==null){
+//				resultMap.put( "message", Prompt.upload_user_head_image_error);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(!json.has("id")){
+//				resultMap.put( "message", Prompt.upload_user_head_image_error);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			UserLoginRegister userLoginRegister =(UserLoginRegister)userLoginRegisterService.getUserLoginRegister(userId);
+//			userLoginRegister.setMobile(mobile);
+//			userLoginRegister.setEmail(email);
+//			userLoginRegister.setHeadImageId(json.getLong("id"));
+			logger.info(userLoginRegister.getMobile());
+//			boolean bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
+//			if(!bl){
+//				resultMap.put("message", Prompt.Operation_failed);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
 			resultMap.put("message", Prompt.Operation_succeeded);
 			resultMap.put("status",1);
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
