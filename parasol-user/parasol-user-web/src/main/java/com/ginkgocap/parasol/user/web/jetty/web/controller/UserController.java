@@ -1129,24 +1129,24 @@ public class UserController extends BaseControl {
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		logger.info(request.getParameter("mobile"));
-//		logger.info(mobile);
+		logger.info(mobile);
 		List<UserLoginRegister> list = null;
 		Long userId=null;
 		Long appId =0l;
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			userId = LoginUserContextHolder.getUserId();
-			if(userId==null){
-				resultMap.put("message", Prompt.userId_is_null_or_empty);
-				resultMap.put("status",0);
-				return new MappingJacksonValue(resultMap);
-			}
-			appId = LoginUserContextHolder.getAppKey();
-			if(ObjectUtils.isEmpty(appId)){
-				resultMap.put( "message", Prompt.appId_is_empty);
-				resultMap.put( "status", 0);
-				return new MappingJacksonValue(resultMap);
-			}
+//			userId = LoginUserContextHolder.getUserId();
+//			if(userId==null){
+//				resultMap.put("message", Prompt.userId_is_null_or_empty);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			appId = LoginUserContextHolder.getAppKey();
+//			if(ObjectUtils.isEmpty(appId)){
+//				resultMap.put( "message", Prompt.appId_is_empty);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
 //			if(StringUtils.isEmpty(mobile)){
 //				resultMap.put("message", Prompt.mobile_is_null);
 //				resultMap.put("status",0);
