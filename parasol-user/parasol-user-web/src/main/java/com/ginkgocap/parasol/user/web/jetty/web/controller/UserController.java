@@ -1124,7 +1124,7 @@ public class UserController extends BaseControl {
 //			,@RequestParam(name = "email",required = true) String email
 //			,@RequestParam(name = "file", required = true) MultipartFile file
 			,@ModelAttribute UserLoginRegister userLoginRegister
-			,@PathVariable String access_token			
+			,@PathVariable("access_token1") String access_token			
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		List<UserLoginRegister> list = null;
