@@ -1120,13 +1120,16 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/updateUserLoginRegister/{access_token1}" }, method = { RequestMethod.PUT})
 	public MappingJacksonValue updateUserLoginRegister(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(value = "mobile") String mobile
 //			,@RequestParam(name = "mobile",required = true) String mobile
 //			,@RequestParam(name = "email",required = true) String email
 //			,@RequestParam(name = "file", required = true) MultipartFile file
-			,@ModelAttribute UserLoginRegister userLoginRegister
+//			,@ModelAttribute UserLoginRegister userLoginRegister
 			,@PathVariable("access_token1") String access_token			
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		logger.info(request.getParameter("mobile"));
+		logger.info(mobile);
 		List<UserLoginRegister> list = null;
 		Long userId=null;
 		Long appId =0l;
@@ -1179,7 +1182,7 @@ public class UserController extends BaseControl {
 //			userLoginRegister.setMobile(mobile);
 //			userLoginRegister.setEmail(email);
 //			userLoginRegister.setHeadImageId(json.getLong("id"));
-			logger.info(userLoginRegister.getMobile());
+//			logger.info(userLoginRegister.getMobile());
 //			boolean bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
 //			if(!bl){
 //				resultMap.put("message", Prompt.Operation_failed);
