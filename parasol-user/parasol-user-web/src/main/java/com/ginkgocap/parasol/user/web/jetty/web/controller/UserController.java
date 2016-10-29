@@ -1123,20 +1123,16 @@ public class UserController extends BaseControl {
 	@RequestMapping(path = { "/user/user/updateUserLoginRegister/{access_token1}" }, method = { RequestMethod.PUT})
 	public MappingJacksonValue updateUserLoginRegister(HttpServletRequest request,HttpServletResponse response
 //			,@RequestParam(name = "mobile", required=true) String mobile
-			,Model model
 //			,@RequestParam(name = "mobile",required = true) String mobile
 //			,@RequestParam(name = "email",required = true) String email
 //			,@RequestParam(name = "file", required = true) MultipartFile file
-			,@ModelAttribute String mobile
-			,@ModelAttribute String email
-			,@RequestBody String body
+			,@ModelAttribute UserLoginRegister userLoginRegister
 			,@PathVariable("access_token1") String access_token			
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		logger.info("mobile====="+request.getParameter("mobile"));
-		logger.info("mobile====="+mobile);
-		logger.info("email====="+email);
-		logger.info("body====="+body);
+		logger.info("mobile====="+userLoginRegister.getMobile());
+		logger.info("email====="+userLoginRegister.getEmail());
 		List<UserLoginRegister> list = null;
 		Long userId=null;
 		Long appId =0l;
