@@ -1131,7 +1131,7 @@ public class UserController extends BaseControl {
 		logger.info("mobile====="+request.getParameter("mobile"));
 		logger.info("mobile====="+userLoginRegister.getMobile());
 		logger.info("email====="+userLoginRegister.getEmail());
-		logger.info("file====="+userLoginRegister.getFile().getName());
+		logger.info("file====="+userLoginRegister.getFile().getOriginalFilename());
 		List<UserLoginRegister> list = null;
 		Long userId=null;
 		Long appId =0l;
