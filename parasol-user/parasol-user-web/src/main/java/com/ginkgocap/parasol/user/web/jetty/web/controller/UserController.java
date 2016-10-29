@@ -47,6 +47,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -1120,16 +1121,19 @@ public class UserController extends BaseControl {
 	 */
 	@RequestMapping(path = { "/user/user/updateUserLoginRegister/{access_token1}" }, method = { RequestMethod.PUT})
 	public MappingJacksonValue updateUserLoginRegister(HttpServletRequest request,HttpServletResponse response
-			,@RequestParam(name = "mobile", required=true) String mobile
+//			,@RequestParam(name = "mobile", required=true) String mobile
+			,Model model
 //			,@RequestParam(name = "mobile",required = true) String mobile
 //			,@RequestParam(name = "email",required = true) String email
 //			,@RequestParam(name = "file", required = true) MultipartFile file
-//			,@ModelAttribute UserLoginRegister userLoginRegister
+			,@ModelAttribute String mobile
+			,@ModelAttribute String email
 			,@PathVariable("access_token1") String access_token			
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		logger.info("mobile====="+request.getParameter("mobile"));
 		logger.info("mobile====="+mobile);
+		logger.info("email====="+email);
 		List<UserLoginRegister> list = null;
 		Long userId=null;
 		Long appId =0l;
