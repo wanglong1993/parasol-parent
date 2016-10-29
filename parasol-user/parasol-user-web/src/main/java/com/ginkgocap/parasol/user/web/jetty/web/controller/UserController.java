@@ -1124,7 +1124,7 @@ public class UserController extends BaseControl {
 //			,@RequestParam(name = "mobile", required=true) String mobile
 //			,@RequestParam(name = "mobile",required = true) String mobile
 //			,@RequestParam(name = "email",required = true) String email
-			,@RequestParam(name = "file", required = true) MultipartFile file
+//			,@RequestParam(name = "file", required = true) MultipartFile file
 			,@ModelAttribute UserLoginRegister2 userLoginRegister
 			,@PathVariable("access_token1") String access_token			
 			)throws Exception {
