@@ -52,6 +52,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -1128,12 +1129,14 @@ public class UserController extends BaseControl {
 //			,@RequestParam(name = "file", required = true) MultipartFile file
 			,@ModelAttribute String mobile
 			,@ModelAttribute String email
+			,@RequestBody String body
 			,@PathVariable("access_token1") String access_token			
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		logger.info("mobile====="+request.getParameter("mobile"));
 		logger.info("mobile====="+mobile);
 		logger.info("email====="+email);
+		logger.info("body====="+body);
 		List<UserLoginRegister> list = null;
 		Long userId=null;
 		Long appId =0l;
