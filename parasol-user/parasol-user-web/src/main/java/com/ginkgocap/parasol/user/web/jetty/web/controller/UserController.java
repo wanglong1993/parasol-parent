@@ -47,12 +47,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,6 +91,7 @@ import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
 import com.ginkgocap.parasol.user.service.UserOrganBasicService;
 import com.ginkgocap.parasol.user.service.UserOrganExtService;
 import com.ginkgocap.parasol.user.service.UserWorkHistoryService;
+import com.ginkgocap.parasol.user.web.jetty.modle.UserLoginRegister2;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.HuanxinUtils;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Prompt;
@@ -1125,14 +1124,15 @@ public class UserController extends BaseControl {
 //			,@RequestParam(name = "mobile", required=true) String mobile
 //			,@RequestParam(name = "mobile",required = true) String mobile
 //			,@RequestParam(name = "email",required = true) String email
-//			,@RequestParam(name = "file", required = true) MultipartFile file
-			,@ModelAttribute UserLoginRegister userLoginRegister
+			,@RequestParam(name = "file", required = true) MultipartFile file
+			,@ModelAttribute UserLoginRegister2 userLoginRegister
 			,@PathVariable("access_token1") String access_token			
 			)throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		logger.info("mobile====="+request.getParameter("mobile"));
 		logger.info("mobile====="+userLoginRegister.getMobile());
 		logger.info("email====="+userLoginRegister.getEmail());
+		logger.info("file====="+userLoginRegister.getFile().getName());
 		List<UserLoginRegister> list = null;
 		Long userId=null;
 		Long appId =0l;
