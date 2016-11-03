@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.user.model;
+package com.ginkgocap.parasol.user.web.jetty.modle;
 
 
 
@@ -7,23 +7,25 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 /**
  * 用户注册登录表
  */
-@JsonFilter("com.ginkgocap.parasol.user.model.UserLoginRegister")
+@JsonFilter("com.ginkgocap.parasol.user.web.jetty.modle.UserLoginRegister2")
 @Entity
 @Table(name = "tb_user_login_register", catalog = "parasol_user", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "passport"),
 		@UniqueConstraint(columnNames = "mobile"),
 		@UniqueConstraint(columnNames = "email"),
 		@UniqueConstraint(columnNames = "user_name") })
-public class UserLoginRegister implements java.io.Serializable {
+public class UserLoginRegister2 implements java.io.Serializable {
 
 	/**
 	 * 
@@ -94,11 +96,25 @@ public class UserLoginRegister implements java.io.Serializable {
 	 * 服务商审核标识 1.审核通过；2.审不通过；0.待审核
 	 */
 	private Byte auth;
+	/**
+	 * 用户头像id
+	 */
+	private long headImageId;
+	/**
+	 * 用户头像路径
+	 */
+	private String headImageUrl;
+	/**
+	 * 用户头像文件
+	 */
+	private MultipartFile file ;
+	
+	
 
-	public UserLoginRegister() {
+	public UserLoginRegister2() {
 	}
 
-	public UserLoginRegister(long id, String passport, String password,
+	public UserLoginRegister2(long id, String passport, String password,
 			Byte userType, String salt, String source, Long ctime, Long utime,
 			String ip, String gid,long orgId) {
 		this.id = id;
@@ -114,7 +130,7 @@ public class UserLoginRegister implements java.io.Serializable {
 		this.orgId=orgId;
 	}
 
-	public UserLoginRegister(long id, String passport, String mobile,
+	public UserLoginRegister2(long id, String passport, String mobile,
 			String email, String userName, String password, Byte userType,
 			String salt, String source, Long ctime, Long utime,
 			String ip,String gid,long orgId) {
@@ -284,6 +300,30 @@ public class UserLoginRegister implements java.io.Serializable {
 
 	public void setAuth(Byte auth) {
 		this.auth = auth;
+	}
+	@Column(name = "head_Image_Id")
+	public long getHeadImageId() {
+		return headImageId;
+	}
+
+	public void setHeadImageId(long headImageId) {
+		this.headImageId = headImageId;
+	}
+	@Transient
+	public String getHeadImageUrl() {
+		return headImageUrl;
+	}
+
+	public void setHeadImageUrl(String headImageUrl) {
+		this.headImageUrl = headImageUrl;
+	}
+
+	public MultipartFile getFile() {
+		return file;
+	}
+
+	public void setFile(MultipartFile file) {
+		this.file = file;
 	}
 
 }

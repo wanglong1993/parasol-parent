@@ -170,36 +170,36 @@
 		</dependency>
 
 		<!-- business -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
-		</dependency>
-<!-- 		<dependency>
+		</dependency> -->
+		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-user-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-message-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
-<!-- 		<dependency>
+		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-file-api</artifactId>
 			<version>1.0.0</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-directory-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
-<!-- 		<dependency>
+		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-tags-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-associate-api</artifactId>
@@ -274,6 +274,7 @@
 					<include>**/imService.properties</include>
 					<include>**/*.xml</include>
 					<include>**/*.jps</include>
+					<include>**/*.html</include>
 				</includes>
 			</resource>
 		</resources>
@@ -353,7 +354,7 @@
 				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<user.web.url>http://api.test.gintong.com</user.web.url>
-				<upload.web.url>http://192.168.130.100:8091/file/upload</upload.web.url>
+				<upload.web.url>http://api.test.gintong.com/file/upload</upload.web.url>
 				<file.web.url>http://file.gintong.com/</file.web.url>
 				<oauth.web.url>http://localhost:8085/oauth/token</oauth.web.url>
 				<oauth.web.logout>http://localhost:8085/logout</oauth.web.logout>

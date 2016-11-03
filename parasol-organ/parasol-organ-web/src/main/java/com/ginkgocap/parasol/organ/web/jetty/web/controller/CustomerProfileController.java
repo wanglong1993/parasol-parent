@@ -538,7 +538,7 @@ public class CustomerProfileController extends BaseController {
 			}
 			
 			
-			customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));// 权限
+//			customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));// 权限
 			String  permissonsStr=customer_temp.getCustomerPermissions();
 			if(isNullOrEmpty(permissonsStr)||(!permissonsStr.contains("publicFlag"))){
 				
@@ -893,8 +893,56 @@ public class CustomerProfileController extends BaseController {
 
 			// 设置模板ID
 			customer_new.setTemplateId(customer_temp.getTemplateId());
-			// 设置模块
-			customer_new.setMoudles(customer_temp.getMoudles());
+			
+			
+			
+			
+			if (customer_temp.getMoudles() != null
+					&& customer_temp.getMoudles().size() > 0) {
+				customer_new.setMoudles(customer_temp.getMoudles());
+			} else {
+
+				customer_new.setMoudles(OrganUtils
+						.createMoudles(customer_temp));
+
+			}
+			
+			
+//			customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));// 权限
+			String  permissonsStr=customer_temp.getCustomerPermissions();
+			if(isNullOrEmpty(permissonsStr)||(!permissonsStr.contains("publicFlag"))){
+				
+				Map permissonMap=new HashMap();
+				permissonMap.put("publicFlag", "0");
+				permissonMap.put("shareFlag", "1");
+				permissonMap.put("connectFlag", "1");
+				customer_new.setCustomerPermissions(permissonMap);
+				
+			}else{
+				customer_new.setCustomerPermissions(JSON.parseObject(customer_temp.getCustomerPermissions(), Map.class));// 权限
+
+			}
+			
+			
+			
+			if(isNullOrEmpty(customer_temp.getRelevance())){
+				customer_new.setRelevance("{\"r\":[],\"p\":[],\"o\":[],\"k\":[]}");// 关联
+			}else{
+				customer_new.setRelevance(customer_temp.getRelevance());
+			}
+			
+			
+			if(isNullOrEmpty(customer_temp.getDirectory())){
+				customer_new.setDirectory("[]");// 目录
+			}else{
+				customer_new.setDirectory(customer_temp.getDirectory());
+			}
+			
+			
+
+			customer_new.setLableList(rCustomerTagService.getTagListByCustomerId(customerId));//标签
+
+			findFourModule(customer_temp,responseData);// 目录 和关联
 
 			System.out.println(customer_temp);
 			responseData.put("customer", customer_new);

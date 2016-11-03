@@ -14,6 +14,8 @@ public final class Prompt {
 	public static final  String paramter_type_or_userType_error="参数type或userType的值不正确";
 	public static final  String userId_is_null_or_empty="用户id不能为空";
 	public static final  String passport_is_not_exists="手机或邮箱不存在";
+	public static final  String search_no_result="未查找数据";
+	public static final  String server_error="服务器出现内部错误";
 	public static final  String userId_is_null_or_empty_please_first_authentication_and_get_access_token="请先oauth认证获取用户access_token";
 	public static final  String passport_is_not_exists_in_UserLoginRegister="用户登录信息中不存在该手机号或邮箱";
 	public static final  String gid_is_exists_in_UserLoginRegister="金桐号已经存在";
@@ -35,7 +37,12 @@ public final class Prompt {
 	public static final  String userId_is_not_exist_in_UserBasic="用户id在用户基本信息中不存在";
 	public static final  String incorrect_password="密码不正确";
 	public static final  String get_access_token_is_null="获取access_token为空";
+	public static final  String weixin_userinfo_is_null="获微信用户信息为空";
+	public static final  String weixin_userinfo_is_error="获微信用户信息出错";
+	public static final  String weixin_login_is_error="微信注册用户登录出错";
 	public static final  String get_access_token_failed="获取access_token失败";
+	public static final  String invild_code="code无效或者该code已经使用过";
+	public static final  String access_token_inviild="微信access_token未获取到";
 	public static final  String mobile_phone_number_is_not_correct="手机格式不正确";
 	public static final  String email_is_not_exists_in_UserLogniRegister="邮箱地址在用户登录信息中不存在";
 	public static final  String email_is_not_exists_in_UserBasic="邮箱地址在用户基本信息中不存在";
@@ -79,8 +86,19 @@ public final class Prompt {
 	public static final  String appId_is_empty="appId不能为空！"; 
 	public static final  String gId_length_error="金桐号长度大于5且小于50"; 
 	public static final  String findpwd="找回密码"; 
+	public static final  String register="注册金桐"; 
+	public static final  String upload_user_head_image_error="上传用户头像失败"; 
 	public static final  String bindEmail="邮箱绑定"; 
 	public static final  String changeOldTitle="更改邮箱-验证旧邮箱"; 
+	public static final  String state_is_null="验证码state为空"; 
+	public static final  String state_is_expired_or_not_exists="验证码state已经过期或者不存在"; 
+	public static final  String mobile_is_null="手机号不能为空"; 
+	public static final  String email_is_null="邮箱不能为空"; 
+	public static final  String email_format_is_error="邮箱格式不正确"; 
+	public static final  String mobile_format_is_error="手机号格式不正确"; 
+	public static final  String head_image_is_null="头像文件不能为空"; 
+	public static final  String operation_error="操作失败"; 
+	
 	
 	
 
