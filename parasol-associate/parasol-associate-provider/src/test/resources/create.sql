@@ -26,10 +26,12 @@ CREATE TABLE `tb_associate` (
   UNIQUE INDEX `userId_appId_sourceTypeId_sourceId_assocDesc_assocTypeId_assocId` (`userId`, `appId`,`sourceTypeId`,`sourceId`,`assocDesc`,`assocTypeId`,`assocId`) 
 ) ENGINE=InnoDB AUTO_INCREMENT=1445 DEFAULT CHARSET=utf8 COMMENT='关联信息表'
 
-INSERT INTO `tb_associate_type` VALUES ('2', '1', '人脉', '1456293335672');
-INSERT INTO `tb_associate_type` VALUES ('3', '1', ' 客户', '1456383660925');
-INSERT INTO `tb_associate_type` VALUES ('4', '1', '组织', '1456293335918');
-INSERT INTO `tb_associate_type` VALUES ('7', '1', '需求', '1456293336450');
-INSERT INTO `tb_associate_type` VALUES ('8', '1', '知识', '1456293336251');
-INSERT INTO `tb_associate_type` VALUES ('9', '1', '事务', '1456293336251');
-INSERT INTO `tb_associate_type` VALUES ('11', '1', '会面', '1456293336251');
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(1,1,'好友', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(2,1,'人脉', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(3,1,'客户', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(4,1,'组织', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(7,1,'需求', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(8,1,'知识', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(9,1,'事务', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(10,1,'会议',UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUES(11,1,'会面',UNIX_TIMESTAMP());
