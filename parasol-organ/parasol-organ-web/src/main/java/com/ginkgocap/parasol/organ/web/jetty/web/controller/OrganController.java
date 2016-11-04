@@ -284,23 +284,27 @@ public class OrganController extends BaseController {
 		
 		  if(customer_temp==null){// 兼容关联老数据
 			   customer_temp= customerService.findOne(organId);
+			   if(!"1".equals(customer_temp.getVirtual())){
+				   customer_temp=null;
+			   }
 		  }
 		   
 		   
        System.out.println("Is From web:"+CommonUtil.getRequestIsFromWebFlag());
+		OrganRegister organRegister = organRegisterService
+				.getOrganRegisterById(organId);
 		if (customer_temp != null) {
-			
 
-			OrganRegister organRegister = organRegisterService
-					.getOrganRegisterById(organId);
-			
-			
-			
 			OrganProfileVo organProfileVo = createOrganProfileVo(customer_temp, user,organId);
 			responseData.put("customer", organProfileVo);
 			responseData.put("id", organProfileVo.getId());
 			responseData.put("organNumber", organProfileVo.getOrganNumber());
-			responseData.put("bindUserId", organRegister.getUserId());
+			if(organRegister!=null){
+				responseData.put("bindUserId", organRegister.getUserId());
+			}else{
+				responseData.put("bindUserId", 0);
+			}
+		
 
 			try {
 				customerCountService
@@ -384,18 +388,16 @@ public class OrganController extends BaseController {
 					.getPersonalPlateList());
 			organProfileVo.setVirtual(customer_temp.getVirtual());
 			organProfileVo.setCreateById(customer_temp.getCreateById());
-			
-			
-			if(customer_temp.getPicLogo()==null||"".equals(customer_temp.getPicLogo())){
+		
+	        if(customer_temp.getPicLogo()==null||"".equals(customer_temp.getPicLogo())){
 				
 				organProfileVo.setPicLogo(rpe.getNginxRoot()
 						+ Constants.ORGAN_DEFAULT_PIC_PATH);
 			}else{
 				organProfileVo.setPicLogo(rpe.getNginxRoot()
 						+ Utils.alterImageUrl(customer_temp.getPicLogo()));
-
 			}
-			
+	        
 			organProfileVo.setOrgType(customer_temp.getOrgType());
 			organProfileVo.setOrganAllName(customer_temp.getOrganAllName());
 			organProfileVo.setAreaString(customer_temp.getAreaString());
@@ -479,8 +481,6 @@ public class OrganController extends BaseController {
 			   }
 		 }
 		   
-		
-		
 		if (customer_temp != null) {
 			
 			OrganProfileVo organProfileVo=createOrganProfileVo(customer_temp, user, organId);
