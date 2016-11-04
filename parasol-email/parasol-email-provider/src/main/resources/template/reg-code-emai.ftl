@@ -37,7 +37,7 @@
 			</div>
 			 
 				<div class="edmText">
-					<span>${acceptor},感谢您注册金桐！<span>
+					<span>${acceptor},您进行了${operatorname}操作！<span>
 					<p>请您在30分钟内完成邮箱验证码验证</p>
 					<p>您的邮箱验证码为:${code}</p>
 	

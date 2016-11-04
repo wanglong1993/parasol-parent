@@ -35,7 +35,44 @@
           <map name="UserLoginRegister_Map_User_Name"
                  sqlitem="select id from tb_user_login_register where user_name=? "
                  sqlType="hsql" keyProperty="userName" valueProperty="id"  update="true"/>
-                                               
+         <!-- 根据状态获，审核状态，或者passport,及注册时间取用户列表 --> 
+		  <list name="UserLoginRegister_List_By_Sapc"
+                 sqlitem="select id from tb_user_login_register where statu =? and auth=? and passport=? and ctime between ? and ? order by ctime desc"
+                 sqlType="hsql" keyProperty="statu,auth,passport,ctime,ctime" valueProperty="id"  update="true"/>
+          <list name="UserLoginRegister_List_By_Sap"
+                 sqlitem="select id from tb_user_login_register where statu =? and auth=? and passport=? order by ctime desc"
+                 sqlType="hsql" keyProperty="statu,auth,passport" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_Sac"
+                 sqlitem="select id from tb_user_login_register where statu =? and auth=? and ctime between ? and ? order by ctime desc"
+                 sqlType="hsql" keyProperty="statu,auth,ctime,ctime" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_Spc"
+                 sqlitem="select id from tb_user_login_register where statu =? and passport=? and ctime between ? and ? order by ctime desc"
+                 sqlType="hsql" keyProperty="statu,passport,ctime,ctime" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_Apc"
+                 sqlitem="select id from tb_user_login_register where auth =? and passport=? and ctime between ? and ? order by ctime desc"
+                 sqlType="hsql" keyProperty="auth,passport,ctime,ctime" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_Sp"
+                 sqlitem="select id from tb_user_login_register where statu =? and passport=? order by ctime desc"
+                 sqlType="hsql" keyProperty="statu,passport" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_Sa"
+                 sqlitem="select id from tb_user_login_register where statu =? and auth=? order by ctime desc"
+                 sqlType="hsql" keyProperty="statu,auth" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_Sc"
+                 sqlitem="select id from tb_user_login_register where statu =? and ctime between ? and ? order by ctime desc"
+                 sqlType="hsql" keyProperty="statu,ctime,ctime" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_S"
+                 sqlitem="select id from tb_user_login_register where statu =? order by ctime desc"
+                 sqlType="hsql" keyProperty="statu" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_A"
+                 sqlitem="select id from tb_user_login_register where auth =? order by ctime desc"
+                 sqlType="hsql" keyProperty="auth" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_P"
+                 sqlitem="select id from tb_user_login_register where passport =? order by ctime desc"
+                 sqlType="hsql" keyProperty="passport" valueProperty="id"  update="true"/>                   
+          <list name="UserLoginRegister_List_By_C"
+                 sqlitem="select id from tb_user_login_register where ctime between ? and ? order by ctime desc"
+                 sqlType="hsql" keyProperty="ctime,ctime" valueProperty="id"  update="true"/>                   
+                                                                  
 		</object>
 		<object name="com.ginkgocap.parasol.user.model.UserOrgPerCusRel" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="passport">
 			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">

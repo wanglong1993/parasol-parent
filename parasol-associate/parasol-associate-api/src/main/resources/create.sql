@@ -9,13 +9,6 @@ CREATE TABLE `tb_associate_type` (
   UNIQUE INDEX `appId_name` (`appId`,`name`) 
 ) ENGINE=InnoDB AUTO_INCREMENT=1307 DEFAULT CHARSET=utf8;
 
-INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(1,1,'好友', UNIX_TIMESTAMP());
-INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(2,1,'人脉', UNIX_TIMESTAMP());
-INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(3,1,'客户', UNIX_TIMESTAMP());
-INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(4,1,'组织', UNIX_TIMESTAMP());
-INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(7,1,'需求', UNIX_TIMESTAMP());
-INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(8,1,'知识', UNIX_TIMESTAMP());
-
 CREATE TABLE `tb_associate` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '关联ID',
   `userId` bigint(20) NOT NULL COMMENT '用户ID（Ower）',
@@ -31,3 +24,14 @@ CREATE TABLE `tb_associate` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `userId_appId_sourceTypeId_sourceId_assocDesc_assocTypeId_assocId` (`userId`, `appId`,`sourceTypeId`,`sourceId`,`assocDesc`,`assocTypeId`,`assocId`) 
 ) ENGINE=InnoDB AUTO_INCREMENT=1445 DEFAULT CHARSET=utf8 COMMENT='关联信息表'
+
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(1,1,'好友', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(2,1,'人脉', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(3,1,'客户', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(4,1,'组织', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(7,1,'需求', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(8,1,'知识', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(9,1,'事务', UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUE(10,1,'会议',UNIX_TIMESTAMP());
+INSERT INTO tb_associate_type(id,appId, name,updateAt) VALUES(11,1,'会面',UNIX_TIMESTAMP());
+

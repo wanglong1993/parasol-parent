@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +38,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -47,16 +49,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.ginkgocap.parasol.associate.model.Associate;
 import com.ginkgocap.parasol.associate.service.AssociateService;
-import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
@@ -66,7 +69,6 @@ import com.ginkgocap.parasol.metadata.exception.CodeRegionServiceException;
 import com.ginkgocap.parasol.metadata.model.CodeRegion;
 import com.ginkgocap.parasol.metadata.service.CodeRegionService;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
-import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.parasol.user.model.User;
 import com.ginkgocap.parasol.user.model.UserBasic;
@@ -89,6 +91,7 @@ import com.ginkgocap.parasol.user.service.UserOrgPerCusRelService;
 import com.ginkgocap.parasol.user.service.UserOrganBasicService;
 import com.ginkgocap.parasol.user.service.UserOrganExtService;
 import com.ginkgocap.parasol.user.service.UserWorkHistoryService;
+import com.ginkgocap.parasol.user.web.jetty.modle.UserLoginRegister2;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Base64;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.HuanxinUtils;
 import com.ginkgocap.parasol.user.web.jetty.web.utils.Prompt;
@@ -174,9 +177,184 @@ public class UserController extends BaseControl {
 	private String dfsGintongCom; 	
 	@Value("${vcode.url.gintong}")  
 	private String vcodeUrlGintong; 	
+	@Value("${upload.web.url}")  
+    private String uploadWebUrl;  
     private static final String GRANT_TYPE="password"; 
     private static final String CLASS_NAME = UserController.class.getName();
 
+	/**
+	 * 第三方登录入口
+	 */
+	@RequestMapping(path = { "/user/user/weixinentry" }, method = { RequestMethod.GET })
+	public void weixinentry(HttpServletRequest request,HttpServletResponse response
+			)throws Exception {
+		String state=request.getSession().getId();
+		System.out.println("sessionid===="+state);
+		String code_url="https://open.weixin.qq.com/connect/qrconnect?appid=wxa8d92f54c4a0e3f6&redirect_uri="+URLEncoder.encode("http://open.gintong.com/", "utf-8") +"&response_type=code&scope=snsapi_login&state="+state+"#wechat_redirect";
+		String url= getUrl(request);
+		userLoginRegisterService.setCache(state+"_state", state, 2 * 60 * 1);
+		response.sendRedirect(code_url);
+	}    
+	/**
+	 * 第三方登录回调并获取用户信息
+	 */
+	@RequestMapping(path = { "/user/user/weixin" }, method = { RequestMethod.POST })
+	public MappingJacksonValue weixin(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "code",required = true) String code
+			,@RequestParam(name = "state",required = true) String state
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		String access_token=null;
+		String openid=null;
+		String passport=null;
+		String password=null;
+		UserLoginRegister userLoginRegister=null;
+		JSONObject json=null;
+		Long appId =0l;
+		Long id=0l;
+		//检验状态state
+		try{
+		String access_token_url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxa8d92f54c4a0e3f6&secret=ff44fd61ef8774b6d9f51f324149ebb0&code="+code+"&grant_type=authorization_code";
+		if(StringUtils.isEmpty(state)){
+			resultMap.put( "message", Prompt.state_is_null);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(ObjectUtils.isEmpty(userLoginRegisterService.getCache(state+"_state"))){
+			resultMap.put( "message", Prompt.state_is_expired_or_not_exists);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		//获取access_token
+		json=getWeixinInfo(access_token_url);
+		if(json==null){
+			resultMap.put( "message", Prompt.get_access_token_is_null);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(json.has("errmsg")){
+			resultMap.put( "message", Prompt.invild_code);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(!json.has("access_token")){
+			resultMap.put( "message", Prompt.access_token_inviild);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(json.has("access_token")) access_token=json.getString("access_token");
+		if(json.has("openid")) openid=json.getString("openid");
+		String user_info_url="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
+		//获取微信用户信息
+		json=getWeixinInfo(user_info_url);
+		if(json==null){
+			resultMap.put( "message", Prompt.weixin_userinfo_is_null);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(!json.has("unionid")){
+			resultMap.put( "message", Prompt.weixin_userinfo_is_error);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(json.has("unionid"))passport=json.getString("unionid");
+		//注册
+		passport=passport+"@weixin.com";
+		if(!userLoginRegisterService.passportIsExist(passport)){
+			userLoginRegister= new UserLoginRegister();
+			userLoginRegister.setPassport(passport);
+			String salt=userLoginRegisterService.setSalt();
+			password=userLoginRegisterService.setSha256Hash(salt, new String("123456"));
+			userLoginRegister.setSalt(salt);
+			userLoginRegister.setPassword(password);
+			userLoginRegister.setUsetType(new Byte("0"));
+			userLoginRegister.setIp(getIpAddr(request));
+			userLoginRegister.setSource(appId.toString());
+			userLoginRegister.setCtime(System.currentTimeMillis());
+			userLoginRegister.setUtime(System.currentTimeMillis());
+			userLoginRegister.setUserName("");
+			id=userLoginRegisterService.createUserLoginRegister(userLoginRegister);
+		}
+		//登录
+		MappingJacksonValue mjv=login(request,response,passport,"MTIzNDU2",null,null,null);
+		if(ObjectUtils.isEmpty(mjv)){
+			resultMap.put( "message", Prompt.weixin_login_is_error);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		resultMap=(HashMap)mjv.getValue();
+		if(!resultMap.containsKey("access_token")){
+			resultMap.put( "message", Prompt.weixin_login_is_error);
+			resultMap.put( "status", 0);
+			return new MappingJacksonValue(resultMap);
+		}
+		if(resultMap.containsKey("access_token")){
+			resultMap.put("nickname", json.has("nickname")?new String(json.get("nickname").toString().getBytes(),"UTF-8"):"");
+			resultMap.put("headimgurl", json.has("headimgurl")?json.get("headimgurl"):"");
+		}
+		//设置缓存用户信息 30分钟过期
+		userLoginRegisterService.setCache(resultMap.get("access_token").toString(), userLoginRegisterService.getUserLoginRegister(id), 30*60*1);
+		return new MappingJacksonValue(resultMap);
+		}catch(Exception e){
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+		}
+	}
+	@RequestMapping(path = { "/user/user/getWeixinInfo" }, method = { RequestMethod.GET})
+	public JSONObject getWeixinInfo(
+			@RequestParam(name = "access_token_url",required = true) String access_token_url
+			)throws Exception {
+		CloseableHttpClient httpClient = null;  
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+    	HttpEntity entity =null;
+    	JSONObject json = null;
+    	try{
+	        try{
+	        	RequestConfig defaultRequestConfig = RequestConfig.custom()
+	        			  .setSocketTimeout(5000)
+	        			  .setConnectTimeout(5000)
+	        			  .setConnectionRequestTimeout(5000)
+	        			  .setStaleConnectionCheckEnabled(true)
+	        			  .build();
+	        	httpClient = HttpClients.custom()
+	        			.setDefaultRequestConfig(defaultRequestConfig)
+	        			.build();
+	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+        	    .build();
+	            HttpGet httpGet = new HttpGet(access_token_url);
+	            httpGet.setConfig(requestConfig);
+	            CloseableHttpResponse response = httpClient.execute(httpGet);  
+	            try {  
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						resultMap.put("status", response.getStatusLine().getStatusCode());
+						entity = response.getEntity();
+						String respJson = EntityUtils.toString(entity,"UTF-8");
+						json = JSONObject.fromObject(respJson);
+						logger.info("json:"+respJson);
+					}
+	                return json;
+	            } finally {  
+	                response.close();  
+	            }  
+	        }finally{  
+	            httpClient.close();  
+	        }
+    	}catch(Exception  e){
+    		logger.info(e.getMessage());
+    		throw e;
+    	}
+	        
+	}
+	public String getUrl(HttpServletRequest request)throws Exception {
+		String url = "";
+		url = request.getScheme() +"://" + request.getServerName()+ ":" +request.getServerPort() + request.getServletPath();
+        if (request.getQueryString() != null){
+            url += "?" + request.getQueryString();
+        }
+        System.out.println("url====="+url);
+        return url;
+	}  
     /**
 	 * 完善个人用户信息
 	 * @picId 个人或组织LOGOID
@@ -781,7 +959,10 @@ public class UserController extends BaseControl {
 			if(id!=null && id>0L)userLoginRegisterService.realDeleteUserLoginRegister(id);
 			logger.info("注册失败:"+passport);
 			logger.info(e.getStackTrace());
-			throw e;
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+//			throw e;
 		}
 	}
 
@@ -832,18 +1013,276 @@ public class UserController extends BaseControl {
 			throw e;
 		}
 	}
-	
-	
+
+	/**
+	 * 获取用户详细资料
+	 * 
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserDetail" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getUserDetail(HttpServletRequest request,HttpServletResponse response
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		UserLoginRegister userLoginRegister= null;
+		Long userId=null;
+		Long appId =0l;
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			userId = LoginUserContextHolder.getUserId();
+			if(userId==null){
+				resultMap.put("message", Prompt.userId_is_null_or_empty);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			appId = LoginUserContextHolder.getAppKey();
+			if(ObjectUtils.isEmpty(appId)){
+				resultMap.put( "message", Prompt.appId_is_empty);
+				resultMap.put( "status", 0);
+				return new MappingJacksonValue(resultMap);
+			}			
+			userLoginRegister=userLoginRegisterService.getUserLoginRegister(userId);
+			if(userLoginRegister==null){
+				resultMap.put("message", Prompt.passport_is_not_exists);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			resultMap.put("userLoginRegister", userLoginRegister);
+			resultMap.put("status",1);
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(new String[]{"id","passport","email","mobile","ctime","utime","statu","auth","ip"});
+			mappingJacksonValue.setFilters(filterProvider);
+			return mappingJacksonValue;
+		}catch (Exception e ){
+			logger.info("获取用户资料失败:"+userId);
+			logger.info(e.getStackTrace());
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+//			throw e;
+		}
+	}	
+	/**
+	 * 根据状态获，审核状态，或者passport,及注册时间取用户列表
+	 * 
+	 * @param start 起始位置
+	 * @param count 每页数量
+	 * @param statu 用户状态
+	 * @param auth 审核状态
+	 * @param passport 通行证
+	 * @param from 开始时间 类型为long型
+	 * @param to 结束时间 类型为long型
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/getUserList" }, method = { RequestMethod.POST})
+	public MappingJacksonValue getUserList(HttpServletRequest request,HttpServletResponse response
+			,@RequestParam(name = "statu",required = false) int statu
+			,@RequestParam(name = "auth",required = false) int auth
+			,@RequestParam(name = "passport",required = false) String passport
+			,@RequestParam(name = "from",required = false) long from
+			,@RequestParam(name = "to",required = false) long to
+			,@RequestParam(name = "start",required = true) int start
+			,@RequestParam(name = "count",required = true) int count
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<UserLoginRegister> list = null;
+		Long userId=null;
+		Long appId =0l;
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			list=userLoginRegisterService.getUserList(start,count,statu, auth, passport, from, to);
+			if(list==null){
+				resultMap.put("message", Prompt.search_no_result);
+				resultMap.put("status",0);
+				return new MappingJacksonValue(resultMap);
+			}
+			resultMap.put("userlist", list);
+			resultMap.put("status",1);
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(new String[]{"id","passport","source","email","mobile","ctime","utime","statu","auth","ip"});
+			mappingJacksonValue.setFilters(filterProvider);
+			return mappingJacksonValue;
+		}catch (Exception e ){
+			logger.info("获取用户资料失败:"+userId);
+			logger.info(e.getStackTrace());
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+//			throw e;
+		}
+	}	
+	/**
+	 * 完善用户资料
+	 * 
+	 * @param mobile 手机号
+	 * @param email 邮箱
+	 * @param file 用户头像
+	 * @param access_token 开始时间 类型为long型
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/updateUserLoginRegister/{access_token1}" }, method = { RequestMethod.POST})
+	public MappingJacksonValue updateUserLoginRegister(HttpServletRequest request,HttpServletResponse response
+//			,@RequestParam(name = "mobile",required = true) String mobile
+//			,@RequestParam(name = "email",required = true) String email
+//			,@RequestParam(name = "file", required = true) MultipartFile file
+			,@ModelAttribute UserLoginRegister2 userLoginRegister
+			,@PathVariable("access_token1") String access_token			
+			)throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		logger.info("mobile====="+request.getParameter("mobile"));
+		logger.info("mobile====="+userLoginRegister.getMobile());
+		logger.info("email====="+userLoginRegister.getEmail());
+		logger.info("file====="+userLoginRegister.getFile().getOriginalFilename());
+		List<UserLoginRegister> list = null;
+		Long userId=null;
+		Long appId =0l;
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+//			userId = LoginUserContextHolder.getUserId();
+//			if(userId==null){
+//				resultMap.put("message", Prompt.userId_is_null_or_empty);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			appId = LoginUserContextHolder.getAppKey();
+//			if(ObjectUtils.isEmpty(appId)){
+//				resultMap.put( "message", Prompt.appId_is_empty);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(StringUtils.isEmpty(mobile)){
+//				resultMap.put("message", Prompt.mobile_is_null);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(!isMobileNo(mobile)){
+//				resultMap.put("message", Prompt.mobile_format_is_error);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(!isEmail(email)){
+//				resultMap.put("message", Prompt.email_format_is_error);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(ObjectUtils.isEmpty(file)){
+//				resultMap.put("message", Prompt.head_image_is_null);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			JSONObject json=upload(appId.toString(),userId.toString(),file);
+//			if(json==null){
+//				resultMap.put( "message", Prompt.upload_user_head_image_error);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			if(!json.has("id")){
+//				resultMap.put( "message", Prompt.upload_user_head_image_error);
+//				resultMap.put( "status", 0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+//			UserLoginRegister userLoginRegister =(UserLoginRegister)userLoginRegisterService.getUserLoginRegister(userId);
+//			userLoginRegister.setMobile(mobile);
+//			userLoginRegister.setEmail(email);
+//			userLoginRegister.setHeadImageId(json.getLong("id"));
+//			logger.info(userLoginRegister.getMobile());
+//			boolean bl=userLoginRegisterService.updataUserLoginRegister(userLoginRegister);
+//			if(!bl){
+//				resultMap.put("message", Prompt.Operation_failed);
+//				resultMap.put("status",0);
+//				return new MappingJacksonValue(resultMap);
+//			}
+			resultMap.put("message", Prompt.Operation_succeeded);
+			resultMap.put("status",1);
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			return mappingJacksonValue;
+		}catch (Exception e ){
+			logger.info("完善用户资料:"+userId);
+			logger.info(e.getStackTrace());
+			resultMap.put("message", Prompt.server_error);
+			resultMap.put("status",0);
+			return new MappingJacksonValue(resultMap);
+//			throw e;
+		}
+	}	
+
+	/**
+	 * 上传头像
+	 * 
+	 * @param file  数据流
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/user/user/upload" }, method = { RequestMethod.POST})
+	public JSONObject upload(
+			@RequestParam(name = "source",required = true) String source
+			,@RequestParam(name = "userId",required = true) String userId
+			,@RequestParam(name = "file", required = true) MultipartFile file
+			)throws Exception {
+		CloseableHttpClient httpClient = null;  
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+    	HttpEntity entity =null;
+    	JSONObject json = null;
+    	try{
+	        try{
+	        	RequestConfig defaultRequestConfig = RequestConfig.custom()
+	        			  .setSocketTimeout(5000)
+	        			  .setConnectTimeout(5000)
+	        			  .setConnectionRequestTimeout(5000)
+	        			  .setStaleConnectionCheckEnabled(true)
+	        			  .build();
+	        	httpClient = HttpClients.custom()
+	        			.setDefaultRequestConfig(defaultRequestConfig)
+	        			.build();
+//	        	RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+//	        		.setProxy(new HttpHost("192.168.130.100", 8091))
+//	        	    .build();
+	        	InputStreamBody file2 = new InputStreamBody(file.getInputStream(),file.getName());
+	            HttpPost httpPost = new HttpPost(uploadWebUrl);
+	            HttpEntity reqEntity = MultipartEntityBuilder.create()  
+	            .addPart("file", file2)
+	            .addPart("appKey",  new StringBody(source, ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("userId", new StringBody(userId, ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("fileType", new StringBody("1", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("moduleType", new StringBody("1", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("taskId", new StringBody(String.valueOf(System.currentTimeMillis()), ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("fileExtName", new StringBody("jpg", ContentType.create("text/plain", Consts.UTF_8)))
+	            .addPart("name", new StringBody("", ContentType.create("text/plain", Consts.UTF_8)))
+	            .build();  
+	            httpPost.setEntity(reqEntity);  
+//	            httpPost.setConfig(requestConfig);
+	            CloseableHttpResponse response = httpClient.execute(httpPost);  
+	            try {  
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						resultMap.put("status", response.getStatusLine().getStatusCode());
+						entity = response.getEntity();
+						String respJson = EntityUtils.toString(entity);
+						json = JSONObject.fromObject(respJson);
+						logger.info("json:"+respJson);
+					}
+	                EntityUtils.consume(entity);
+	                return json;
+	            } finally {  
+	                response.close();  
+	            }  
+	        }finally{  
+	            httpClient.close();  
+	        }
+    	}catch(Exception  e){
+    		throw e;
+    	}
+	        
+	}	
 	/**
 	 * 指定显示那些字段
 	 * 
 	 * @param fileds
 	 * @return
 	 */
-	private SimpleFilterProvider builderSimpleFilterProvider(String fileds) {
+	private SimpleFilterProvider builderSimpleFilterProvider(String[] fileds) {
 		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
 		// 请求指定字段
-		String[] filedNames = StringUtils.split(fileds, ",");
+//		String[] filedNames = StringUtils.split(fileds, ",");
+		String[] filedNames =fileds;
 		Set<String> filter = new HashSet<String>();
 		if (filedNames != null && filedNames.length > 0) {
 			for (int i = 0; i < filedNames.length; i++) {
@@ -854,14 +1293,12 @@ public class UserController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // id',
-			filter.add("sourceId"); // 资源ID
-			filter.add("sourceType"); // 资源类型
-			filter.add("tagName"); // 标签名称
+			filter.add("passport"); 
+			filter.add("ctime"); 
+			filter.add("status"); 
 		}
 
-		filterProvider.addFilter(TagSource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
-		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("id","directoryId","sourceTitle","sourceUrl"));
-		filterProvider.addFilter(Associate.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept("id","assocTitle"));
+		filterProvider.addFilter(UserLoginRegister.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}	
 	/**
@@ -2224,6 +2661,8 @@ public class UserController extends BaseControl {
 			resultMap.put("expires_in", json.has("expires_in")?json.get("expires_in"):"");
 			resultMap.put("scope", json.has("scope")?json.get("scope"):"");
 			resultMap.put("status",1);
+			//设置缓存用户信息 30分钟过期
+			userLoginRegisterService.setCache(resultMap.get("access_token").toString(), userLoginRegister, 30*60*1);
 			return new MappingJacksonValue(resultMap);
 		}catch (Exception e ){
 			logger.info("登录失败:"+passport);
@@ -2836,7 +3275,7 @@ public class UserController extends BaseControl {
 				if(isEmail(passport)){
 //					code=userLoginRegisterService.getIdentifyingCode(passport);
 //					if(StringUtils.isEmpty(code)){
-					if(emailtype!=2 && emailtype!=3 && emailtype!=4 && emailtype!=6 && emailtype!=7){
+					if(emailtype!=0 && emailtype!=2 && emailtype!=3 && emailtype!=4 && emailtype!=6 && emailtype!=7 && emailtype!=8){
 						resultMap.put( "message", Prompt.findpwd_email_type_is_not_correcct);
 						resultMap.put( "status", 0);
 						return new MappingJacksonValue(resultMap);
@@ -2844,6 +3283,12 @@ public class UserController extends BaseControl {
 						code=generationIdentifyingCode();
 						Map<String, Object> map = new HashMap<String, Object>();
 //				        if(emailtype==4)map.put("email", emailFindpwdUrlCoopert+"?email="+passport+"&code="+code);
+						if(emailtype==0){
+				        	map.put("operatorname",Prompt.register);
+				        }
+						if(emailtype==8){
+							map.put("operatorname",Prompt.findpwd);
+						}
 				        if(emailtype==2){
 				        	map.put("operatorname",Prompt.findpwd);
 				        	map.put("email", emailValidateUrl+"?email="+passport+"&code="+code);

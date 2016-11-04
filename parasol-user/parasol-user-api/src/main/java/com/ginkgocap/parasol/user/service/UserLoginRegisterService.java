@@ -3,7 +3,9 @@ package com.ginkgocap.parasol.user.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
+import com.ginkgocap.parasol.user.model.UserFriendly;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 
 /**
@@ -195,6 +197,20 @@ public interface UserLoginRegisterService {
 	 * @param key
 	 * @throws UserLoginRegisterServiceException
 	 */
-	public Object getCache(String key) throws UserLoginRegisterServiceException; 	
+	public Object getCache(String key) throws UserLoginRegisterServiceException;
+	
+	/**
+	 * 根据状态获，审核状态，或者passport,及注册时间取用户列表
+	 * 
+	 * @param start 起始位置
+	 * @param count 每页数量
+	 * @param statu 用户状态
+	 * @param auth 审核状态
+	 * @param passport 通行证
+	 * @param from 开始时间
+	 * @param to 结束时间
+	 * @throws UserLoginRegisterServiceException
+	 */
+	public List<UserLoginRegister> getUserList(int start,int count,int statu,int auth,String passport,long from,long to) throws UserLoginRegisterServiceException;	
 
 }

@@ -23,7 +23,9 @@ import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.email.service.EmailService;
 import com.ginkgocap.parasol.sms.service.ShortMessageService;
+import com.ginkgocap.parasol.user.exception.UserFriendlyServiceException;
 import com.ginkgocap.parasol.user.exception.UserLoginRegisterServiceException;
+import com.ginkgocap.parasol.user.model.UserFriendly;
 import com.ginkgocap.parasol.user.model.UserLoginRegister;
 import com.ginkgocap.parasol.user.service.UserLoginRegisterService;
 @Service("userLoginRegisterService")
@@ -50,6 +52,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 	private static final String USER_LOGIN_REGISTER_MAP_MOBILE = "UserLoginRegister_Map_Mobile"; 
 	private static final String USER_LOGIN_REGISTER_MAP_EMAIL = "UserLoginRegister_Map_Email"; 
 	private static final String USER_LOGIN_REGISTER_MAP_USER_NAME = "UserLoginRegister_Map_User_Name"; 
+	private static final String UserLoginRegister_List_By_Sapc = "UserLoginRegister_List_By_Sapc"; 
 	private static Logger logger = Logger.getLogger(UserLoginRegisterServiceImpl.class);
 	
 	private static synchronized SecureRandomNumberGenerator getSecureRandomNumberGeneratorInstance(){
@@ -389,7 +392,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		try {
 			boolean bl=false;
 			if(StringUtils.isEmpty(mailTo))throw new UserLoginRegisterServiceException("email is null or empty.");
-			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4 && type!=5 && type!=6 && type!=7) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
+			if(type!=0 && type!=1 && type!=2 && type !=3 && type !=4 && type!=5 && type!=6 && type!=7 && type!=8) throw new UserLoginRegisterServiceException("type must be 0 or 1 or 2 or 3 or 4.");
 			if(type==0) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-code-emai.ftl");
 			if(type==1) bl=emailService.sendEmailSync(mailTo, null, registerCoopertTitle, null, map, "reg-activate-emai-coopert.ftl");
 			if(type==2) bl= emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "findpwd-email.ftl");
@@ -398,6 +401,7 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 			if(type==4) bl= emailService.sendEmailSync(mailTo, null, findPasswordCoopertTitle, null, map, "findpwd-email-coopert.ftl");
 			if(type==5) bl=emailService.sendEmailSync(mailTo, null, registerTitle, null, map, "reg-activate-emai-coopert.ftl");
 			if(type==6) bl=emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "bindemail.ftl");
+			if(type==8) bl=emailService.sendEmailSync(mailTo, null, findPasswordTitle, null, map, "reg-code-emai.ftl");
 			return bl;
 		}catch (Exception e) {
 			if (logger.isDebugEnabled()) {
@@ -467,4 +471,78 @@ public class UserLoginRegisterServiceImpl extends BaseService<UserLoginRegister>
 		Object value=cache.get(cache.getCacheHelper().buildKey(CacheModule.REGISTER, key));
 		return value!=null?value:null;
 	}
+	@Override
+	public List<UserLoginRegister> getUserList(int start,int count,int statu, int auth,String passport, long from, long to)throws UserLoginRegisterServiceException {
+		List<UserLoginRegister> list =null;
+		List<Long> ids =null;
+		try {
+			//根据用户状态，审核状态，通行证，起止时间查
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && from>0 && to>0){
+			ids =getIds(UserLoginRegister_List_By_Sapc, start, count,new Object[]{statu,auth,passport,from,to});
+			}
+			//根据用户状态，审核状态，通行证查
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
+			ids =getIds(UserLoginRegister_List_By_Sap,start, count, new Object[]{statu,auth,passport});
+			}
+			//根据用户状态，审核状态，起止时间查
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
+			ids =getIds(UserLoginRegister_List_By_Sac,start, count, new Object[]{statu,auth,from,to});
+			}
+			//根据用户状态，通行证，起止时间查
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from>0 || to>0)){
+			ids =getIds(UserLoginRegister_List_By_Spc,start, count, new Object[]{statu,passport,from,to});
+			}
+			//根据审核状态，通行证，起止时间查
+			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && !StringUtils.isEmpty(passport) && (from>0 || to>0)){
+			ids =getIds(UserLoginRegister_List_By_Apc,start, count, new Object[]{auth,passport,from,to});
+			}
+			//根据用户状态，审核状态查
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
+			ids =getIds(UserLoginRegister_List_By_Sp,start, count, new Object[]{statu,passport});
+			}
+			//根据用户状态，审核状态查
+			if((statu==0 || statu==1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
+			ids =getIds(UserLoginRegister_List_By_Sa,start, count, new Object[]{statu,auth});
+			}
+			//根据用户状态，起止时间查
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
+			ids =getIds(UserLoginRegister_List_By_Sc,start, count, new Object[]{statu,from,to});
+			}
+			//根据用户状态查
+			if((statu==0 || statu==1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
+			ids =getIds(UserLoginRegister_List_By_S,start, count, new Object[]{statu});
+			}
+			//根据审核状态查
+			if((statu!=0 && statu!=1) && (auth==0 || auth==1 || auth==2) && StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
+			ids =getIds(UserLoginRegister_List_By_A,start, count, new Object[]{auth});
+			}
+			//根据通行证查
+			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && !StringUtils.isEmpty(passport) && (from<=0 || to<=0)){
+			ids =getIds(UserLoginRegister_List_By_P,start, count, new Object[]{passport});
+			}
+			//根据用起止时间查
+			if((statu!=0 && statu!=1) && (auth!=0 && auth!=1 && auth!=2) && StringUtils.isEmpty(passport) && (from>0 || to>0)){
+			ids =getIds(UserLoginRegister_List_By_C,start, count, new Object[]{from,to});
+			}
+			if(ids==null || ids.size()==0 )return null;
+			list=getEntityByIds(ids);
+			return list;
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				e.printStackTrace(System.err);
+			}
+			throw new UserLoginRegisterServiceException(e);
+		}
+	}
+	private static final String UserLoginRegister_List_By_Sap = "UserLoginRegister_List_By_Sap"; 
+	private static final String UserLoginRegister_List_By_Sac = "UserLoginRegister_List_By_Sac"; 
+	private static final String UserLoginRegister_List_By_Spc = "UserLoginRegister_List_By_Spc"; 
+	private static final String UserLoginRegister_List_By_Apc = "UserLoginRegister_List_By_Apc"; 
+	private static final String UserLoginRegister_List_By_Sp = "UserLoginRegister_List_By_Sp"; 
+	private static final String UserLoginRegister_List_By_Sa = "UserLoginRegister_List_By_Sa"; 
+	private static final String UserLoginRegister_List_By_Sc = "UserLoginRegister_List_By_Sc"; 
+	private static final String UserLoginRegister_List_By_S = "UserLoginRegister_List_By_S"; 
+	private static final String UserLoginRegister_List_By_A = "UserLoginRegister_List_By_A"; 
+	private static final String UserLoginRegister_List_By_P = "UserLoginRegister_List_By_P"; 
+	private static final String UserLoginRegister_List_By_C = "UserLoginRegister_List_By_C"; 
 }

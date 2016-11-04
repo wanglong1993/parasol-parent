@@ -4,12 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.web.HttpEncodingProperties;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.HttpPutFormContentFilter;
 
 import com.ginkgocap.parasol.user.web.jetty.web.filter.ParasolLoggerFilter;
 
@@ -34,6 +33,14 @@ public class ParasolLogerFilterAutoConfig {
 	public FilterRegistrationBean filterRegistrationBean(ParasolLoggerFilter parasolLoggerFilter) {
 		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
 		filterRegistrationBean.setFilter(parasolLoggerFilter);
+		filterRegistrationBean.setEnabled(true);
+		filterRegistrationBean.addUrlPatterns(exampleFilterPropertys.getUrlPatterns());
+		return filterRegistrationBean;
+	}
+	@Bean
+	public FilterRegistrationBean filterRegistrationBean2(HttpPutFormContentFilter httpPutFormContentFilter) {
+		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+		filterRegistrationBean.setFilter(httpPutFormContentFilter);
 		filterRegistrationBean.setEnabled(true);
 		filterRegistrationBean.addUrlPatterns(exampleFilterPropertys.getUrlPatterns());
 		return filterRegistrationBean;
