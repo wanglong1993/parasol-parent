@@ -49,8 +49,11 @@ public class ColumnSelfController extends BaseController {
 					if(isInList(c,list2)){
 						continue;
 					}
+					else{
+						list.add(c);
+					}
 				}
-				list.addAll(list1);
+				
 			}
 		}
 		result.setResponseData(list);
