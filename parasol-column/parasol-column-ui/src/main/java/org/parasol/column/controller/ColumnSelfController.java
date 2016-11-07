@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.parasol.column.api.model.ColumnFlag;
 import org.parasol.column.entity.ColumnSelf;
+import org.parasol.column.service.ColumnCustomService;
 import org.parasol.column.service.ColumnSelfService;
 import org.parasol.column.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class ColumnSelfController extends BaseController {
 	@Autowired
 	private ColumnSelfService css;
 	
+	@Autowired
+	private ColumnCustomService ccs;
+	
 	@RequestMapping(value="/showAllColumnSelf",method = RequestMethod.GET)
 	@ResponseBody
 	public InterfaceResult<List<ColumnSelf>> showAllColumnSelf(HttpServletRequest request, HttpServletResponse response) throws Exception{
@@ -38,12 +42,28 @@ public class ColumnSelfController extends BaseController {
 		List<ColumnSelf> list=css.queryListByPidAndUserId(pid, 0l);
 		if (uid.longValue() != 0) {
 			List<ColumnSelf> list1 = css.queryListByPidAndUserId(pid, uid);
+			List<ColumnSelf> list2=ccs.queryListByPidAndUserId(pid, uid);
+			
 			if (list1 != null) {
+				for(ColumnSelf c:list1){
+					if(isInList(c,list2)){
+						continue;
+					}
+				}
 				list.addAll(list1);
 			}
 		}
 		result.setResponseData(list);
 		return result;
+	}
+	
+	private static Boolean isInList(ColumnSelf cs,List<ColumnSelf> list){
+		for(ColumnSelf c : list){
+			if(c.getId().longValue()==cs.getId().longValue()){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@RequestMapping(value="/addColumnSelf",method = RequestMethod.POST)
