@@ -1,9 +1,9 @@
 package org.parasol.column.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,14 +39,24 @@ public class ColumnSelfController extends BaseController {
 		InterfaceResult<List<ColumnSelf>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		Long pid=0l;
 		Long uid=this.getUserId(request);
-		List<ColumnSelf> list=css.queryListByPidAndUserId(pid, 0l);
+		List<ColumnSelf> list=new ArrayList<ColumnSelf>();
 		if (uid.longValue() != 0) {
-			List<ColumnSelf> list1 = css.queryListByPidAndUserId(pid, uid);
-			List<ColumnSelf> list2=ccs.queryListByPidAndUserId(pid, uid);
-			
-			if (list1 != null) {
-				for(ColumnSelf c:list1){
-					if(isInList(c,list2)){
+			List<ColumnSelf> listSelf = css.queryListByPidAndUserId(pid, uid);
+			List<ColumnSelf> listCust=ccs.queryListByPidAndUserId(pid, uid);
+			List<ColumnSelf> listSys=css.queryListByPidAndUserId(pid, 0l);
+			if(listSys!=null){
+				for(ColumnSelf c:listSys){
+					if(isInList(c,listCust)){
+						continue;
+					}
+					else{
+						list.add(c);
+					}
+				}
+			}
+			if (listSelf != null) {
+				for(ColumnSelf c:listSelf){
+					if(isInList(c,listCust)){
 						continue;
 					}
 					else{
