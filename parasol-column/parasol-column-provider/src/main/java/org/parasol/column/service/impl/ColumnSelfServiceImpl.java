@@ -66,7 +66,7 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 	public ColumnSelf insert(ColumnSelf record) {
 		// TODO Auto-generated method stub
 		int n = csd.insert(record);
-		if(n>0&&record.getUserOrSystem().shortValue()==ColumnFlag.user.getVal()){
+		/*if(n>0&&record.getUserOrSystem().shortValue()==ColumnFlag.user.getVal()){
 			ColumnCustom dest=new ColumnCustom();
 			try {
 				BeanUtils.copyProperties(dest,record);
@@ -81,7 +81,7 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 				// TODO Auto-generated catch block
 				log.error(e);
 			}
-		}
+		}*/
 		return record;
 	}
 
