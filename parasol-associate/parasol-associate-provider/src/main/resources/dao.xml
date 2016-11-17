@@ -16,6 +16,8 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
 			                  
+
+            
            <list name="List_Associate_Id_AppId_SourceId"
                   sqlitem="select id from tb_associate where appId=? and sourceId=?"
                   sqlType="hsql" keyProperty="appId,sourceId" valueProperty="id"/>
@@ -25,6 +27,13 @@
                   sqlitem="select id from tb_associate where appId=? and sourceTypeId=? and sourceId=?"
                   sqlType="hsql" keyProperty="appId,sourceTypeId,sourceId" valueProperty="id"/>
 
+            <list name="List_Associate_userId_AssociateType"
+                  sqlitem="select id from tb_associate where userId = ? and assocTypeId = ?"
+                  sqlType="hsql" keyProperty="userId,typeId" valueProperty="id"/>
+
+            <list name="List_Associate_userId_assocId"
+                  sqlitem="select id from tb_associate where userId = ? and assocId = ?"
+                  sqlType="hsql" keyProperty="userId,assocId" valueProperty="id"/>
 		</object>
 		
 		<object name="com.ginkgocap.parasol.associate.model.AssociateType" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">
@@ -44,6 +53,6 @@
 		</object>
 		
 
-	</route>
+    </route>
 </dal>
 

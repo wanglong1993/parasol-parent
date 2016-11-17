@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ginkgocap.parasol.associate.model.Page;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,10 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
 	private static String LIST_ASSOCIATE_ID_APPID_SOURCEID = "List_Associate_Id_AppId_SourceId";
 	private static String LIST_ASSOCIATE_ID_APPID_SOURCETYPEID_SOURCEID = "List_Associate_Id_AppId_SourceTypeId_SourceId"; // 查询一个应用的分类根收藏夹
 	
+    private static String List_Associate_userId_AssociateType = "List_Associate_userId_AssociateType";
+    private static String List_Associate_userId_assocId = "List_Associate_userId_assocId";
+
+
 	@Autowired
 	private AssociateTypeService associateTypeService;
 
@@ -194,4 +200,70 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
 		}
 	}
 
+    @Override
+    public Page<Associate> getassociatesByPage(Long userId, Long typeId, int pageNo, int pageSize)
+            throws AssociateServiceException {
+        Page<Associate> page = new Page();
+        ServiceError.assertUserIdForAssociate(userId);
+        ServiceError.assertAssociateTypeIdForAssociate(typeId);
+
+        try {
+            int index = pageNo * pageSize;
+            long totalCount = countEntitys(List_Associate_userId_AssociateType, userId, typeId);
+
+            page.setTotalCount(totalCount);
+            page.setPageNo(pageNo);
+            page.setPageSize(pageSize);
+
+            List<Associate> list = getSubEntitys(List_Associate_userId_AssociateType, index, pageSize, userId, typeId);
+            page.setList(list);
+            return page;
+        } catch (BaseServiceException e) {
+            e.printStackTrace(System.err);
+            throw new AssociateServiceException(e);
+
+        }
+    }
+
+    /**
+     * @param userId
+     * @param typeId
+     * @return
+     * @throws AssociateServiceException
+     */
+    @Override
+    public Page<Map<String, Object>> getAssociatesByPage(Long userId, Long typeId, int page, int size) throws AssociateServiceException {
+        ServiceError.assertUserIdForAssociate(userId);
+        ServiceError.assertAssociateTypeIdForAssociate(typeId);
+        Page<Map<String, Object>> response = new Page<Map<String, Object>>();
+        try {
+            int index = page*size;
+            long totalCount = countEntitys(List_Associate_userId_AssociateType, userId, typeId);
+
+            response.setTotalCount(totalCount);
+            response.setPageNo(page);
+            response.setPageSize(size);
+
+            List<Associate> associateList = this.getSubEntitys(List_Associate_userId_AssociateType, index, size, userId, typeId);
+            if (CollectionUtils.isEmpty(associateList)) {
+                return null;
+            }
+            List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(associateList.size());
+            for (Associate asso : associateList) {
+                if (asso != null) {
+                    long count = countEntitys(List_Associate_userId_assocId, userId, asso.getAssocId());
+                    Map<String, Object> map = new HashedMap(2);
+                    map.put("asso", asso);
+                    map.put("count", count);
+                    list.add(map);
+                }
+            }
+
+            response.setList(list);
+            return response;
+        } catch (BaseServiceException e) {
+            e.printStackTrace(System.err);
+            throw new AssociateServiceException(e);
+        }
+    }
 }

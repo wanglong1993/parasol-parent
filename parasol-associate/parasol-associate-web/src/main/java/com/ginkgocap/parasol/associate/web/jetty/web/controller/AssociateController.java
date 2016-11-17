@@ -41,6 +41,7 @@ import com.ginkgocap.parasol.associate.exception.AssociateServiceException;
 import com.ginkgocap.parasol.associate.model.Associate;
 import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateService;
+import com.ginkgocap.parasol.associate.model.Page;
 
 /**
  * 
@@ -67,6 +68,12 @@ public class AssociateController extends BaseControl {
 	private static final String parameterAssocTitle = "assocTitle"; // 显示的标题，主要是为了显示
 	private static final String parameterAssocMetadata = "assocMetadata"; // 关联的附件消息（比如图片地址，URL连接等，应用根据需求自己定义）
 
+    private static final String parameteruserId = "userId"; // 被关联用户ID
+    private static final String parameterAssocTypeName = "name"; //
+
+    private static final String parameterAssocPage = "page";
+    private static final String parameterAssocSize = "size";
+    private static final int pageInitSize = 5;
 	@Autowired
 	private AssociateService associateService;
 
@@ -271,7 +278,79 @@ public class AssociateController extends BaseControl {
 		return mappingJacksonValue;
 	}
 
-	/**
+    /**
+     * 通过param查询Associate分页
+     *
+     * @param fileds
+     * @param debug
+     * @param name
+     * @param pageNoStr
+     * @param pageSizeStr
+     * @param request
+     * @return
+     * @throws AssociateServiceException
+     */
+
+	/*@RequestMapping(path = { "/associate/associate/getAssociateAll" }, method = { RequestMethod.GET })
+    public MappingJacksonValue getPAssociates(
+			@RequestParam(name = AssociateController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = AssociateController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = AssociateController.parameterAssocTypeId, required = true) long typeId,
+			@RequestParam(name = AssociateController.parameterAssocPageNoStr, required = true) String pageNoStr,
+			@RequestParam(name = AssociateController.parameterAssocPageSizeStr,required = false) String pageSizeStr,
+			HttpServletRequest request ) throws AssociateServiceException {
+		// @formatter:on
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+
+			int pageNo = Integer.parseInt(pageNoStr);
+			pageSize = Integer.parseInt(PageSizeStr);
+			pageSize = pageSize == 0 ? 5 : pageSize;
+
+			Long loginUserId=this.getUserId(request);
+
+			Page<Associate> page = associateService.getassociatesByPage(loginUserId,typeId,pageNo,pageSize);
+			Map<String, Object> reusltMap = new HashMap<String, Object>();
+			reusltMap.put("data", page);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(reusltMap);
+			mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
+			return mappingJacksonValue;
+		} catch (AssociateServiceException e) {
+			throw e;
+		}
+	}*/
+    @RequestMapping(path = {"/associate/associate/getAssociateByType"}, method = {RequestMethod.GET})
+    public MappingJacksonValue getPgAssociates(
+            @RequestParam(name = AssociateController.parameterAssocPage, required = true) String pageNoStr,
+            @RequestParam(name = AssociateController.parameterAssocSize, required = false) String pageSizeStr,
+            @RequestParam(name = AssociateController.parameterFields, defaultValue = "") String fileds,
+            @RequestParam(name = AssociateController.parameterDebug, defaultValue = "") String debug,
+            @RequestParam(name = AssociateController.parameterAssocTypeId, required = true) Long typeId,
+            HttpServletRequest request) throws AssociateServiceException {
+        MappingJacksonValue mappingJacksonValue = null;
+        try {
+
+            int pageNo = Integer.parseInt(pageNoStr);
+            int pageSize = Integer.parseInt(pageSizeStr);
+            pageSize = pageSize == 0 ? AssociateController.pageInitSize : pageSize;
+
+            Long loginUserId = this.getUserId(request);
+
+            Page<Map<String, Object>> page = associateService.getAssociatesByPage(loginUserId,typeId, pageNo, pageSize);
+
+            Map<String, Object> reusltMap = new HashMap<String, Object>();
+            reusltMap.put("data", page);
+            // 2.转成框架数据
+            mappingJacksonValue = new MappingJacksonValue(reusltMap);
+            mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
+            return mappingJacksonValue;
+        } catch (AssociateServiceException e) {
+            throw e;
+        }
+    }
+
+    /**
 	 * 指定显示那些字段
 	 * 
 	 * @param fileds
@@ -291,6 +370,10 @@ public class AssociateController extends BaseControl {
 			}
 		} else {
 			filter.add("id"); // id',
+            filter.add("userId");
+            filter.add("appId");
+            filter.add("sourceTypeId");
+            filter.add("sourceId");
 			filter.add("assocDesc"); // '关联描述，比如文章的作者，或者编辑等；关联标签描述',
 			filter.add("assocTypeId"); // '被关联的类型可以参考AssociateType对象，如：知识, 人脉,组织，需求，事件等',
 			filter.add("assocId"); // '被关联数据ID',

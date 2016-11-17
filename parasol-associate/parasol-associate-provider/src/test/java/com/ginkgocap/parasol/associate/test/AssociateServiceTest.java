@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.ginkgocap.parasol.associate.model.Page;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.math.RandomUtils;
@@ -111,4 +112,29 @@ public class AssociateServiceTest extends TestBase implements Test {
 		}
 		
 	}
+
+    @org.junit.Test
+    public void testGetAssociatesPage() throws AssociateTypeServiceException, AssociateServiceException, IOException {
+        Page<Associate> page = associateService.getassociatesByPage(7L, 2l,2, 5);
+
+        List<Associate> associates = page.getList();
+
+        for (Associate associate : associates) {
+            JsonObjectOutput joo = new JsonObjectOutput(System.out);
+            joo.writeObject(associate);
+
+        }
+    }
+
+    @org.junit.Test
+    public void testGetAssociatesByAssocId() throws AssociateServiceException, IOException {
+        Page<Map<String, Object>> page = associateService.getAssociatesByPage(7L, 7L,0,5);
+
+        for (Map<String, Object> associate : page.getList()) {
+            //Assert.assertTrue(MapUtils.isNotEmpty(associate));
+            JsonObjectOutput joo = new JsonObjectOutput(System.out);
+            joo.writeObject(associate);
+
+        }
+    }
 }

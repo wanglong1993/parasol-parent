@@ -43,6 +43,12 @@ public abstract class ServiceError {
 		}
 	}
 
+	public static void assertAssocIdForAssociate(Long assocId) throws AssociateServiceException {
+		if (assocId == null || assocId < 0) {
+			throw new AssociateServiceException(ERROR_PARAMETER_NULL, "Required long parameter assocId is not present");
+		}
+	}
+
 	public static void assertAssociateIdForAssociate(Long associateId) throws AssociateServiceException {
 		if (associateId == null || associateId < 0) {
 			throw new AssociateServiceException(ERROR_PARAMETER_NULL, "Required long parameter associateId is not present");
