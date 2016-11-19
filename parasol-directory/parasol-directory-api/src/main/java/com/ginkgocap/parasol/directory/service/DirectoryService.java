@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ginkgocap.parasol.directory.exception.DirectoryServiceException;
 import com.ginkgocap.parasol.directory.model.Directory;
+import com.ginkgocap.parasol.directory.model.Page;
 
 /**
  * 操作Directory的接口定义
@@ -131,4 +132,6 @@ public interface DirectoryService {
 	 */
 	public int countDirectorysForRoot(Long appId, Long userId, Long directoryTypeId) throws DirectoryServiceException;
 
+
+	public Page<Directory> getDirectoryName(Long userId, String name, int pageNo,int pageSize)throws DirectoryServiceException;
 }

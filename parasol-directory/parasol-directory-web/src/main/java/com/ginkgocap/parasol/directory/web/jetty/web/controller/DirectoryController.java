@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.directory.exception.DirectoryServiceException;
 import com.ginkgocap.parasol.directory.model.Directory;
+import com.ginkgocap.parasol.directory.model.Page;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -32,9 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-
 /**
- * 
  * @author allenshen
  * @date 2015年11月20日
  * @time 下午1:19:18
@@ -42,303 +41,333 @@ import java.util.*;
  */
 @RestController
 public class DirectoryController extends BaseControl {
-	private static Logger logger = Logger.getLogger(DirectoryController.class);
+    private static Logger logger = Logger.getLogger(DirectoryController.class);
 
-	private static final String parameterFields = "fields";
-	private static final String parameterDebug = "debug";
-	private static final String parameterRootType = "rootType"; // 查询的应用分类
-	private static final String parameterName = "name"; // 目录名称
-	private static final String parameterDirectoryId = "directoryId"; // 目录ID
-	private static final String parameterToDirectoryId = "toDirectoryId"; // 移动目录的生活，移动那个目录下
-	private static final String parameterParentId = "pId"; // 父目录ID
+    private static final String parameterFields = "fields";
+    private static final String parameterDebug = "debug";
+    private static final String parameterRootType = "rootType"; // 查询的应用分类
+    private static final String parameterName = "name"; // 目录名称
+    private static final String parameterDirectoryId = "directoryId"; // 目录ID
+    private static final String parameterToDirectoryId = "toDirectoryId"; // 移动目录的生活，移动那个目录下
+    private static final String parameterParentId = "pId"; // 父目录ID
+    private static final String parameterAssocPage = "page";
+    private static final String parameterAssocSize = "size";
 
+    private static final int pageInitSize = 10;
 
-	@Autowired
-	private DirectoryService directoryService;
+    @Autowired
+    private DirectoryService directoryService;
 
-	/**
-	 * 2.创建分类下的根目录
-	 * 
-	 * @param request
-	 * @return
-	 * @throws DirectoryServiceException
-	 * @throws CodeServiceException
-	 */
-	@RequestMapping(path = { "/directory/directory/createRootDirectory" }, method = { RequestMethod.POST })
-	public MappingJacksonValue createDirectoryRoot(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
-												   @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
-												   @RequestParam(name = DirectoryController.parameterName, required = true) String name,
-												   @RequestParam(name = DirectoryController.parameterRootType, required = true) long rootType,
-												   HttpServletRequest request) throws DirectoryServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			
-			// Long loginAppId = LoginUserContextHolder.getAppKey();
-			// Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId = this.DefaultAppId;
-			Long loginUserId = this.getUserId(request);
+    /**
+     * 2.创建分类下的根目录
+     *
+     * @param request
+     * @return
+     * @throws DirectoryServiceException
+     * @throws CodeServiceException
+     */
+    @RequestMapping(path = { "/directory/directory/createRootDirectory" }, method = { RequestMethod.POST })
+    public MappingJacksonValue createDirectoryRoot(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+                                                   @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                                   @RequestParam(name = DirectoryController.parameterName, required = true) String name,
+                                                   @RequestParam(name = DirectoryController.parameterRootType, required = true) long rootType,
+                                                   HttpServletRequest request) throws DirectoryServiceException {
+        MappingJacksonValue mappingJacksonValue = null;
+        try {
 
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			Directory directory = new Directory();
-			directory.setAppId(loginAppId);
-			directory.setUserId(loginUserId);
-			directory.setName(name);
-			directory.setTypeId(rootType);
+            // Long loginAppId = LoginUserContextHolder.getAppKey();
+            // Long loginUserId = LoginUserContextHolder.getUserId();
+            Long loginAppId = this.DefaultAppId;
+            Long loginUserId = this.getUserId(request);
 
-			Long id = directoryService.createDirectoryForRoot(rootType, directory);
-			Map<String, Long> reusltMap = new HashMap<String, Long>();
-			reusltMap.put("id", id);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(reusltMap);
-			return mappingJacksonValue;
-		}  catch (DirectoryServiceException e) {
-			throw e;
-		}
-	}
-	
-	/**
-	 * 3.创建子目录
-	 * 
-	 * @param request
-	 * @return
-	 * @throws DirectoryServiceException
-	 * @throws CodeServiceException
-	 */
-	@RequestMapping(path = { "/directory/directory/createSubDirectory" }, method = {RequestMethod.POST })
-	public MappingJacksonValue createSubDirectory(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.parameterName, required = true) String name,
-			@RequestParam(name = DirectoryController.parameterParentId, required = true) long parentId,
-			HttpServletRequest request) throws DirectoryServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			
-			// Long loginAppId = LoginUserContextHolder.getAppKey();
-			// Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId = this.DefaultAppId;
-			Long loginUserId = this.getUserId(request);
-			
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			Directory directory = new Directory();
-			directory.setAppId(loginAppId);
-			directory.setUserId(loginUserId);
-			directory.setName(name);
-			directory.setPid(parentId);
+            // 0.校验输入参数（框架搞定，如果业务业务搞定）
+            Directory directory = new Directory();
+            directory.setAppId(loginAppId);
+            directory.setUserId(loginUserId);
+            directory.setName(name);
+            directory.setTypeId(rootType);
 
-			Long id = directoryService.createDirectoryForChildren(parentId, directory);
-			Map<String, Long> reusltMap = new HashMap<String, Long>();
-			reusltMap.put("id", id);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(reusltMap);
-			return mappingJacksonValue;
-		}  catch (DirectoryServiceException e) {
-			throw e;
-		}
-	}
+            Long id = directoryService.createDirectoryForRoot(rootType, directory);
+            Map<String, Long> reusltMap = new HashMap<String, Long>();
+            reusltMap.put("id", id);
+            // 2.转成框架数据
+            mappingJacksonValue = new MappingJacksonValue(reusltMap);
+            return mappingJacksonValue;
+        }  catch (DirectoryServiceException e) {
+            throw e;
+        }
+    }
 
-	/**
-	 * 删除目录
-	 * 
-	 * @param debug
-	 * @param appId
-	 * @param userId
-	 * @param directoryId
-	 * @return
-	 * @throws DirectoryServiceException
-	 */
-	@RequestMapping(path = { "/directory/directory/deleteDirectory" }, method = { RequestMethod.GET, RequestMethod.DELETE })
-	public MappingJacksonValue deleteDirectoryRoot(@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
-			HttpServletRequest request) throws DirectoryServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// Long loginAppId = LoginUserContextHolder.getAppKey();
-			// Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId = this.DefaultAppId;
-			Long loginUserId = this.getUserId(request);
+    /**
+     * 3.创建子目录
+     *
+     * @param request
+     * @return
+     * @throws DirectoryServiceException
+     * @throws
+     */
+    @RequestMapping(path = { "/directory/directory/createSubDirectory" }, method = {RequestMethod.POST })
+    public MappingJacksonValue createSubDirectory(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+                                                  @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                                  @RequestParam(name = DirectoryController.parameterName, required = true) String name,
+                                                  @RequestParam(name = DirectoryController.parameterParentId, required = true) long parentId,
+                                                  HttpServletRequest request) throws DirectoryServiceException {
+        MappingJacksonValue mappingJacksonValue = null;
+        try {
 
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			Boolean b = directoryService.removeDirectory(loginAppId, loginUserId, directoryId);
-			Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
-			reusltMap.put("success", b);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(reusltMap);
-			return mappingJacksonValue;
-		}  catch (DirectoryServiceException e) {
-			throw e;
-		}
-	}
+            // Long loginAppId = LoginUserContextHolder.getAppKey();
+            // Long loginUserId = LoginUserContextHolder.getUserId();
+            Long loginAppId = this.DefaultAppId;
+            Long loginUserId = this.getUserId(request);
 
-	/**
-	 * 更新目录
-	 * 
-	 * @param debug
-	 * @param appId
-	 * @param userId
-	 * @param directoryId
-	 * @return
-	 * @throws DirectoryServiceException
-	 */
-	@RequestMapping(path = { "/directory/directory/updateDirectory" }, method = { RequestMethod.POST })
-	public MappingJacksonValue updateDirectoryRoot(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
-			@RequestParam(name = DirectoryController.parameterName, required = true) String name,
-			HttpServletRequest request) throws DirectoryServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// Long loginAppId = LoginUserContextHolder.getAppKey();
-			// Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId = this.DefaultAppId;
-			Long loginUserId = this.getUserId(request);
-			
-			Directory directory = new Directory();
-			directory.setAppId(loginAppId);
-			directory.setName(name);
-			directory.setId(directoryId);
+            // 0.校验输入参数（框架搞定，如果业务业务搞定）
+            Directory directory = new Directory();
+            directory.setAppId(loginAppId);
+            directory.setUserId(loginUserId);
+            directory.setName(name);
+            directory.setPid(parentId);
 
-			Boolean b = directoryService.updateDirectory(loginAppId, loginUserId, directory);
-			Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
-			reusltMap.put("success", b);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(reusltMap);
-			return mappingJacksonValue;
-		} catch (DirectoryServiceException e) {
-			throw e;
-		}
-	}
+            Long id = directoryService.createDirectoryForChildren(parentId, directory);
+            Map<String, Long> reusltMap = new HashMap<String, Long>();
+            reusltMap.put("id", id);
+            // 2.转成框架数据
+            mappingJacksonValue = new MappingJacksonValue(reusltMap);
+            return mappingJacksonValue;
+        }  catch (DirectoryServiceException e) {
+            throw e;
+        }
+    }
 
-	/**
-	 * 移动目录
-	 * @param debug
-	 * @param appId
-	 * @param userId
-	 * @param directoryId
-	 * @return
-	 * @throws DirectoryServiceException
-	 */
-	@RequestMapping(path = { "/directory/directory/moveDirectory" }, method = { RequestMethod.POST })
-	public MappingJacksonValue moveDirectory(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
-			@RequestParam(name = DirectoryController.parameterToDirectoryId, required = true) Long toDirectoryId,
-			HttpServletRequest request) throws DirectoryServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// Long loginAppId = LoginUserContextHolder.getAppKey();
-			// Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId = this.DefaultAppId;
-			Long loginUserId = this.getUserId(request);
+    /**
+     * 删除目录
+     *
+     * @param debug
+     * @param appId
+     * @param userId
+     * @param directoryId
+     * @return
+     * @throws DirectoryServiceException
+     */
+    @RequestMapping(path = { "/directory/directory/deleteDirectory" }, method = { RequestMethod.GET, RequestMethod.DELETE })
+    public MappingJacksonValue deleteDirectoryRoot(@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                                   @RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
+                                                   HttpServletRequest request) throws DirectoryServiceException {
+        MappingJacksonValue mappingJacksonValue = null;
+        try {
+            // Long loginAppId = LoginUserContextHolder.getAppKey();
+            // Long loginUserId = LoginUserContextHolder.getUserId();
+            Long loginAppId = this.DefaultAppId;
+            Long loginUserId = this.getUserId(request);
 
-			Boolean b = directoryService.moveDirectoryToDirectory(loginAppId, loginUserId, directoryId,toDirectoryId);
-			Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
-			reusltMap.put("success", b);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(reusltMap);
-			return mappingJacksonValue;
-		}  catch (DirectoryServiceException e) {
-			throw e;
-		}
-	}
+            // 0.校验输入参数（框架搞定，如果业务业务搞定）
+            Boolean b = directoryService.removeDirectory(loginAppId, loginUserId, directoryId);
+            Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
+            reusltMap.put("success", b);
+            // 2.转成框架数据
+            mappingJacksonValue = new MappingJacksonValue(reusltMap);
+            return mappingJacksonValue;
+        }  catch (DirectoryServiceException e) {
+            throw e;
+        }
+    }
 
-	/**
-	 * 查询根目录
-	 * 
-	 * @param request
-	 * @return
-	 * @throws DirectoryServiceException
-	 * @throws CodeServiceException
-	 */
-	@RequestMapping(path = { "/directory/directory/getRootList" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getRootList(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.parameterRootType, required = true) Long rootType,
-			HttpServletRequest request) throws DirectoryServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// Long loginAppId = LoginUserContextHolder.getAppKey();
-			// Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId = this.DefaultAppId;
-			Long loginUserId = this.getUserId(request);
-			
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			List<Directory> directories = directoryService.getDirectorysForRoot(loginAppId, loginUserId, rootType);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(directories);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (DirectoryServiceException e) {
-			throw e;
-		}
-	}
+    /**
+     * 更新目录
+     *
+     * @param debug
+     * @param appId
+     * @param userId
+     * @param directoryId
+     * @return
+     * @throws DirectoryServiceException
+     */
+    @RequestMapping(path = { "/directory/directory/updateDirectory" }, method = { RequestMethod.POST })
+    public MappingJacksonValue updateDirectoryRoot(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+                                                   @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                                   @RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
+                                                   @RequestParam(name = DirectoryController.parameterName, required = true) String name,
+                                                   HttpServletRequest request) throws DirectoryServiceException {
+        MappingJacksonValue mappingJacksonValue = null;
+        try {
+            // Long loginAppId = LoginUserContextHolder.getAppKey();
+            // Long loginUserId = LoginUserContextHolder.getUserId();
+            Long loginAppId = this.DefaultAppId;
+            Long loginUserId = this.getUserId(request);
 
-	/**
-	 * 查询子目录
-	 * 
-	 * @param request
-	 * @return
-	 * @throws DirectoryServiceException
-	 * @throws CodeServiceException
-	 */
-	@RequestMapping(path = { "/directory/directory/getSubList" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getSubList(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = DirectoryController.parameterParentId, required = true) Long pid,
-			HttpServletRequest request) throws DirectoryServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// Long loginAppId = LoginUserContextHolder.getAppKey();
-			// Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId = this.DefaultAppId;
-			Long loginUserId = this.getUserId(request);
+            Directory directory = new Directory();
+            directory.setAppId(loginAppId);
+            directory.setName(name);
+            directory.setId(directoryId);
 
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			List<Directory> directories = directoryService.getDirectorysByParentId(loginAppId, loginUserId, pid);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(directories);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (DirectoryServiceException e) {
-			throw e;
-		}
-	}
+            Boolean b = directoryService.updateDirectory(loginAppId, loginUserId, directory);
+            Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
+            reusltMap.put("success", b);
+            // 2.转成框架数据
+            mappingJacksonValue = new MappingJacksonValue(reusltMap);
+            return mappingJacksonValue;
+        } catch (DirectoryServiceException e) {
+            throw e;
+        }
+    }
 
+    /**
+     * 移动目录
+     * @param debug
+     * @param appId
+     * @param userId
+     * @param directoryId
+     * @return
+     * @throws DirectoryServiceException
+     */
+    @RequestMapping(path = { "/directory/directory/moveDirectory" }, method = { RequestMethod.POST })
+    public MappingJacksonValue moveDirectory(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+                                             @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                             @RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
+                                             @RequestParam(name = DirectoryController.parameterToDirectoryId, required = true) Long toDirectoryId,
+                                             HttpServletRequest request) throws DirectoryServiceException {
+        MappingJacksonValue mappingJacksonValue = null;
+        try {
+            // Long loginAppId = LoginUserContextHolder.getAppKey();
+            // Long loginUserId = LoginUserContextHolder.getUserId();
+            Long loginAppId = this.DefaultAppId;
+            Long loginUserId = this.getUserId(request);
 
-	/**
-	 * 指定显示那些字段
-	 * 
-	 * @param fileds
-	 * @return
-	 */
-	private SimpleFilterProvider builderSimpleFilterProvider(String fileds) {
-		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-		// 请求指定字段
-		String[] filedNames = StringUtils.split(fileds, ",");
-		Set<String> filter = new HashSet<String>();
-		if (filedNames != null && filedNames.length > 0) {
-			for (int i = 0; i < filedNames.length; i++) {
-				String filedName = filedNames[i];
-				if (!StringUtils.isEmpty(filedName)) {
-					filter.add(filedName);
-				}
-			}
-		} else {
-			filter.add("id"); // id',
-			filter.add("name"); // '分类名称',
-			filter.add("typeId"); // '应用的分类分类ID',
-			filter.add("appId"); // '应用的分类分类ID',
-			filter.add("userId"); // '应用的分类分类ID',
-		}
+            Boolean b = directoryService.moveDirectoryToDirectory(loginAppId, loginUserId, directoryId, toDirectoryId);
+            Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
+            reusltMap.put("success", b);
+            // 2.转成框架数据
+            mappingJacksonValue = new MappingJacksonValue(reusltMap);
+            return mappingJacksonValue;
+        }  catch (DirectoryServiceException e) {
+            throw e;
+        }
+    }
 
-		filterProvider.addFilter(Directory.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
-		return filterProvider;
-	}
+    /**
+     * 查询根目录
+     *
+     * @param request
+     * @return
+     * @throws DirectoryServiceException
+     * @throws CodeServiceException
+     */
+    @RequestMapping(path = { "/directory/directory/getRootList" }, method = { RequestMethod.GET })
+    public MappingJacksonValue getRootList(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+                                           @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                           @RequestParam(name = DirectoryController.parameterRootType, required = true) Long rootType,
+                                           HttpServletRequest request) throws DirectoryServiceException {
+        MappingJacksonValue mappingJacksonValue = null;
+        try {
+            // Long loginAppId = LoginUserContextHolder.getAppKey();
+            // Long loginUserId = LoginUserContextHolder.getUserId();
+            Long loginAppId = this.DefaultAppId;
+            Long loginUserId = this.getUserId(request);
+
+            // 0.校验输入参数（框架搞定，如果业务业务搞定）
+            // 1.查询后台服务
+            List<Directory> directories = directoryService.getDirectorysForRoot(loginAppId, loginUserId, rootType);
+            // 2.转成框架数据
+            mappingJacksonValue = new MappingJacksonValue(directories);
+            // 3.创建页面显示数据项的过滤器
+            SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+            mappingJacksonValue.setFilters(filterProvider);
+            // 4.返回结果
+            return mappingJacksonValue;
+        } catch (DirectoryServiceException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * 查询子目录
+     *
+     * @param request
+     * @return
+     * @throws DirectoryServiceException
+     * @throws CodeServiceException
+     */
+    @RequestMapping(path = { "/directory/directory/getSubList" }, method = { RequestMethod.GET })
+    public MappingJacksonValue getSubList(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+                                          @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                          @RequestParam(name = DirectoryController.parameterParentId, required = true) Long pid,
+                                          HttpServletRequest request) throws DirectoryServiceException {
+
+        MappingJacksonValue mappingJacksonValue = null;
+        try {
+            // Long loginAppId = LoginUserContextHolder.getAppKey();
+            // Long loginUserId = LoginUserContextHolder.getUserId();
+            Long loginAppId = this.DefaultAppId;
+            Long loginUserId = this.getUserId(request);
+
+            // 0.校验输入参数（框架搞定，如果业务业务搞定）
+            // 1.查询后台服务
+            List<Directory> directories = directoryService.getDirectorysByParentId(loginAppId, loginUserId, pid);
+            // 2.转成框架数据
+            mappingJacksonValue = new MappingJacksonValue(directories);
+            // 3.创建页面显示数据项的过滤器
+            SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+            mappingJacksonValue.setFilters(filterProvider);
+            // 4.返回结果
+            return mappingJacksonValue;
+        } catch (DirectoryServiceException e) {
+            throw e;
+        }
+    }
+
+    @RequestMapping(path = {"/directory/directory/getDirectoryName"}, method = {RequestMethod.GET})
+    public MappingJacksonValue getPgDirectoryName(
+                    @RequestParam(name = DirectoryController.parameterFields,defaultValue = "") String fileds,
+                    @RequestParam(name = DirectoryController.parameterDebug,defaultValue = "") String debug,
+                    @RequestParam(name = DirectoryController.parameterAssocPage) String pageNoStr,
+                    @RequestParam(name = DirectoryController.parameterAssocSize,required = false) String pageSizeStr,
+                    @RequestParam(name = DirectoryController.parameterName) String name,
+                    HttpServletRequest request) throws DirectoryServiceException {
+        MappingJacksonValue mappingJacksonValue = null;
+        try {
+
+            int pageNo = Integer.parseInt(pageNoStr);
+            int size = Integer.parseInt(pageSizeStr);
+            size = size == 0 ? DirectoryController.pageInitSize : size;
+
+            Long loginUserId = this.getUserId(request);
+            Page<Directory> page = directoryService.getDirectoryName(loginUserId,name,pageNo,size);
+
+            mappingJacksonValue = new MappingJacksonValue(page);
+            SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+            mappingJacksonValue.setFilters(filterProvider);
+            return mappingJacksonValue;
+        } catch (DirectoryServiceException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * 指定显示那些字段
+     *
+     * @param fileds
+     * @return
+     */
+    private SimpleFilterProvider builderSimpleFilterProvider(String fileds) {
+        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+        // 请求指定字段
+        String[] filedNames = StringUtils.split(fileds, ",");
+        Set<String> filter = new HashSet<String>();
+        if (filedNames != null && filedNames.length > 0) {
+            for (int i = 0; i < filedNames.length; i++) {
+                String filedName = filedNames[i];
+                if (!StringUtils.isEmpty(filedName)) {
+                    filter.add(filedName);
+                }
+            }
+        } else {
+            filter.add("id"); // id',
+            filter.add("name"); // '分类名称',
+            filter.add("typeId"); // '应用的分类分类ID',
+            filter.add("appId"); // '应用的分类分类ID',
+            filter.add("userId"); // '应用的分类分类ID',
+        }
+
+        filterProvider.addFilter(Directory.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+        return filterProvider;
+    }
 }

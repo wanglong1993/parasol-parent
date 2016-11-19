@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ginkgocap.parasol.directory.model.Page;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -34,7 +35,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 
 	private static String LIST_DIRECTORY_PID_ID = "List_Directory_Id_Pid"; // 查询子节点
 	private static String LIST_DIRECTORY_ID_APPID_USERID_TYPEID_PID = "List_Directory_Id_AppId_UserId_TypeId_Pid"; // 查询一个应用的分类根目录
-
+	private static String List_Directory_By_Name = "List_Directory_By_Name";
 	@Autowired
 	private DirectoryTypeService directoryTypeService;
 
@@ -415,6 +416,60 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			e.printStackTrace(System.err);
 			throw new DirectoryServiceException(e);
 		}
+	}
+
+	@Override
+	public Page<Directory> getDirectoryName(Long userId, String name, int pageNo,int pageSize) throws DirectoryServiceException {
+		ServiceError.assertUserIdForDirectory(userId);
+		try {
+			Page<Directory> page = new Page<Directory>();
+			name = "%" + name + "%";
+			List<Directory> directoryList = this.getSubEntitys(List_Directory_By_Name,pageNo,pageSize,userId, name);
+			int count = this.countEntitys(List_Directory_By_Name,userId, name);
+			page.setPageNo(pageNo);
+			page.setPageSize(pageSize);
+			page.setTotalCount(count);
+
+			for (Directory directory : directoryList){
+				if (directory.getPid()!=0){
+					String numberCode = directory.getNumberCode();
+					String[] subNumberCode = numberCode.split("-");
+					StringBuffer sBuffer = new StringBuffer();
+
+					for (int i =0; i <subNumberCode.length ; i++) {
+						long id = 0L;
+						try {
+							id = Long.valueOf(subNumberCode[i]);
+						} catch (Exception ex) {
+							logger.error("parser string to number failed. number: " + subNumberCode[i] +"error: "+ex.getMessage());
+							continue;
+						}
+						Directory dir = this.getEntity(id);
+						String name2 = dir.getName();
+						sBuffer.append(name2).append("/");
+						if (i == 2) {
+							if (subNumberCode.length > 4) {
+								sBuffer.append(".../").append(directory.getName()).append("/");
+							}
+							else if (id == directory.getId()) {
+								break;
+							} else {
+								sBuffer.append(directory.getName()).append("/");
+							}
+							break;
+						}
+					}
+					String newName = sBuffer.toString().substring(0,sBuffer.length()-1);
+					directory.setName(newName);
+				}
+			}
+			page.setList(directoryList);
+			return page;
+		}catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectoryServiceException(e);
+		}
+
 	}
 
 	/**

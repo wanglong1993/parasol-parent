@@ -25,7 +25,10 @@
            <list name="List_Directory_Id_AppId_UserId_TypeId_Pid"
                   sqlitem="select id from tb_directory where appId=? and userId=? and typeId=? and pid=? order by orderNo"
                   sqlType="hsql" keyProperty="appId,userId,typeId,pid" valueProperty="id"/>
-                  
+
+			<list name="List_Directory_By_Name"
+					sqlitem="select id from tb_directory where userId = ? and name like ?"
+					sqlType="hsql" keyProperty="userId,nameLike" valueProperty="id"/>
 		</object>
 		
 		<object name="com.ginkgocap.parasol.directory.model.DirectoryType" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">

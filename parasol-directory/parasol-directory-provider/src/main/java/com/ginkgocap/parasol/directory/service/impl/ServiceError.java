@@ -30,6 +30,12 @@ public abstract class ServiceError {
 	public final static int ERROR_SQL=200; //数据库错误
 
 	// Define Directory's related assertions.
+	public static void assertPidForDirectory(Long pId) throws DirectoryServiceException {
+		if (pId == null || pId < 0) {
+			throw new DirectoryServiceException(ERROR_PARAMETER_NULL, "Required long parameter pId is not present");
+		}
+	}
+
 	public static void assertAppIdForDirectory(Long appId) throws DirectoryServiceException {
 		if (appId == null || appId < 0) {
 			throw new DirectoryServiceException(ERROR_PARAMETER_NULL, "Required long parameter appId is not present");

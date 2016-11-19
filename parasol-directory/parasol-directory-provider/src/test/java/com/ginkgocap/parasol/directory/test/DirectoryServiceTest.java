@@ -2,6 +2,8 @@ package com.ginkgocap.parasol.directory.test;
 
 import java.util.List;
 
+import com.ginkgocap.parasol.directory.model.Page;
+import com.ginkgocap.parasol.directory.service.impl.ServiceError;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,6 +149,23 @@ public class DirectoryServiceTest extends TestBase implements Test {
 
 		} catch (DirectoryServiceException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	@org.junit.Test
+	public void testGetDirectoryName() throws DirectoryServiceException {
+
+		try {
+			Page<Directory> page = directoryService.getDirectoryName(13363l,"李", 1, 6);
+			//Assert.assertTrue(CollectionUtils.isNotEmpty(page.getList()));
+
+			for (Directory directory : page.getList()) {
+				ServiceError.assertDirectoryForDirectory(directory);
+			}
+
+		} catch (DirectoryServiceException e) {
 			e.printStackTrace();
 		}
 
