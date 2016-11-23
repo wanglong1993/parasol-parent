@@ -13,7 +13,7 @@
       	  <datasource name="map1" timeout="5000" server="${memcached.map1.ip}" port="${memcached.map1.port}" maxActive="1" maxIdle="1" maxWait="-1"/>
 		  -->
 
-      	  
+
       </cache>
 
       <regions>

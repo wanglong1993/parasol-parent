@@ -129,11 +129,10 @@ public class DirectoryServiceTest extends TestBase implements Test {
 	@org.junit.Test
 	public void testRenName() throws DirectoryTypeServiceException {
 		DirectoryType directoryType = directoryTypeService.getDirectoryTypeByName(System_AppId, "组织");
-	
 		try {
+
 			List<Directory> directories = directoryService.getDirectorysForRoot(System_AppId, userId, directoryType.getId());
 			Assert.assertTrue(CollectionUtils.isNotEmpty(directories));
-
 			for (Directory directory : directories) {
 				directory.setName(directory.getName()+"bak");
 				directoryService.updateDirectory(directory.getAppId(), directory.getUserId(), directory);
