@@ -31,8 +31,12 @@
                   sqlitem="select id from tb_associate where userId = ? and assocTypeId = ?"
                   sqlType="hsql" keyProperty="userId,typeId" valueProperty="id"/>
 
+			<list name="List_Associate_userId_AssociateTwoType"
+				  sqlitem="select id from tb_associate where userId = ? and (assocTypeId = ? or assocTypeId= ?)"
+				  sqlType="hsql" keyProperty="userId,typeId1,typeId2" valueProperty="id"/>
+
             <list name="List_Associate_userId_assocId"
-                  sqlitem="select id from tb_associate where userId = ? and assocId = ?"
+                  sqlitem="select id from tb_associate where userId = ? and assocId =?"
                   sqlType="hsql" keyProperty="userId,assocId" valueProperty="id"/>
 		</object>
 		

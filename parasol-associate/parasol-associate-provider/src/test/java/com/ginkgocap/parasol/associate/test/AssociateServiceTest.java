@@ -126,7 +126,7 @@ public class AssociateServiceTest extends TestBase implements Test {
 
     @org.junit.Test
     public void testGetAssociatesByAssocId() throws AssociateServiceException, IOException {
-        Page<Map<String, Object>> page = associateService.getAssociatesByPage(7L, 8L,0,5);
+        Page<Map<String, Object>> page = associateService.getAssociatesByPage(200562L, 2L,0,5);
 
         for (Map<String, Object> associate : page.getList()) {
             //Assert.assertTrue(MapUtils.isNotEmpty(associate));
