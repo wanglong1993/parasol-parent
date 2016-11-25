@@ -25,31 +25,7 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 public class CommonUtil {
-
-	public static final String JTMOBILE_SERVER_ROOT = ResourceBundle.getBundle("application").getString("jtmobileserver.root");
 	static Logger logger = LoggerFactory.getLogger(CommonUtil.class);
-	/**
-	 * 获取本机地址，格式为：http://www.gingont.com:4445/，或者为:http://192.168.101.41:4445/
-	 * @param request
-	 * @return
-	 */
-	public static String getServerDomainPath(HttpServletRequest request) {
-		if (StringUtils.isNotBlank(JTMOBILE_SERVER_ROOT) && JTMOBILE_SERVER_ROOT.startsWith("http") && JTMOBILE_SERVER_ROOT.endsWith("/"))
-			return JTMOBILE_SERVER_ROOT;
-		if (null == request)
-			throw new RuntimeException("传入参数不正确");
-		StringBuilder link = new StringBuilder();
-		link.append(request.getScheme()).append("://").append(request.getServerName());
-		if ((request.getScheme().equals("http") && request.getServerPort() != 80)
-				|| (request.getScheme().equals("https")
-				&& request.getServerPort() != 443)) {
-			link.append(':');
-			link.append(request.getServerPort());
-		}
-		link.append(request.getContextPath());
-		link.append("/");
-		return link.toString();
-	}
 	
 	/**
 	 * web端的JavaScript对长整型的数值无法处理，因此需要转换为字符串
