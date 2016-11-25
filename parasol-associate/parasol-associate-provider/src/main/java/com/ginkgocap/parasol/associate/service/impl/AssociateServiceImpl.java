@@ -1,9 +1,6 @@
 package com.ginkgocap.parasol.associate.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.ginkgocap.parasol.associate.model.Page;
 import org.apache.commons.collections.CollectionUtils;
@@ -255,14 +252,22 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
             if (CollectionUtils.isEmpty(associateList)) {
                 return null;
             }
+
+            Set<String> assocSet = new HashSet<String>();
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(associateList.size());
             for (Associate assoc : associateList) {
+                final String key = assoc.getAssocId() + "-" + assoc.getAssocTypeId();
+                if (assocSet.contains(key)) {
+                    logger.info("As this associate have added to list, so skip. key: " + key);
+                    continue;
+                }
                 if (assoc != null) {
                     long count = countEntitys(List_Associate_userId_assocId, userId, assoc.getAssocId());
                     Map<String, Object> map = new HashedMap(2);
                     map.put("assoc", assoc);
                     map.put("count", count);
                     list.add(map);
+                    assocSet.add(key);
                 }
             }
 
