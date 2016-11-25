@@ -28,11 +28,11 @@
                   sqlType="hsql" keyProperty="appId,sourceTypeId,sourceId" valueProperty="id"/>
 
             <list name="List_Associate_userId_AssociateType"
-                  sqlitem="select id from tb_associate where userId = ? and assocTypeId = ?"
+                  sqlitem="select id from tb_associate where userId = ? and assocTypeId = ? GROUP BY assocId"
                   sqlType="hsql" keyProperty="userId,typeId" valueProperty="id"/>
 
 			<list name="List_Associate_userId_AssociateTwoType"
-				  sqlitem="select id from tb_associate where userId = ? and (assocTypeId = ? or assocTypeId= ?)"
+				  sqlitem="select id from tb_associate where userId = ? and (assocTypeId = ? or assocTypeId= ?) GROUP BY assocId"
 				  sqlType="hsql" keyProperty="userId,typeId1,typeId2" valueProperty="id"/>
 
             <list name="List_Associate_userId_assocId"

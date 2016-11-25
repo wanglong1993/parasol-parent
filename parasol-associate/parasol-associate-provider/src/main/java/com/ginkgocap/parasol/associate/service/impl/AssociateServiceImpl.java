@@ -253,21 +253,14 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
                 return null;
             }
 
-            Set<String> assocSet = new HashSet<String>();
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(associateList.size());
             for (Associate assoc : associateList) {
-                final String key = assoc.getAssocId() + "-" + assoc.getAssocTypeId();
-                if (assocSet.contains(key)) {
-                    logger.info("As this associate have added to list, so skip. key: " + key);
-                    continue;
-                }
                 if (assoc != null) {
                     long count = countEntitys(List_Associate_userId_assocId, userId, assoc.getAssocId());
                     Map<String, Object> map = new HashedMap(2);
                     map.put("assoc", assoc);
                     map.put("count", count);
                     list.add(map);
-                    assocSet.add(key);
                 }
             }
 
