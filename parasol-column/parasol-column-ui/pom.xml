@@ -250,7 +250,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>qatest</id>
+			<id>testOnline</id>
 			<properties>
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>

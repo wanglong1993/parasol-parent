@@ -1,8 +1,6 @@
 package org.parasol.column.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,10 +26,10 @@ public class ColumnSelfController extends BaseController {
 	
 //	@Resource(name="columnSelfService")
 	@Autowired
-	private ColumnSelfService css;
+	private ColumnSelfService selfService;
 	
 	@Autowired
-	private ColumnCustomService ccs;
+	private ColumnCustomService customService;
 	
 	@RequestMapping(value="/showAllColumnSelf",method = RequestMethod.GET)
 	@ResponseBody
@@ -41,30 +39,34 @@ public class ColumnSelfController extends BaseController {
 		Long uid=this.getUserId(request);
 		List<ColumnSelf> list=new ArrayList<ColumnSelf>();
 		if (uid.longValue() != 0) {
-			List<ColumnSelf> listSelf = css.queryListByPidAndUserId(pid, uid);
-			List<ColumnSelf> listCust=ccs.queryListByPidAndUserId(pid, uid);
-			List<ColumnSelf> listSys=css.queryListByPidAndUserId(pid, 0l);
-			if(listSys!=null){
-				for(ColumnSelf c:listSys){
-					if(isInList(c,listCust)){
-						continue;
+			List<ColumnSelf> listSelf = selfService.queryListByPidAndUserId(pid, uid);
+			List<ColumnSelf> listCust= customService.queryListByPidAndUserId(pid, uid);
+			List<ColumnSelf> listSys= selfService.queryListByPidAndUserId(pid, 0l);
+			if(listSys != null) {
+				Set<Long> idList = new HashSet<Long>(listSys.size());
+				for (ColumnSelf sys : listSys){
+					if (sys != null) {
+						list.add(sys);
+						idList.add(sys.getId());
 					}
-					else{
-						list.add(c);
+				}
+
+				if (listSelf != null) {
+					for(ColumnSelf self : listSelf){
+						if (self != null && !idList.contains(self.getId())) {
+							list.add(self);
+						}
+					}
+				}
+				if (listCust != null) {
+					for(ColumnSelf cust : listCust){
+						if (cust != null && !idList.contains(cust.getId())) {
+							list.add(cust);
+						}
 					}
 				}
 			}
-			if (listSelf != null) {
-				for(ColumnSelf c:listSelf){
-					if(isInList(c,listCust)){
-						continue;
-					}
-					else{
-						list.add(c);
-					}
-				}
-				
-			}
+
 		}
 		result.setResponseData(list);
 		return result;
@@ -100,7 +102,7 @@ public class ColumnSelfController extends BaseController {
 		newCol.setPathName(newCol.getColumnname());
 		newCol.setUserId(uid);
 		newCol.setParentId(0l);
-		ColumnSelf col= css.insert(newCol);
+		ColumnSelf col= selfService.insert(newCol);
 		InterfaceResult<ColumnSelf> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		if(col.getId()>0){
 			result.setResponseData(col);
@@ -121,7 +123,7 @@ public class ColumnSelfController extends BaseController {
 		}
 		newCol.setUpdateTime(new Date());
 		Long uid=this.getUserId(request);
-		int n=this.css.updateByPrimaryKey(newCol);
+		int n=this.selfService.updateByPrimaryKey(newCol);
 		b=n>0;
 		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		result.setResponseData(b);
@@ -138,7 +140,7 @@ public class ColumnSelfController extends BaseController {
 			InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
-		int n=this.css.deleteByPrimaryKey(newCol.getId());
+		int n=this.selfService.deleteByPrimaryKey(newCol.getId());
 		b=n>0;
 		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		result.setResponseData(b);

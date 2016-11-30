@@ -1,7 +1,6 @@
 package org.parasol.column.service.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -14,7 +13,6 @@ import org.parasol.column.dao.ColumnSelfDao;
 import org.parasol.column.entity.ColumnCustom;
 import org.parasol.column.entity.ColumnCustomExample;
 import org.parasol.column.entity.ColumnSelf;
-import org.parasol.column.entity.ColumnSelfExample;
 import org.parasol.column.entity.ColumnSys;
 import org.parasol.column.service.ColumnCustomService;
 import org.parasol.column.service.ColumnSelfService;
@@ -27,36 +25,36 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 	private static final Log log = LogFactory.getLog(ColumnSelfServiceImpl.class);
 	
 	@Resource
-	private ColumnSelfDao csd;
+	private ColumnSelfDao columnSelfDao;
 	
-	@Resource(name="columnSysService")
-	private ColumnSysService css;
+	@Resource(name ="columnSysService")
+	private ColumnSysService columnSysService;
 	
-	@Resource(name="columnCustomService")
-	private ColumnCustomService ccs;
+	@Resource(name ="columnCustomService")
+	private ColumnCustomService columnCustomService;
 	
 	private ColumnCustom loadByCid(Long id){
 		ColumnCustomExample exa=new ColumnCustomExample();
 		ColumnCustomExample.Criteria c=exa.createCriteria();
 		c.andCidEqualTo(id);
-		ColumnCustom cc=ccs.queryByCid(id);
-		return cc;
+		ColumnCustom custom = columnCustomService.queryByCid(id);
+		return custom;
 	}
-	
+
 	@Override
 	public int deleteByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
 		//int n= csd.deleteByPrimaryKey(id);
-		ColumnSelf cs=this.selectByPrimaryKey(id);
-		if(cs.getUserOrSystem().shortValue()==ColumnFlag.sys.getVal()){
+		ColumnSelf self=this.selectByPrimaryKey(id);
+		if(self.getUserOrSystem().shortValue() == ColumnFlag.sys.getVal()){
 			return 0;
 		}
-		cs.setDelStatus((short)1);
-		int n = this.updateByPrimaryKey(cs);
-		if(n>0){
-			ColumnCustom cc=this.loadByCid(id);
-			if(cc!=null){
-				ccs.deleteByPrimaryKey(cc.getId());
+		self.setDelStatus((short)1);
+		int n = this.updateByPrimaryKey(self);
+		if(n > 0){
+			ColumnCustom custom=this.loadByCid(id);
+			if(custom != null){
+				columnCustomService.deleteByPrimaryKey(custom.getId());
 			}
 		}
 		return n;
@@ -65,15 +63,15 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 	@Override
 	public ColumnSelf insert(ColumnSelf record) {
 		// TODO Auto-generated method stub
-		int n = csd.insert(record);
-		/*if(n>0&&record.getUserOrSystem().shortValue()==ColumnFlag.user.getVal()){
+		int n = columnSelfDao.insert(record);
+		if(n>0&&record.getUserOrSystem().shortValue() == ColumnFlag.user.getVal()){
 			ColumnCustom dest=new ColumnCustom();
 			try {
 				BeanUtils.copyProperties(dest,record);
 				dest.setCid(record.getId());
 				dest.setPcid(record.getParentId());
 				dest.setId(null);
-				ccs.insert(dest);
+				columnCustomService.insert(dest);
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				log.error(e);
@@ -81,33 +79,33 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 				// TODO Auto-generated catch block
 				log.error(e);
 			}
-		}*/
+		}
 		return record;
 	}
 
 	@Override
 	public ColumnSelf selectByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
-		return csd.selectByPrimaryKey(id);
+		return columnSelfDao.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByPrimaryKey(ColumnSelf record) {
 		// TODO Auto-generated method stub
-		ColumnSelf self=csd.selectByPrimaryKey(record.getId());
-		if(self.getUserOrSystem().shortValue()==ColumnFlag.sys.getVal()){
+		ColumnSelf self = columnSelfDao.selectByPrimaryKey(record.getId());
+		if(self.getUserOrSystem().shortValue() == ColumnFlag.sys.getVal()){
 			return 0;
 		}
-		int n = csd.updateByPrimaryKey(record);
+		int n = columnSelfDao.updateByPrimaryKey(record);
 		if(n>0){
-			ColumnCustom cc=this.loadByCid(record.getId());
-			if(cc!=null){
-				Long id=cc.getId();
+			ColumnCustom custom = this.loadByCid(record.getId());
+			if(custom != null){
+				Long id=custom.getId();
 				try {
-					BeanUtils.copyProperties(cc,record);
-					cc.setCid(record.getId());
-					cc.setId(id);
-					ccs.updateByPrimaryKey(cc);
+					BeanUtils.copyProperties(custom,record);
+					custom.setCid(record.getId());
+					custom.setId(id);
+					columnCustomService.updateByPrimaryKey(custom);
 				} catch (IllegalAccessException e) {
 					// TODO Auto-generated catch block
 					log.error(e);
@@ -124,11 +122,11 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 	@Override
 	public List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid) {
 		// TODO Auto-generated method stub
-		return csd.queryListByPidAndUserId(pid, uid);
+		return columnSelfDao.queryListByPidAndUserId(pid, uid);
 	}
 
 	private ColumnSelf buidColumnSelf(ColumnSys source) throws Exception{
-		ColumnSelf dest=new ColumnSelf();
+		ColumnSelf dest = new ColumnSelf();
 		BeanUtils.copyProperties(dest,source);
 		dest.setId(null);
 		dest.setSysColId(source.getId());
@@ -138,13 +136,13 @@ public class ColumnSelfServiceImpl implements ColumnSelfService {
 	@Override
 	public ColumnSelf selectMaxOrderColumn(Long pid, Long uid) {
 		// TODO Auto-generated method stub
-		return csd.selectMaxOrderColumn(pid, uid);
+		return columnSelfDao.selectMaxOrderColumn(pid, uid);
 	}
 
 	@Override
 	public List<ColumnSelf> queryListByPid(Long pid) {
 		// TODO Auto-generated method stub
-		return csd.queryListByPid(pid);
+		return columnSelfDao.queryListByPid(pid);
 	}
 
 }

@@ -15,7 +15,7 @@ public class ApplicationConfig {
 
 	        FilterRegistrationBean registration = new FilterRegistrationBean();
 	        registration.setFilter(appFilter());
-	        registration.addUrlPatterns("*.json");
+	        registration.addUrlPatterns("/*");
 	        registration.addInitParameter("excludedUrl", "/paramValue");
 	        registration.setName("appFilter");
 	        return registration;
