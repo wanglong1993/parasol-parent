@@ -668,7 +668,7 @@
 		</profile>
 		<profile>
 			<!-- qatest configuration -->
-			<id>qatest</id>
+			<id>testOnline</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
