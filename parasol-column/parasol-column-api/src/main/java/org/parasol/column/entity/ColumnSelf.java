@@ -6,6 +6,7 @@ import java.util.Date;
 public class ColumnSelf implements Serializable {
 
     private static final long serialVersionUID = 13253426246L;
+
     private Long id;
 
     private Long parentId;

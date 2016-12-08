@@ -1,8 +1,12 @@
 package org.parasol.column.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class NewColumnCustom {
+public class NewColumnCustom implements Serializable {
+
+    private static final long serialVersionUID = 13253426246L;
+
     private Long sid;
 
     private Long userId;
