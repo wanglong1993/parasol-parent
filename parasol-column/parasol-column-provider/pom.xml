@@ -731,9 +731,6 @@
 				</filters>
 			</build>
 		</profile>
-
-
-
 		<profile>
 			<id>online</id>
 			<activation>
