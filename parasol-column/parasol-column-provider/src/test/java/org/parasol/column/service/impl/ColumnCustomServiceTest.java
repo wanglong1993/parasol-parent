@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.parasol.column.entity.ColumnCustom;
+import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.service.ColumnCustomService;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -15,9 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ColumnCustomServiceTest {
 	
-	/*@Resource
+	@Resource
 	private ColumnCustomService ccs;
-	
+	/*
 	@Test
 	public void testQueryListByPidAndUserId(){
 		Long uid=0l;
@@ -25,10 +26,5 @@ public class ColumnCustomServiceTest {
 		List<ColumnCustom> list=ccs.queryListByPidAndUserId(pcid, uid);
 		System.out.println(list.size());
 	}*/
-	
-	@Test
-	public void test(){
-		
-	}
 
 }

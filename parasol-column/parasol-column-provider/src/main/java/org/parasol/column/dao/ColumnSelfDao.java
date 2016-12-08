@@ -24,4 +24,6 @@ public interface ColumnSelfDao {
      * @return
      */
     ColumnSelf selectMaxOrderColumn(Long pid, Long uid);
+
+    List<ColumnSelf> queryDefaultList(Long startId,Long endId);
 }

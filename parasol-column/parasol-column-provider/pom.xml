@@ -378,6 +378,15 @@
 			</testResource>
 		</testResources>
 		<plugins>
+				<plugin>
+					<groupId>org.mybatis.generator</groupId>
+					<artifactId>mybatis-generator-maven-plugin</artifactId>
+					<version>1.3.2</version>
+					<configuration>
+						<verbose>true</verbose>
+						<overwrite>true</overwrite>
+					</configuration>
+				</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -524,11 +533,19 @@
 				<mongodb.database>column</mongodb.database>
 				<!-- 数据库连接地址和数据库名 -->
 				<jdbc.url>
-					jdbc:mysql://192.168.101.131:3306/phoenix_column?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8&amp;amp;zeroDateTimeBehavior=convertToNull
+					jdbc:mysql://127.0.0.1:3306/parasol-column?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8&amp;amp;zeroDateTimeBehavior=convertToNull
 				</jdbc.url>
 				<!-- 数据库访问帐号 -->
-				<jdbc.username>zhangwei</jdbc.username>
+				<jdbc.username>root</jdbc.username>
 				<!-- 数据库访问密码 -->
+				<jdbc.password></jdbc.password>
+				<!--数据库连接地址和数据库名-->
+				<jdbc.url>
+					jdbc:mysql://192.168.101.131:3306/phoenix_column?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8&amp;amp;zeroDateTimeBehavior=convertToNull
+				</jdbc.url>
+				<!--数据库访问帐号-->
+				<jdbc.username>zhangwei</jdbc.username>
+				<!--数据库访问密码-->
 				<jdbc.password>zhangwei</jdbc.password>
 				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
 				<log4j.level>debug</log4j.level>

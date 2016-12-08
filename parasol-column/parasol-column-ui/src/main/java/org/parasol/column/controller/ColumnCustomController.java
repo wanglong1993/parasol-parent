@@ -1,14 +1,17 @@
 package org.parasol.column.controller;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.parasol.column.entity.ColumnCustom;
 import org.parasol.column.entity.ColumnSelf;
 import org.parasol.column.service.ColumnCustomService;
+import org.parasol.column.service.ColumnSelfService;
+import org.parasol.column.service.ColumnSysService;
 import org.parasol.column.utils.JsonUtils;
 import org.parasol.column.vo.ColumnVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,45 +29,100 @@ public class ColumnCustomController extends BaseController {
 	
 //	@Resource(name="columnCustomService")
 	@Autowired
-	private ColumnCustomService ccs;
+	private ColumnCustomService customService;
+	
+	@Autowired
+	private ColumnSelfService selfService;
+	
+	@Autowired
+	private ColumnSysService sysService;
 	
 	@RequestMapping(value="/showColumn",method = RequestMethod.POST)
 	@ResponseBody
 	public InterfaceResult<List<ColumnSelf>> showColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		String jsonStr=this.readJSONString(request);
-		ColumnVo vo=(ColumnVo)JsonUtils.jsonToBean(jsonStr, ColumnVo.class);
-		if(vo==null||vo.getPid()==null){
-			InterfaceResult<List<ColumnSelf>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+
+		InterfaceResult<List<ColumnSelf>> result = null;
+		String jsonStr = this.readJSONString(request);
+		ColumnVo vo = (ColumnVo)JsonUtils.jsonToBean(jsonStr, ColumnVo.class);
+		if(vo == null|| vo.getPid() == null){
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
-		InterfaceResult<List<ColumnSelf>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		List<ColumnSelf> list=null;
-		Long pid=vo.getPid();
-		long uid=this.getUserId(request);
-		list=this.ccs.queryListByPidAndUserId(pid, uid);
-		result.setResponseData(list);
+		Map<String,List<ColumnSelf>> map = null;
+		Long pid = vo.getPid();
+		Long uid = getUserId(request);
+		if(uid == 0){
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+			return result;
+		}
+		result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		//显示自定义栏目数据
+		map = returnColumnMap(pid, uid, request);
+		List<ColumnSelf> selfList = map.get("selfList");
+		result.setResponseData(selfList);
 		return result;
 	}
-	
-	@RequestMapping(value="/replaceColumn",method = RequestMethod.POST)
+
+	@RequestMapping(value = "/showSelfColumn",method = RequestMethod.POST)
 	@ResponseBody
-	public InterfaceResult<Boolean> replaceColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		String jsonStr=this.readJSONString(request);
-		List<ColumnSelf> newList=JsonUtils.jsonToList(jsonStr,ColumnSelf.class);
-		long uid=this.getUserId(request);
-		if(newList==null||newList.size()==0||uid==0){
-			InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+	public InterfaceResult<Map<String,List<ColumnSelf>>> showSelfColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+		InterfaceResult<Map<String,List<ColumnSelf>>> result = null;
+		String jsonStr = this.readJSONString(request);
+		ColumnVo vo = (ColumnVo)JsonUtils.jsonToBean(jsonStr, ColumnVo.class);
+		if(vo == null|| vo.getPid() == null){
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
-		for(ColumnSelf c:newList){
+		Map<String,List<ColumnSelf>> map = null;
+		Long pid = vo.getPid();
+		Long uid = getUserId(request);
+		if(uid == 0){
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+			return result;
+		}
+		result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		//显示自定义栏目数据
+		map = returnColumnMap(pid, uid, request);
+		result.setResponseData(map);
+		return result;
+	}
+
+	/**
+	 * 修改自定义栏目
+	 * @author 王飞
+	 * @date 2016年12月7日 下午4:50:17
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value ="/replaceColumn",method = RequestMethod.POST)
+	@ResponseBody
+	public InterfaceResult<Boolean> replaceColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+		String jsonStr = this.readJSONString(request);
+		List<ColumnSelf> newList = JsonUtils.jsonToList(jsonStr,ColumnSelf.class);
+		long uid = this.getUserId(request);
+		if(CollectionUtils.isEmpty(newList)|| uid == 0 || newList.size() > 10){
+			InterfaceResult<Boolean> result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+			return result;
+		}
+		/*for(ColumnSelf c: newList){
 			c.setCreatetime(new Date());
 			c.setUpdateTime(new Date());
 			c.setParentId(0l);
+		}*/
+		//Long pid = 0l;
+		List<ColumnSelf> selfList = customService.queryListByPidAndUserId(0l, uid);
+		if(selfList.size() == newList.size() && newList.containsAll(selfList)){
+			InterfaceResult<Boolean> result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+			result.setResponseData(true);
+			return result;
 		}
-		Long pid=0l;
-		int n=this.ccs.replace(uid, newList);
-		InterfaceResult<Boolean> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		Boolean b=n>0;
+		int n = this.customService.replace(uid, newList);
+		InterfaceResult<Boolean> result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		Boolean b = n > 0;
 		result.setResponseData(b);
 		return result;
 	}

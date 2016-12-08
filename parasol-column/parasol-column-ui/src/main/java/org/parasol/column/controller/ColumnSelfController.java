@@ -34,41 +34,16 @@ public class ColumnSelfController extends BaseController {
 	@RequestMapping(value="/showAllColumnSelf",method = RequestMethod.GET)
 	@ResponseBody
 	public InterfaceResult<List<ColumnSelf>> showAllColumnSelf(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		InterfaceResult<List<ColumnSelf>> result=InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		Long pid=0l;
-		Long uid=this.getUserId(request);
-		List<ColumnSelf> list=new ArrayList<ColumnSelf>();
-		if (uid.longValue() != 0) {
-			List<ColumnSelf> listSelf = selfService.queryListByPidAndUserId(pid, uid);
-			List<ColumnSelf> listCust= customService.queryListByPidAndUserId(pid, uid);
-			List<ColumnSelf> listSys= selfService.queryListByPidAndUserId(pid, 0l);
-			if(listSys != null) {
-				Set<Long> idList = new HashSet<Long>(listSys.size());
-				for (ColumnSelf sys : listSys){
-					if (sys != null) {
-						list.add(sys);
-						idList.add(sys.getId());
-					}
-				}
 
-				if (listSelf != null) {
-					for(ColumnSelf self : listSelf){
-						if (self != null && !idList.contains(self.getId())) {
-							list.add(self);
-						}
-					}
-				}
-				if (listCust != null) {
-					for(ColumnSelf cust : listCust){
-						if (cust != null && !idList.contains(cust.getId())) {
-							list.add(cust);
-						}
-					}
-				}
-			}
-
+		InterfaceResult<List<ColumnSelf>> result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		//Long pid = 0l;
+		Long uid = this.getUserId(request);
+		if(uid == 0){
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
+			return result;
 		}
-		result.setResponseData(list);
+		List<ColumnSelf> sysList = returnSysList();
+		result.setResponseData(sysList);
 		return result;
 	}
 	

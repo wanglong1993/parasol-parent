@@ -1,20 +1,24 @@
 package org.parasol.column.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.parasol.column.dao.ColumnCustomDao;
+import org.parasol.column.dao.ColumnSelfDao;
+import org.parasol.column.dao.NewColumnCustomDao;
 import org.parasol.column.entity.ColumnCustom;
 import org.parasol.column.entity.ColumnSelf;
+import org.parasol.column.entity.NewColumnCustom;
 import org.parasol.column.service.ColumnCustomService;
 import org.parasol.column.service.ColumnSelfService;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component("columnCustomService")
 public class ColumnCustomServiceImpl implements ColumnCustomService {
@@ -22,44 +26,45 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	private static final Log log = LogFactory.getLog(ColumnCustomServiceImpl.class);
 	
 	@Resource
-	private ColumnCustomDao ccd;
+	private ColumnCustomDao customDao;
+
+	@Resource
+	private ColumnSelfDao selfDao;
+	
+	@Resource
+	private NewColumnCustomDao newCustomDao;
 	
 	@Resource(name="columnSelfService")
-	private ColumnSelfService css;
+	private ColumnSelfService selfService;
 	
-	@Override
+
+    @Override
 	public int deleteByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
-		return ccd.deleteByPrimaryKey(id);
+		return newCustomDao.deleteByUserId(id);
 	}
 
 	@Override
-	public int insert(ColumnCustom record) {
+	public int insert(NewColumnCustom record) {
 		// TODO Auto-generated method stub
-		return ccd.insert(record);
+		return newCustomDao.insert(record);
 	}
 
 	@Override
-	public ColumnCustom selectByPrimaryKey(Long id) {
+	public NewColumnCustom selectByPrimaryKey(Long id) {
 		// TODO Auto-generated method stub
-		return ccd.selectByPrimaryKey(id);
+		return newCustomDao.queryBySid(id);
 	}
 
-	@Override
-	public int updateByPrimaryKey(ColumnCustom record) {
-		// TODO Auto-generated method stub
-		return ccd.updateByPrimaryKey(record);
-	}
-
-	@Override
+	/*@Override
 	public List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid) {
 		// TODO Auto-generated method stub
 		List<ColumnSelf> result=null;
 		if (pid == 0) {
-			List<ColumnCustom> list = ccd.queryListByPidAndUserId(pid, uid);
+			List<ColumnCustom> list = customDao.queryListByPidAndUserId(pid, uid);
 			if (list == null || list.size() == 0) {
 				this.init(uid);
-				list = ccd.queryListByPidAndUserId(pid, uid);
+				list = customDao.queryListByPidAndUserId(pid, uid);
 			}
 			result=new ArrayList<ColumnSelf>();
 			for(ColumnCustom source:list){
@@ -75,18 +80,55 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 		}
 		else{
 			//当pid不为0时，查询子系统栏目
-			result=css.queryListByPid(pid);
+			result= selfService.queryListByPid(pid);
 		}
 		return result;
+	}*/
+
+	@Override
+	public List<ColumnSelf> queryListByPidAndUserId(Long pid, Long uid){
+		// TODO Auto-generated method stub
+		if (pid == 0){
+			List<ColumnSelf> selfList = newCustomDao.queryListByUid(uid);
+			if(selfList != null && selfList.size() != 0){
+				return selfList;
+			}
+			return new ArrayList<ColumnSelf>();
+		}
+		//当pid不为0时，查询子系统栏目
+		return selfDao.queryListByPid(pid);
+
 	}
 
+	/**
+	 * 批量插入数据到NewcolumnCustom表中
+	 */
+	@Override
+	public int insertBatch(List<ColumnSelf> selfList, Long userId){
+		int i =0;
+		if(CollectionUtils.isNotEmpty(selfList)){
+			NewColumnCustom custom = new NewColumnCustom();
+			for (ColumnSelf columnSelf : selfList) {
+				custom.setSid(columnSelf.getId());
+				custom.setUserId(userId);
+				custom.setUserOrSystem((short)0);
+				custom.setCreatetime(new Date());
+				custom.setUpdateTime(new Date());
+				//插入数据到NewColumnCustom表中
+				i = newCustomDao.insert(custom);
+			}
+			return i;
+		}
+		return i;
+		
+	}
 	@Override
 	public int init(Long uid) {
 		// TODO Auto-generated method stub
-		List<ColumnCustom> list=ccd.queryListByPidAndUserId(0l, uid);
+		List<ColumnCustom> list= customDao.queryListByPidAndUserId(0l, uid);
 		if(list==null||list.size()==0){
 			list=new ArrayList<ColumnCustom>();
-			List<ColumnSelf> listSelf=css.queryListByPidAndUserId(0l, 0l);
+			List<ColumnSelf> listSelf= selfService.queryListByPidAndUserId(0l, 0l);
 			for(ColumnSelf source:listSelf){
 				try {
 					ColumnCustom dest=buidColumnCustom(source);
@@ -98,7 +140,7 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 				}
 			}
 			for(ColumnCustom cc:list){
-				ccd.insert(cc);
+				customDao.insert(cc);
 			}
 		}
 		return 0;
@@ -124,17 +166,17 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	@Override
 	public ColumnCustom queryByCid(Long cid) {
 		// TODO Auto-generated method stub
-		return ccd.queryByCid(cid);
+		return customDao.queryByCid(cid);
 	}
 
-	@Override
+	/*@Override
 	public int replace(Long uid, List<ColumnSelf> newList) {
 		// TODO Auto-generated method stub
-		ccd.deleteByUserId(uid);
-		List<ColumnCustom> list=new ArrayList<ColumnCustom>();
-		for(ColumnSelf source:newList){
+		customDao.deleteByUserId(uid);
+		List<ColumnCustom> list = new ArrayList<ColumnCustom>();
+		for(ColumnSelf source: newList){
 			source.setUserId(uid);
-			ColumnCustom dest=null;
+			ColumnCustom dest = null;
 			try {
 				dest = this.buidColumnCustom(source);
 			} catch (Exception e) {
@@ -143,8 +185,17 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 			}
 			list.add(dest);
 		}
-		int n=ccd.insertBatch(list);
+		int n = customDao.insertBatch(list);
 		return n;
+	}*/
+	@Override
+	public int replace(Long uid, List<ColumnSelf> selfList){
+		
+		newCustomDao.deleteByUserId(uid);
+		int i = insertBatch(selfList, uid);
+		return i;
+		
 	}
+
 
 }
