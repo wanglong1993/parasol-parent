@@ -105,6 +105,7 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	 */
 	@Override
 	public int insertBatch(List<ColumnSelf> selfList, Long userId){
+		// TODO Auto-generated method stub
 		int i =0;
 		if(CollectionUtils.isNotEmpty(selfList)){
 			NewColumnCustom custom = new NewColumnCustom();
@@ -157,7 +158,7 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 	
 	private ColumnSelf buidColumnSelf(ColumnCustom source) throws Exception{
 		ColumnSelf dest=new ColumnSelf();
-		BeanUtils.copyProperties(dest,source);
+		BeanUtils.copyProperties(dest, source);
 		dest.setId(source.getCid());
 		dest.setParentId(source.getPcid());
 		return dest;
@@ -188,9 +189,16 @@ public class ColumnCustomServiceImpl implements ColumnCustomService {
 		int n = customDao.insertBatch(list);
 		return n;
 	}*/
+
+	/**
+	 * 通过先删除再批量插入修改数据
+	 * @param uid
+	 * @param selfList
+	 * @return
+	 */
 	@Override
 	public int replace(Long uid, List<ColumnSelf> selfList){
-		
+		// TODO Auto-generated method stub
 		newCustomDao.deleteByUserId(uid);
 		int i = insertBatch(selfList, uid);
 		return i;

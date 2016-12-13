@@ -51,7 +51,7 @@
 		</property>
 		<property name="minPoolSize">
 			<value>${column.jdbc.minPoolSize}</value>
-		</property>
+	    </property>
 		<property name="acquireIncrement">
 			<value>${column.jdbc.acquireIncrement}</value>
 		</property>

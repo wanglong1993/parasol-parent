@@ -63,6 +63,14 @@ public class ColumnCustomController extends BaseController {
 		return result;
 	}
 
+	/**
+	 * 不需验证uid，不登录也返回数据
+	 * @author 王飞
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/showSelfColumn",method = RequestMethod.POST)
 	@ResponseBody
 	public InterfaceResult<Map<String,List<ColumnSelf>>> showSelfColumn(HttpServletRequest request, HttpServletResponse response) throws Exception{
@@ -70,19 +78,22 @@ public class ColumnCustomController extends BaseController {
 		InterfaceResult<Map<String,List<ColumnSelf>>> result = null;
 		String jsonStr = this.readJSONString(request);
 		ColumnVo vo = (ColumnVo)JsonUtils.jsonToBean(jsonStr, ColumnVo.class);
-		if(vo == null|| vo.getPid() == null){
+		if(vo == null || vo.getPid() == null){
 			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
 		Map<String,List<ColumnSelf>> map = null;
 		Long pid = vo.getPid();
 		Long uid = getUserId(request);
-		if(uid == 0){
+		//不需验证uid
+		/*if(uid == 0){
 			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION);
 			return result;
-		}
+		}*/
 		result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		//显示自定义栏目数据
+		//1.返回自定义栏目数据
+		//2.其他系统栏目数据
+		//3.子栏目数据
 		map = returnColumnMap(pid, uid, request);
 		result.setResponseData(map);
 		return result;
@@ -108,12 +119,6 @@ public class ColumnCustomController extends BaseController {
 			InterfaceResult<Boolean> result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
-		/*for(ColumnSelf c: newList){
-			c.setCreatetime(new Date());
-			c.setUpdateTime(new Date());
-			c.setParentId(0l);
-		}*/
-		//Long pid = 0l;
 		List<ColumnSelf> selfList = customService.queryListByPidAndUserId(0l, uid);
 		if(selfList.size() == newList.size() && newList.containsAll(selfList)){
 			InterfaceResult<Boolean> result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);

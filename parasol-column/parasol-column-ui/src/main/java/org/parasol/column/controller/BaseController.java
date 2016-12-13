@@ -94,26 +94,24 @@ public class BaseController implements InitializingBean {
 		//系统栏目
 		//List<ColumnSelf> sysList = sysService.queryDefaultSysColumn(pid, 0l);
 		Map<String, List<ColumnSelf>> map = new HashMap<String, List<ColumnSelf>>(2);
+		List<ColumnSelf> custList = customService.queryListByPidAndUserId(pid, uid);
 		if (uid.longValue() != 0) {
 			//自定义栏目
-			List<ColumnSelf> custList = customService.queryListByPidAndUserId(pid, uid);
 			//返回子目录栏目
 			if (pid != 0){
 				map.put("subList",custList);
 				return map;
 			}
 			//当前用户没有自定义栏目时，设置10条默认栏目且插入到数据库
-			if (custList == null || custList.size() == 0) {
+			if (CollectionUtils.isEmpty(custList)) {
 				custList = new ArrayList<ColumnSelf>();
 				for (int i = 0; i < 10; i++) {
 					ColumnSelf columnSelf = sysList.get(i);
-					if (columnSelf.getDelStatus() == (short) 0) {
-						custList.add(columnSelf);
-					}
+					custList.add(columnSelf);
 				}
 				customService.insertBatch(custList, uid);
-				map.put("selfList", sysList.subList(0, 9));
-				map.put("restList", sysList.subList(10, 29));
+				map.put("selfList", sysList.subList(0, 10));
+				map.put("restList", sysList.subList(10, sysList.size()));
 				return map;
 			} else {
 				Set<Long> idList = new HashSet<Long>();
@@ -130,10 +128,13 @@ public class BaseController implements InitializingBean {
 				map.put("restList", restList);
 				return map;
 			}
+		}else {
+			//用户不登录时，展示默认十条数据，筛选则展示其余20条
+			map.put("selfList", sysList.subList(0, 10));
+			map.put("restList", sysList.subList(10, sysList.size()));
+			return map;
 		}
-		return new HashMap<String, List<ColumnSelf>>();
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()

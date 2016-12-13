@@ -18,6 +18,13 @@
 		<level value="info" />
 		<appender-ref ref="normal_log_file" />
 	</root>
+	<logger name="org.springframework">
+		<level value="info" />
+	</logger>
+
+	<logger name="org.mybatis.spring">
+		<level value="info" />
+	</logger>
 </log4j:configuration> 
 
 
