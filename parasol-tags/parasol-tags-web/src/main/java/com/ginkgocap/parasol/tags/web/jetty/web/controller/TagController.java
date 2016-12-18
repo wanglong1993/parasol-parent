@@ -25,13 +25,13 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ginkgocap.parasol.tags.model.Page;
+import com.gintong.frame.util.dto.CommonResultCode;
+import com.gintong.frame.util.dto.InterfaceResult;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -142,6 +142,62 @@ public class TagController extends BaseControl {
 			throw e;
 
 		}
+	}
+
+	/**
+	 * 给出一个大数据系统推荐的标签列表
+	 * curl -i "http://localhost:8081/tags/tags/getRecomTagList?appKey=1&userId=111&tagType=1"
+	 * @param request
+	 * @return
+	 * @throws TagServiceException
+	 * @throws CodeServiceException
+	 */
+	@RequestMapping(path = "/tags/tags/getRecomDefaultTagList", method = { RequestMethod.GET })
+	public MappingJacksonValue getRecomDefaultTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
+													   @RequestParam(name = "index",required = false,defaultValue="0")int index,
+											           @RequestParam(name = "size", required = false,defaultValue="10") int size,
+											           HttpServletRequest request) throws TagServiceException {
+		InterfaceResult result = null;
+		//@formatter:on
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+			Long loginAppId = this.DefaultAppId;
+			//Long loginUserId = this.getUserId(request);
+
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
+			// 1.查询后台服务
+			//List<Tag> userTags = tagService.getTagsByUserIdAppidTagType(loginUserId, loginAppId, tagType);
+			//userTags = userTags == null ? new ArrayList<Tag>() : userTags;
+
+			int total = tagService.countDefaultTagsByUserIdAppidTagType(0l, loginAppId, 0l);
+			//带分页的系统推荐标签
+			List<Tag> sysTags = tagService.getTagsByUserIdAppidTagTypePage(0L, loginAppId, 0L, index,size);
+			sysTags = sysTags == null ? new ArrayList<Tag>() : sysTags;
+			Page<Tag> tagPage = returnTagPage(sysTags,index,size,total);
+			Map<String,Page<Tag>> map = new HashMap<String,Page<Tag>>();
+			map.put("page",tagPage);
+			//map.put("success",true);
+			// 3.创建页面显示数据项的过滤器
+			mappingJacksonValue = new MappingJacksonValue(map);
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			//result.setResponseData(mappingJacksonValue);
+			return mappingJacksonValue;
+		} catch (TagServiceException e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
+	}
+
+	private Page<Tag> returnTagPage(List<Tag> sysTags, int index,int size,int total){
+
+		Page<Tag> tagPage = new Page<Tag>();
+		tagPage.setIndex(index);
+		tagPage.setList(sysTags);
+		tagPage.setTotal((long)total);
+		tagPage.setSize(size);
+		return tagPage;
 	}
 
 	//@formatter:off
@@ -282,8 +338,15 @@ public class TagController extends BaseControl {
 			filter.add("id"); // id',
 			filter.add("tagType"); // tagType',
 			filter.add("tagName"); // Tag名称
+			//filter.add("success");
+			filter.add("page");
+			filter.add("total");
+			filter.add("index");
+			filter.add("list");
+			filter.add("size");
 		}
 
+		filterProvider.addFilter(Page.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		filterProvider.addFilter(Tag.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}

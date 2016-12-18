@@ -127,4 +127,13 @@ public class TagServiceTest extends TestBase implements Test {
 		int num = tagSourceService.removeTagSourceBySourceId(System_AppId, userId, sourceId+1, (long)sourceType);
 		Assert.assertTrue(num>0);
 	}
+
+	@org.junit.Test
+	public void testGetTagsByUserIdAppidTagTypePage() throws TagServiceException{
+
+		List<Tag> tagList = tagService.getTagsByUserIdAppidTagTypePage(0l, System_AppId, 0l, 0, 10);
+			System.out.println("*******************************"+tagList);
+
+	}
+
 }

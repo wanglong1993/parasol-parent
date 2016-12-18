@@ -20,6 +20,10 @@
            <list name="List_Tag_Id_UserId_AppId_TagType"
                   sqlitem="select id from tb_tag where userId=? and appId=? and tagType = ?"
                   sqlType="hsql" keyProperty="userId,appId,tagType" valueProperty="id"/>
+			<!-- 查询一个用户指导应用和类型下的大数据推送标签 -->
+			<list name="List_Tag_Id_UserId_AppId_TagType_Default"
+				  sqlitem="select id from tb_tag where userId=? and appId=? and tagType = ? order by id desc"
+				  sqlType="hsql" keyProperty="userId,appId,tagType" valueProperty="id"/>
 		</object>
 		
 		<object name="com.ginkgocap.parasol.tags.model.TagSource" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">

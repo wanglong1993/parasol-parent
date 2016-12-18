@@ -86,4 +86,25 @@ public interface TagService {
 	 */
 	public int countTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException;
 
+	/**
+	 * 查找大数据指定分类的Tag列表个数
+	 * @param userId
+	 * @param appId
+	 * @param tagType
+	 * @return
+	 * @throws TagServiceException
+	 */
+	public int countDefaultTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException;
+
+	/**
+	 * 查找大数据指定分类的Tag列表
+	 * @param userId
+	 * @param appId
+	 * @param tagType
+	 * @param start
+	 * @param size
+	 * @throws TagServiceException
+	 * @return
+	 */
+	public List<Tag> getTagsByUserIdAppidTagTypePage(Long userId, Long appId, Long tagType, int start, int size) throws TagServiceException;
 }

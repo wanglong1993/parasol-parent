@@ -77,7 +77,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from tb_newcolumn_custom
+    from tb_column_custom_new
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -86,19 +86,19 @@
     </if>
   </select>
   <delete id="deleteByExample" parameterType="org.parasol.column.entity.NewColumnCustomExample" >
-    delete from tb_newcolumn_custom
+    delete from tb_column_custom_new
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="org.parasol.column.entity.NewColumnCustom" >
-    insert into tb_newcolumn_custom (sid, user_id, user_or_system, 
+    insert into tb_column_custom_new (sid, user_id, user_or_system, 
       createtime, update_time)
     values (#{sid,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{userOrSystem,jdbcType=SMALLINT}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="org.parasol.column.entity.NewColumnCustom" >
-    insert into tb_newcolumn_custom
+    insert into tb_column_custom_new
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="sid != null" >
         sid,
@@ -135,13 +135,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="org.parasol.column.entity.NewColumnCustomExample" resultType="java.lang.Integer" >
-    select count(*) from tb_newcolumn_custom
+    select count(*) from tb_column_custom_new
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update tb_newcolumn_custom
+    update tb_column_custom_new
     <set >
       <if test="record.sid != null" >
         sid = #{record.sid,jdbcType=BIGINT},
@@ -164,7 +164,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update tb_newcolumn_custom
+    update tb_column_custom_new
     set sid = #{record.sid,jdbcType=BIGINT},
       user_id = #{record.userId,jdbcType=BIGINT},
       user_or_system = #{record.userOrSystem,jdbcType=SMALLINT},
@@ -175,7 +175,7 @@
     </if>
   </update>
   <update id="updateByUid" parameterType ="org.parasol.column.entity.NewColumnCustom">
-     update tb_newcolumn_custom
+     update tb_column_custom_new
       set sid = #{record.sid,jdbcType=BIGINT},
       user_id = #{record.userId,jdbcType=BIGINT},
       user_or_system = #{record.userOrSystem,jdbcType=SMALLINT},
@@ -204,7 +204,7 @@
     <result column="tags" property="tags" jdbcType="VARCHAR" />
   </resultMap>
   <select id="queryListByUid" resultMap="resultMap">
-    SELECT id,parent_id,sys_col_id,columnName,cs.user_id ,order_num,path_name,subscribe_count,type,cs.user_or_system,del_status,cs.createtime,cs.update_time,column_level_path,tags FROM tb_newcolumn_custom ncc
+    SELECT id,parent_id,sys_col_id,columnName,cs.user_id ,order_num,path_name,subscribe_count,type,cs.user_or_system,del_status,cs.createtime,cs.update_time,column_level_path,tags FROM tb_column_custom_new ncc
     RIGHT JOIN tb_column_self cs
     ON ncc.sid = cs.id
     <where>

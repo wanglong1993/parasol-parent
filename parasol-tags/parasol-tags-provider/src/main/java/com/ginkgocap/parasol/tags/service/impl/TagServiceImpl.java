@@ -31,6 +31,7 @@ import com.ginkgocap.parasol.tags.service.TagSourceService;
 public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	private static Logger logger = Logger.getLogger(TagServiceImpl.class);
 	private static final String LIST_TAG_ID_USERID_APPID_TAGTYPE = "List_Tag_Id_UserId_AppId_TagType";
+	private static final String LIST_TAG_ID_USERID_APPID_TAGTYPE_DEFAULT = "List_Tag_Id_UserId_AppId_TagType_Default";
 
 	private static final int MAX_TAG = 300; // 最多创建的标签数量
 	private static final int MAX_LEN_TAG = 30; // Tag的长度30个字符
@@ -201,12 +202,38 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		}
 		return null;
 	}
+	
+	@Override
+	public List<Tag> getTagsByUserIdAppidTagTypePage(Long userId, Long appId, Long tagType, int start, int size) throws TagServiceException {
+		//ServiceError.assertUserIdIsNull(userId); // 检查用户ID
+		try {
+			List<Tag> tagList = this.getSubEntitys(LIST_TAG_ID_USERID_APPID_TAGTYPE_DEFAULT,start,size, userId, appId, tagType);
+
+			if(CollectionUtils.isNotEmpty(tagList)){
+				return tagList;
+			}
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new TagServiceException(e);
+		}
+		return new ArrayList<Tag>();
+	}
 
 	@Override
 	public int countTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException {
 		ServiceError.assertUserIdIsNull(userId); // 检查用户ID
 		try {
 			return this.countEntitys(LIST_TAG_ID_USERID_APPID_TAGTYPE, userId, appId, tagType);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new TagServiceException(e);
+		}
+	}
+	@Override
+	public int countDefaultTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException {
+		//ServiceError.assertUserIdIsNull(userId); // 不用检查用户ID
+		try {
+			return this.countEntitys(LIST_TAG_ID_USERID_APPID_TAGTYPE_DEFAULT, userId, appId, tagType);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new TagServiceException(e);
