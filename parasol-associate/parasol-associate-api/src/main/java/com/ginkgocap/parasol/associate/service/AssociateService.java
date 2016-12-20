@@ -59,7 +59,7 @@ public interface AssociateService {
 	 * 
 	 * @param appId
 	 * @param userId
-	 * @param associateId
+	 * @param sourceId
 	 * @return
 	 * @throws AssociateServiceException
 	 */

@@ -135,4 +135,16 @@ public class AssociateServiceTest extends TestBase implements Test {
 
         }
     }
+
+	@org.junit.Test
+	public void testGetAssociatesBySourGtceId() throws AssociateServiceException, IOException {
+		List<Associate>  page = associateService.getAssociatesBySourceId(1L, 3167354L, 316122021043421L);
+
+		for (Associate associate : page) {
+			//Assert.assertTrue(MapUtils.isNotEmpty(associate));
+			JsonObjectOutput joo = new JsonObjectOutput(System.out);
+			joo.writeObject(associate);
+
+		}
+	}
 }
