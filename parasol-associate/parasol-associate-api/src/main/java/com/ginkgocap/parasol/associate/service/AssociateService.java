@@ -60,10 +60,11 @@ public interface AssociateService {
 	 * @param appId
 	 * @param userId
 	 * @param sourceId
+	 * @param sourceTypeId
 	 * @return
 	 * @throws AssociateServiceException
 	 */
-	public List<Associate> getAssociatesBySourceId(Long appId, Long userId, Long sourceId)  throws AssociateServiceException;
+	public List<Associate> getAssociatesBySourceId(Long appId, Long userId, Long sourceId ,Long sourceTypeId)  throws AssociateServiceException;
 	/**
 	 *  查询一个对象的关联数据，需要定义一下格式
 	 * @param appId

@@ -145,14 +145,14 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
     }
 
     @Override
-    public List<Associate> getAssociatesBySourceId(Long appId, Long userId, Long sourceId) throws AssociateServiceException {
+    public List<Associate> getAssociatesBySourceId(Long appId, Long userId, Long sourceId,Long sourceTypeId) throws AssociateServiceException {
         ServiceError.assertAppIdForAssociate(appId);
         ServiceError.assertUserIdForAssociate(userId);
-        if (sourceId == null || sourceId <= 0) {
+        if (sourceId == null || sourceId <= 0 || sourceTypeId == null || sourceTypeId <= 0) {
             return null;
         }
         try {
-            return getEntitys(LIST_ASSOCIATE_ID_APPID_SOURCEID, new Object[]{appId, sourceId});
+            return getEntitys(LIST_ASSOCIATE_ID_APPID_SOURCEID, new Object[]{appId, sourceId, sourceTypeId});
         } catch (BaseServiceException e) {
             e.printStackTrace(System.err);
             throw new AssociateServiceException(e);

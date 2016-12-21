@@ -19,8 +19,8 @@
 
             
            <list name="List_Associate_Id_AppId_SourceId"
-                  sqlitem="select id from tb_associate where appId=? and sourceId=?"
-                  sqlType="hsql" keyProperty="appId,sourceId" valueProperty="id"/>
+                  sqlitem="select id from tb_associate where appId=? and sourceId=? and sourceTypeId=?"
+                  sqlType="hsql" keyProperty="appId,sourceId,sourceTypeId" valueProperty="id"/>
 
            <!-- 查询一个资源下有多少关联 --> 
            <list name="List_Associate_Id_AppId_SourceTypeId_SourceId"
