@@ -56,7 +56,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 
 		// 检查Tag是否存在,系统标签也可以处理
 		try {
-			Tag tag = tagService.getTag(source.getUserId(), source.getTagId());
+			  Tag tag = tagService.getTag(source.getTagId());
 			// TODO : 添加系统标签的处理
 			if (tag == null) {
 				throw new TagSourceServiceException(ServiceError.ERROR_NOT_FOUND, "The label [" + source.getTagId() + "] you want to add does not exist"); // 要添加的标签不存在！
@@ -217,7 +217,19 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 			throw new TagSourceServiceException(e);
 		}
 	}
-
+	@Override
+	public List<TagSource> getTagSourcesBySourceId(Long appId, Long sourceId, Long sourceType) throws Exception {
+		ServiceError.assertAppidIsNullForTagSource(appId);
+		ServiceError.assertTagSourceIdIsNullForTagSource(sourceId);
+		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
+		try {
+			List<TagSource> tagSources = this.getEntitys(LIST_ID_APPID_SOURCEID_SOURCETYPE, appId, sourceId, sourceType);
+			return tagSources;
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw new TagSourceServiceException(e);
+		}
+	}
 	@Override
 	public Integer countTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Long sourceType) throws TagSourceServiceException {
 		ServiceError.assertAppidIsNullForTagSource(appId);

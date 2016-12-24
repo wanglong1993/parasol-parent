@@ -167,6 +167,22 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	}
 
 	@Override
+	public Tag getTag(Long id) throws TagServiceException {
+		ServiceError.assertTagIdIsNull(id);
+		// ServiceError.assertUserIdIsNull(userId);
+		try {
+			Tag tag = this.getEntity(id);
+			if (tag != null) {
+				return tag;
+			}
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new TagServiceException(e);
+		}
+		return null;
+	}
+
+	@Override
 	public List<Tag> getTags(Long userId, List<Long> ids) throws TagServiceException {
 		List<Tag> result = new ArrayList<Tag>();
 		if (userId != null && CollectionUtils.isNotEmpty(ids)) {

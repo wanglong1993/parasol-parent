@@ -135,5 +135,18 @@ public class TagServiceTest extends TestBase implements Test {
 			System.out.println("*******************************"+tagList);
 
 	}
+	@org.junit.Test
+	public void testGetTagSourcesByAppIdSourceIdSourceType() throws TagServiceException{
+
+	//	List<Tag> tagList = tagService.getTagsByUserIdAppidTagTypePage(0l, System_AppId, 0l, 0, 10);
+		try {
+			List<TagSource> tagsource=tagSourceService.getTagSourcesSourceId(1l,4055923621888010l,7l);
+			System.out.println(tagsource);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//	System.out.println("*******************************"+tagList);
+
+	}
 
 }
