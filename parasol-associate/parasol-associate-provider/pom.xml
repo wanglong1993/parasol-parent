@@ -209,5 +209,27 @@
 				</filters>
 			</build>
 		</profile>
+		<profile>
+			<id>online</id>
+			<properties>
+				<!-- database -->
+				<jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
+				<jdbc.url>jdbc:mysql://mysql.gintong.local:3306/parasol_associate?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
+				<jdbc.username>ph_kfpt</jdbc.username>
+				<jdbc.password>Cual17jc5qd4</jdbc.password>
+				<!-- memcached -->
+				<memcached.list1.ip>memcache.kfpt.local</memcached.list1.ip>
+				<memcached.list1.port>11211</memcached.list1.port>
+				<memcached.object1.ip>memcache.kfpt.local</memcached.object1.ip>
+				<memcached.object1.port>11211</memcached.object1.port>
+				<memcached.map1.ip>memcache.kfpt.local</memcached.map1.ip>
+				<memcached.map1.port>11211</memcached.map1.port>
+				<!-- dubbo -->
+				<dubbo.application.name>associatedubboprovider</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://zk.gintong.local:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.protocol.port>20891</dubbo.protocol.port>
+			</properties>
+		</profile>
 	</profiles>
 </project>

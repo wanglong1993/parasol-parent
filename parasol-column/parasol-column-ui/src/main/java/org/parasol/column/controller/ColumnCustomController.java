@@ -119,12 +119,13 @@ public class ColumnCustomController extends BaseController {
 			InterfaceResult<Boolean> result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
 			return result;
 		}
-		List<ColumnSelf> selfList = customService.queryListByPidAndUserId(0l, uid);
+		//若传入相同的栏目 即使顺序不同也批量修改 IOS 与 Android 有此排序功能
+		/*List<ColumnSelf> selfList = customService.queryListByPidAndUserId(0l, uid);
 		if(selfList.size() == newList.size() && newList.containsAll(selfList)){
 			InterfaceResult<Boolean> result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 			result.setResponseData(true);
 			return result;
-		}
+		}*/
 		int n = this.customService.replace(uid, newList);
 		InterfaceResult<Boolean> result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		Boolean b = n > 0;
