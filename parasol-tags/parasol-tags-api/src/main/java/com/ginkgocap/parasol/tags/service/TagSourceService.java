@@ -132,4 +132,6 @@ public interface TagSourceService {
 	 * @throws TagSourceServiceException
 	 */
 	public boolean createTagSources(List<TagSource> tagSource) throws TagSourceServiceException;
+
+	public List<TagSource> getTagSourcesBySourceId(Long appId, Long sourceId, Long sourceType)throws Exception;
 }

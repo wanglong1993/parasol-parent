@@ -56,6 +56,14 @@ public interface TagService {
 	public Tag getTag(Long userId, Long id) throws TagServiceException;
 
 	/**
+	 * 根据id查询一个标签
+	 * @param id
+	 * @return
+	 * @throws TagServiceException
+	 */
+	public Tag getTag(Long id) throws TagServiceException;
+
+	/**
 	 * 查询标签集合，通过ids
 	 * @param userId
 	 * @param ids
