@@ -30,7 +30,7 @@ public abstract class BaseService<T> {
 	private Class<T> entitlClass;
 	
 	@Autowired(required = true)
-	private Dao dao;
+	protected Dao dao;
 
 	@SuppressWarnings("unchecked")
 	public Class<T> getEntityClass() {
@@ -182,19 +182,6 @@ public abstract class BaseService<T> {
 				e.printStackTrace(System.err);
 			}
 			throw new BaseServiceException(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	protected boolean update(String region_name) throws BaseServiceException {
-		try {
-			return dao.update(region_name);
-		} catch (DaoException e) {
-			if (logger.isDebugEnabled()) {
-				e.printStackTrace(System.err);
-			}
-			throw new BaseServiceException(e);
-
 		}
 	}
 
