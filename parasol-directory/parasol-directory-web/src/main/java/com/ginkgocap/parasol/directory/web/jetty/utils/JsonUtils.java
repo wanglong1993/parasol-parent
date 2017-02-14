@@ -1,5 +1,7 @@
 package com.ginkgocap.parasol.directory.web.jetty.utils;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -69,5 +71,32 @@ private static ObjectMapper mapper;
 			throw new Exception(e.getMessage());
 		}	
 	}
+	/**
+	 * 从json对象集合表达式得到一个java对象列表
+	 * @throws Exception
+	 */
 
+	public static List getList4Json(String jsonString, Class pojoClass){
+
+		JSONArray jsonArray = JSONArray.fromObject(jsonString);
+
+		JSONObject jsonObject;
+
+		Object pojoValue;
+
+		List list = new ArrayList();
+
+		for ( int i = 0 ; i<jsonArray.size(); i++){
+
+			jsonObject = jsonArray.getJSONObject(i);
+
+			pojoValue = JSONObject.toBean(jsonObject, pojoClass);
+
+			list.add(pojoValue);
+
+		}
+
+		return list;
+
+	}
 }

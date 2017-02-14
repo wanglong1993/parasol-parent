@@ -57,7 +57,7 @@
     <orderEntry type="library" name="Maven: jline:jline:0.9.94" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty:3.7.0.Final" level="project" />
     <orderEntry type="library" name="Maven: com.github.sgroschupf:zkclient:0.1" level="project" />
-    <orderEntry type="library" name="Maven: com.ginkgocap.parasol:parasol-directory-api:1.0.0" level="project" />
+    <orderEntry type="module" module-name="parasol-directory-api" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.6.3" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-core:4.3.11.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging-annotations:1.2.0.Beta1" level="project" />
@@ -118,16 +118,16 @@
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.2" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.9.2" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-xc:1.9.2" level="project" />
-    <orderEntry type="library" name="Maven: com.gintong.frame:phoenix-frame-util:1.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
-    <orderEntry type="library" name="Maven: avalon-framework:avalon-framework:4.1.3" level="project" />
-    <orderEntry type="library" name="Maven: com.gintong.frame:phoenix-frame-cache:1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.gintong.frame:phoenix-frame-util:1.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.gintong.frame:phoenix-frame-cache:1.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.wandoulabs.jodis:jodis:0.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-recipes:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-framework:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-client:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:14.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.openjpa:openjpa-all:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib:2.2" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm:3.1" level="project" />
+    <orderEntry type="library" name="Maven: avalon-framework:avalon-framework:4.1.3" level="project" />
     <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.6" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.5.1" level="project" />
