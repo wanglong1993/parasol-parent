@@ -131,7 +131,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			if (id > 0) {
 				directory.setId(id);
 				String parentNumberCode = getParentNumberCode(parentDirectory);
-				directory.setNumberCode(parentNumberCode + id);
+				directory.setNumberCode(parentNumberCode + "-" + id);
 				this.updateEntity(directory);
 			}
 			return id;
@@ -258,7 +258,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			if (ObjectUtils.equals(targetDirectory.getUserId(), to.getUserId()) && ObjectUtils.equals(targetDirectory.getAppId(), to.getAppId()) && ObjectUtils.equals(targetDirectory.getTypeId(), to.getTypeId())) {
 				targetDirectory.setPid(toDirectoryId);
 				String numberCode = getParentNumberCode(to);
-				targetDirectory.setNumberCode(numberCode + targetDirectory.getId()); //更新索引
+				targetDirectory.setNumberCode(numberCode + "-" + targetDirectory.getId()); //更新索引
 				return this.updateEntity(targetDirectory);
 			} else {
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own directory");// 移动的不是自己的目录
@@ -484,9 +484,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			}
 		}
 		String parentNumberCode = parentIds == null ? "" : StringUtils.join(parentIds, "-");
-		if (!parentNumberCode.endsWith("-")) {
-			parentNumberCode = parentNumberCode + "-";
-		}
 		return parentNumberCode;
 
 	}
