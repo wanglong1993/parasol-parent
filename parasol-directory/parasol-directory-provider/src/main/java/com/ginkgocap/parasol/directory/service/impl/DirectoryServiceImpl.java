@@ -267,8 +267,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			// TODO 还的检查不能移动到自己的子目录下
 			// TODO 不能存在相同的文件名字
 			// TODO 检查是不是同一个分类
-			
-		
 
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
