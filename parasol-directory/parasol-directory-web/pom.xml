@@ -288,19 +288,17 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>test</id>
-			<properties>
-				<!-- dubbo -->
-				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
-				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
-				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<!-- redis地址 -->
-				<redis.host>192.168.101.42</redis.host>
-				<!-- redis端口 -->
-				<redis.port>6379</redis.port>
-			</properties>
+			<id>testOnline</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+                        </activation>
+                        <build>
+                              <filters>
+                                <filter>sa-testOnline.properties</filter>
+                              </filters>
+                        </build>
 		</profile>
-        <profile>
+                <profile>
 			<id>delivery</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
