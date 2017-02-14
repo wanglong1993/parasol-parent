@@ -140,8 +140,8 @@ public class TagServiceTest extends TestBase implements Test {
 
 	//	List<Tag> tagList = tagService.getTagsByUserIdAppidTagTypePage(0l, System_AppId, 0l, 0, 10);
 		try {
-			List<TagSource> tagsource=tagSourceService.getTagSourcesSourceId(1l,4055923621888010l,7l);
-			System.out.println(tagsource);
+			List<TagSource> tagsources=tagSourceService.getTagSourcesBySourceId(1l, 4055923621888010l, 7l);
+			System.err.println(tagsources);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

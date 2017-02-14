@@ -47,9 +47,9 @@
 		<region name="List_Tag_Id_UserId_AppId_TagType"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[0-9A-Za-z]$" datasource="list1" />
         </region>
-		<!--<region name="List_Id_AppId_SourceId_SourceType"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
+		<region name="List_Id_AppId_SourceId_SourceType"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[0-9A-Za-z]$" datasource="list1" />
-        </region>-->
+        </region>
 
 		<region name="List_Id_AppId_TagId"  listenerClass="com.ginkgocap.ywxt.framework.dal.cache.listener.DefaultListenerImpl" strategyClass="com.ginkgocap.ywxt.framework.dal.cache.memcached.route.strategy.DefaultStrategy" localCache="false" limitLen="100000">
             <keyPattern value="[0-9A-Za-z]$" datasource="list1" />
