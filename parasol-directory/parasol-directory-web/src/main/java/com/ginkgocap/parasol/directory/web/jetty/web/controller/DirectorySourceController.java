@@ -15,12 +15,17 @@
  */
 
 package com.ginkgocap.parasol.directory.web.jetty.web.controller;
-
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
+import com.ginkgocap.parasol.directory.web.jetty.modle.Property;
+import com.ginkgocap.parasol.directory.web.jetty.utils.JsonReadUtil;
+import com.ginkgocap.parasol.directory.web.jetty.utils.JsonUtils;
+import com.gintong.frame.util.dto.CommonResultCode;
+import com.gintong.frame.util.dto.InterfaceResult;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +36,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -236,4 +243,99 @@ public class DirectorySourceController extends BaseControl {
 		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
+
+	@RequestMapping(path = "/directory/source/getSourceListBySourceId", method = { RequestMethod.GET })
+	public InterfaceResult getSourceListBySourceId(@RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
+												   HttpServletRequest request, HttpServletResponse response) {
+		String requestJson = null;
+		Long loginAppId = this.DefaultAppId;
+		Long loginUserId = this.getUserId(request);
+		MappingJacksonValue mappingJacksonValue = null;
+		List<DirectorySource> directorySourceList=null;
+		InterfaceResult interfaceResult=null;
+		try {
+			requestJson = JsonReadUtil.getJsonIn(request);
+			if (requestJson != null && !"".equals(requestJson)) {
+				JSONObject j = JSONObject.fromObject(requestJson);
+				long sourceId = j.getLong("sourceId");
+				int sourceType = j.getInt("sourceType");
+				try {
+					directorySourceList = directorySourceService.getDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				// 2.转成框架数据
+				mappingJacksonValue = new MappingJacksonValue(directorySourceList);
+				// 3.创建页面显示数据项的过滤器
+				SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+				mappingJacksonValue.setFilters(filterProvider);
+				// 4.返回结果
+				 interfaceResult = new InterfaceResult(CommonResultCode.SUCCESS);
+				interfaceResult.setResponseData(mappingJacksonValue);
+			}
+			return interfaceResult;
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
+		}
+	}
+
+	/**
+	 * 批量更新标签
+	 * @return
+	 */
+	@RequestMapping(path = "/directory/source/updateSources", method = { RequestMethod.POST })
+	public InterfaceResult createTagSource(@RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
+										   HttpServletRequest request, HttpServletResponse response) throws DirectorySourceServiceException {
+		String requestJson = null;
+		Long loginAppId = this.DefaultAppId;
+		Long loginUserId = this.getUserId(request);
+		MappingJacksonValue mappingJacksonValue = null;
+		InterfaceResult interfaceResult=null;
+		List<Property> directorys=null;
+		try {
+			requestJson = JsonReadUtil.getJsonIn(request);
+			if (requestJson != null && !"".equals(requestJson)) {
+				JSONObject j = JSONObject.fromObject(requestJson);
+				long sourceId = j.getLong("sourceId");
+				String sourceTitle = j.getString("sourceTitle");
+				int sourceType = j.getInt("sourceType");
+				directorys=JsonUtils.getList4Json("directorys", Property.class);
+				try {
+					directorySourceService.removeDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
+				} catch (Exception ignorExp) {
+					logger.error("remove categorys failed...userid=" + loginUserId + ", demandId=" + sourceId + ",exception=" + ignorExp.getMessage());
+				}
+				if (directorys != null) {
+					for (Property directory : directorys) {
+						DirectorySource directorySource = new DirectorySource();
+						directorySource.setUserId(loginUserId);
+						directorySource.setDirectoryId(directory.getId());
+						directorySource.setAppId(loginAppId);
+						directorySource.setSourceId(sourceId);
+						directorySource.setSourceType(sourceType);
+						directorySource.setSourceTitle(sourceTitle);
+						directorySource.setCreateAt(new Date().getTime());
+						Long dircetoryId = directorySourceService.createDirectorySources(directorySource);
+						logger.info("dircetoryId:" + dircetoryId);
+					}
+				}
+				List<DirectorySource> directorySourceList = directorySourceService.getDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
+				// 2.转成框架数据
+				mappingJacksonValue = new MappingJacksonValue(directorySourceList);
+				// 3.创建页面显示数据项的过滤器
+				SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+				mappingJacksonValue.setFilters(filterProvider);
+				// 4.返回结果
+				 interfaceResult = new InterfaceResult(CommonResultCode.SUCCESS);
+				interfaceResult.setResponseData(mappingJacksonValue);
+			}
+			return interfaceResult;
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("update categorys remove failed...userid=" + loginUserId);
+			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
+		}
+	}
+
 }
