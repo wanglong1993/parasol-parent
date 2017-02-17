@@ -245,20 +245,17 @@ public class DirectorySourceController extends BaseControl {
 	}
 
 	@RequestMapping(path = "/directory/source/getSourceListBySourceId", method = { RequestMethod.GET })
-	public InterfaceResult getSourceListBySourceId(@RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
-												   HttpServletRequest request, HttpServletResponse response) {
-		String requestJson = null;
+	public MappingJacksonValue getSourceListBySourceId(@RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
+												   @RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
+												   @RequestParam(name = DirectorySourceController.parameterSourceId, required = true) Long sourceId,
+												   @RequestParam(name = DirectorySourceController.parameterSourceType, required = true) int sourceType,
+												   HttpServletRequest request) {
 		Long loginAppId = this.DefaultAppId;
 		Long loginUserId = this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		List<DirectorySource> directorySourceList=null;
 		InterfaceResult interfaceResult=null;
 		try {
-			requestJson = JsonReadUtil.getJsonIn(request);
-			if (requestJson != null && !"".equals(requestJson)) {
-				JSONObject j = JSONObject.fromObject(requestJson);
-				long sourceId = j.getLong("sourceId");
-				int sourceType = j.getInt("sourceType");
 				try {
 					directorySourceList = directorySourceService.getDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
 				} catch (Exception e) {
@@ -270,44 +267,54 @@ public class DirectorySourceController extends BaseControl {
 				SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 				mappingJacksonValue.setFilters(filterProvider);
 				// 4.返回结果
-				 interfaceResult = new InterfaceResult(CommonResultCode.SUCCESS);
-				interfaceResult.setResponseData(mappingJacksonValue);
-			}
-			return interfaceResult;
+			return mappingJacksonValue;
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
-			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
+			return null;
 		}
 	}
 
 	/**
-	 * 批量更新标签
+	 * 批量更新目录
 	 * @return
 	 */
 	@RequestMapping(path = "/directory/source/updateSources", method = { RequestMethod.POST })
-	public InterfaceResult createTagSource(@RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
+	public MappingJacksonValue createTagSource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
+			                               @RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
 										   HttpServletRequest request, HttpServletResponse response) throws DirectorySourceServiceException {
 		String requestJson = null;
 		Long loginAppId = this.DefaultAppId;
 		Long loginUserId = this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		InterfaceResult interfaceResult=null;
-		List<Property> directorys=null;
+		List<Property> directorysList=null;
 		try {
-			requestJson = JsonReadUtil.getJsonIn(request);
+			requestJson = this.getBodyParam(request);
 			if (requestJson != null && !"".equals(requestJson)) {
 				JSONObject j = JSONObject.fromObject(requestJson);
 				long sourceId = j.getLong("sourceId");
 				String sourceTitle = j.getString("sourceTitle");
 				int sourceType = j.getInt("sourceType");
-				directorys=JsonUtils.getList4Json("directorys", Property.class);
+				directorysList=JsonUtils.getList4Json(j.getString("directorys"), Property.class);
+				if (sourceId<=0) {
+					logger.error("sourceId is null..");
+					return null;
+				}
+				if (sourceTitle == null && "".equals(sourceTitle)) {
+					logger.error("sourceTitle is null..");
+					return null;
+				}
+				if (sourceType<=0) {
+					logger.error("sourceType is null..");
+					return null;
+				}
 				try {
 					directorySourceService.removeDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
 				} catch (Exception ignorExp) {
 					logger.error("remove categorys failed...userid=" + loginUserId + ", demandId=" + sourceId + ",exception=" + ignorExp.getMessage());
 				}
-				if (directorys != null) {
-					for (Property directory : directorys) {
+				if (directorysList != null) {
+					for (Property directory : directorysList) {
 						DirectorySource directorySource = new DirectorySource();
 						directorySource.setUserId(loginUserId);
 						directorySource.setDirectoryId(directory.getId());
@@ -327,14 +334,13 @@ public class DirectorySourceController extends BaseControl {
 				SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 				mappingJacksonValue.setFilters(filterProvider);
 				// 4.返回结果
-				 interfaceResult = new InterfaceResult(CommonResultCode.SUCCESS);
 				interfaceResult.setResponseData(mappingJacksonValue);
 			}
-			return interfaceResult;
-		} catch (IOException e) {
+			return mappingJacksonValue;
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("update categorys remove failed...userid=" + loginUserId);
-			return InterfaceResult.getInterfaceResultInstanceWithException(CommonResultCode.SYSTEM_EXCEPTION, e);
+ 			return null;
 		}
 	}
 
