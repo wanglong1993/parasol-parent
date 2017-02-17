@@ -5,11 +5,15 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.gintong.frame.util.dto.CommonResultCode;
+import com.gintong.frame.util.dto.InterfaceResult;
 import org.apache.log4j.Logger;
 
 import com.ginkgocap.ywxt.user.model.User;
 
 import net.sf.json.JSONObject;
+import org.springframework.http.converter.json.MappingJacksonValue;
+
 /**
  * 
  * @author allenshen
@@ -70,4 +74,22 @@ protected final Long DefaultAppId=1l;
         return json.toString();
 		
     }
+	protected String getBodyParam(HttpServletRequest request) {
+		StringBuffer jsonIn = new StringBuffer();
+		try {
+			BufferedReader reader = request.getReader();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				jsonIn.append(line);
+			}
+		} catch (IOException e) {
+			logger.error("read request body failed : "+e.getMessage());
+			e.printStackTrace();
+		}
+		return jsonIn.toString();
+	}
+	/*protected MappingJacksonValue mappingJacksonValue(CommonResultCode resultCode)
+	{
+		return new MappingJacksonValue(InterfaceResult.getInterfaceResultInstance(resultCode));
+	}*/
 }
