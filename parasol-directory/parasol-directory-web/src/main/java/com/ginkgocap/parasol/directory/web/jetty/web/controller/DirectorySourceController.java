@@ -105,7 +105,7 @@ public class DirectorySourceController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
-	 * @throws DirectorySourceServiceException
+	 * @throws com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/source/createSource", method = { RequestMethod.POST })
@@ -152,7 +152,7 @@ public class DirectorySourceController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
-	 * @throws DirectorySourceServiceException
+	 * @throws com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/source/deleteSource", method = { RequestMethod.GET })
@@ -185,7 +185,7 @@ public class DirectorySourceController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
-	 * @throws DirectorySourceServiceException
+	 * @throws com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException
 	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/directory/source/moveSource", method = { RequestMethod.POST })
@@ -248,29 +248,49 @@ public class DirectorySourceController extends BaseControl {
 	public MappingJacksonValue getSourceListBySourceId(@RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
 												   @RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
 												   @RequestParam(name = DirectorySourceController.parameterSourceId, required = true) Long sourceId,
-												   @RequestParam(name = DirectorySourceController.parameterSourceType, required = true) int sourceType,
+												   @RequestParam(name = DirectorySourceController.parameterSourceType, required = true) Integer sourceType,
 												   HttpServletRequest request) {
-		Long loginAppId = this.DefaultAppId;
-		Long loginUserId = this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		List<DirectorySource> directorySourceList=null;
 		InterfaceResult interfaceResult=null;
 		try {
-				try {
-					directorySourceList = directorySourceService.getDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				// 2.转成框架数据
-				mappingJacksonValue = new MappingJacksonValue(directorySourceList);
-				// 3.创建页面显示数据项的过滤器
-				SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-				mappingJacksonValue.setFilters(filterProvider);
-				// 4.返回结果
+			Long loginAppId = this.DefaultAppId;
+			Long loginUserId = this.getUserId(request);
+			if(loginUserId==null){
+				logger.error("userId is null");
+				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+				return new MappingJacksonValue(interfaceResult);
+			}
+			if(sourceId == null){
+				logger.error("sourceId is null");
+				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceId 不能为空！");
+				return new MappingJacksonValue(interfaceResult);
+			}
+			if(sourceType == null){
+				logger.error("sourceType is null");
+				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceType 不能为空！");
+				return new MappingJacksonValue(interfaceResult);
+			}
+			try {
+				directorySourceList = directorySourceService.getDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
+			} catch (Exception e) {
+				e.printStackTrace();
+				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION,"数据库操作失败！");
+				return new MappingJacksonValue(interfaceResult);
+			}
+			// 2.转成框架数据
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+			interfaceResult.setResponseData(directorySourceList);
+			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
+			// 4.返回结果
 			return mappingJacksonValue;
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
-			return null;
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION,"获取目录失败！");
+			return new MappingJacksonValue(interfaceResult);
 		}
 	}
 
@@ -283,12 +303,18 @@ public class DirectorySourceController extends BaseControl {
 			                               @RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
 										   HttpServletRequest request, HttpServletResponse response) throws DirectorySourceServiceException {
 		String requestJson = null;
-		Long loginAppId = this.DefaultAppId;
-		Long loginUserId = this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		InterfaceResult interfaceResult=null;
 		List<Property> directorysList=null;
+		Long loginUserId = null;
 		try {
+			Long loginAppId = this.DefaultAppId;
+			loginUserId = this.getUserId(request);
+			if(loginUserId==null){
+				logger.error("userId is null");
+				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+				return new MappingJacksonValue(interfaceResult);
+			}
 			requestJson = this.getBodyParam(request);
 			if (requestJson != null && !"".equals(requestJson)) {
 				JSONObject j = JSONObject.fromObject(requestJson);
@@ -298,20 +324,25 @@ public class DirectorySourceController extends BaseControl {
 				directorysList=JsonUtils.getList4Json(j.getString("directorys"), Property.class);
 				if (sourceId<=0) {
 					logger.error("sourceId is null..");
-					return null;
+					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceId不能为空！");
+					return new MappingJacksonValue(interfaceResult);
 				}
-				if (sourceTitle == null && "".equals(sourceTitle)) {
+				if (sourceTitle == null || "".equals(sourceTitle.trim())) {
 					logger.error("sourceTitle is null..");
-					return null;
+					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceTitle不能为空！");
+					return new MappingJacksonValue(interfaceResult);
 				}
 				if (sourceType<=0) {
 					logger.error("sourceType is null..");
-					return null;
+					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceType不能为空！");
+					return new MappingJacksonValue(interfaceResult);
 				}
 				try {
 					directorySourceService.removeDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
 				} catch (Exception ignorExp) {
 					logger.error("remove categorys failed...userid=" + loginUserId + ", demandId=" + sourceId + ",exception=" + ignorExp.getMessage());
+					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION,"数据库操作失败！");
+					return new MappingJacksonValue(interfaceResult);
 				}
 				if (directorysList != null) {
 					for (Property directory : directorysList) {
@@ -329,18 +360,19 @@ public class DirectorySourceController extends BaseControl {
 				}
 				List<DirectorySource> directorySourceList = directorySourceService.getDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
 				// 2.转成框架数据
-				mappingJacksonValue = new MappingJacksonValue(directorySourceList);
+				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+				interfaceResult.setResponseData(directorySourceList);
+				mappingJacksonValue = new MappingJacksonValue(interfaceResult);
 				// 3.创建页面显示数据项的过滤器
 				SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 				mappingJacksonValue.setFilters(filterProvider);
-				// 4.返回结果
-				interfaceResult.setResponseData(mappingJacksonValue);
 			}
 			return mappingJacksonValue;
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("update categorys remove failed...userid=" + loginUserId);
- 			return null;
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION,"更新目录失败！");
+			return new MappingJacksonValue(interfaceResult);
 		}
 	}
 
