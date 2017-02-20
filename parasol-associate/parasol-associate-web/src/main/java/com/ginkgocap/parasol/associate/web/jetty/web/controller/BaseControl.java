@@ -71,4 +71,19 @@ public abstract class BaseControl {
         return json.toString();
 		
     }
+
+	protected String getBodyParam(HttpServletRequest request){
+		StringBuffer jsonIn=new StringBuffer();
+		try {
+			BufferedReader reader=request.getReader();
+			String line=null;
+			while((line=reader.readLine()) != null){
+				jsonIn.append(line);
+			}
+		} catch (IOException e) {
+			logger.error("read request body failed:"+e.getMessage());
+			e.printStackTrace();
+		}
+		return jsonIn.toString();
+	}
 }

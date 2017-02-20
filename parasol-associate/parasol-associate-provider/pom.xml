@@ -40,7 +40,16 @@
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-
+	<distributionManagement>
+		<snapshotRepository>
+			<id>Snapshots</id>
+			<url>http://192.168.101.89:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>Releases</id>
+			<url>http://192.168.101.89:8081/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
 	<build>
 		<resources>
 			<resource>
@@ -185,12 +194,10 @@
 				<jdbc.username>ph_kfpt</jdbc.username>
 				<jdbc.password>Cual17jc5qd4</jdbc.password>
 				<!-- memcached -->
-				<memcached.list1.ip>192.168.101.22</memcached.list1.ip>
+				<memcached.list1.ip>192.168.101.131</memcached.list1.ip>
 				<memcached.list1.port>11211</memcached.list1.port>
-				<memcached.object1.ip>192.168.101.22</memcached.object1.ip>
+				<memcached.object1.ip>192.168.101.131</memcached.object1.ip>
 				<memcached.object1.port>11211</memcached.object1.port>
-				<memcached.map1.ip>192.168.101.22</memcached.map1.ip>
-				<memcached.map1.port>11211</memcached.map1.port>				
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>

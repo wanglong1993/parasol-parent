@@ -16,15 +16,16 @@
 
 package com.ginkgocap.parasol.associate.web.jetty.web.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ginkgocap.parasol.associate.service.AssociateTypeService;
+import com.ginkgocap.parasol.associate.web.jetty.utils.JsonUtils;
+import com.gintong.frame.util.dto.CommonResultCode;
+import com.gintong.frame.util.dto.InterfaceResult;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -42,6 +43,7 @@ import com.ginkgocap.parasol.associate.model.Associate;
 import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateService;
 import com.ginkgocap.parasol.associate.model.Page;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 
@@ -76,6 +78,9 @@ public class AssociateController extends BaseControl {
     private static final int pageInitSize = 5;
 	@Autowired
 	private AssociateService associateService;
+	@Autowired
+	private AssociateTypeService assoTypeService;
+
 
 	/**
 	 * 1.创建关联
@@ -227,21 +232,15 @@ public class AssociateController extends BaseControl {
 			HttpServletRequest request) throws AssociateServiceException {
 	// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
-		
-//		Long loginAppId = LoginUserContextHolder.getAppKey();
-//		Long loginUserId = LoginUserContextHolder.getUserId();
+		InterfaceResult interfaceResult=null;
 		Long loginAppId=this.DefaultAppId;
 		Long loginUserId=this.getUserId(request);
 		Map<AssociateType, List<Associate>> associateMap = associateService.getAssociatesBy(loginAppId, sourceTypeId, sourceId);
-
-		if (MapUtils.isNotEmpty(associateMap)) {
-			
-		}
-
 		Map<String, Object> reusltMap = new HashMap<String, Object>();
-		
+		if (MapUtils.isEmpty(associateMap)) {
+			return null;
+		}
 		List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
-		
 		for (AssociateType associateType : associateMap.keySet()) {
 			Map<String,Object> recordMap = new HashMap<String,Object>();
 			recordMap.put("id", associateType.getId());
@@ -261,7 +260,6 @@ public class AssociateController extends BaseControl {
 					desc_collect.add(associate);
 				}
 			}
-			
 			for (String desc : descMap.keySet()) {
 				Map<String, Object> desc_List_map = new HashMap<String,Object>();
 				desc_List_map.put("associateCollect", desc);
@@ -271,19 +269,49 @@ public class AssociateController extends BaseControl {
 			//--分类下
 			resultList.add(recordMap);
 		}
-		
 		reusltMap.put("data", resultList);
+		reusltMap.put("data", associateMap);
 		mappingJacksonValue = new MappingJacksonValue(reusltMap);
 		mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
 		return mappingJacksonValue;
+
 	}
 
+
+	/*// @formatter:off
+	@RequestMapping(path = { "/associate/associate/getSourcesById" }, method = { RequestMethod.GET })
+	public MappingJacksonValue getSources(
+			@RequestParam(name = AssociateController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = AssociateController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = AssociateController.parameterSourceTypeId, required = true) Long sourceTypeId,
+			@RequestParam(name = AssociateController.parameterSourceId, required = true) long sourceId,
+			HttpServletRequest request) throws AssociateServiceException {
+		// @formatter:on
+		MappingJacksonValue mappingJacksonValue = null;
+		InterfaceResult interfaceResult = null;
+		Long loginAppId = this.DefaultAppId;
+		Long loginUserId = this.getUserId(request);
+		Map<AssociateType, List<Associate>> associateMap = associateService.getAssociatesBy(loginAppId, sourceTypeId, sourceId);
+		List assoList=null;
+		if(associateMap.values()!=null){
+			assoList = new ArrayList();
+			for (Iterator i =  associateMap.values().iterator();i.hasNext();){
+				List<Associate> associatelist = (List)i.next();
+				for (int j = 0; j < associatelist.size(); j++) {
+					assoList.add(associatelist.get(j));
+				}
+
+			}
+		}
+		mappingJacksonValue = new MappingJacksonValue(associateMap);
+		mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
+		return mappingJacksonValue;
+	}*/
     /**
      * 通过param查询Associate分页
      *
      * @param fileds
      * @param debug
-     * @param name
      * @param pageNoStr
      * @param pageSizeStr
      * @param request
@@ -383,5 +411,69 @@ public class AssociateController extends BaseControl {
 
 		filterProvider.addFilter(Associate.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
+	}
+	/**
+	 * 更新关联信息
+	 *
+	 * @param fileds
+	 * @return
+	 */
+	@RequestMapping(path = {"/associate/associate/updateAssociate"}, method = {RequestMethod.POST})
+	public MappingJacksonValue updateAssociate(@RequestParam(name = AssociateController.parameterFields, defaultValue = "") String fileds,
+												HttpServletRequest request, HttpServletRequest response){
+		String requestJson = null;
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
+		MappingJacksonValue mappingJacksonValue = null;
+		Map<AssociateType, List<Associate>> assomap=null;
+		List<Associate> asso=null;
+		if(loginUserId == null && "".equals(loginUserId)){
+			logger.error("userId can not be null");
+			return null;
+		}
+		try{
+			requestJson = this.getBodyParam(request);
+			if(requestJson != null && !"".equals(requestJson) ){
+				JSONObject jsonObject=JSONObject.fromObject(requestJson);
+				long sourceId=jsonObject.getLong("sourceId");
+				long sourceType=jsonObject.getLong("sourceType");
+				asso=JsonUtils.getList4Json(jsonObject.getString("asso"), Associate.class);
+				if (sourceId<=0) {
+					logger.error("sourceId is null..");
+					return null;
+				}
+				if (sourceType<=0) {
+					logger.error("sourceType is null..");
+					return null;
+				}
+			 assomap =  associateService.getAssociatesBy(loginAppId, sourceType, sourceId);
+			if (assomap == null) {
+				logger.error("asso it null or converted failed");
+			}
+			for (Iterator i =  assomap.values().iterator();i.hasNext();){
+				List<Associate> associatelist = (List)i.next();
+				for (int j = 0; j < associatelist.size(); j++) {
+					associateService.removeAssociate(1l,loginUserId, associatelist.get(j).getId());
+				}
+			}
+				if(asso != null){
+					for(Associate associate : asso){
+						associate.setSourceId(sourceId);
+						associate.setSourceTypeId(sourceType);
+						associate.setUserId(loginUserId);
+						associateService.createAssociate(loginAppId,loginUserId,associate);
+					}
+				}
+				 assomap =  associateService.getAssociatesBy(loginAppId, sourceType, sourceId);
+			}
+			mappingJacksonValue = new MappingJacksonValue(assomap);
+			mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
+			return mappingJacksonValue;
+		}catch(Exception e0){
+			e0.printStackTrace();
+			logger.error("update asso remove failed");
+			return null;
+		}
+
 	}
 }
