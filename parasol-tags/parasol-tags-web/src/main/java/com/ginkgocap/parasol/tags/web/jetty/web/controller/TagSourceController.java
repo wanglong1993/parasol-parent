@@ -322,6 +322,7 @@ public class TagSourceController extends BaseControl {
 			filter.add("sourceTitle"); // 资源标题
 			filter.add("createAt"); // 创建时间
 			filter.add("tagName"); // 标签名称
+			filter.add("tagId"); // 标签名称
 
 		}
 
