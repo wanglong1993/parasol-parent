@@ -40,6 +40,10 @@
 					<id>Snapshots</id>
 					<url>http://192.168.101.89:8081/nexus/content/repositories/snapshots/</url>
 				</snapshotRepository>
+				<repository>
+					<id>Releases</id>
+					<url>http://192.168.101.89:8081/nexus/content/repositories/releases/</url>
+				</repository>
 			</distributionManagement>
 			<build>
 				<plugins>
