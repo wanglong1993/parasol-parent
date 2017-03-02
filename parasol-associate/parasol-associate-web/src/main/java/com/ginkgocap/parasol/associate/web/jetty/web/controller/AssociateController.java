@@ -105,14 +105,14 @@ public class AssociateController extends BaseControl {
 			HttpServletRequest request) throws AssociateServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 	// @formatter:on
+		Long loginAppId=this.DefaultAppId;
+		InterfaceResult interfaceResult=null;
+		Long loginUserId=this.getUserId(request);
 		try {
 
 			// 登陆人的信息
 //			Long loginAppId = LoginUserContextHolder.getAppKey();
 //			Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId=this.DefaultAppId;
-			Long loginUserId=this.getUserId(request);
-
 			// 检查数据的参数
 			if (StringUtils.isEmpty(assocDesc)) {
 				throw new AssociateServiceException(107, "Required string parameter assocDesc is not empty or blank");
@@ -120,12 +120,11 @@ public class AssociateController extends BaseControl {
 			if (StringUtils.isEmpty(assocTitle)) {
 				throw new AssociateServiceException(107, "Required string parameter assocTitle is not empty or blank");
 			}
-
 			Associate associate = new Associate();
 			associate.setAppId(loginAppId);
 			associate.setUserId(loginUserId);
 			associate.setSourceTypeId(sourceTypeId);
-			associate.setSourceId(sourceTypeId);
+			associate.setSourceId(sourceId);
 
 			associate.setAssocTypeId(assocTypeId);
 			associate.setAssocId(assocId);
@@ -137,10 +136,55 @@ public class AssociateController extends BaseControl {
 			Map<String, Long> reusltMap = new HashMap<String, Long>();
 			reusltMap.put("id", id);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(reusltMap);
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+			interfaceResult.setResponseData(reusltMap);
+			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
 			return mappingJacksonValue;
 		} catch (AssociateServiceException e) {
-			throw e;
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION,"系统异常！");
+			return new MappingJacksonValue(interfaceResult);
+		}
+	}
+	/**
+	 * 创建多个关联
+	 */
+	@RequestMapping(path = { "/associate/associate/createAssociateList" }, method = { RequestMethod.POST })
+	public MappingJacksonValue createAssociates(HttpServletRequest request,HttpServletRequest response) throws AssociateServiceException {
+		MappingJacksonValue mappingJacksonValue = null;
+		Long loginAppId=this.DefaultAppId;
+		InterfaceResult interfaceResult=null;
+		Long loginUserId=this.getUserId(request);
+		String requestJson=null;
+		List < Associate > asso = null;
+		List<Long> ids=new ArrayList<Long>();
+		try {
+			requestJson=this.getBodyParam(request);
+			if(requestJson !=null && !"".equals(requestJson)){
+				JSONObject jsonObject=JSONObject.fromObject(requestJson);
+				long sourceId = jsonObject.getLong("sourceId");
+				long sourceType = jsonObject.getLong("sourceType");
+				asso=JsonUtils.getList4Json(jsonObject.getString("asso"),Associate.class);
+				if(asso != null){
+					for(Associate associate:asso){
+						associate.setAppId(loginAppId);
+						associate.setUserId(loginUserId);
+						associate.setSourceId(sourceId);
+						associate.setSourceTypeId(sourceType);
+						Long id=associateService.createAssociate(loginAppId, loginUserId, associate);
+						ids.add(id);
+					}
+				}
+			}
+			Map<String,List<Long>> reusltMap = new HashMap<String,List<Long>>();
+			reusltMap.put("ids",ids);
+			// 2.转成框架数据
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+			interfaceResult.setResponseData(reusltMap);
+			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+			return mappingJacksonValue;
+		} catch (AssociateServiceException e) {
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION,"系统异常！");
+			return new MappingJacksonValue(interfaceResult);
 		}
 	}
 
@@ -238,7 +282,10 @@ public class AssociateController extends BaseControl {
 		Map<AssociateType, List<Associate>> associateMap = associateService.getAssociatesBy(loginAppId, sourceTypeId, sourceId);
 		Map<String, Object> reusltMap = new HashMap<String, Object>();
 		if (MapUtils.isEmpty(associateMap)) {
-			return null;
+			//return null;
+			//e.printStackTrace();
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"获取失败！");
+			return new MappingJacksonValue(interfaceResult);
 		}
 		List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
 		for (AssociateType associateType : associateMap.keySet()) {
@@ -269,17 +316,20 @@ public class AssociateController extends BaseControl {
 			//--分类下
 			resultList.add(recordMap);
 		}
-		reusltMap.put("data", resultList);
-		reusltMap.put("data", associateMap);
-		mappingJacksonValue = new MappingJacksonValue(reusltMap);
-		mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
+		reusltMap.put("asso", resultList);
+		// 2.转成框架数据
+		interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		interfaceResult.setResponseData(reusltMap);
+		mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+		// 3.创建页面显示数据项的过滤器
+		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+		mappingJacksonValue.setFilters(filterProvider);
 		return mappingJacksonValue;
-
 	}
 
 
-	/*// @formatter:off
-	@RequestMapping(path = { "/associate/associate/getSourcesById" }, method = { RequestMethod.GET })
+	// @formatter:off
+	@RequestMapping(path = { "/associate/associate/getSourceAssociates" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getSources(
 			@RequestParam(name = AssociateController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = AssociateController.parameterDebug, defaultValue = "") String debug,
@@ -292,6 +342,7 @@ public class AssociateController extends BaseControl {
 		Long loginAppId = this.DefaultAppId;
 		Long loginUserId = this.getUserId(request);
 		Map<AssociateType, List<Associate>> associateMap = associateService.getAssociatesBy(loginAppId, sourceTypeId, sourceId);
+		Map<String,List> map=new HashMap();
 		List assoList=null;
 		if(associateMap.values()!=null){
 			assoList = new ArrayList();
@@ -300,13 +351,18 @@ public class AssociateController extends BaseControl {
 				for (int j = 0; j < associatelist.size(); j++) {
 					assoList.add(associatelist.get(j));
 				}
-
 			}
 		}
-		mappingJacksonValue = new MappingJacksonValue(associateMap);
-		mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
+		map.put("asso",assoList);
+		// 2.转成框架数据
+		interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		interfaceResult.setResponseData(map);
+		mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+		// 3.创建页面显示数据项的过滤器
+		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+		mappingJacksonValue.setFilters(filterProvider);
 		return mappingJacksonValue;
-	}*/
+	}
     /**
      * 通过param查询Associate分页
      *
@@ -426,6 +482,7 @@ public class AssociateController extends BaseControl {
 		Long loginUserId=this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<AssociateType, List<Associate>> assomap=null;
+		InterfaceResult interfaceResult=null;
 		List<Associate> asso=null;
 		if(loginUserId == null && "".equals(loginUserId)){
 			logger.error("userId can not be null");
@@ -464,10 +521,15 @@ public class AssociateController extends BaseControl {
 						associateService.createAssociate(loginAppId,loginUserId,associate);
 					}
 				}
-				 assomap =  associateService.getAssociatesBy(loginAppId, sourceType, sourceId);
+				// assomap =  associateService.getAssociatesBy(loginAppId, sourceType, sourceId);
 			}
-			mappingJacksonValue = new MappingJacksonValue(assomap);
-			mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
+			// 2.转成框架数据
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+			//interfaceResult.setResponseData(reusltMap);
+			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
 		}catch(Exception e0){
 			e0.printStackTrace();

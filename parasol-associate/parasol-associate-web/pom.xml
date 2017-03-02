@@ -188,7 +188,7 @@
 		<dependency>
 			<groupId>com.gintong.frame</groupId>
 			<artifactId>phoenix-frame-util</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>jedis</artifactId>
@@ -286,7 +286,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>online</id>
+			<id>online1</id>
 			<properties>
 				<!-- database -->
 				<jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
@@ -311,6 +311,19 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>online</id>
+			<properties>
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://zk.gintong.local:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.protocol.port>20891</dubbo.protocol.port>
+				<!-- redis地址 -->
+				<redis.host>redis.gintong.local</redis.host>
+				<redis.port>6379</redis.port>
+			</properties>
+		</profile>
+		<profile>
 			<id>testOnline</id>
 			<properties>
 				<!-- dubbo -->
@@ -323,5 +336,17 @@
 			</properties>
 		</profile>
 
+		<profile>
+			<id>openPlat</id>
+			<properties>
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://192.168.101.9:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<!-- redis地址 -->
+				<redis.host>192.168.101.181</redis.host>
+				<redis.port>6379</redis.port>
+			</properties>
+		</profile>
 	</profiles>
 </project>
