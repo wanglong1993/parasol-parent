@@ -238,12 +238,14 @@ public class DirectorySourceController extends BaseControl {
 			filter.add("sourceUrl"); // 资源URL
 			filter.add("sourceTitle"); // 资源的title
 			filter.add("sourceData"); // 资源的Data
+			filter.add("directoryId"); // 资源的Data
 		}
 
 		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
 
+	//@RequestMapping(path ="/directory/source/getSource", method = { RequestMethod.GET })
 	@RequestMapping(path = "/directory/source/getSourceListBySourceId", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceListBySourceId(@RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
 												   @RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,

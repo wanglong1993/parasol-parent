@@ -19,6 +19,16 @@
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 	</properties>
 
+	<distributionManagement>
+		<snapshotRepository>
+			<id>Snapshots</id>
+			<url>http://192.168.101.89:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>Releases</id>
+			<url>http://192.168.101.89:8081/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -165,10 +175,29 @@
 				<memcached.list1.ip>192.168.101.131</memcached.list1.ip>
 				<memcached.list1.port>11211</memcached.list1.port>
 				<memcached.object1.ip>192.168.101.131</memcached.object1.ip>
-				<memcached.object1.port>11211</memcached.object1.port>				
+				<memcached.object1.port>11211</memcached.object1.port>
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.protocol.port>20885</dubbo.protocol.port>
+			</properties>
+		</profile>
+		<profile>
+			<id>openPlat</id>
+			<properties>
+				<!-- database -->
+				<jdbc.url>jdbc:mysql://192.168.101.180:3306/parasol_directory?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8&amp;amp;autoReconnect=true</jdbc.url>
+				<jdbc.username>ph_kfpt</jdbc.username>
+				<jdbc.password>Cual17jc5qd4</jdbc.password>
+				<!-- memcached -->
+				<memcached.list1.ip>192.168.101.181</memcached.list1.ip>
+				<memcached.list1.port>11211</memcached.list1.port>
+				<memcached.object1.ip>192.168.101.181</memcached.object1.ip>
+				<memcached.object1.port>11212</memcached.object1.port>
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://192.168.101.9:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
 				<dubbo.protocol.port>20885</dubbo.protocol.port>
 			</properties>

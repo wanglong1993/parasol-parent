@@ -137,4 +137,9 @@ public interface DirectorySourceService {
 	 */
 	public DirectorySource getDirectorySource(Long userId, Long directoryId, Long sourceAppId, Integer sourceType, Long souriceId) throws DirectorySourceServiceException;
 
+	/**
+	 * 根据sourceId查询标签集合
+	 * @throws DirectorySourceServiceException
+	 */
+	public List<Long> getDirectoryIdsBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException;
 }

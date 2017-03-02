@@ -128,7 +128,16 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 			throw new DirectorySourceServiceException(e);
 		}
 	}
-	
+
+	@Override
+	public List<Long> getDirectoryIdsBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException {
+		try {
+			return this.getIds(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID, userId, appId, sourceType, sourceId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
+	}
 	@Override
 	public List<DirectorySource> getSourcesByDirectoryIdAndSourceType(int start,int size,Object... parameters) throws DirectorySourceServiceException 
 	{
