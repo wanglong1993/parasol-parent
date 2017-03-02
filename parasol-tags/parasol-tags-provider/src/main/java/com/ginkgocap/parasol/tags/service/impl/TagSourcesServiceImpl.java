@@ -228,7 +228,6 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 				long tagId=tagSource.getTagId();
 				Tag tag=tagService.getTag(tagId);
 					tagSource.setTagName(tag.getTagName());
-				}
 			}
 			return tagSources;
 		} catch (Exception e) {
