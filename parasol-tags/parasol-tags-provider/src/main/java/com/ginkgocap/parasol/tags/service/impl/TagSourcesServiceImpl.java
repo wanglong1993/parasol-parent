@@ -227,7 +227,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 			for(TagSource tagSource:tagSources){
 				long tagId=tagSource.getTagId();
 				Tag tag=tagService.getTag(tagId);
-					tagSource.setTagName(tag.getTagName());
+				tagSource.setTagName(tag.getTagName());
 			}
 			return tagSources;
 		} catch (Exception e) {
@@ -235,6 +235,20 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 			throw new TagSourceServiceException(e);
 		}
 	}
+
+	@Override
+	public List<Long> getTagIdsBySourceId(Long appId, Long sourceId, Long sourceType) throws Exception {
+		ServiceError.assertAppidIsNullForTagSource(appId);
+		ServiceError.assertTagSourceIdIsNullForTagSource(sourceId);
+		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
+		try {
+			return this.getIds(LIST_ID_APPID_SOURCEID_SOURCETYPE, appId, sourceId, sourceType);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw new TagSourceServiceException(e);
+		}
+	}
+
 	@Override
 	public Integer countTagSourcesByAppIdSourceIdSourceType(Long appId, Long sourceId, Long sourceType) throws TagSourceServiceException {
 		ServiceError.assertAppidIsNullForTagSource(appId);
