@@ -23,6 +23,7 @@ import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.directory.web.jetty.modle.Property;
 import com.ginkgocap.parasol.directory.web.jetty.utils.JsonReadUtil;
 import com.ginkgocap.parasol.directory.web.jetty.utils.JsonUtils;
+import com.ginkgocap.ywxt.knowledge.service.KnowledgeService;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
 import net.sf.json.JSONObject;
@@ -65,6 +66,8 @@ public class DirectorySourceController extends BaseControl {
 	@Autowired
 	private DirectorySourceService directorySourceService;
 
+	@Autowired
+	private KnowledgeService knowledgeService;
 	/**
 	 * 查询目录下的资源
 	 * 
@@ -301,13 +304,14 @@ public class DirectorySourceController extends BaseControl {
 	 * @return
 	 */
 	@RequestMapping(path = "/directory/source/updateSources", method = { RequestMethod.POST })
-	public MappingJacksonValue createTagSource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
+	public MappingJacksonValue updateDirectorySource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
 			                               @RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
 										   HttpServletRequest request, HttpServletResponse response) throws DirectorySourceServiceException {
 		String requestJson = null;
 		MappingJacksonValue mappingJacksonValue = null;
 		InterfaceResult interfaceResult=null;
 		List<Property> directorysList=null;
+		List<Long> direIds=new ArrayList<Long>();
 		Long loginUserId = null;
 		try {
 			Long loginAppId = this.DefaultAppId;
@@ -323,7 +327,21 @@ public class DirectorySourceController extends BaseControl {
 				long sourceId = j.getLong("sourceId");
 				String sourceTitle = j.getString("sourceTitle");
 				int sourceType = j.getInt("sourceType");
+				int columnType=0;
+				if(sourceType==8){
+					columnType=j.getInt("columnType");
+					if (columnType<=0) {
+						logger.error("columnType is null..");
+						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"columnType不能为空！");
+						return new MappingJacksonValue(interfaceResult);
+					}
+				}
 				directorysList=JsonUtils.getList4Json(j.getString("directorys"), Property.class);
+				if (directorysList != null) {
+					for (Property property : directorysList) {
+						direIds.add(property.getId());
+					}
+				}
 				if (sourceId<=0) {
 					logger.error("sourceId is null..");
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceId不能为空！");
@@ -339,25 +357,15 @@ public class DirectorySourceController extends BaseControl {
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceType不能为空！");
 					return new MappingJacksonValue(interfaceResult);
 				}
-				try {
-					directorySourceService.removeDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
-				} catch (Exception ignorExp) {
-					logger.error("remove categorys failed...userid=" + loginUserId + ", demandId=" + sourceId + ",exception=" + ignorExp.getMessage());
-					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION,"数据库操作失败！");
-					return new MappingJacksonValue(interfaceResult);
-				}
-				if (directorysList != null) {
-					for (Property directory : directorysList) {
-						DirectorySource directorySource = new DirectorySource();
-						directorySource.setUserId(loginUserId);
-						directorySource.setDirectoryId(directory.getId());
-						directorySource.setAppId(loginAppId);
-						directorySource.setSourceId(sourceId);
-						directorySource.setSourceType(sourceType);
-						directorySource.setSourceTitle(sourceTitle);
-						directorySource.setCreateAt(new Date().getTime());
-						Long dircetoryId = directorySourceService.createDirectorySources(directorySource);
-						logger.info("dircetoryId:" + dircetoryId);
+				Long sType=new Long(sourceType);
+				directorySourceService.updateDiresources(loginAppId,loginUserId,sourceId,sType,direIds,sourceTitle);
+				if (sourceType == 8) {
+					try {
+						knowledgeService.updateDirectory(loginUserId, sourceId, columnType, direIds);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+						logger.error("Add tags to knowledge failed,userId=" + loginUserId + ",knowledgeId=" + sourceId);
 					}
 				}
 				List<DirectorySource> directorySourceList = directorySourceService.getDirectorySourcesBySourceId(loginUserId, loginAppId, sourceType, sourceId);
@@ -377,5 +385,4 @@ public class DirectorySourceController extends BaseControl {
 			return new MappingJacksonValue(interfaceResult);
 		}
 	}
-
 }

@@ -128,7 +128,6 @@ public interface DirectorySourceService {
 	 * 查询某个资源是否在指定的目录下，存在就返回这个DirectorSource，否则, 返回 null
 	 * 
 	 * @param userId
-	 * @param appId
 	 * @param directoryId
 	 * @param sourceType
 	 * @param souriceId
@@ -142,4 +141,16 @@ public interface DirectorySourceService {
 	 * @throws DirectorySourceServiceException
 	 */
 	public List<Long> getDirectoryIdsBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException;
+
+	/**
+	 *批量删除资源目录
+	 * @throws DirectorySourceServiceException
+	 */
+	public boolean removeDirectorySourcesByDireIds(List<Long> ids) throws DirectorySourceServiceException;
+
+	/**
+	 *更新目录
+	 * @throws DirectorySourceServiceException
+	 */
+	public boolean updateDiresources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> direIds,String sourceTitle) throws DirectorySourceServiceException;
 }
