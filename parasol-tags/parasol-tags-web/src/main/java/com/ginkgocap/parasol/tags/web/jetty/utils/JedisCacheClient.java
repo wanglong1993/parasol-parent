@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 
@@ -21,7 +21,7 @@ import redis.clients.jedis.ShardedJedisPool;
  *
  */
 public class JedisCacheClient {
-    private static Logger logger = Logger.getLogger(JedisCacheClient.class);
+    private static Logger logger = LoggerFactory.getLogger(JedisCacheClient.class);
 
     private ShardedJedisPool jedisPool;
 

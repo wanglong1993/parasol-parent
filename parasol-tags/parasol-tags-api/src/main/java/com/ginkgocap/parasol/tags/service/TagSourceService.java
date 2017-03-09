@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ginkgocap.parasol.tags.exception.TagServiceException;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
+import com.ginkgocap.parasol.tags.model.Property;
 import com.ginkgocap.parasol.tags.model.TagSource;
 
 /**
@@ -136,4 +137,7 @@ public interface TagSourceService {
 	public List<TagSource> getTagSourcesBySourceId(Long appId, Long sourceId, Long sourceType)throws Exception;
 
 	public List<Long> getTagIdsBySourceId(Long appId, Long sourceId, Long sourceType) throws Exception;
+
+	public boolean removeTagSourcesByTagIds(List<Long> ids) throws TagSourceServiceException;
+	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle) throws TagSourceServiceException;
 }

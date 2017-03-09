@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.tags.web.jetty.modle;
+package com.ginkgocap.parasol.tags.model;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ public class Property implements Serializable{
 	private static final long serialVersionUID = 3360254587306141097L;
 
 	/** 属性id **/
-	private String id;
+	private long id;
 
 	/** 属性名称 **/
 	private String name;
@@ -19,14 +19,14 @@ public class Property implements Serializable{
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -47,7 +47,7 @@ public class Property implements Serializable{
 
     public Property(){}
 
-    public Property(String id, String name)
+    public Property(long id, String name)
     {
         this.id = id;
         this.name = name;

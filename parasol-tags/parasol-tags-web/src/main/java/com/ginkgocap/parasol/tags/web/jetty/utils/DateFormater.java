@@ -1,12 +1,14 @@
 
 package com.ginkgocap.parasol.tags.web.jetty.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 
 /**
  * 
@@ -19,11 +21,11 @@ import org.apache.log4j.Logger;
  */
 public class DateFormater {
 	
-	private static Logger logger = Logger.getLogger(DateFormater.class);
+	private static Logger logger = LoggerFactory.getLogger(DateFormater.class);
 
 	/**
 	 * 格式化日期 为 yyyy/MM/dd 的样式
-	 * 
+	 *
 	 * @param date
 	 * @return
 	 */

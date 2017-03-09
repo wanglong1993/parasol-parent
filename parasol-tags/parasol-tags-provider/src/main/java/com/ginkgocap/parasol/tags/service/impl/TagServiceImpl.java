@@ -8,7 +8,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ import com.ginkgocap.parasol.tags.service.TagSourceService;
  */
 @Service("tagService")
 public class TagServiceImpl extends BaseService<Tag> implements TagService {
-	private static Logger logger = Logger.getLogger(TagServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(TagServiceImpl.class);
 	private static final String LIST_TAG_ID_USERID_APPID_TAGTYPE = "List_Tag_Id_UserId_AppId_TagType";
 	private static final String LIST_TAG_ID_USERID_APPID_TAGTYPE_DEFAULT = "List_Tag_Id_UserId_AppId_TagType_Default";
 

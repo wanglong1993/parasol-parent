@@ -7,11 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
-import org.apache.log4j.Logger;
+
 
 import com.ginkgocap.ywxt.user.model.User;
 
 import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.json.MappingJacksonValue;
 
 /**
@@ -22,7 +24,7 @@ import org.springframework.http.converter.json.MappingJacksonValue;
  * @Copyright Copyright©2015 www.gintong.com
  */
 public abstract class BaseControl {
-	private static Logger logger = Logger.getLogger(BaseControl.class);
+	private static Logger logger = LoggerFactory.getLogger(BaseControl.class);
 protected final Long DefaultAppId=1l;
 	
 	/**

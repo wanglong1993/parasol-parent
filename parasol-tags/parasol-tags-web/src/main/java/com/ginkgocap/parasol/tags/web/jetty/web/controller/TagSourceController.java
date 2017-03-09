@@ -16,21 +16,21 @@
 
 package com.ginkgocap.parasol.tags.web.jetty.web.controller;
 
-import java.io.IOException;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ginkgocap.parasol.tags.web.jetty.modle.Property;
-import com.ginkgocap.parasol.tags.web.jetty.utils.JsonReadUtil;
+import com.ginkgocap.parasol.tags.model.Property;
 import com.ginkgocap.parasol.tags.web.jetty.utils.JsonUtils;
+
+import com.ginkgocap.ywxt.knowledge.service.KnowledgeService;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
 
-import net.sf.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +53,7 @@ import com.ginkgocap.parasol.tags.service.TagSourceService;
  */
 @RestController
 public class TagSourceController extends BaseControl {
-	private static Logger logger = Logger.getLogger(TagSourceController.class);
+	private static Logger logger = LoggerFactory.getLogger(TagSourceController.class);
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
@@ -67,6 +67,9 @@ public class TagSourceController extends BaseControl {
 
 	@Autowired
 	private TagSourceService tagsSourceService;
+
+	@Autowired
+	private KnowledgeService knowledgeService;
 
 	//@formatter:off
 	/**
@@ -402,70 +405,66 @@ public class TagSourceController extends BaseControl {
 		InterfaceResult interfaceResult=null;
 		List<TagSource> tagSourceList = null;
 		List<Property> tags=null;
-			try {
-				Long loginAppId = this.DefaultAppId;
-				Long loginUserId = this.getUserId(request);
-				if(loginUserId==null){
-					logger.error("userId is null");
-					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+		List<Long> tagIds=new ArrayList<Long>();
+		try {
+			Long loginAppId = this.DefaultAppId;
+			Long loginUserId = this.getUserId(request);
+			if(loginUserId==null){
+				logger.error("userId is null");
+				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+				return new MappingJacksonValue(interfaceResult);
+			}
+			requestJson = this.getBodyParam(request);
+			if (requestJson != null && !"".equals(requestJson)) {
+				JSONObject j = JSONObject.fromObject(requestJson);
+				Long sourceId = j.getLong("sourceId");
+				String sourceTitle = j.getString("sourceTitle");
+				long sourceType = j.getInt("sourceType");
+				int columnType=0;
+				if(sourceType==8){
+					columnType=j.getInt("columnType");
+					if (columnType<=0) {
+						logger.error("columnType is null..");
+						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"columnType不能为空！");
+						return new MappingJacksonValue(interfaceResult);
+					}
+				}
+				tags = JsonUtils.getList4Json(j.getString("tags"), Property.class);
+				if (tags != null) {
+					for (Property property : tags) {
+						tagIds.add(property.getId());
+					}
+				}
+				if (sourceId <= 0 || sourceId == null) {
+					logger.error("sourceId is null..");
+					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceId不能为空！");
 					return new MappingJacksonValue(interfaceResult);
 				}
-				requestJson = this.getBodyParam(request);
-				if (requestJson != null && !"".equals(requestJson)) {
-					JSONObject j = JSONObject.fromObject(requestJson);
-					Long sourceId = j.getLong("sourceId");
-					String sourceTitle = j.getString("sourceTitle");
-					long sourceType = j.getInt("sourceType");
-					tags = JsonUtils.getList4Json(j.getString("tags"), Property.class);
-					if (sourceId<=0 || sourceId==null) {
-						logger.error("sourceId is null..");
-						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceId不能为空！");
-						return new MappingJacksonValue(interfaceResult);
-					}
-					if (sourceTitle == null || "".equals(sourceTitle.trim())) {
-						logger.error("sourceTitle is null..");
-						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceTitle不能为空！");
-						return new MappingJacksonValue(interfaceResult);
-					}
-					if (sourceType<=0) {
-						logger.error("sourceType is null..");
-						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceType不能为空！");
-						return new MappingJacksonValue(interfaceResult);
-					}
+				if (sourceTitle == null || sourceTitle.trim().length() <= 0) {
+					logger.error("sourceTitle is null..");
+					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceTitle不能为空！");
+					return new MappingJacksonValue(interfaceResult);
+				}
+				if (sourceType <= 0) {
+					logger.error("sourceType is null..");
+					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceType不能为空！");
+					return new MappingJacksonValue(interfaceResult);
+				}
+				tagsSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle);
+			if (sourceType == 8) {
 					try {
-						tagSourceList = tagsSourceService.getTagSourcesBySourceId(loginAppId, sourceId, sourceType);
-						if (tagSourceList != null) {
-							for (TagSource ts : tagSourceList) {
-								tagsSourceService.removeTagSource(loginAppId, loginUserId, ts.getId());
-							}
-						}
+						knowledgeService.updateTag(loginUserId, sourceId, columnType, tagIds);
+
 					} catch (Exception e) {
 						e.printStackTrace();
-						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION,"数据库操作失败！");
-						return new MappingJacksonValue(interfaceResult);
+						logger.error("Add tags to knowledge failed,userId=" + loginUserId + ",knowledgeId=" + sourceId);
 					}
-					if (tags != null) {
-						for (Property property : tags) {
-							if ((property != null) && StringUtils.isNotBlank(property.getId())) {
-								TagSource tagSource = new TagSource();
-								tagSource.setUserId(loginUserId);
-								tagSource.setAppId(loginAppId);
-								tagSource.setSourceId(sourceId);
-								tagSource.setSourceTitle(sourceTitle);
-								tagSource.setSourceType(sourceType);
-								tagSource.setTagId(Long.parseLong(property.getId()));
-								tagSource.setTagName(property.getName());
-								tagSource.setCreateAt(new Date().getTime());
-								Long tagId = tagsSourceService.createTagSource(tagSource);
-								logger.info("tagId:" + tagId);
-							}
-						}
-					}
+				}
 					try {
 						tagSourceList = tagsSourceService.getTagSourcesBySourceId(loginAppId, sourceId, sourceType);
 					} catch (Exception e) {
 						e.printStackTrace();
-						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION,"数据库操作失败！");
+						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION, "数据库操作失败！");
 						return new MappingJacksonValue(interfaceResult);
 					}
 					// 2.转成框架数据
@@ -475,13 +474,13 @@ public class TagSourceController extends BaseControl {
 					// 3.创建页面显示数据项的过滤器
 					SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 					mappingJacksonValue.setFilters(filterProvider);
-				}
-				// 4.返回结果
-				return mappingJacksonValue;
-			} catch (Exception e) {
-				e.printStackTrace();
-				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION,"更新标签列表失败！");
-				return new MappingJacksonValue(interfaceResult);
 			}
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (Exception e) {
+			e.printStackTrace();
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION,"更新标签列表失败！");
+			return new MappingJacksonValue(interfaceResult);
+		}
 	}
 }
