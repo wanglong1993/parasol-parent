@@ -236,9 +236,9 @@
 				<jdbc.username>zhangwei</jdbc.username>
 				<jdbc.password>zhangwei</jdbc.password>
 				<!-- memcached -->
-				<memcached.list_1.ip>192.168.101.22</memcached.list_1.ip>
+				<memcached.list_1.ip>192.168.101.42</memcached.list_1.ip>
 				<memcached.list_1.port>11211</memcached.list_1.port>
-				<memcached.object_1.ip>192.168.101.22</memcached.object_1.ip>
+				<memcached.object_1.ip>192.168.101.42</memcached.object_1.ip>
 				<memcached.object_1.port>11211</memcached.object_1.port>
 				<!-- redis -->
 				<user.cache.expiredTime>1800</user.cache.expiredTime>

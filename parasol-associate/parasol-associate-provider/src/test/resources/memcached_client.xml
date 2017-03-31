@@ -2,17 +2,17 @@
 <root>
 
 	<cache>
-		<datasource name="default" timeout="5000" server="192.168.101.22"
+		<datasource name="default" timeout="5000" server="192.168.101.42"
 			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
-		<datasource name="object" timeout="5000" server="192.168.101.22"
-			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
-
-		<datasource name="object1" timeout="5000" server="192.168.101.22"
-			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
-		<datasource name="object2" timeout="5000" server="192.168.101.22"
+		<datasource name="object" timeout="5000" server="192.168.101.42"
 			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
 
-		<datasource name="list1" timeout="5000" server="192.168.101.22"
+		<datasource name="object1" timeout="5000" server="192.168.101.42"
+			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
+		<datasource name="object2" timeout="5000" server="192.168.101.42"
+			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
+
+		<datasource name="list1" timeout="5000" server="192.168.101.42"
 			port="11211" maxActive="1" maxIdle="1" maxWait="-1" />
 		<!-- <datasource name="map1" timeout="5000" server="${memcached.map_1.ip}" 
 			port="${memcached.list_1.port}" maxActive="1" maxIdle="1" maxWait="-1"/> -->
