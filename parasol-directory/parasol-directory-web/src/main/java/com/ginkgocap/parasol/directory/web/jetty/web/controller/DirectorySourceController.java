@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException;
 import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
+import com.ginkgocap.parasol.directory.web.jetty.modle.Ids;
 import com.ginkgocap.parasol.directory.web.jetty.modle.Property;
 import com.ginkgocap.parasol.directory.web.jetty.utils.JsonReadUtil;
 import com.ginkgocap.parasol.directory.web.jetty.utils.JsonUtils;
@@ -189,7 +190,7 @@ public class DirectorySourceController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException
-	 * @throws CodeServiceException
+	 * @throws DirectorySourceServiceException
 	 */
 	@RequestMapping(path = "/directory/source/moveSource", method = { RequestMethod.POST })
 	public MappingJacksonValue moveDirectorySource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
@@ -202,12 +203,34 @@ public class DirectorySourceController extends BaseControl {
 			// Long loginUserId = LoginUserContextHolder.getUserId();
 			Long loginAppId = this.DefaultAppId;
 			Long loginUserId = this.getUserId(request);
+			String requestJson = this.getBodyParam(request);
+			Ids idsObj = null;
+			InterfaceResult result = null;
+			try {
+				idsObj = (Ids) JsonUtils.jsonToBean(requestJson, Ids.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (idsObj == null || idsObj.getIds().length == 0) {
+				result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+				result.setResponseData(false);
+				mappingJacksonValue = new MappingJacksonValue(result);
+				return mappingJacksonValue;
+			}
 			// TODO: 没有实现这个方法
 			Boolean success = directorySourceService.moveDirectorySources(loginUserId, loginAppId, directoryId, ids);
-			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-			resultMap.put("success", success);
+
+			if (!success) {
+				result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
+				result.getNotification().setNotifInfo("move directory sources fail!");
+				result.setResponseData(false);
+				mappingJacksonValue = new MappingJacksonValue(result);
+				return mappingJacksonValue;
+			}
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+			result.setResponseData(true);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			mappingJacksonValue = new MappingJacksonValue(result);
 			// 4.返回结果
 			return mappingJacksonValue;
 		}  catch (DirectorySourceServiceException e) {

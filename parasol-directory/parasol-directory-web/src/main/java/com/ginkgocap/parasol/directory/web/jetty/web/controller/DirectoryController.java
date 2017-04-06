@@ -361,6 +361,7 @@ public class DirectoryController extends BaseControl {
             }
         } else {
             filter.add("id"); // id',
+            filter.add("pid"); // pid',
             filter.add("name"); // '分类名称',
             filter.add("typeId"); // '应用的分类分类ID',
             filter.add("appId"); // '应用的分类分类ID',
