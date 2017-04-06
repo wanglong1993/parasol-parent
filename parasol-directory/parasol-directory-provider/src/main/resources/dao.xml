@@ -54,7 +54,7 @@
 			</dbStrategy>
            <!-- 通过目录ID查询 --> 
            <list name="List_DirectorySource_Id_DirectoryId"
-                  sqlitem="select id from tb_directory_source where directoryId=?"
+                  sqlitem="select id from tb_directory_source where directoryId=? order by createAt desc"
                   sqlType="hsql" keyProperty="directoryId" valueProperty="id"  update="true"/>
            <!-- 查找用户有多少相同的资源（UserId,appId,sourceType,sourceId)。 --> 
            <list name="List_DirectorySources_Id_userId_appId_sourceType_sourceId"
