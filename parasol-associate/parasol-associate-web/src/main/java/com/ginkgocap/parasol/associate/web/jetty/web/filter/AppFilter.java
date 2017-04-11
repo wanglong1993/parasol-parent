@@ -12,19 +12,19 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ginkgocap.parasol.associate.web.jetty.utils.CommonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.ginkgocap.parasol.util.CommonUtil;
+import com.ginkgocap.parasol.util.Constant;
+import com.ginkgocap.parasol.util.RedisKeyUtils;
+import com.ginkgocap.parasol.util.Utils;
 import com.ginkgocap.ywxt.cache.Cache;
 import com.ginkgocap.ywxt.user.model.User;
 import com.ginkgocap.ywxt.util.Encodes;
-import com.ginkgocap.parasol.associate.web.jetty.utils.Constant;
-import com.ginkgocap.parasol.associate.web.jetty.utils.RedisKeyUtils;
-import com.ginkgocap.parasol.associate.web.jetty.utils.Utils;
 
 public class AppFilter implements Filter {
 	private Logger logger = LoggerFactory.getLogger(AppFilter.class);
@@ -117,7 +117,7 @@ public class AppFilter implements Filter {
 		}
 		boolean loginFlag = true;
 		for (String excludedUrl : excludedUrlArray) {
-			if (url.contains(com.ginkgocap.parasol.associate.web.jetty.utils.StringUtils.replaceSpecial(excludedUrl))) {
+			if (url.contains(com.ginkgocap.parasol.util.StringUtils.replaceSpecial(excludedUrl))) {
 				loginFlag = false;
 				break;
 			}
