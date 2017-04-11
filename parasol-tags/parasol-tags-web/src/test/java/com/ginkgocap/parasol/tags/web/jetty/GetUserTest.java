@@ -5,7 +5,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.ginkgocap.parasol.tags.web.jetty.utils.HttpUtils;
+import com.ginkgocap.parasol.util.HttpUtils;
+
 
 
 public class GetUserTest {

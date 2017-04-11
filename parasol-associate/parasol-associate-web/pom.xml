@@ -8,6 +8,7 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.3.0.RELEASE</version>
 	</parent>
+
 	<artifactId>parasol-associate-web</artifactId>
 	<groupId>com.ginkgocap.parasol</groupId>
 	<name>parasol associate web</name>
@@ -173,7 +174,7 @@
 			<artifactId>quartz</artifactId>
 			<version>1.8.5</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.ginkgocap.ywxt</groupId>
 			<artifactId>phoenix-util</artifactId>
 			<version>${util.dependencied}</version>
@@ -183,9 +184,9 @@
 					<groupId>org.apache.httpcomponents</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency> -->
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.gintong.frame</groupId>
 			<artifactId>phoenix-frame-util</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
@@ -195,12 +196,12 @@
 					<groupId>redis.clients</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
+		</dependency> -->
+	<!-- 	<dependency>
 			<groupId>com.ginkgocap.ywxt</groupId>
 			<artifactId>phoenix-entire-api</artifactId>
 			<version>5.6.3</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
@@ -228,6 +229,18 @@
 			 <artifactId>hibernate-validator</artifactId>
 			 <version>4.3.1.Final</version>
 			</dependency>
+	
+	<!-- 2017-04-11 -->
+	
+		<dependency>
+				<groupId>com.ginkgocap.parasol</groupId>
+				<artifactId>parasol-util</artifactId>
+				<version>1.0.3-SNAPSHOT</version>
+		</dependency>		
+	
+			
+			
+			
 	</dependencies>
 	<distributionManagement>
 		<snapshotRepository>

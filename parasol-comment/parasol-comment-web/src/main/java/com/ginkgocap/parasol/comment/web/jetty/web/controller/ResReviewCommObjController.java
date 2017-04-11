@@ -17,8 +17,8 @@ import com.ginkgocap.parasol.comment.model.CommObjUpUser;
 import com.ginkgocap.parasol.comment.model.ResReviewCommObj;
 import com.ginkgocap.parasol.comment.model.Tipoff;
 import com.ginkgocap.parasol.comment.service.ResReviewCommObjService;
-import com.ginkgocap.parasol.comment.web.jetty.web.util.JsonUtils;
 import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
+import com.ginkgocap.parasol.util.JsonUtils;
 
 @Controller
 public class ResReviewCommObjController extends BaseControl {

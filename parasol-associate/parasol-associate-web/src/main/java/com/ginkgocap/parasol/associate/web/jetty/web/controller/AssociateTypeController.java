@@ -73,6 +73,7 @@ public class AssociateTypeController extends BaseControl {
 		Long loginAppId=this.DefaultAppId;
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
 			List<AssociateType> associateTypes = associateTypeService.getAssociateTypessByAppId(loginAppId);
