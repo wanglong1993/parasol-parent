@@ -35,6 +35,7 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	private static String LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_DIRECTORYID = "List_DirectorySources_Id_userId_appId_sourceType_directoryId";
 	private static String LIST_DIRECTORYSOURCE_ID_DIRECTORYID = "List_DirectorySource_Id_DirectoryId";
 	private static String MAP_DIRECTORYSOURCE_ID_USERID_DIRECTORYID_APPID_SOURCETYPE_SOURICEID = "Map_DirectorySource_Id_UserId_DirectoryId_AppId_SourceType_SourceId";
+	private static String LIST_DIRECTORYSOURCE_ID_USERID_TYPEID = "List_DirectorySource_Id_UserId_TypeId";
 
 	@Autowired
 	private DirectoryService directoryService;
@@ -278,6 +279,16 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	public int countDirectorySourcesByDirectoryId(Long appId, Long userId, Long directoryId) throws DirectorySourceServiceException {
 		try {
 			return this.countEntitys(LIST_DIRECTORYSOURCE_ID_DIRECTORYID, directoryId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
+	}
+
+	@Override
+	public int getMyDirectoriesSouceCount(Long appId, Long userId, Long typeId) throws DirectorySourceServiceException {
+		try {
+			return this.countEntitys(LIST_DIRECTORYSOURCE_ID_USERID_TYPEID, appId, userId, typeId);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new DirectorySourceServiceException(e);

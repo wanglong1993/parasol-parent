@@ -157,7 +157,7 @@ public class DirectoryServiceTest extends TestBase implements Test {
 	public void testGetDirectoryName() throws DirectoryServiceException {
 
 		try {
-			Page<Directory> page = directoryService.getDirectoryName(13363l,"李", 1, 6);
+			Page<Directory> page = directoryService.getDirectoryName(13363l,"李", 7, 1, 6);
 			//Assert.assertTrue(CollectionUtils.isNotEmpty(page.getList()));
 
 			for (Directory directory : page.getList()) {

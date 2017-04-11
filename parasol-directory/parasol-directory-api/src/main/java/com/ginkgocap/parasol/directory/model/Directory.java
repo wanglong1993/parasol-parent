@@ -1,12 +1,10 @@
 package com.ginkgocap.parasol.directory.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -59,6 +57,9 @@ public class Directory implements Serializable {
 	private String remark; // 描述
 	private String numberCode; // 编码(存放三级，爷爷-父父-自己）
 	private long updateAt; // 更新时间
+	// 不持久化
+	private List<Directory> childDirectory = null;// 子目录
+	private int sourceCount;
 
 	@Id
 	@GeneratedValue(generator = "DirectoryId")
@@ -176,5 +177,28 @@ public class Directory implements Serializable {
 		return "Directory [appId=" + appId + ", userId=" + userId + ", id=" + id + ", pid=" + pid + ", name=" + name + ", nameIndex=" + nameIndex + ", nameIndexAll="
 				+ nameIndexAll + ", orderNo=" + orderNo + ", typeId=" + typeId + ", remark=" + remark + ", numberCode=" + numberCode + ", updateAt=" + updateAt + "]";
 	}
+	@Transient // 不持久化：不保存到数据库
+	public List<Directory> getChildDirectory() {
+		return childDirectory;
+	}
 
+	public void setChildDirectory(List<Directory> childDirectory) {
+		this.childDirectory = childDirectory;
+	}
+
+	public void addChildList(Directory directory) {
+		if (childDirectory == null) {
+			childDirectory = new ArrayList<Directory>();
+		}
+		this.childDirectory.add(directory);
+	}
+
+	@Transient // 不持久化：不保存到数据库
+	public int getSourceCount() {
+		return sourceCount;
+	}
+
+	public void setSourceCount(int sourceCount) {
+		this.sourceCount = sourceCount;
+	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import com.ginkgocap.parasol.directory.model.Page;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,15 @@ import com.ginkgocap.parasol.directory.service.DirectoryTypeService;
 @Service("directoryService")
 public class DirectoryServiceImpl extends BaseService<Directory> implements DirectoryService {
 	private static Logger logger = Logger.getLogger(DirectoryServiceImpl.class);
-	private static int len_name = 50;
+	private static int len_name = 20;
 
 	private static String LIST_DIRECTORY_PID_ID = "List_Directory_Id_Pid"; // 查询子节点
 	private static String LIST_DIRECTORY_ID_APPID_USERID_TYPEID_PID = "List_Directory_Id_AppId_UserId_TypeId_Pid"; // 查询一个应用的分类根目录
 	private static String List_Directory_By_Name = "List_Directory_By_Name";
+	private static String LIST_DIRECTORY_TREE_APPID_USERID_TYPEID_PID = "List_Directory_Tree_AppId_UserId_TypeId_Pid"; //查询树形目录不包括根目录
+	private static String LIST_DIRECTORY_ID_APPID_USERID_TYPEID = "List_Directory_Id_AppId_UserId_TypeId"; //查询树形根目录
+	private static String LIST_DIRECTORY_ID_ALL = "List_Directory_Id_All"; //查询所有目录
+
 	@Autowired
 	private DirectoryTypeService directoryTypeService;
 
@@ -93,7 +98,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 
 		// 1.4 用户Id
 		if (directory.getUserId() <= 0) {
-			throw new DirectoryServiceException(ServiceError.ERROR_USER_EXIST, "pelase set userId property");
+			throw new DirectoryServiceException(ServiceError.ERROR_USER_EXIST, "please set userId property");
 		} else {
 			// TODO: 检查用户是否存在
 			logger.info("Please implement check user exist condition");
@@ -131,7 +136,11 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			if (id > 0) {
 				directory.setId(id);
 				String parentNumberCode = getParentNumberCode(parentDirectory);
-				directory.setNumberCode(parentNumberCode + "-" + id);
+				if (StringUtils.isEmpty(parentNumberCode)) {
+					directory.setNumberCode(parentNumberCode + id);
+				} else {
+					directory.setNumberCode(parentNumberCode + "-" + id);
+				}
 				this.updateEntity(directory);
 			}
 			return id;
@@ -199,7 +208,9 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 						throw new DirectoryServiceException(ServiceError.ERROR_PERTIES, "name property must have a non blank string");
 					} else {
 						if (directory.getName().length() > len_name) {
-							throw new DirectoryServiceException(ServiceError.ERROR_NAME_LIMIT, directory.getName() + "  length can not be more than " + len_name);
+							logger.error(directory.getName() + "  length can not be more than " + len_name);
+							return false;
+							//throw new DirectoryServiceException(ServiceError.ERROR_NAME_LIMIT, directory.getName() + "  length can not be more than " + len_name);
 						}
 					}
 
@@ -232,7 +243,19 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 	}
 
 	@Override
-	public boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException {
+	public boolean updateDirectory(Directory directory) {
+
+		boolean flag = false;
+		try {
+			flag = this.updateEntity(directory);
+		} catch (BaseServiceException e) {
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
+	@Override
+	public boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId, List<Directory> treeList) throws DirectoryServiceException {
 		// check parameter
 		ServiceError.assertAppIdForDirectory(appId);
 		ServiceError.assertUserIdForDirectory(userId);
@@ -246,19 +269,49 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 				sb.append("don't find the from Directory by id " + directoryId);
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
 			}
-
-			Directory to = this.getEntity(toDirectoryId);
-			if (to == null) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("don't find the to Directory by id " + toDirectoryId);
-				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
+			Directory to = null;
+			if (toDirectoryId != 0) {
+				to = this.getEntity(toDirectoryId);
+				if (to == null) {
+					StringBuffer sb = new StringBuffer();
+					sb.append("don't find the to Directory by id " + toDirectoryId);
+					throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
+				}
 			}
-
-			// 检查是不是同一个人，同一个应用，同一个分类
-			if (ObjectUtils.equals(targetDirectory.getUserId(), to.getUserId()) && ObjectUtils.equals(targetDirectory.getAppId(), to.getAppId()) && ObjectUtils.equals(targetDirectory.getTypeId(), to.getTypeId())) {
+			long targetPid = targetDirectory.getPid();
+			Directory parent = this.getEntity(targetPid);
+			if (parent == null) {
+				parent = new Directory();
+				parent.setOrderNo(0); // 根目录是 0 级
+			}
+			// 检查是不是同一个人，同一个应用，同一个分类 (移动到根目录则无法验证)
+			if (CollectionUtils.isNotEmpty(treeList) /*&& ObjectUtils.equals( targetDirectory.getUserId(), to.getUserId())&& ObjectUtils.equals(targetDirectory.getAppId(), to.getAppId()) && ObjectUtils.equals(targetDirectory.getTypeId(), to.getTypeId())*/) {
+				for(Directory directory : treeList) {
+					if (directory != null) {
+						String numberCode = directory.getNumberCode();
+						String[] number = numberCode.split("" + targetPid + "-");
+						String parentNumberCode = "";
+						if (to != null) {
+							parentNumberCode = getParentNumberCode(to);
+							if (number[0] != numberCode) {
+								directory.setNumberCode(parentNumberCode + "-" + number[1]); // 更新索引
+							} else {
+								directory.setNumberCode(parentNumberCode + "-" + numberCode);
+							}
+							directory.setOrderNo(directory.getOrderNo() - parent.getOrderNo() + to.getOrderNo()); // 移动后目录级别
+						} else {
+							if (number[0] != numberCode) {
+								directory.setNumberCode(number[1]); // 更新索引
+							} else {
+								directory.setNumberCode(numberCode);
+							}
+							directory.setOrderNo(directory.getOrderNo() - parent.getOrderNo()); // 移动后目录级别
+						}
+					}
+				}
 				targetDirectory.setPid(toDirectoryId);
-				String numberCode = getParentNumberCode(to);
-				targetDirectory.setNumberCode(numberCode + "-" + targetDirectory.getId()); //更新索引
+				/*String numberCode = getParentNumberCode(to);
+				targetDirectory.setNumberCode(numberCode + "-" + targetDirectory.getId()); //更新索引*/
 				return this.updateEntity(targetDirectory);
 			} else {
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own directory");// 移动的不是自己的目录
@@ -417,48 +470,51 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 	}
 
 	@Override
-	public Page<Directory> getDirectoryName(Long userId, String name, int pageNo,int pageSize) throws DirectoryServiceException {
+	public Page<Directory> getDirectoryName(Long userId, String name, long typeId, int pageNo,int pageSize) throws DirectoryServiceException {
 		ServiceError.assertUserIdForDirectory(userId);
 		try {
 			Page<Directory> page = new Page<Directory>();
 			name = "%" + name + "%";
-			List<Directory> directoryList = this.getSubEntitys(List_Directory_By_Name,pageNo,pageSize,userId, name);
+			List<Directory> directoryList = this.getSubEntitys(List_Directory_By_Name, pageNo, pageSize, userId, name, typeId);
 			int count = this.countEntitys(List_Directory_By_Name,userId, name);
 			page.setPageNo(pageNo);
 			page.setPageSize(pageSize);
 			page.setTotalCount(count);
 
-			for (Directory directory : directoryList){
-				if (directory.getPid()!=0){
-					String numberCode = directory.getNumberCode();
-					String[] subNumberCode = numberCode.split("-");
-					StringBuffer sBuffer = new StringBuffer();
+			if (CollectionUtils.isNotEmpty(directoryList)) {
+				for (Directory directory : directoryList){
+					if (directory.getPid() != 0) {
+						String numberCode = directory.getNumberCode();
+						String[] subNumberCode = numberCode.split("-");
+						StringBuffer sBuffer = new StringBuffer();
 
-					for (int i =0; i <subNumberCode.length ; i++) {
-						long id = 0L;
-						try {
-							id = Long.valueOf(subNumberCode[i]);
-						} catch (Exception ex) {
-							logger.error("parser string to number failed. number: " + subNumberCode[i] +"error: "+ex.getMessage());
-							continue;
-						}
-						Directory dir = this.getEntity(id);
-						String name2 = dir.getName();
-						sBuffer.append(name2).append("/");
-						if (i == 2) {
-							if (subNumberCode.length > 4) {
-								sBuffer.append(".../").append(directory.getName()).append("/");
+						for (int i =0; i < subNumberCode.length ; i++) {
+							long id = 0L;
+							try {
+								id = Long.valueOf(subNumberCode[i]);
+							} catch (Exception ex) {
+								logger.error("parser string to number failed. number: " + subNumberCode[i] +"error: "+ex.getMessage());
+								continue;
 							}
-							else if (id == directory.getId()) {
+							Directory dir = this.getEntity(id);
+							String name2 = dir.getName();
+							sBuffer.append(name2).append("/");
+							//i 应该 = 目录最大级别 稍后修改
+							if (i == directory.getOrderNo()) {
+								if (subNumberCode.length > 4) {
+									sBuffer.append(".../").append(directory.getName()).append("/");
+								}
+								else if (id == directory.getId()) {
+									break;
+								} else {
+									sBuffer.append(directory.getName()).append("/");
+								}
 								break;
-							} else {
-								sBuffer.append(directory.getName()).append("/");
 							}
-							break;
 						}
+						String newName = sBuffer.toString().substring(0,sBuffer.length()-1);
+						directory.setName(newName);
 					}
-					String newName = sBuffer.toString().substring(0,sBuffer.length()-1);
-					directory.setName(newName);
 				}
 			}
 			page.setList(directoryList);
@@ -468,6 +524,28 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			throw new DirectoryServiceException(e);
 		}
 
+	}
+
+	@Override
+	public List<Directory> getAllDirectory(final int page, final int size) {
+
+		int count = 0;
+		try {
+			count = countEntitys(LIST_DIRECTORY_ID_ALL, 1l);
+		} catch (BaseServiceException e) {
+			e.printStackTrace();
+		}
+		final int start = page * size;
+		if (start >= count) {
+			logger.info("start exceed to end, so return null. page: " + page + " size: " + size);
+			return null;
+		}
+		try {
+			return this.getSubEntitys(LIST_DIRECTORY_ID_ALL, page, size, 1l);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+		}
+		return null;
 	}
 
 	/**
@@ -488,13 +566,65 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 
 	}
 
+	@Override
+	public List<Directory> getTreeDirectorysByParentId(long appId, long userId, long pid, long typeId) throws DirectoryServiceException {
+
+		ServiceError.assertAppIdForDirectory(appId);
+		ServiceError.assertUserIdForDirectory(userId);
+
+		try {
+			return this.getEntitys(LIST_DIRECTORY_TREE_APPID_USERID_TYPEID_PID,  appId, userId, "%-" + pid, "" + pid, pid + "-%", "%-" + pid + "-%", typeId, pid);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectoryServiceException(e);
+		}
+
+	}
+
+	@Override
+	public List<Directory> getDirectoryListByUserIdType(long appId, long userId, long typeId) throws DirectoryServiceException {
+
+		ServiceError.assertUserIdForDirectory(userId);
+		ServiceError.assertDirectoryTypeIdForDirectory(typeId);
+
+		try {
+			return this.getEntitys(LIST_DIRECTORY_ID_APPID_USERID_TYPEID, appId, userId, typeId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectoryServiceException(e);
+		}
+	}
+
+	public int getMyDirectoriesCount(long loginAppId, long userId, long typeId) throws DirectoryServiceException {
+
+		ServiceError.assertUserIdForDirectory(userId);
+		ServiceError.assertDirectoryTypeIdForDirectory(typeId);
+
+		try {
+			return this.countEntitys(LIST_DIRECTORY_ID_APPID_USERID_TYPEID, loginAppId, userId, typeId);
+		} catch (BaseServiceException e) {
+			logger.error(e.getMessage());
+			throw new DirectoryServiceException(e);
+		}
+	}
+	@Override
+	public int getMySubDirectoriesCount(long loginAppId, long userId, long pid, long typeId) throws DirectoryServiceException {
+
+		ServiceError.assertUserIdForDirectory(userId);
+		ServiceError.assertDirectoryTypeIdForDirectory(typeId);
+
+		try {
+			return this.countEntitys(LIST_DIRECTORY_TREE_APPID_USERID_TYPEID_PID, loginAppId, userId, "%-" + pid, "" + pid, pid + "-%", "%-" + pid + "-%", typeId, pid);
+		} catch (BaseServiceException e) {
+			logger.error(e.getMessage());
+			throw new DirectoryServiceException(e);
+		}
+	}
+
 	/**
 	 * 检查是否重名
-	 * 
-	 * @param appId
-	 * @param userId
-	 * @param pId
-	 * @param name
+	 * @param directorys
+	 * @param directory
 	 * @throws DirectoryServiceException
 	 */
 

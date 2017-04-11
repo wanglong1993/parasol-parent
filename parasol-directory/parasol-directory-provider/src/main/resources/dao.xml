@@ -26,9 +26,24 @@
                   sqlitem="select id from tb_directory where appId=? and userId=? and typeId=? and pid=? order by orderNo"
                   sqlType="hsql" keyProperty="appId,userId,typeId,pid" valueProperty="id"/>
 
+			<!-- 查询一个用户一个类型下所有目录 -->
+			<list name="List_Directory_Id_AppId_UserId_TypeId"
+				  sqlitem="select id from tb_directory where appId=? and userId=? and typeId=? order by orderNo"
+				  sqlType="hsql" keyProperty="appId,userId,typeId" valueProperty="id"/>
+
+			<list name="List_Directory_Tree_AppId_UserId_TypeId_Pid"
+                  sqlitem="select id from tb_directory where appId=? and userId=? and (numberCode like ? or numberCode=? or numberCode like ? or numberCode like ?)
+                  and typeId=? and orderNo >= (select orderNo from tb_directory where id = ?) order by orderNo"
+                  sqlType="hsql" keyProperty="appId,userId,pid,pid,pid,pid,typeId,pid" valueProperty="id"/>
+
 			<list name="List_Directory_By_Name"
-					sqlitem="select id from tb_directory where userId = ? and name like ?"
-					sqlType="hsql" keyProperty="userId,nameLike" valueProperty="id"/>
+					sqlitem="select id from tb_directory where userId = ? and name like ? and typeId = ? order by orderNo"
+					sqlType="hsql" keyProperty="userId,nameLike,typeId" valueProperty="id"/>
+
+			<!-- 查询数据库所有目录 -->
+			<list name="List_Directory_Id_All"
+					sqlitem="select id from tb_directory where appId=?"
+					sqlType="hsql" keyProperty="appId" valueProperty="id"/>
 		</object>
 		
 		<object name="com.ginkgocap.parasol.directory.model.DirectoryType" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">
@@ -64,7 +79,10 @@
            <list name="List_DirectorySources_Id_userId_appId_sourceType_directoryId"
                   sqlitem="select id from tb_directory_source where userId=? and appId=? and sourceType=? and directoryId=?"
                   sqlType="hsql" keyProperty="userId,appId,sourceType,directoryId" valueProperty="id"  update="true"/>               
-           <!-- 查找目录下一个资源的ID --> 
+           <list name="List_DirectorySource_Id_UserId_TypeId"
+                  sqlitem="select id from tb_directory_source where appId=? and userId=? and sourceType=?"
+                  sqlType="hsql" keyProperty="appId,userId,sourceType" valueProperty="id"  update="true"/>
+           <!-- 查找目录下一个资源的ID -->
 		   <map name="Map_DirectorySource_Id_UserId_DirectoryId_AppId_SourceType_SourceId"
                  sqlitem="select id from tb_directory_source where userId = ? and directoryId=? and appId=? and sourceType=? and sourceId=?"
                  keyProperty="userId,directoryId,appId,sourceType,sourceId" valueProperty="id" />
