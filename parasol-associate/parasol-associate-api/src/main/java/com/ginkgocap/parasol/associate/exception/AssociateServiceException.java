@@ -9,7 +9,7 @@ package com.ginkgocap.parasol.associate.exception;
  */
 public class AssociateServiceException extends Exception {
 	private int errorCode = -1;
-
+   
 	public AssociateServiceException(Throwable cause) {
 		super(cause);
 	}
