@@ -200,7 +200,6 @@ public class DirectorySourceController extends BaseControl {
 	 */
 	@RequestMapping(path = "/directory/source/moveSource", method = { RequestMethod.POST })
 	public MappingJacksonValue moveDirectorySource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
-		@RequestParam(name = DirectorySourceController.parameterDirectorySourceIds, required = true) Long[] ids,
 		@RequestParam(name = DirectorySourceController.parameterDirectoryId, required = true) Long directoryId,
 		HttpServletRequest request) throws DirectorySourceServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
@@ -224,7 +223,7 @@ public class DirectorySourceController extends BaseControl {
 				return mappingJacksonValue;
 			}
 			// TODO: 没有实现这个方法
-			Boolean success = directorySourceService.moveDirectorySources(loginUserId, loginAppId, directoryId, ids);
+			Boolean success = directorySourceService.moveDirectorySources(loginUserId, loginAppId, directoryId, idsObj.getIds());
 
 			if (!success) {
 				result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
@@ -271,6 +270,8 @@ public class DirectorySourceController extends BaseControl {
 			filter.add("sourceTitle"); // 资源的title
 			filter.add("sourceData"); // 资源的Data
 			filter.add("directoryId"); // 资源的Data
+			filter.add("total"); // 资源个数
+			filter.add("list"); //
 		}
 
 		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));

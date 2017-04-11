@@ -192,9 +192,9 @@
 				<jdbc.username>ph_kfpt</jdbc.username>
 				<jdbc.password>Cual17jc5qd4</jdbc.password>
 				<!-- memcached -->
-				<memcached.list1.ip>192.168.101.131</memcached.list1.ip>
+				<memcached.list1.ip>192.168.101.42</memcached.list1.ip>
 				<memcached.list1.port>11211</memcached.list1.port>
-				<memcached.object1.ip>192.168.101.131</memcached.object1.ip>
+				<memcached.object1.ip>192.168.101.42</memcached.object1.ip>
 				<memcached.object1.port>11211</memcached.object1.port>
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>

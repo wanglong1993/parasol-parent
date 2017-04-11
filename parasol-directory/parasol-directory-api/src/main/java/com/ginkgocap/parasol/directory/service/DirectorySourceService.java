@@ -153,4 +153,14 @@ public interface DirectorySourceService {
 	 * @throws DirectorySourceServiceException
 	 */
 	public boolean updateDiresources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> direIds,String sourceTitle) throws DirectorySourceServiceException;
+
+	/**
+	 * 我的目录下所有资源个数
+	 * @param appId
+	 * @param userId
+	 * @param typeId
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 */
+	int getMyDirectoriesSouceCount(Long appId, Long userId, Long typeId) throws DirectorySourceServiceException;
 }

@@ -67,7 +67,7 @@ public interface DirectoryService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException;
+	public boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId, List<Directory> treeList) throws DirectoryServiceException;
 
 	/**
 	 * 应用 用户 查询一个Directory
@@ -132,6 +132,66 @@ public interface DirectoryService {
 	 */
 	public int countDirectorysForRoot(Long appId, Long userId, Long directoryTypeId) throws DirectoryServiceException;
 
+	/**
+	 * 搜索目录 通过 name（只支持知识，需求）
+	 * @param userId
+	 * @param name
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws DirectoryServiceException
+	 */
+	public Page<Directory> getDirectoryName(Long userId, String name, long typeId, int pageNo,int pageSize)throws DirectoryServiceException;
 
-	public Page<Directory> getDirectoryName(Long userId, String name, int pageNo,int pageSize)throws DirectoryServiceException;
+	/**
+	 * 查询所有目录
+	 * 没有实现
+	 * @return
+	 */
+	List<Directory> getAllDirectory(final int page, final int size);
+
+	/**
+	 * 通过 pid 获取树形结构目录 （pid 下所有目录）
+	 * @param appId
+	 * @param userId
+	 * @param pid
+	 * @return
+	 */
+	List<Directory> getTreeDirectorysByParentId(long appId, long userId, long pid, long typeId) throws DirectoryServiceException;
+
+	/**
+	 * 获取根目录下所有目录
+	 * @param loginAppId
+	 * @param userId
+	 * @param typeId
+	 * @return
+	 * @throws DirectoryServiceException
+	 */
+	List<Directory> getDirectoryListByUserIdType(long loginAppId, long userId, long typeId) throws DirectoryServiceException;
+
+	/**
+	 * 修改目录 实体
+	 * @param directory
+	 * @return
+	 */
+	boolean updateDirectory(Directory directory);
+
+	/**
+	 * 我的目录总个数
+	 * @param loginAppId
+	 * @param userId
+	 * @param typeId
+	 * @return
+	 */
+	int getMyDirectoriesCount(long loginAppId, long userId, long typeId) throws DirectoryServiceException;
+
+	/**
+	 * 我的子目录总个数
+	 * @param loginAppId
+	 * @param userId
+	 * @param pid
+	 * @param typeId
+	 * @return
+	 */
+	int getMySubDirectoriesCount(long loginAppId, long userId, long pid, long typeId) throws DirectoryServiceException;
 }
