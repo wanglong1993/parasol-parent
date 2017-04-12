@@ -23,8 +23,8 @@ import com.ginkgocap.parasol.directory.model.Directory;
 import com.ginkgocap.parasol.directory.model.Page;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
-import com.ginkgocap.parasol.directory.web.jetty.utils.JsonUtil;
-import com.ginkgocap.parasol.directory.web.jetty.utils.JsonUtils;
+import com.ginkgocap.parasol.util.JsonUtils;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
