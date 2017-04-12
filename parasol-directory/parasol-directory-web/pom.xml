@@ -201,7 +201,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>com.gintong.frame</groupId>
 			<artifactId>phoenix-frame-util</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
@@ -211,12 +211,12 @@
 					<groupId>redis.clients</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency> -->
-		<!-- <dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.ginkgocap.ywxt</groupId>
 			<artifactId>phoenix-entire-api</artifactId>
 			<version>5.6.3</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
@@ -249,17 +249,12 @@
 			<artifactId>phoenix-knowledge-api</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
-		
 	<!-- 2017-04-11 -->
 		<dependency>
-				<groupId>com.ginkgocap.parasol</groupId>
-				<artifactId>parasol-util</artifactId>
-				<version>1.0.3-SNAPSHOT</version>
-		</dependency>		
-	
-		
-		
-		
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-util</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>

@@ -120,13 +120,13 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		}
 
 		// 3. 检查有没有重名根目录
-		List<Directory> directorys = null;
+		/*List<Directory> directorys = null;
 		if (pId != null && pId != 0) { // 创建非根节点
 			directorys = getDirectorysByParentId(directory.getAppId(), directory.getUserId(), pId);
 		} else { // 创建根节点
 			directorys = getDirectorysForRoot(directory.getAppId(), directory.getUserId(), directory.getTypeId());
 		}
-		assertDuplicateName(directorys, directory);
+		assertDuplicateName(directorys, directory);*/
 
 		// 4.创建
 		try {
@@ -214,11 +214,11 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 						}
 					}
 
-					// 检查重名
+					/*// 检查重名
 					List<Directory> directorys = oldDirectory.getPid() != 0 ? this
 							.getDirectorysByParentId(oldDirectory.getAppId(), oldDirectory.getUserId(), oldDirectory.getPid())
 							: getDirectorysForRoot(oldDirectory.getAppId(), oldDirectory.getUserId(), oldDirectory.getTypeId());
-					assertDuplicateName(directorys, directory);
+					assertDuplicateName(directorys, directory);*/
 
 					// 确保如下数据不能修改
 					directory.setAppId(oldDirectory.getAppId());
@@ -628,13 +628,14 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 	 * @throws DirectoryServiceException
 	 */
 
-	private void assertDuplicateName(List<Directory> directorys, Directory directory) throws DirectoryServiceException {
+	/*private void assertDuplicateName(List<Directory> directorys, Directory directory) throws DirectoryServiceException {
 		if (!CollectionUtils.isEmpty(directorys)) {
 			for (Directory dir : directorys) {
 				if (dir != null && !ObjectUtils.equals(dir.getId(), directory.getId()) && ObjectUtils.equals(dir.getName(), directory.getName())) {
 					throw new DirectoryServiceException(ServiceError.ERROR_DUPLICATE, "the " + directory.getName() + " already exists");
+
 				}
 			}
 		}
-	}
+	}*/
 }

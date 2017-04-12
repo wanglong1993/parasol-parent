@@ -24,7 +24,6 @@ import com.ginkgocap.parasol.directory.model.Page;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.util.JsonUtils;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -87,10 +86,6 @@ public class DirectoryController extends BaseControl {
 
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
-            List<Directory> directories = null;
-            int total = 0;
-            int totalSourceCount = 0;
-            List<Directory> directoryList = new ArrayList<Directory>();
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
             Directory directory = new Directory();
             directory.setAppId(loginAppId);
@@ -105,11 +100,15 @@ public class DirectoryController extends BaseControl {
             directory.setName(name);
             directory.setTypeId(rootType);
             directory.setOrderNo(1); // 根目录下是一级目录
-            Long id = directoryService.createDirectoryForRoot(rootType, directory);
+            List<Directory> directories = null;
+            // 创建根节点
+            directories = directoryService.getDirectorysForRoot(directory.getAppId(), directory.getUserId(), directory.getTypeId());
 
-            //resultMap.put("id", id);
-           /* Map<String, Long> resultMap = new HashMap<String, Long>();
-            mappingJacksonValue = new MappingJacksonValue(resultMap);*/
+            MappingJacksonValue isDuplicate = assertDuplicateName(directories, directory);
+            if (isDuplicate != null) {
+                return isDuplicate;
+            }
+            directoryService.createDirectoryForRoot(rootType, directory);
             return returnMyDirectoriesTreeList(loginAppId, loginUserId, rootType, fileds);
         }  catch (Exception e) {
             throw e;
@@ -132,15 +131,8 @@ public class DirectoryController extends BaseControl {
                                                   HttpServletRequest request) throws Exception {
         MappingJacksonValue mappingJacksonValue = null;
         try {
-
-            // Long loginAppId = LoginUserContextHolder.getAppKey();
-            // Long loginUserId = LoginUserContextHolder.getUserId();
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
-            List<Directory> directories = null;
-            int total = 0;
-            List<Directory> directoryList = new ArrayList<Directory>();
-            int totalSourceCount = 0;
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
             Directory directory = new Directory();
             directory.setAppId(loginAppId);
@@ -154,12 +146,11 @@ public class DirectoryController extends BaseControl {
             }
             directory.setName(name);
             directory.setPid(parentId);
-
             Directory dir = directoryService.getDirectory(loginAppId, loginUserId, parentId);
             directory.setOrderNo(dir.getOrderNo() + 1); // 设置目录级别
             String numberCode = dir.getNumberCode();
-            int count = getCount(numberCode);
-            if (count > 20) {
+            int level = getCount(numberCode);
+            if (level > 20) {
                 Map<String, Object> result = new HashMap();
                 result.put("notifCode", 0002);
                 result.put("notifInfo", "目录级别不能超过20级哦");
@@ -167,6 +158,13 @@ public class DirectoryController extends BaseControl {
                 return mappingJacksonValue;
             }
             long typeId = dir.getTypeId();
+            List<Directory> directories = null;
+            // 创建非根节点
+            directories = directoryService.getDirectorysByParentId(loginAppId, loginUserId, parentId);
+            MappingJacksonValue isDuplicate = assertDuplicateName(directories, directory);
+            if (isDuplicate != null) {
+                return isDuplicate;
+            }
             directoryService.createDirectoryForChildren(parentId, directory);
             return returnMyDirectoriesTreeList(loginAppId, loginUserId, typeId, fileds);
         }  catch (Exception e) {
@@ -193,10 +191,6 @@ public class DirectoryController extends BaseControl {
         try {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
-            List<Directory> directories = null;
-            int total = 0;
-            List<Directory> directoryList = new ArrayList<Directory>();
-            int totalSourceCount = 0;
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
             Directory directory = directoryService.getDirectory(loginAppId, loginUserId, directoryId);
             long typeId = directory.getTypeId();
@@ -243,9 +237,20 @@ public class DirectoryController extends BaseControl {
             directory.setAppId(loginAppId);
             directory.setName(name);
             directory.setId(directoryId);
-
+            List<Directory> directories = null;
+            // 创建非根节点
+            Directory dirDB = directoryService.getDirectory(loginAppId, loginUserId, directoryId);
+            if (dirDB == null) {
+                resultMap.put("notifCode", "0002");
+                resultMap.put("notifInfo", "没有该目录");
+            }
+            long pid = dirDB.getPid();
+            directories = directoryService.getDirectorysByParentId(loginAppId, loginUserId, pid);
+            MappingJacksonValue isDuplicate = assertDuplicateName(directories, directory);
+            if (isDuplicate != null) {
+                return isDuplicate;
+            }
             Boolean b = directoryService.updateDirectory(loginAppId, loginUserId, directory);
-
             resultMap.put("success", b);
             // 2.转成框架数据
             mappingJacksonValue = new MappingJacksonValue(resultMap);
@@ -274,17 +279,18 @@ public class DirectoryController extends BaseControl {
         try {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
-            int count = 0;
+            int level = 0;
 
             Directory toDirectory = directoryService.getDirectory(loginAppId, loginUserId, toDirectoryId);
-            int toOrderNo = toDirectory.getOrderNo();
-            long typeId = toDirectory.getTypeId();
+            if (toDirectory != null) {
             String toNumberCode = toDirectory.getNumberCode();
-            count = getCount(toNumberCode);
+                level = getCount(toNumberCode);
+            }
             Directory directory = directoryService.getDirectory(loginAppId, loginUserId, directoryId);
+            long typeId = directory.getTypeId();
             String numberCode = directory.getNumberCode();
-            count += getCount(numberCode);
-            if (count > 20) {
+            level += getCount(numberCode);
+            if (level > 20) {
                 Map<String, Object> result = new HashMap();
                 result.put("notifCode", 0002);
                 result.put("notifInfo", "目录级别不能超过20级哦");
@@ -297,10 +303,10 @@ public class DirectoryController extends BaseControl {
             if (b) {
                 return returnMyDirectoriesTreeList(loginAppId, loginUserId, typeId, fileds);
             }
-            Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
-            reusltMap.put("success", b);
+            Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
+            resultMap.put("success", b);
             // 2.转成框架数据
-            mappingJacksonValue = new MappingJacksonValue(reusltMap);
+            mappingJacksonValue = new MappingJacksonValue(resultMap);
             return mappingJacksonValue;
         }  catch (Exception e) {
             throw e;
@@ -611,6 +617,29 @@ public class DirectoryController extends BaseControl {
         mappingJacksonValue = new MappingJacksonValue(result);
         SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
         mappingJacksonValue.setFilters(filterProvider);
+        return mappingJacksonValue;
+    }
+
+    /**
+     * 检查是否重名 ：1.同一父目录下的子目录名称不能重复
+     *              2.根目录下目录不能重名
+     * @param directories
+     * @param directory
+     * @return
+     */
+    private MappingJacksonValue assertDuplicateName(List<Directory> directories, Directory directory) {
+
+        MappingJacksonValue mappingJacksonValue = null;
+        if (!CollectionUtils.isEmpty(directories)) {
+            for (Directory dir : directories) {
+                if (dir != null && dir.getName().equalsIgnoreCase(directory.getName())) {
+                    Map<String, Object> result = new HashMap();
+                    result.put("notifCode", "0002");
+                    result.put("notifInfo", "已经有同名的目录了哦");
+                    mappingJacksonValue = new MappingJacksonValue(result);
+                }
+            }
+        }
         return mappingJacksonValue;
     }
 }
