@@ -151,25 +151,6 @@ public interface DirectoryService {
 	List<Directory> getAllDirectory(final int page, final int size);
 
 	/**
-	 * 通过 pid 获取树形结构目录 （pid 下所有目录）
-	 * @param appId
-	 * @param userId
-	 * @param pid
-	 * @return
-	 */
-	List<Directory> getTreeDirectorysByParentId(long appId, long userId, long pid, long typeId) throws DirectoryServiceException;
-
-	/**
-	 * 获取根目录下所有目录
-	 * @param loginAppId
-	 * @param userId
-	 * @param typeId
-	 * @return
-	 * @throws DirectoryServiceException
-	 */
-	List<Directory> getDirectoryListByUserIdType(long loginAppId, long userId, long typeId) throws DirectoryServiceException;
-
-	/**
 	 * 修改目录 实体
 	 * @param directory
 	 * @return
@@ -194,4 +175,23 @@ public interface DirectoryService {
 	 * @return
 	 */
 	int getMySubDirectoriesCount(long loginAppId, long userId, long pid, long typeId) throws DirectoryServiceException;
+
+	/**
+	 * 获取根目录下所有目录
+	 * @param loginAppId
+	 * @param userId
+	 * @param typeId
+	 * @return
+	 * @throws DirectoryServiceException
+	 */
+	 List<Directory> getDirectoryListByUserIdType(long loginAppId, long userId, long typeId) throws DirectoryServiceException;
+
+	/**
+	 * 通过 pid 获取树形结构目录 （pid 下所有目录）
+	 * @param appId
+	 * @param userId
+	 * @param pid
+	 * @return
+	 */
+	 List<Directory> getTreeDirectorysByParentId(long appId, long userId, long pid, long typeId) throws DirectoryServiceException;
 }

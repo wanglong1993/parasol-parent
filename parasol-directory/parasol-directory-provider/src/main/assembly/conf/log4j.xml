@@ -14,6 +14,9 @@
 	<logger name="com.ginkgocap.parasol">
 		<level value="debug"></level>
 	</logger>
+	<logger name="org.hibernate.show_sql">
+		<level value="debug"></level>
+	</logger>
 	<root>
 		<level value="info" />
 		<appender-ref ref="normal_log_file" />

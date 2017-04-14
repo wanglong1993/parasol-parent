@@ -7,7 +7,6 @@ import java.util.List;
 import com.ginkgocap.parasol.directory.model.Page;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -306,6 +305,9 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 								directory.setNumberCode(numberCode);
 							}
 							directory.setOrderNo(directory.getOrderNo() - parent.getOrderNo()); // 移动后目录级别
+						}
+						if (directory.getId() == targetDirectory.getId()) {
+							targetDirectory = directory;
 						}
 					}
 				}

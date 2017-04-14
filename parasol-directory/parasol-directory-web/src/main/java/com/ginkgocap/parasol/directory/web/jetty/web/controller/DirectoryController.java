@@ -24,6 +24,8 @@ import com.ginkgocap.parasol.directory.model.Page;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.util.JsonUtils;
+import com.gintong.frame.util.dto.CommonResultCode;
+import com.gintong.frame.util.dto.InterfaceResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -75,15 +77,36 @@ public class DirectoryController extends BaseControl {
      * @return
      * @throws DirectoryServiceException
      */
-    @RequestMapping(path = { "/directory/directory/createRootDirectory" }, method = { RequestMethod.POST })
+    @RequestMapping(path = { "/directory/directory/createRootDirectory.json" }, method = { RequestMethod.POST })
     public MappingJacksonValue createDirectoryRoot(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
                                                    @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
                                                    @RequestParam(name = DirectoryController.parameterName, required = true) String name,
                                                    @RequestParam(name = DirectoryController.parameterRootType, required = true) long rootType,
                                                    HttpServletRequest request) throws Exception {
-        MappingJacksonValue mappingJacksonValue = null;
-        try {
+        return createDirectoryRootTemp(fileds, debug, name, rootType, request, false);
+    }
 
+    /**
+     * 2.创建分类下的根目录 老版本
+     *
+     * @param request
+     * @return
+     * @throws DirectoryServiceException
+     */
+    @RequestMapping(path = { "/directory/directory/createRootDirectory" }, method = { RequestMethod.POST })
+    public MappingJacksonValue createDirectoryRootOld(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+                                                   @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                                   @RequestParam(name = DirectoryController.parameterName, required = true) String name,
+                                                   @RequestParam(name = DirectoryController.parameterRootType, required = true) long rootType,
+                                                   HttpServletRequest request) throws Exception {
+        return createDirectoryRootTemp(fileds, debug, name, rootType, request, true);
+    }
+
+    private MappingJacksonValue createDirectoryRootTemp(String fields, String debug, String name, long rootType, HttpServletRequest request, boolean isOld) throws Exception{
+
+        MappingJacksonValue mappingJacksonValue = null;
+        InterfaceResult interfaceResult = null;
+        try {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -91,10 +114,9 @@ public class DirectoryController extends BaseControl {
             directory.setAppId(loginAppId);
             directory.setUserId(loginUserId);
             if (name.length() > 20) {
-                Map<String, Object > resultMap = new HashMap();
-                resultMap.put("notifCode", "0002");
-                resultMap.put("notifInfo", "目录名称最长不能超过20字哦");
-                mappingJacksonValue = new MappingJacksonValue(resultMap);
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+                interfaceResult.getNotification().setNotifInfo("目录名称最长不能超过20字哦");
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
                 return mappingJacksonValue;
             }
             directory.setName(name);
@@ -108,11 +130,42 @@ public class DirectoryController extends BaseControl {
             if (isDuplicate != null) {
                 return isDuplicate;
             }
-            directoryService.createDirectoryForRoot(rootType, directory);
-            return returnMyDirectoriesTreeList(loginAppId, loginUserId, rootType, fileds);
+            Long id = directoryService.createDirectoryForRoot(rootType, directory);
+            if (isOld) {
+                Map<String, Long> resultMap = new HashMap<String, Long>();
+                resultMap.put("id", id);
+                // 2.转成框架数据
+                mappingJacksonValue = new MappingJacksonValue(resultMap);
+                return mappingJacksonValue;
+            }
+            return returnMyDirectoriesTreeList(loginAppId, loginUserId, rootType, fields);
         }  catch (Exception e) {
-            throw e;
+            if (isOld) {
+                throw e;
+            }
+            interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+            return mappingJacksonValue;
+
         }
+
+    }
+
+    /**
+     * 3.创建子目录
+     *
+     * @param request
+     * @return
+     * @throws DirectoryServiceException
+     * @throws
+     */
+    @RequestMapping(path = { "/directory/directory/createSubDirectory.json" }, method = {RequestMethod.POST })
+    public MappingJacksonValue createSubDirectory(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fields,
+                                                  @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                                  @RequestParam(name = DirectoryController.parameterName, required = true) String name,
+                                                  @RequestParam(name = DirectoryController.parameterParentId, required = true) long parentId,
+                                                  HttpServletRequest request) throws Exception {
+            return createSubDirectoryTemp(fields, debug, name, parentId, request, false);
     }
 
     /**
@@ -124,12 +177,18 @@ public class DirectoryController extends BaseControl {
      * @throws
      */
     @RequestMapping(path = { "/directory/directory/createSubDirectory" }, method = {RequestMethod.POST })
-    public MappingJacksonValue createSubDirectory(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
-                                                  @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
-                                                  @RequestParam(name = DirectoryController.parameterName, required = true) String name,
-                                                  @RequestParam(name = DirectoryController.parameterParentId, required = true) long parentId,
-                                                  HttpServletRequest request) throws Exception {
+    public MappingJacksonValue createSubDirectoryOld(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fields,
+                                                     @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                                     @RequestParam(name = DirectoryController.parameterName, required = true) String name,
+                                                     @RequestParam(name = DirectoryController.parameterParentId, required = true) long parentId,
+                                                     HttpServletRequest request) throws Exception {
+        return createSubDirectoryTemp(fields, debug, name, parentId, request, true);
+    }
+
+    private MappingJacksonValue createSubDirectoryTemp(String fields, String debug, String name, long parentId, HttpServletRequest request, boolean isOld) throws Exception {
+
         MappingJacksonValue mappingJacksonValue = null;
+        InterfaceResult interfaceResult = null;
         try {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
@@ -138,10 +197,9 @@ public class DirectoryController extends BaseControl {
             directory.setAppId(loginAppId);
             directory.setUserId(loginUserId);
             if (name.length() > 20) {
-                Map<String, Object > resultMap = new HashMap();
-                resultMap.put("notifCode", "0002");
-                resultMap.put("notifInfo", "目录名称最长不能超过20字哦");
-                mappingJacksonValue = new MappingJacksonValue(resultMap);
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+                interfaceResult.getNotification().setNotifInfo("目录名称最长不能超过20字哦");
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
                 return mappingJacksonValue;
             }
             directory.setName(name);
@@ -151,10 +209,9 @@ public class DirectoryController extends BaseControl {
             String numberCode = dir.getNumberCode();
             int level = getCount(numberCode);
             if (level > 20) {
-                Map<String, Object> result = new HashMap();
-                result.put("notifCode", 0002);
-                result.put("notifInfo", "目录级别不能超过20级哦");
-                mappingJacksonValue = new MappingJacksonValue(result);
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+                interfaceResult.getNotification().setNotifInfo("目录级别不能超过20级哦");
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
                 return mappingJacksonValue;
             }
             long typeId = dir.getTypeId();
@@ -165,11 +222,24 @@ public class DirectoryController extends BaseControl {
             if (isDuplicate != null) {
                 return isDuplicate;
             }
-            directoryService.createDirectoryForChildren(parentId, directory);
-            return returnMyDirectoriesTreeList(loginAppId, loginUserId, typeId, fileds);
+            Long id = directoryService.createDirectoryForChildren(parentId, directory);
+            if (isOld) {
+                Map<String, Long> resultMap = new HashMap<String, Long>();
+                resultMap.put("id", id);
+                // 2.转成框架数据
+                mappingJacksonValue = new MappingJacksonValue(resultMap);
+                return mappingJacksonValue;
+            }
+            return returnMyDirectoriesTreeList(loginAppId, loginUserId, typeId, fields);
         }  catch (Exception e) {
-            throw e;
+            if (isOld) {
+                throw e;
+            }
+            interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+            return mappingJacksonValue;
         }
+
     }
 
     /**
@@ -182,12 +252,26 @@ public class DirectoryController extends BaseControl {
      * @return
      * @throws DirectoryServiceException
      */
-    @RequestMapping(path = { "/directory/directory/deleteDirectory" }, method = { RequestMethod.GET, RequestMethod.DELETE })
+    @RequestMapping(path = { "/directory/directory/deleteDirectory.json" }, method = { RequestMethod.GET, RequestMethod.DELETE })
     public MappingJacksonValue deleteDirectoryRoot(@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
-                                                   @RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fileds,
+                                                   @RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fields,
                                                    @RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
                                                    HttpServletRequest request) throws Exception {
+        return deleteMyDirectoriesTemp(debug, fields, directoryId, request ,false);
+    }
+
+    @RequestMapping(path = { "/directory/directory/deleteDirectory" }, method = { RequestMethod.GET, RequestMethod.DELETE })
+    public MappingJacksonValue deleteDirectoriesOld(@RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                                   @RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fields,
+                                                   @RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
+                                                   HttpServletRequest request) throws Exception {
+        return deleteMyDirectoriesTemp(debug, fields, directoryId, request ,true);
+    }
+
+    private MappingJacksonValue deleteMyDirectoriesTemp(String debug, String fields, Long directoryId, HttpServletRequest request, boolean isOld) throws Exception{
+
         MappingJacksonValue mappingJacksonValue = null;
+        InterfaceResult interfaceResult = null;
         try {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
@@ -195,16 +279,21 @@ public class DirectoryController extends BaseControl {
             Directory directory = directoryService.getDirectory(loginAppId, loginUserId, directoryId);
             long typeId = directory.getTypeId();
             Boolean b = directoryService.removeDirectory(loginAppId, loginUserId, directoryId);
-            if (b) {
-                return returnMyDirectoriesTreeList(loginAppId, loginUserId, typeId, fileds);
+            if (b && !isOld) {
+                return returnMyDirectoriesTreeList(loginAppId, loginUserId, typeId, fields);
             }
-            Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
-            reusltMap.put("success", b);
+            Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
+            resultMap.put("success", b);
             // 2.转成框架数据
-            mappingJacksonValue = new MappingJacksonValue(reusltMap);
+            mappingJacksonValue = new MappingJacksonValue(resultMap);
             return mappingJacksonValue;
         }  catch (Exception e) {
-            throw e;
+            if (isOld) {
+                throw e;
+            }
+            interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+            return mappingJacksonValue;
         }
     }
 
@@ -245,7 +334,13 @@ public class DirectoryController extends BaseControl {
                 resultMap.put("notifInfo", "没有该目录");
             }
             long pid = dirDB.getPid();
-            directories = directoryService.getDirectorysByParentId(loginAppId, loginUserId, pid);
+            if (pid != 0) {
+                // 非一级目录重命名
+                directories = directoryService.getDirectorysByParentId(loginAppId, loginUserId, pid);
+            } else {
+                // 一级目录重命名
+                directories = directoryService.getDirectorysForRoot(loginAppId, loginUserId, dirDB.getTypeId());
+            }
             MappingJacksonValue isDuplicate = assertDuplicateName(directories, directory);
             if (isDuplicate != null) {
                 return isDuplicate;
@@ -276,6 +371,7 @@ public class DirectoryController extends BaseControl {
                                              @RequestParam(name = DirectoryController.parameterToDirectoryId, required = true) Long toDirectoryId,
                                              HttpServletRequest request) throws Exception {
         MappingJacksonValue mappingJacksonValue = null;
+        InterfaceResult interfaceResult = null;
         try {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
@@ -303,13 +399,14 @@ public class DirectoryController extends BaseControl {
             if (b) {
                 return returnMyDirectoriesTreeList(loginAppId, loginUserId, typeId, fileds);
             }
-            Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-            resultMap.put("success", b);
+            interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
             // 2.转成框架数据
-            mappingJacksonValue = new MappingJacksonValue(resultMap);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
             return mappingJacksonValue;
         }  catch (Exception e) {
-            throw e;
+            interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+            return mappingJacksonValue;
         }
     }
 
@@ -327,8 +424,6 @@ public class DirectoryController extends BaseControl {
                                            HttpServletRequest request) throws DirectoryServiceException {
         MappingJacksonValue mappingJacksonValue = null;
         try {
-            // Long loginAppId = LoginUserContextHolder.getAppKey();
-            // Long loginUserId = LoginUserContextHolder.getUserId();
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -337,7 +432,7 @@ public class DirectoryController extends BaseControl {
             // 2.转成框架数据
             mappingJacksonValue = new MappingJacksonValue(directories);
             // 3.创建页面显示数据项的过滤器
-            SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+            SimpleFilterProvider filterProvider = builderSimpleFilterProviderOld(fileds);
             mappingJacksonValue.setFilters(filterProvider);
             // 4.返回结果
             return mappingJacksonValue;
@@ -361,8 +456,6 @@ public class DirectoryController extends BaseControl {
 
         MappingJacksonValue mappingJacksonValue = null;
         try {
-            // Long loginAppId = LoginUserContextHolder.getAppKey();
-            // Long loginUserId = LoginUserContextHolder.getUserId();
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -372,7 +465,7 @@ public class DirectoryController extends BaseControl {
             // 2.转成框架数据
             mappingJacksonValue = new MappingJacksonValue(directories);
             // 3.创建页面显示数据项的过滤器
-            SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+            SimpleFilterProvider filterProvider = builderSimpleFilterProviderOld(fileds);
             mappingJacksonValue.setFilters(filterProvider);
             // 4.返回结果
             return mappingJacksonValue;
@@ -396,6 +489,7 @@ public class DirectoryController extends BaseControl {
                                            HttpServletRequest request) throws DirectoryServiceException {
 
         MappingJacksonValue mappingJacksonValue = null;
+        InterfaceResult interfaceResult = null;
         try {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
@@ -407,6 +501,7 @@ public class DirectoryController extends BaseControl {
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
             // 1.查询后台服务
             if (directoryId == 0) {
+                //下一版本 不再使用 temp
                 directories = directoryService.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
                 total = directoryService.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
                 totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
@@ -416,58 +511,49 @@ public class DirectoryController extends BaseControl {
                 //int sourceCount = directorySourceService.countDirectorySourcesByDirectoryId(loginAppId, loginUserId, directoryId);
             }
             // 判断空
-            if (CollectionUtils.isEmpty(directories)) {
-                Map<String, Object> result = new HashMap();
-                result.put("notifCode", 0001);
-                result.put("notifInfo", "此目录下还没有目录！");
-                mappingJacksonValue = new MappingJacksonValue(result);
-                return mappingJacksonValue;
-            }
-            // 2.将返回数据转为树形结构
-            for (Directory directory: directories) {
-                long id = directory.getId();
-                long pid = directory.getPid();
-                //根目录下所有目录
-                if (pid == 0 && directoryId == 0) {
-                    directoryList.add(directory);
-                    //其他目录及目录下所有目录
-                } else if (directoryId > 0) {
-                    if (directoryId == directory.getId()) {
+            if (CollectionUtils.isNotEmpty(directories)) {
+                // 2.将返回数据转为树形结构
+                for (Directory directory: directories) {
+                    long id = directory.getId();
+                    long pid = directory.getPid();
+                    //根目录下所有目录
+                    if (pid == 0 && directoryId == 0) {
                         directoryList.add(directory);
+                        //其他目录及目录下所有目录
+                    } else if (directoryId > 0) {
+                        if (directoryId == directory.getId()) {
+                            directoryList.add(directory);
+                        }
+                    }
+                    int sourceCount = directorySourceService.countDirectorySourcesByDirectoryId(loginAppId, loginUserId, id);
+                    directory.setSourceCount(sourceCount);
+                    idMap.put(id, directory);
+                }
+                for (Map.Entry<Long, Directory> map : idMap.entrySet()) {
+                    Directory directory = map.getValue();
+                    long pid = directory.getPid();
+                    Directory parent = idMap.get(pid);
+                    if (parent != null) {
+                        parent.addChildList(directory);
                     }
                 }
-                int sourceCount = directorySourceService.countDirectorySourcesByDirectoryId(loginAppId, loginUserId, id);
-                directory.setSourceCount(sourceCount);
-                idMap.put(id, directory);
             }
-            for (Map.Entry<Long, Directory> map : idMap.entrySet()) {
-                Directory directory = map.getValue();
-                long pid = directory.getPid();
-                Directory parent = idMap.get(pid);
-                if (parent != null) {
-                    parent.addChildList(directory);
-                }
-            }
-
             // 2.转成框架数据
             Map<String, Object> result = new HashMap();
-
             result.put("totalCount", total);
             result.put("list", directoryList);
             result.put("sourceCount", totalSourceCount);
-            mappingJacksonValue = new MappingJacksonValue(result);
+            interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+            interfaceResult.setResponseData(result);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
             // 3.创建页面显示数据项的过滤器
             SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
             mappingJacksonValue.setFilters(filterProvider);
             // 4.返回结果
             return mappingJacksonValue;
         } catch (Exception e) {
-            //throw e;
-            Map<String, Object> result = new HashMap();
-            result.put("notifCode", 0002);
-            result.put("notifInfo", "system error!");
-            logger.error(e.getMessage());
-            mappingJacksonValue = new MappingJacksonValue(result);
+            interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
             return mappingJacksonValue;
         }
     }
@@ -567,7 +653,7 @@ public class DirectoryController extends BaseControl {
             filter.add("pid"); // pid',
             filter.add("name"); // '分类名称',
             filter.add("typeId"); // '应用的分类分类ID',
-            //filter.add("appId"); // '应用ID',
+            filter.add("appId"); // '应用ID',
             filter.add("userId"); // '应用的创建者ID',
             filter.add("numberCode"); //'应用的级别'
             filter.add("childDirectory"); //子目录
@@ -575,6 +661,36 @@ public class DirectoryController extends BaseControl {
             filter.add("orderNo"); // 级别
             filter.add("list"); //
             filter.add("sourceCount");
+        }
+
+        filterProvider.addFilter(Directory.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
+        return filterProvider;
+    }
+
+    /**
+     * 指定显示那些字段 老版本
+     *
+     * @param fileds
+     * @return
+     */
+    private SimpleFilterProvider builderSimpleFilterProviderOld(String fileds) {
+        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+        // 请求指定字段
+        String[] filedNames = StringUtils.split(fileds, ",");
+        Set<String> filter = new HashSet<String>();
+        if (filedNames != null && filedNames.length > 0) {
+            for (int i = 0; i < filedNames.length; i++) {
+                String filedName = filedNames[i];
+                if (!StringUtils.isEmpty(filedName)) {
+                    filter.add(filedName);
+                }
+            }
+        } else {
+            filter.add("id"); // id',
+            filter.add("name"); // '分类名称',
+            filter.add("typeId"); // '应用的分类分类ID',
+            filter.add("appId"); // '应用ID',
+            filter.add("userId"); // '应用的创建者ID',
         }
 
         filterProvider.addFilter(Directory.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
@@ -614,7 +730,9 @@ public class DirectoryController extends BaseControl {
         result.put("totalCount", total);
         result.put("list", directoryList);
         result.put("sourceCount", totalSourceCount);
-        mappingJacksonValue = new MappingJacksonValue(result);
+        InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+        interfaceResult.setResponseData(result);
+        mappingJacksonValue = new MappingJacksonValue(interfaceResult);
         SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
         mappingJacksonValue.setFilters(filterProvider);
         return mappingJacksonValue;
@@ -630,13 +748,13 @@ public class DirectoryController extends BaseControl {
     private MappingJacksonValue assertDuplicateName(List<Directory> directories, Directory directory) {
 
         MappingJacksonValue mappingJacksonValue = null;
+        InterfaceResult interfaceResult = null;
         if (!CollectionUtils.isEmpty(directories)) {
             for (Directory dir : directories) {
                 if (dir != null && dir.getName().equalsIgnoreCase(directory.getName())) {
-                    Map<String, Object> result = new HashMap();
-                    result.put("notifCode", "0002");
-                    result.put("notifInfo", "已经有同名的目录了哦");
-                    mappingJacksonValue = new MappingJacksonValue(result);
+                    interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+                    interfaceResult.getNotification().setNotifInfo("已经有同名的目录了哦");
+                    mappingJacksonValue = new MappingJacksonValue(interfaceResult);
                 }
             }
         }
