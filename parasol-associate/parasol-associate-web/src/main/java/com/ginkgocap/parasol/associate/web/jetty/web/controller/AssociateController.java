@@ -24,7 +24,6 @@ import com.ginkgocap.parasol.associate.service.AssociateTypeService;
 import com.ginkgocap.parasol.util.JsonUtils;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,11 +45,11 @@ import com.ginkgocap.parasol.associate.model.Page;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * 
+ *
  * @author allenshen
- * @date 2015骞�11鏈�20鏃�
- * @time 涓嬪崍1:19:18
- * @Copyright Copyright漏2015 www.gintong.com
+ * @date 2015年11月20日
+ * @time 下午1:19:18
+ * @Copyright Copyright©2015 www.gintong.com
  */
 @RestController
 public class AssociateController extends BaseControl {
@@ -59,18 +58,18 @@ public class AssociateController extends BaseControl {
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
 
-	private static final String parameterId = "id"; // id 鏍囪瘑
+	private static final String parameterId = "id"; // id 标识
 
-	private static final String parameterSourceTypeId = "sourceTypeId"; // 浠�涔堣祫婧愮被鍨嬶紝姣斿璧勬簮鏄竴涓煡璇嗙被鍨嬶紝鍙傝�傾ssociateType
-	private static final String parameterSourceId = "sourceId"; // 璧勬簮鐨処D
+	private static final String parameterSourceTypeId = "sourceTypeId"; // 什么资源类型，比如资源是一个知识类型，参考AssociateType
+	private static final String parameterSourceId = "sourceId"; // 资源的ID
 
-	private static final String parameterAssocDesc = "assocDesc"; // 鍏宠仈鏃跺�欏～鍐欑殑鏍囩鍏宠仈鍏崇郴
-	private static final String parameterAssocTypeId = "assocTypeId"; // 鍏宠仈鍒颁粈涔堢被鍨嬩笂锛堟瘮濡備竴绡囩煡璇嗭紝涓�涓簨鐗┿�佷竴涓渶姹傜瓑锛�
-	private static final String parameterAssocId = "assocId"; // 琚叧鑱旇祫婧怚D
-	private static final String parameterAssocTitle = "assocTitle"; // 鏄剧ず鐨勬爣棰橈紝涓昏鏄负浜嗘樉绀�
-	private static final String parameterAssocMetadata = "assocMetadata"; // 鍏宠仈鐨勯檮浠舵秷鎭紙姣斿鍥剧墖鍦板潃锛孶RL杩炴帴绛夛紝搴旂敤鏍规嵁闇�姹傝嚜宸卞畾涔夛級
+	private static final String parameterAssocDesc = "assocDesc"; // 关联时候填写的标签关联关系
+	private static final String parameterAssocTypeId = "assocTypeId"; // 关联到什么类型上（比如一篇知识，一个事物、一个需求等）
+	private static final String parameterAssocId = "assocId"; // 被关联资源ID
+	private static final String parameterAssocTitle = "assocTitle"; // 显示的标题，主要是为了显示
+	private static final String parameterAssocMetadata = "assocMetadata"; // 关联的附件消息（比如图片地址，URL连接等，应用根据需求自己定义）
 
-    private static final String parameteruserId = "userId"; // 琚叧鑱旂敤鎴稩D
+    private static final String parameteruserId = "userId"; // 被关联用户ID
     private static final String parameterAssocTypeName = "name"; //
 
     private static final String parameterAssocPage = "page";
@@ -83,8 +82,8 @@ public class AssociateController extends BaseControl {
 
 
 	/**
-	 * 1.鍒涘缓鍏宠仈
-	 * 
+	 * 1.创建关联
+	 *
 	 * @param request
 	 * @return
 	 * @throws AssociateerviceException
@@ -110,10 +109,10 @@ public class AssociateController extends BaseControl {
 		Long loginUserId=this.getUserId(request);
 		try {
 
-			// 鐧婚檰浜虹殑淇℃伅
+			// 登陆人的信息
 //			Long loginAppId = LoginUserContextHolder.getAppKey();
 //			Long loginUserId = LoginUserContextHolder.getUserId();
-			// 妫�鏌ユ暟鎹殑鍙傛暟
+			// 检查数据的参数
 			if (StringUtils.isEmpty(assocDesc)) {
 				throw new AssociateServiceException(107, "Required string parameter assocDesc is not empty or blank");
 			}
@@ -135,18 +134,18 @@ public class AssociateController extends BaseControl {
 			Long id = associateService.createAssociate(loginAppId, loginUserId, associate);
 			Map<String, Long> reusltMap = new HashMap<String, Long>();
 			reusltMap.put("id", id);
-			// 2.杞垚妗嗘灦鏁版嵁
+			// 2.转成框架数据
 			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 			interfaceResult.setResponseData(reusltMap);
 			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
 			return mappingJacksonValue;
 		} catch (AssociateServiceException e) {
-			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION,"绯荤粺寮傚父锛�");
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION,"系统异常！");
 			return new MappingJacksonValue(interfaceResult);
 		}
 	}
 	/**
-	 * 鍒涘缓澶氫釜鍏宠仈
+	 * 创建多个关联
 	 */
 	@RequestMapping(path = { "/associate/associate/createAssociateList" }, method = { RequestMethod.POST })
 	public MappingJacksonValue createAssociates(HttpServletRequest request,HttpServletRequest response) throws AssociateServiceException {
@@ -177,20 +176,20 @@ public class AssociateController extends BaseControl {
 			}
 			Map<String,List<Long>> reusltMap = new HashMap<String,List<Long>>();
 			reusltMap.put("ids",ids);
-			// 2.杞垚妗嗘灦鏁版嵁
+			// 2.转成框架数据
 			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 			interfaceResult.setResponseData(reusltMap);
 			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
 			return mappingJacksonValue;
 		} catch (AssociateServiceException e) {
-			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION,"绯荤粺寮傚父锛�");
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION,"系统异常！");
 			return new MappingJacksonValue(interfaceResult);
 		}
 	}
 
 	/**
-	 * 2.鍒犻櫎涓�涓叧鑱�
-	 * 
+	 * 2.删除一个关联
+	 *
 	 * @param request
 	 * @return
 	 * @throws AssociateerviceException
@@ -199,7 +198,7 @@ public class AssociateController extends BaseControl {
 	// @formatter:off
 	@RequestMapping(path = { "/associate/associate/deleteAssociate" }, method = { RequestMethod.POST })
 	public MappingJacksonValue deleteAssociate(
-			@RequestParam(name = AssociateController.parameterDebug, defaultValue = "") String debug, 
+			@RequestParam(name = AssociateController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = AssociateController.parameterId, required = true) Long id ,
 			HttpServletRequest request) throws AssociateServiceException {
 	// @formatter:on
@@ -211,11 +210,11 @@ public class AssociateController extends BaseControl {
 			Long loginAppId=this.DefaultAppId;
 			Long loginUserId=this.getUserId(request);
 
-			// 0.鏍￠獙杈撳叆鍙傛暟锛堟鏋舵悶瀹氾紝濡傛灉涓氬姟涓氬姟鎼炲畾锛�
+			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			boolean bResult = associateService.removeAssociate(loginAppId, loginUserId, id);
 			Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
 			reusltMap.put("success", bResult);
-			// 2.杞垚妗嗘灦鏁版嵁
+			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(reusltMap);
 			return mappingJacksonValue;
 		} catch (AssociateServiceException e) {
@@ -224,8 +223,8 @@ public class AssociateController extends BaseControl {
 	}
 
 	/**
-	 * 3.鏌ヨ涓�涓叧鑱斿璞＄殑璇︽儏, 閫氳繃鍏宠仈Id
-	 * 
+	 * 3.查询一个关联对象的详情, 通过关联Id
+	 *
 	 * @param request
 	 * @return
 	 * @throws AssociateerviceException
@@ -249,7 +248,7 @@ public class AssociateController extends BaseControl {
 			Associate associate = associateService.getAssociate(loginAppId, loginUserId, id);
 			Map<String, Object> reusltMap = new HashMap<String, Object>();
 			reusltMap.put("data", associate);
-			// 2.杞垚妗嗘灦鏁版嵁
+			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(reusltMap);
 			mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
 			return mappingJacksonValue;
@@ -259,8 +258,8 @@ public class AssociateController extends BaseControl {
 	}
 
 	/**
-	 * 3.鏌ヨ涓�涓祫婧愭湁澶氬皯鍏宠仈璧勬簮
-	 * 
+	 * 3.查询一个资源有多少关联资源
+	 *
 	 * @param request
 	 * @return
 	 * @throws AssociateerviceException
@@ -284,7 +283,7 @@ public class AssociateController extends BaseControl {
 		if (MapUtils.isEmpty(associateMap)) {
 			//return null;
 			//e.printStackTrace();
-			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"鑾峰彇澶辫触锛�");
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"获取失败！");
 			return new MappingJacksonValue(interfaceResult);
 		}
 		List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
@@ -313,15 +312,15 @@ public class AssociateController extends BaseControl {
 				desc_List_map.put("associateList", descMap.get(desc));
 				associateList.add(desc_List_map);
 			}
-			//--鍒嗙被涓�
+			//--分类下
 			resultList.add(recordMap);
 		}
 		reusltMap.put("asso", resultList);
-		// 2.杞垚妗嗘灦鏁版嵁
+		// 2.转成框架数据
 		interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		interfaceResult.setResponseData(reusltMap);
 		mappingJacksonValue = new MappingJacksonValue(interfaceResult);
-		// 3.鍒涘缓椤甸潰鏄剧ず鏁版嵁椤圭殑杩囨护鍣�
+		// 3.创建页面显示数据项的过滤器
 		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 		mappingJacksonValue.setFilters(filterProvider);
 		return mappingJacksonValue;
@@ -354,17 +353,17 @@ public class AssociateController extends BaseControl {
 			}
 		}
 		map.put("asso",assoList);
-		// 2.杞垚妗嗘灦鏁版嵁
+		// 2.转成框架数据
 		interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		interfaceResult.setResponseData(map);
 		mappingJacksonValue = new MappingJacksonValue(interfaceResult);
-		// 3.鍒涘缓椤甸潰鏄剧ず鏁版嵁椤圭殑杩囨护鍣�
+		// 3.创建页面显示数据项的过滤器
 		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 		mappingJacksonValue.setFilters(filterProvider);
 		return mappingJacksonValue;
 	}
     /**
-     * 閫氳繃param鏌ヨAssociate鍒嗛〉
+     * 通过param查询Associate分页
      *
      * @param fileds
      * @param debug
@@ -396,7 +395,7 @@ public class AssociateController extends BaseControl {
 			Page<Associate> page = associateService.getassociatesByPage(loginUserId,typeId,pageNo,pageSize);
 			Map<String, Object> reusltMap = new HashMap<String, Object>();
 			reusltMap.put("data", page);
-			// 2.杞垚妗嗘灦鏁版嵁
+			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(reusltMap);
 			mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
 			return mappingJacksonValue;
@@ -425,7 +424,7 @@ public class AssociateController extends BaseControl {
 
             Map<String, Object> reusltMap = new HashMap<String, Object>();
             reusltMap.put("data", page);
-            // 2.杞垚妗嗘灦鏁版嵁
+            // 2.转成框架数据
             mappingJacksonValue = new MappingJacksonValue(reusltMap);
             mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
             return mappingJacksonValue;
@@ -435,14 +434,14 @@ public class AssociateController extends BaseControl {
     }
 
     /**
-	 * 鎸囧畾鏄剧ず閭ｄ簺瀛楁
-	 * 
+	 * 指定显示那些字段
+	 *
 	 * @param fileds
 	 * @return
 	 */
 	private SimpleFilterProvider builderSimpleFilterProvider(String fileds) {
 		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-		// 璇锋眰鎸囧畾瀛楁
+		// 请求指定字段
 		String[] filedNames = StringUtils.split(fileds, ",");
 		Set<String> filter = new HashSet<String>();
 		if (filedNames != null && filedNames.length > 0) {
@@ -458,18 +457,18 @@ public class AssociateController extends BaseControl {
             filter.add("appId");
             filter.add("sourceTypeId");
             filter.add("sourceId");
-			filter.add("assocDesc"); // '鍏宠仈鎻忚堪锛屾瘮濡傛枃绔犵殑浣滆�咃紝鎴栬�呯紪杈戠瓑锛涘叧鑱旀爣绛炬弿杩�',
-			filter.add("assocTypeId"); // '琚叧鑱旂殑绫诲瀷鍙互鍙傝�傾ssociateType瀵硅薄锛屽锛氱煡璇�, 浜鸿剦,缁勭粐锛岄渶姹傦紝浜嬩欢绛�',
-			filter.add("assocId"); // '琚叧鑱旀暟鎹甀D',
-			filter.add("assocTitle"); // '琚叧鑱旀暟鎹爣棰�',
-			filter.add("assocMetadata"); // '琚叧鑱旀暟鎹殑鐨勬憳瑕佺敤Json瀛樻斁锛屽鍥剧墖锛岃繛鎺RL瀹氫箟绛�',
+			filter.add("assocDesc"); // '关联描述，比如文章的作者，或者编辑等；关联标签描述',
+			filter.add("assocTypeId"); // '被关联的类型可以参考AssociateType对象，如：知识, 人脉,组织，需求，事件等',
+			filter.add("assocId"); // '被关联数据ID',
+			filter.add("assocTitle"); // '被关联数据标题',
+			filter.add("assocMetadata"); // '被关联数据的的摘要用Json存放，如图片，连接URL定义等',
 		}
 
 		filterProvider.addFilter(Associate.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
 		return filterProvider;
 	}
 	/**
-	 * 鏇存柊鍏宠仈淇℃伅
+	 * 更新关联信息
 	 *
 	 * @param fileds
 	 * @return
@@ -494,7 +493,7 @@ public class AssociateController extends BaseControl {
 				JSONObject jsonObject=JSONObject.fromObject(requestJson);
 				long sourceId=jsonObject.getLong("sourceId");
 				long sourceType=jsonObject.getLong("sourceType");
-				asso=JsonUtils.getList4Json(jsonObject.getString("asso"), Associate.class);
+				asso = JsonUtils.getList4Json(jsonObject.getString("asso"), Associate.class);
 				if (sourceId<=0) {
 					logger.error("sourceId is null..");
 					return null;
@@ -523,11 +522,11 @@ public class AssociateController extends BaseControl {
 				}
 				// assomap =  associateService.getAssociatesBy(loginAppId, sourceType, sourceId);
 			}
-			// 2.杞垚妗嗘灦鏁版嵁
+			// 2.转成框架数据
 			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 			//interfaceResult.setResponseData(reusltMap);
 			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
-			// 3.鍒涘缓椤甸潰鏄剧ず鏁版嵁椤圭殑杩囨护鍣�
+			// 3.创建页面显示数据项的过滤器
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			return mappingJacksonValue;
