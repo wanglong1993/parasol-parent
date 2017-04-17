@@ -20,7 +20,7 @@ import net.sf.json.JSONObject;
 public abstract class BaseControl {
 	private static Logger logger = Logger.getLogger(BaseControl.class);
 	
-	protected final Long DefaultAppId=1l;
+	protected final Long DefaultAppId = 1l;
 	
 	/**
 	 * 获取用户
@@ -33,10 +33,11 @@ public abstract class BaseControl {
 	}
 	
 	public Long getUserId(HttpServletRequest request){
-		User user=this.getUser(request);
-		Long uid=0l;
-		if(user!=null){
-			uid=user.getId();
+
+		User user = this.getUser(request);
+		Long uid = 0l;
+		if(user != null){
+			uid = user.getId();
 		}
 		return uid;
 	}
@@ -73,11 +74,11 @@ public abstract class BaseControl {
     }
 
 	protected String getBodyParam(HttpServletRequest request){
-		StringBuffer jsonIn=new StringBuffer();
+		StringBuffer jsonIn = new StringBuffer();
 		try {
 			BufferedReader reader=request.getReader();
-			String line=null;
-			while((line=reader.readLine()) != null){
+			String line = null;
+			while ((line = reader.readLine()) != null) {
 				jsonIn.append(line);
 			}
 		} catch (IOException e) {

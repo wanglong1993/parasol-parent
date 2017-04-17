@@ -42,7 +42,6 @@ import com.ginkgocap.parasol.associate.model.Associate;
 import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateService;
 import com.ginkgocap.parasol.associate.model.Page;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -57,37 +56,31 @@ public class AssociateController extends BaseControl {
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
-
 	private static final String parameterId = "id"; // id 标识
-
 	private static final String parameterSourceTypeId = "sourceTypeId"; // 什么资源类型，比如资源是一个知识类型，参考AssociateType
 	private static final String parameterSourceId = "sourceId"; // 资源的ID
-
 	private static final String parameterAssocDesc = "assocDesc"; // 关联时候填写的标签关联关系
 	private static final String parameterAssocTypeId = "assocTypeId"; // 关联到什么类型上（比如一篇知识，一个事物、一个需求等）
 	private static final String parameterAssocId = "assocId"; // 被关联资源ID
 	private static final String parameterAssocTitle = "assocTitle"; // 显示的标题，主要是为了显示
 	private static final String parameterAssocMetadata = "assocMetadata"; // 关联的附件消息（比如图片地址，URL连接等，应用根据需求自己定义）
-
     private static final String parameteruserId = "userId"; // 被关联用户ID
     private static final String parameterAssocTypeName = "name"; //
-
     private static final String parameterAssocPage = "page";
     private static final String parameterAssocSize = "size";
     private static final int pageInitSize = 5;
+
 	@Autowired
 	private AssociateService associateService;
 	@Autowired
 	private AssociateTypeService assoTypeService;
-
 
 	/**
 	 * 1.创建关联
 	 *
 	 * @param request
 	 * @return
-	 * @throws AssociateerviceException
-	 * @throws CodeServiceException
+	 * @throws AssociateServiceException
 	 */
 	// @formatter:off
 	@RequestMapping(path = { "/associate/associate/createAssociate" }, method = { RequestMethod.POST })
@@ -104,14 +97,10 @@ public class AssociateController extends BaseControl {
 			HttpServletRequest request) throws AssociateServiceException {
 		MappingJacksonValue mappingJacksonValue = null;
 	// @formatter:on
-		Long loginAppId=this.DefaultAppId;
-		InterfaceResult interfaceResult=null;
-		Long loginUserId=this.getUserId(request);
+		Long loginAppId = this.DefaultAppId;
+		InterfaceResult interfaceResult = null;
+		Long loginUserId = this.getUserId(request);
 		try {
-
-			// 登陆人的信息
-//			Long loginAppId = LoginUserContextHolder.getAppKey();
-//			Long loginUserId = LoginUserContextHolder.getUserId();
 			// 检查数据的参数
 			if (StringUtils.isEmpty(assocDesc)) {
 				throw new AssociateServiceException(107, "Required string parameter assocDesc is not empty or blank");
@@ -144,41 +133,47 @@ public class AssociateController extends BaseControl {
 			return new MappingJacksonValue(interfaceResult);
 		}
 	}
+
 	/**
 	 * 创建多个关联
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws AssociateServiceException
 	 */
 	@RequestMapping(path = { "/associate/associate/createAssociateList" }, method = { RequestMethod.POST })
-	public MappingJacksonValue createAssociates(HttpServletRequest request,HttpServletRequest response) throws AssociateServiceException {
+	public MappingJacksonValue createAssociates(HttpServletRequest request) throws AssociateServiceException {
+
 		MappingJacksonValue mappingJacksonValue = null;
-		Long loginAppId=this.DefaultAppId;
-		InterfaceResult interfaceResult=null;
-		Long loginUserId=this.getUserId(request);
-		String requestJson=null;
-		List < Associate > asso = null;
-		List<Long> ids=new ArrayList<Long>();
+		Long loginAppId = this.DefaultAppId;
+		InterfaceResult interfaceResult = null;
+		Long loginUserId = this.getUserId(request);
+		String requestJson = null;
+		List <Associate> asso = null;
+		List<Long> ids = new ArrayList<Long>();
 		try {
-			requestJson=this.getBodyParam(request);
-			if(requestJson !=null && !"".equals(requestJson)){
-				JSONObject jsonObject=JSONObject.fromObject(requestJson);
+			requestJson = this.getBodyParam(request);
+			if (requestJson != null && !"".equals(requestJson)) {
+				JSONObject jsonObject = JSONObject.fromObject(requestJson);
 				long sourceId = jsonObject.getLong("sourceId");
 				long sourceType = jsonObject.getLong("sourceType");
-				asso=JsonUtils.getList4Json(jsonObject.getString("asso"),Associate.class);
-				if(asso != null){
+				asso = JsonUtils.getList4Json(jsonObject.getString("asso"),Associate.class);
+				if (asso != null) {
 					for(Associate associate:asso){
 						associate.setAppId(loginAppId);
 						associate.setUserId(loginUserId);
 						associate.setSourceId(sourceId);
 						associate.setSourceTypeId(sourceType);
-						Long id=associateService.createAssociate(loginAppId, loginUserId, associate);
+						Long id = associateService.createAssociate(loginAppId, loginUserId, associate);
 						ids.add(id);
 					}
 				}
 			}
-			Map<String,List<Long>> reusltMap = new HashMap<String,List<Long>>();
-			reusltMap.put("ids",ids);
+			Map<String,List<Long>> resultMap = new HashMap<String,List<Long>>();
+			resultMap.put("ids",ids);
 			// 2.转成框架数据
 			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-			interfaceResult.setResponseData(reusltMap);
+			interfaceResult.setResponseData(resultMap);
 			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
 			return mappingJacksonValue;
 		} catch (AssociateServiceException e) {
@@ -192,8 +187,7 @@ public class AssociateController extends BaseControl {
 	 *
 	 * @param request
 	 * @return
-	 * @throws AssociateerviceException
-	 * @throws CodeServiceException
+	 * @throws AssociateServiceException
 	 */
 	// @formatter:off
 	@RequestMapping(path = { "/associate/associate/deleteAssociate" }, method = { RequestMethod.POST })
@@ -204,18 +198,15 @@ public class AssociateController extends BaseControl {
 	// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-
-//			Long loginAppId = LoginUserContextHolder.getAppKey();
-//			Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId=this.DefaultAppId;
-			Long loginUserId=this.getUserId(request);
+			Long loginAppId = this.DefaultAppId;
+			Long loginUserId = this.getUserId(request);
 
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			boolean bResult = associateService.removeAssociate(loginAppId, loginUserId, id);
-			Map<String, Boolean> reusltMap = new HashMap<String, Boolean>();
-			reusltMap.put("success", bResult);
+			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
+			resultMap.put("success", bResult);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(reusltMap);
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			return mappingJacksonValue;
 		} catch (AssociateServiceException e) {
 			throw e;
@@ -227,8 +218,7 @@ public class AssociateController extends BaseControl {
 	 *
 	 * @param request
 	 * @return
-	 * @throws AssociateerviceException
-	 * @throws CodeServiceException
+	 * @throws AssociateServiceException
 	 */
 	// @formatter:off
 	@RequestMapping(path = { "/associate/associate/getAssociateDetail" }, method = { RequestMethod.POST })
@@ -240,16 +230,13 @@ public class AssociateController extends BaseControl {
 	// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-
-//			Long loginAppId = LoginUserContextHolder.getAppKey();
-//			Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId=this.DefaultAppId;
-			Long loginUserId=this.getUserId(request);
+			Long loginAppId = this.DefaultAppId;
+			Long loginUserId = this.getUserId(request);
 			Associate associate = associateService.getAssociate(loginAppId, loginUserId, id);
-			Map<String, Object> reusltMap = new HashMap<String, Object>();
-			reusltMap.put("data", associate);
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("data", associate);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(reusltMap);
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
 			return mappingJacksonValue;
 		} catch (AssociateServiceException e) {
@@ -262,8 +249,7 @@ public class AssociateController extends BaseControl {
 	 *
 	 * @param request
 	 * @return
-	 * @throws AssociateerviceException
-	 * @throws CodeServiceException
+	 * @throws AssociateServiceException
 	 */
 	// @formatter:off
 	@RequestMapping(path = { "/associate/associate/getSourceAssociates" }, method = { RequestMethod.POST })
@@ -276,13 +262,11 @@ public class AssociateController extends BaseControl {
 	// @formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		InterfaceResult interfaceResult=null;
-		Long loginAppId=this.DefaultAppId;
-		Long loginUserId=this.getUserId(request);
+		Long loginAppId = this.DefaultAppId;
+		Long loginUserId = this.getUserId(request);
 		Map<AssociateType, List<Associate>> associateMap = associateService.getAssociatesBy(loginAppId, sourceTypeId, sourceId);
-		Map<String, Object> reusltMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		if (MapUtils.isEmpty(associateMap)) {
-			//return null;
-			//e.printStackTrace();
 			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"获取失败！");
 			return new MappingJacksonValue(interfaceResult);
 		}
@@ -294,7 +278,7 @@ public class AssociateController extends BaseControl {
 			List<Map> associateList = new ArrayList<Map>();
 			recordMap.put("data", associateList);
 			Map<String, List<Object>> descMap = new HashMap<String,List<Object>>();
-			List<Associate> associates =  associateMap.get(associateType);
+			List<Associate> associates = associateMap.get(associateType);
 			for (Associate associate : associates) {
 				if (associate != null) {
 					String associate_desc = associate.getAssocDesc();
@@ -315,10 +299,10 @@ public class AssociateController extends BaseControl {
 			//--分类下
 			resultList.add(recordMap);
 		}
-		reusltMap.put("asso", resultList);
+		resultMap.put("asso", resultList);
 		// 2.转成框架数据
 		interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		interfaceResult.setResponseData(reusltMap);
+		interfaceResult.setResponseData(resultMap);
 		mappingJacksonValue = new MappingJacksonValue(interfaceResult);
 		// 3.创建页面显示数据项的过滤器
 		SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
@@ -341,14 +325,14 @@ public class AssociateController extends BaseControl {
 		Long loginAppId = this.DefaultAppId;
 		Long loginUserId = this.getUserId(request);
 		Map<AssociateType, List<Associate>> associateMap = associateService.getAssociatesBy(loginAppId, sourceTypeId, sourceId);
-		Map<String,List> map=new HashMap();
-		List assoList=null;
-		if(associateMap.values()!=null){
+		Map<String,List> map = new HashMap();
+		List assoList = null;
+		if (associateMap.values() != null) {
 			assoList = new ArrayList();
 			for (Iterator i =  associateMap.values().iterator();i.hasNext();){
-				List<Associate> associatelist = (List)i.next();
-				for (int j = 0; j < associatelist.size(); j++) {
-					assoList.add(associatelist.get(j));
+				List<Associate> associateList = (List)i.next();
+				for (int j = 0; j < associateList.size(); j++) {
+					assoList.add(associateList.get(j));
 				}
 			}
 		}
@@ -422,10 +406,10 @@ public class AssociateController extends BaseControl {
 
             Page<Map<String, Object>> page = associateService.getAssociatesByPage(loginUserId,typeId, pageNo, pageSize);
 
-            Map<String, Object> reusltMap = new HashMap<String, Object>();
-            reusltMap.put("data", page);
+            Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("data", page);
             // 2.转成框架数据
-            mappingJacksonValue = new MappingJacksonValue(reusltMap);
+            mappingJacksonValue = new MappingJacksonValue(resultMap);
             mappingJacksonValue.setFilters(builderSimpleFilterProvider(fileds));
             return mappingJacksonValue;
         } catch (AssociateServiceException e) {
@@ -477,43 +461,43 @@ public class AssociateController extends BaseControl {
 	public MappingJacksonValue updateAssociate(@RequestParam(name = AssociateController.parameterFields, defaultValue = "") String fileds,
 												HttpServletRequest request, HttpServletRequest response){
 		String requestJson = null;
-		Long loginAppId=this.DefaultAppId;
-		Long loginUserId=this.getUserId(request);
+		Long loginAppId = this.DefaultAppId;
+		Long loginUserId = this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
-		Map<AssociateType, List<Associate>> assomap=null;
+		Map<AssociateType, List<Associate>> assomap = null;
 		InterfaceResult interfaceResult=null;
-		List<Associate> asso=null;
-		if(loginUserId == null && "".equals(loginUserId)){
+		List<Associate> asso = null;
+		if (loginUserId == null && "".equals(loginUserId)) {
 			logger.error("userId can not be null");
 			return null;
 		}
-		try{
+		try {
 			requestJson = this.getBodyParam(request);
-			if(requestJson != null && !"".equals(requestJson) ){
-				JSONObject jsonObject=JSONObject.fromObject(requestJson);
-				long sourceId=jsonObject.getLong("sourceId");
-				long sourceType=jsonObject.getLong("sourceType");
+			if (requestJson != null && !"".equals(requestJson) ) {
+				JSONObject jsonObject = JSONObject.fromObject(requestJson);
+				long sourceId = jsonObject.getLong("sourceId");
+				long sourceType = jsonObject.getLong("sourceType");
 				asso = JsonUtils.getList4Json(jsonObject.getString("asso"), Associate.class);
-				if (sourceId<=0) {
+				if (sourceId <= 0) {
 					logger.error("sourceId is null..");
 					return null;
 				}
-				if (sourceType<=0) {
+				if (sourceType <= 0) {
 					logger.error("sourceType is null..");
 					return null;
 				}
-			 assomap =  associateService.getAssociatesBy(loginAppId, sourceType, sourceId);
+			 assomap = associateService.getAssociatesBy(loginAppId, sourceType, sourceId);
 			if (assomap == null) {
 				logger.error("asso it null or converted failed");
 			}
-			for (Iterator i =  assomap.values().iterator();i.hasNext();){
+			for (Iterator i =  assomap.values().iterator();i.hasNext();) {
 				List<Associate> associatelist = (List)i.next();
 				for (int j = 0; j < associatelist.size(); j++) {
 					associateService.removeAssociate(1l,loginUserId, associatelist.get(j).getId());
 				}
 			}
-				if(asso != null){
-					for(Associate associate : asso){
+				if (asso != null) {
+					for (Associate associate : asso) {
 						associate.setSourceId(sourceId);
 						associate.setSourceTypeId(sourceType);
 						associate.setUserId(loginUserId);
