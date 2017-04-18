@@ -362,9 +362,9 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 			}
 			//删除数据库中已被更新的数据
 			for (DirectorySource directorySource : direSourceList) {
-				long directoryId = directorySource.getDirectoryId();
-				if (!(direIds.contains(directoryId))) {
-					delIdList.add(directoryId);
+				long id = directorySource.getId();
+				if (!(direIds.contains(directorySource.getDirectoryId()))) {
+					delIdList.add(id);
 				}
 			}
 			this.removeDirectorySourcesByDireIds(delIdList);
