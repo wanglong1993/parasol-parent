@@ -368,6 +368,11 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 				}
 			}
 			this.removeDirectorySourcesByDireIds(delIdList);
+			if (CollectionUtils.isNotEmpty(delIdList)) {
+				for (Long id : delIdList) {
+					logger.info("delete directorySource success : directoryId [" + id + "]");
+				}
+			}
 			logger.info("delete directorySource success");
 		}
 		} catch (Exception e) {

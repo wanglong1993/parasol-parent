@@ -270,8 +270,6 @@ public class DirectorySourceController extends BaseControl {
 			filter.add("sourceTitle"); // 资源的title
 			filter.add("sourceData"); // 资源的Data
 			filter.add("directoryId"); // 资源的Data
-			filter.add("total"); // 资源个数
-			filter.add("list"); //
 		}
 
 		filterProvider.addFilter(DirectorySource.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
@@ -340,7 +338,7 @@ public class DirectorySourceController extends BaseControl {
 		String requestJson = null;
 		MappingJacksonValue mappingJacksonValue = null;
 		InterfaceResult interfaceResult=null;
-		List<Property> directorysList=null;
+		List<Property> directorysList = null;
 		List<Long> direIds=new ArrayList<Long>();
 		Long loginUserId = null;
 		try {
@@ -366,13 +364,13 @@ public class DirectorySourceController extends BaseControl {
 						return new MappingJacksonValue(interfaceResult);
 					}
 				}
-				directorysList=JsonUtils.getList4Json(j.getString("directorys"), Property.class);
+				directorysList = JsonUtils.getList4Json(j.getString("directorys"), Property.class);
 				if (directorysList != null) {
 					for (Property property : directorysList) {
 						direIds.add(property.getId());
 					}
 				}
-				if (sourceId<=0) {
+				if (sourceId <= 0) {
 					logger.error("sourceId is null..");
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceId不能为空！");
 					return new MappingJacksonValue(interfaceResult);
@@ -382,17 +380,16 @@ public class DirectorySourceController extends BaseControl {
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceTitle不能为空！");
 					return new MappingJacksonValue(interfaceResult);
 				}
-				if (sourceType<=0) {
+				if (sourceType <= 0) {
 					logger.error("sourceType is null..");
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceType不能为空！");
 					return new MappingJacksonValue(interfaceResult);
 				}
-				Long sType=new Long(sourceType);
+				Long sType = new Long(sourceType);
 				directorySourceService.updateDiresources(loginAppId,loginUserId,sourceId,sType,direIds,sourceTitle);
 				if (sourceType == 8) {
 					try {
 						knowledgeService.updateDirectory(loginUserId, sourceId, columnType, direIds);
-
 					} catch (Exception e) {
 						e.printStackTrace();
 						logger.error("Add tags to knowledge failed,userId=" + loginUserId + ",knowledgeId=" + sourceId);
