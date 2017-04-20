@@ -96,7 +96,23 @@ public class DirectoryServiceTest extends TestBase implements Test {
 		}
 
 	}
-	
+
+	@org.junit.Test
+	public void testCreateRootDirectory() throws DirectoryServiceException {
+
+		Directory directory = new Directory();
+		directory.setAppId(System_AppId);
+		directory.setName("根目录");
+		directory.setPid(0);
+		//directory.setNumberCode();
+		directoryService.createDirectoryForRoot(7l, directory);
+	}
+
+	@org.junit.Test
+	public void testCreateSubDirectory() throws DirectoryTypeServiceException {
+
+	}
+
 	
 	/**
 	 * getDirectoryTypeByName

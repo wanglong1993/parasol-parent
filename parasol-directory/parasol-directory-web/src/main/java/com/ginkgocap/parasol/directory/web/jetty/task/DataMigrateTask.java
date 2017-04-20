@@ -36,8 +36,10 @@ public class DataMigrateTask implements Runnable, InitializingBean {
                 if (directory != null) {
                     long id = directory.getId();
                     String numberCode = directory.getNumberCode();
-                    int count = getCount(numberCode);
+                    String split = split(numberCode);
+                    int count = getCount(split);
                     directory.setOrderNo(count);
+                    directory.setNumberCode(split);
                     boolean flag = directoryService.updateDirectory(directory);
                     if (!flag) {
                         logger.error("update directory fail : directoryId [ " + id + " ]");
@@ -53,9 +55,10 @@ public class DataMigrateTask implements Runnable, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        logger.info("DataMigrateTask begin...");
-        //new Thread(this).start();
-        logger.info("DataMigrateTask complete...");
+        logger.info("DataMigrateTask begin＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝");
+        new Thread(this).start();
+        logger.info("DataMigrateTask complete＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝");
+        Thread.sleep(10000);
     }
 
     private int getCount(String numberCode) {
@@ -77,5 +80,12 @@ public class DataMigrateTask implements Runnable, InitializingBean {
             return 1;
         }
         return count + 1;
+    }
+
+    private String split(String numberCode) {
+        if (numberCode.startsWith("-")) {
+            numberCode = numberCode.substring(1);
+        }
+        return numberCode;
     }
 }

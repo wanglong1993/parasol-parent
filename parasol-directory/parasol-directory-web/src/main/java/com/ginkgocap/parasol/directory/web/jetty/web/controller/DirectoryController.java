@@ -207,8 +207,9 @@ public class DirectoryController extends BaseControl {
             Directory dir = directoryService.getDirectory(loginAppId, loginUserId, parentId);
             directory.setOrderNo(dir.getOrderNo() + 1); // 设置目录级别
             String numberCode = dir.getNumberCode();
+            int orderNo = dir.getOrderNo();
             int level = getCount(numberCode);
-            if (level > 20) {
+            if (level >= 20 || orderNo >= 20) {
                 interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
                 interfaceResult.getNotification().setNotifInfo("目录级别不能超过20级哦");
                 mappingJacksonValue = new MappingJacksonValue(interfaceResult);

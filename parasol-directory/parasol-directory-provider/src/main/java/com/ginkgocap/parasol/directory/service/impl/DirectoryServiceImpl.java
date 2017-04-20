@@ -260,7 +260,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		ServiceError.assertUserIdForDirectory(userId);
 		ServiceError.assertDirectoryIdForDirectory(directoryId);
 		ServiceError.assertDirectoryIdForDirectory(toDirectoryId);
-
+		boolean flag = false;
 		try {
 			Directory targetDirectory = this.getEntity(directoryId);
 			if (targetDirectory == null) {
@@ -307,14 +307,17 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 							directory.setOrderNo(directory.getOrderNo() - parent.getOrderNo()); // 移动后目录级别
 						}
 						if (directory.getId() == targetDirectory.getId()) {
-							targetDirectory = directory;
+							//targetDirectory = directory;
+							directory.setPid(toDirectoryId);
 						}
+						flag = this.updateEntity(directory);
 					}
 				}
-				targetDirectory.setPid(toDirectoryId);
+				//targetDirectory.setPid(toDirectoryId);
 				/*String numberCode = getParentNumberCode(to);
 				targetDirectory.setNumberCode(numberCode + "-" + targetDirectory.getId()); //更新索引*/
-				return this.updateEntity(targetDirectory);
+				//return this.updateEntity(targetDirectory);
+				return flag;
 			} else {
 				throw new DirectoryServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own directory");// 移动的不是自己的目录
 			}
@@ -543,7 +546,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			return null;
 		}
 		try {
-			return this.getSubEntitys(LIST_DIRECTORY_ID_ALL, page, size, 1l);
+			return this.getSubEntitys(LIST_DIRECTORY_ID_ALL, start, size, 1l);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 		}
@@ -559,8 +562,8 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		String[] parentIds = null;
 		if (directory != null) {
 			parentIds = directory.getNumberCode().split("-");
-			if (parentIds != null && parentIds.length >= 4) {
-				parentIds = Arrays.copyOfRange(parentIds, parentIds.length - 4, parentIds.length);
+			if (parentIds != null && parentIds.length >= 19) {
+				parentIds = Arrays.copyOfRange(parentIds, parentIds.length - 19, parentIds.length);
 			}
 		}
 		String parentNumberCode = parentIds == null ? "" : StringUtils.join(parentIds, "-");
