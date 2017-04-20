@@ -56,9 +56,9 @@ public class DataMigrateTask implements Runnable, InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         logger.info("DataMigrateTask begin＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝");
-        new Thread(this).start();
+        //new Thread(this).start();
         logger.info("DataMigrateTask complete＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝");
-        Thread.sleep(10000);
+        //Thread.sleep(10000);
     }
 
     private int getCount(String numberCode) {
