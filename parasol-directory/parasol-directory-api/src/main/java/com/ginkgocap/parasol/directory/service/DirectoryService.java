@@ -19,28 +19,23 @@ public interface DirectoryService {
 	/**
 	 * 应用 用户 创建指定分类下的根目录
 	 * 
-	 * @param appId
-	 *            应用Id
 	 * @param directoryType
 	 *            目录分类
 	 * @param directory
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public Long createDirectoryForRoot(Long directoryType, Directory directory) throws DirectoryServiceException;
+	 Long createDirectoryForRoot(Long directoryType, Directory directory) throws DirectoryServiceException;
 
 	/**
 	 * 应用 用户 创建指定父目录下的目录
 	 * 
-	 * @param appId
-	 *            应用Id
-	 * @param directoryType
-	 *            目录分类
+	 * @param pId
 	 * @param directory
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public Long createDirectoryForChildren(Long pId, Directory directory) throws DirectoryServiceException;
+	 Long createDirectoryForChildren(Long pId, Directory directory) throws DirectoryServiceException;
 
 	/**
 	 * 应用 用户 删除一个指定的目录
@@ -49,7 +44,7 @@ public interface DirectoryService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public boolean removeDirectory(Long appId, Long userId, Long directoryId) throws DirectoryServiceException;
+	 boolean removeDirectory(Long appId, Long userId, Long directoryId) throws DirectoryServiceException;
 
 	/**
 	 * 应用 用户 更新一个指定的目录 不能重名
@@ -58,25 +53,28 @@ public interface DirectoryService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public boolean updateDirectory(Long appId, Long userId, Directory directory) throws DirectoryServiceException;
+	 boolean updateDirectory(Long appId, Long userId, Directory directory) throws DirectoryServiceException;
 
 	/**
 	 * 应用 用户 移动一个目录 不能重名
-	 * 
-	 * @param directory
+	 * @param appId
+	 * @param userId
+	 * @param directoryId
+	 * @param toDirectoryId
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId, List<Directory> treeList) throws DirectoryServiceException;
+	 boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException;
 
 	/**
 	 * 应用 用户 查询一个Directory
-	 * 
-	 * @param directoryId
+	 * @param appId
+	 * @param userId
+	 * @param id
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public Directory getDirectory(Long appId, Long userId, Long id) throws DirectoryServiceException;
+	 Directory getDirectory(Long appId, Long userId, Long id) throws DirectoryServiceException;
 	
 	/**
 	 * 根据 Directory Id列表 查询
@@ -85,19 +83,19 @@ public interface DirectoryService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public List<Directory> getDirectoryList(Long appId, Long userId, List<Long> ids) throws DirectoryServiceException;
+	 List<Directory> getDirectoryList(Long appId, Long userId, List<Long> ids) throws DirectoryServiceException;
 
 	/**
 	 * 查询一个父节点下边的一级子节点 注意：最多返回500
 	 * 
-	 * @param parentId
-	 *            父节点ID
-	 * @param displayDisabled
+	 * @param appId
+	 * @param  pId       父节点ID
+	 * @param userId
 	 *            是否显示禁用的Directory，默认为false，不显示
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public List<Directory> getDirectorysByParentId(Long appId, Long userId, Long pId) throws DirectoryServiceException;
+	 List<Directory> getDirectorysByParentId(Long appId, Long userId, Long pId) throws DirectoryServiceException;
 
 	/**
 	 * 查询一个父节点下边的一级子节点数量
@@ -108,7 +106,7 @@ public interface DirectoryService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public int countDirectorysByParentId(Long appId, Long userId, Long pId) throws DirectoryServiceException;
+	 int countDirectorysByParentId(Long appId, Long userId, Long pId) throws DirectoryServiceException;
 
 	/**
 	 * 查询父节点的列表
@@ -119,7 +117,7 @@ public interface DirectoryService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public List<Directory> getDirectorysForRoot(Long appId, Long userId, Long directoryTypeId) throws DirectoryServiceException;
+	 List<Directory> getDirectorysForRoot(Long appId, Long userId, Long directoryTypeId) throws DirectoryServiceException;
 
 	/**
 	 * 查询父节点的总数
@@ -130,7 +128,7 @@ public interface DirectoryService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public int countDirectorysForRoot(Long appId, Long userId, Long directoryTypeId) throws DirectoryServiceException;
+	 int countDirectorysForRoot(Long appId, Long userId, Long directoryTypeId) throws DirectoryServiceException;
 
 	/**
 	 * 搜索目录 通过 name（只支持知识，需求）
@@ -141,7 +139,7 @@ public interface DirectoryService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	public Page<Directory> getDirectoryName(Long userId, String name, long typeId, int pageNo,int pageSize)throws DirectoryServiceException;
+	 Page<Directory> getDirectoryName(Long userId, String name, long typeId, int pageNo,int pageSize)throws DirectoryServiceException;
 
 	/**
 	 * 查询所有目录
@@ -194,4 +192,15 @@ public interface DirectoryService {
 	 * @return
 	 */
 	 List<Directory> getTreeDirectorysByParentId(long appId, long userId, long pid, long typeId) throws DirectoryServiceException;
+
+	/**
+	 * 获取子目录下最大级别目录
+	 * @param appId
+	 * @param userId
+	 * @param directory
+	 * @param typeId
+	 * @return
+	 * @throws DirectoryServiceException
+	 */
+	Directory getSubTreeMaxDirectory(long appId, long userId, long directory, long typeId) throws DirectoryServiceException;
 }

@@ -31,10 +31,17 @@
 				  sqlitem="select id from tb_directory where appId=? and userId=? and typeId=? order by orderNo"
 				  sqlType="hsql" keyProperty="appId,userId,typeId" valueProperty="id"/>
 
+			<!-- 查询目录下所有子目录 -->
 			<list name="List_Directory_Tree_AppId_UserId_TypeId_Pid"
-                  sqlitem="select id from tb_directory where appId=? and userId=? and (numberCode like ? or numberCode=? or numberCode like ? or numberCode like ?)
-                  and typeId=? and orderNo >= (select orderNo from tb_directory where id = ?) order by orderNo"
-                  sqlType="hsql" keyProperty="appId,userId,pid,pid,pid,pid,typeId,pid" valueProperty="id"/>
+                  sqlitem="select id from tb_directory where appId=? and userId=? and (numberCode like ? or numberCode like ?)
+                  and typeId=? order by orderNo"
+                  sqlType="hsql" keyProperty="appId,userId,pid,pid,typeId" valueProperty="id"/>
+
+			<!-- 查询目录下子最大级别的目录 -->
+			<map name="List_Directory_SubTree_MaxOrderNo"
+                  sqlitem="select id from tb_directory where appId=? and userId=? and (numberCode like ? or numberCode like ?)
+                  and typeId=? order by orderNo desc limit 1"
+                  sqlType="hsql" keyProperty="appId,userId,pid,pid,typeId" valueProperty="id"/>
 
 			<list name="List_Directory_By_Name"
 					sqlitem="select id from tb_directory where userId = ? and name like ? and typeId = ? order by orderNo"

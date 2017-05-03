@@ -1,8 +1,6 @@
 package com.ginkgocap.parasol.directory.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import com.ginkgocap.parasol.directory.model.Page;
 import org.apache.commons.lang3.ObjectUtils;
@@ -15,9 +13,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.ginkgocap.parasol.common.service.exception.BaseServiceException;
 import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.directory.exception.DirectoryServiceException;
-import com.ginkgocap.parasol.directory.exception.DirectoryTypeServiceException;
 import com.ginkgocap.parasol.directory.model.Directory;
-import com.ginkgocap.parasol.directory.model.DirectoryType;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectoryTypeService;
 
@@ -39,9 +35,10 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 	private static String LIST_DIRECTORY_TREE_APPID_USERID_TYPEID_PID = "List_Directory_Tree_AppId_UserId_TypeId_Pid"; //查询树形目录不包括根目录
 	private static String LIST_DIRECTORY_ID_APPID_USERID_TYPEID = "List_Directory_Id_AppId_UserId_TypeId"; //查询树形根目录
 	private static String LIST_DIRECTORY_ID_ALL = "List_Directory_Id_All"; //查询所有目录
+	private static String LIST_DIRECTORY_SUBTREE_MAXORDERNO = "List_Directory_SubTree_MaxOrderNo"; //子目录下最大级别目录
 
-	@Autowired
-	private DirectoryTypeService directoryTypeService;
+	/*@Autowired
+	private DirectoryTypeService directoryTypeService;*/
 
 	/**
 	 * 创建应用分类下边的根目录 比如创建系统应用知识下的根目录
@@ -254,13 +251,12 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 	}
 
 	@Override
-	public boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId, List<Directory> treeList) throws DirectoryServiceException {
+	public boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException {
 		// check parameter
 		ServiceError.assertAppIdForDirectory(appId);
 		ServiceError.assertUserIdForDirectory(userId);
 		ServiceError.assertDirectoryIdForDirectory(directoryId);
 		ServiceError.assertDirectoryIdForDirectory(toDirectoryId);
-		boolean flag = false;
 		try {
 			Directory targetDirectory = this.getEntity(directoryId);
 			if (targetDirectory == null) {
@@ -277,51 +273,41 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 					throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
 				}
 			}
+			String parentNumberCode = getParentNumberCode(to);
 			long targetPid = targetDirectory.getPid();
+			long type = targetDirectory.getTypeId();
 			Directory parent = this.getEntity(targetPid);
 			if (parent == null) {
 				parent = new Directory();
 				parent.setOrderNo(0); // 根目录是 0 级
 			}
-			// 检查是不是同一个人，同一个应用，同一个分类 (移动到根目录则无法验证)
-			if (CollectionUtils.isNotEmpty(treeList) /*&& ObjectUtils.equals( targetDirectory.getUserId(), to.getUserId())&& ObjectUtils.equals(targetDirectory.getAppId(), to.getAppId()) && ObjectUtils.equals(targetDirectory.getTypeId(), to.getTypeId())*/) {
+			// 移动 targetDirectory 目录 到 toDirectory
+			targetDirectory.setPid(toDirectoryId);
+			targetDirectory.setOrderNo(to == null ? 1 : to.getOrderNo() + 1);
+			String numberCode = "".equals(parentNumberCode) ? directoryId + "" : parentNumberCode + "-" + directoryId;
+			targetDirectory.setNumberCode(numberCode);
+
+			List<Directory> treeList = this.getTreeDirectorysByParentId(appId, userId, directoryId, type);
+
+			if (CollectionUtils.isNotEmpty(treeList)) {
+				Map<Long, Directory> map = new HashMap<Long, Directory>(treeList.size() + 1);
 				for(Directory directory : treeList) {
-					if (directory != null) {
-						String numberCode = directory.getNumberCode();
-						String[] number = numberCode.split("" + targetPid + "-");
-						String parentNumberCode = "";
-						if (to != null) {
-							parentNumberCode = getParentNumberCode(to);
-							if (number[0] != numberCode) {
-								directory.setNumberCode(parentNumberCode + "-" + number[1]); // 更新索引
-							} else {
-								directory.setNumberCode(parentNumberCode + "-" + numberCode);
-							}
-							directory.setOrderNo(directory.getOrderNo() - parent.getOrderNo() + to.getOrderNo()); // 移动后目录级别
-						} else {
-							if (number[0] != numberCode) {
-								directory.setNumberCode(number[1]); // 更新索引
-							} else {
-								directory.setNumberCode(numberCode);
-							}
-							directory.setOrderNo(directory.getOrderNo() - parent.getOrderNo()); // 移动后目录级别
-						}
-						if (directory.getId() == targetDirectory.getId()) {
-							//targetDirectory = directory;
-							directory.setPid(toDirectoryId);
-						}
-						flag = this.updateEntity(directory);
+					if (directory == null)
+						continue;
+					long pid = directory.getPid();
+					Directory parentDirectory = map.get(pid);
+					if (parentDirectory == null) {
+						map.put(directoryId, targetDirectory);
+					} else {
+						directory.setOrderNo(parentDirectory.getOrderNo() + 1);
+						directory.setNumberCode(parentDirectory.getNumberCode() + directory.getId());
 					}
+					map.put(directory.getId(), directory);
 				}
-				//targetDirectory.setPid(toDirectoryId);
-				/*String numberCode = getParentNumberCode(to);
-				targetDirectory.setNumberCode(numberCode + "-" + targetDirectory.getId()); //更新索引*/
-				//return this.updateEntity(targetDirectory);
-				return flag;
-			} else {
-				throw new DirectoryServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own directory");// 移动的不是自己的目录
 			}
-			
+			treeList.add(targetDirectory);
+			return this.updateEntitys(treeList);
+
 			// TODO 还的检查不能移动到自己的子目录下
 			// TODO 不能存在相同的文件名字
 			// TODO 检查是不是同一个分类
@@ -578,7 +564,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		ServiceError.assertUserIdForDirectory(userId);
 
 		try {
-			return this.getEntitys(LIST_DIRECTORY_TREE_APPID_USERID_TYPEID_PID,  appId, userId, "%-" + pid, "" + pid, pid + "-%", "%-" + pid + "-%", typeId, pid);
+			return this.getEntitys(LIST_DIRECTORY_TREE_APPID_USERID_TYPEID_PID,  appId, userId, pid + "-%", "%-" + pid + "-%", typeId);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new DirectoryServiceException(e);
@@ -619,20 +605,27 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		ServiceError.assertDirectoryTypeIdForDirectory(typeId);
 
 		try {
-			return this.countEntitys(LIST_DIRECTORY_TREE_APPID_USERID_TYPEID_PID, loginAppId, userId, "%-" + pid, "" + pid, pid + "-%", "%-" + pid + "-%", typeId, pid);
+			return this.countEntitys(LIST_DIRECTORY_TREE_APPID_USERID_TYPEID_PID, loginAppId, userId, pid + "-%", "%-" + pid + "-%", typeId);
 		} catch (BaseServiceException e) {
 			logger.error(e.getMessage());
 			throw new DirectoryServiceException(e);
 		}
 	}
 
-	/**
-	 * 检查是否重名
-	 * @param directorys
-	 * @param directory
-	 * @throws DirectoryServiceException
-	 */
+	@Override
+	public Directory getSubTreeMaxDirectory(long appId, long userId, long directory, long typeId) throws DirectoryServiceException {
 
+		ServiceError.assertUserIdForDirectory(userId);
+		ServiceError.assertDirectoryTypeIdForDirectory(typeId);
+
+		try {
+			Long id = (Long)this.getMapId(LIST_DIRECTORY_SUBTREE_MAXORDERNO, appId, userId, directory + "-%", "%-" + directory + "-%", typeId);
+			return this.getEntity(id);
+		} catch (BaseServiceException e) {
+			throw new DirectoryServiceException(e);
+		}
+
+	}
 	/*private void assertDuplicateName(List<Directory> directorys, Directory directory) throws DirectoryServiceException {
 		if (!CollectionUtils.isEmpty(directorys)) {
 			for (Directory dir : directorys) {
