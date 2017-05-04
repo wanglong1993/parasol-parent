@@ -25,6 +25,7 @@ import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.util.JsonUtils;
 import com.ginkgocap.parasol.util.PinyinComparatorList;
+import com.ginkgocap.parasol.util.PinyinComparatorList4ObjectName;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
 import com.gintong.frame.util.dto.Notification;
@@ -378,18 +379,21 @@ public class DirectoryController extends BaseControl {
                                              HttpServletRequest request) throws Exception {
         MappingJacksonValue mappingJacksonValue = null;
         InterfaceResult interfaceResult = null;
+        int toOrderNo = 0;
         try {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
             Directory toDirectory = directoryService.getDirectory(loginAppId, loginUserId, toDirectoryId);
             Directory directory = directoryService.getDirectory(loginAppId, loginUserId, directoryId);
-            if (toDirectory == null || directory == null) {
+            if (directory == null) {
                 interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
                 interfaceResult.getNotification().setNotifInfo("当前目录已不存在");
                 mappingJacksonValue = new MappingJacksonValue(interfaceResult);
                 return mappingJacksonValue;
             }
-            int toOrderNo = toDirectory.getOrderNo();
+            if (toDirectory != null) {
+                toOrderNo = toDirectory.getOrderNo();
+            }
             long typeId = directory.getTypeId();
             int orderNo = directory.getOrderNo();
             Directory subTreeMaxDirectory = directoryService.getSubTreeMaxDirectory(loginAppId, loginUserId, directoryId, typeId);
@@ -555,13 +559,13 @@ public class DirectoryController extends BaseControl {
                     Directory parent = idMap.get(pid);
                     if (parent != null) {
                         parent.addChildList(directory);
+                        // 将目录按照拼音 自定义排序
+                        Collections.sort(parent.getChildDirectory(), new PinyinComparatorList4ObjectName());
                     }
-                    // 将目录按照拼音 自定义排序
-                    Collections.sort(parent.getChildDirectory(), new PinyinComparatorList());
                 }
             }
             // 将目录按照拼音 自定义排序
-            Collections.sort(directoryList, new PinyinComparatorList());
+            Collections.sort(directoryList, new PinyinComparatorList4ObjectName());
             // 2.转成框架数据
             Map<String, Object> result = new HashMap();
             result.put("totalCount", total);
@@ -746,12 +750,12 @@ public class DirectoryController extends BaseControl {
             Directory parent = idMap.get(pid);
             if (parent != null) {
                 parent.addChildList(dire);
+                // 将目录按照拼音 自定义排序
+                Collections.sort(parent.getChildDirectory(), new PinyinComparatorList4ObjectName());
             }
-            // 将目录按照拼音 自定义排序
-            Collections.sort(parent.getChildDirectory(), new PinyinComparatorList());
         }
         // 将目录按照拼音 自定义排序
-        Collections.sort(directoryList, new PinyinComparatorList());
+        Collections.sort(directoryList, new PinyinComparatorList4ObjectName());
         // 2.转成框架数据
         Map<String, Object> result = new HashMap();
         result.put("totalCount", total);

@@ -300,10 +300,13 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 						map.put(directoryId, targetDirectory);
 					} else {
 						directory.setOrderNo(parentDirectory.getOrderNo() + 1);
-						directory.setNumberCode(parentDirectory.getNumberCode() + directory.getId());
+						directory.setNumberCode(parentDirectory.getNumberCode() + "-" + directory.getId());
 					}
 					map.put(directory.getId(), directory);
 				}
+
+			} else {
+				treeList = new ArrayList<Directory>(1);
 			}
 			treeList.add(targetDirectory);
 			return this.updateEntitys(treeList);
