@@ -55,11 +55,6 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/net.sf.json-lib/json-lib -->
-		
-		
-		
-		
-		
 		<dependency>
 			<groupId>com.gintong.frame</groupId>
 			<artifactId>phoenix-frame-util</artifactId>
@@ -99,19 +94,12 @@
 					<groupId>org.apache.httpcomponents</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>				
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-directory-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>
@@ -129,7 +117,6 @@
 					<id>Snapshots</id>
 					<url>http://192.168.101.89:8081/nexus/content/repositories/snapshots/</url>
 				</snapshotRepository>
-				
 			</distributionManagement>
 		</profile>
 		<profile>
