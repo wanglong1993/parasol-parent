@@ -321,64 +321,63 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 		List<DirectorySource> newDireSourceList=new ArrayList<DirectorySource>();
 		List<DirectorySource> direSourceList=null;
 		try {
-		long newSourceType=sourceType;
-		direSourceList = this.getDirectorySourcesBySourceId(userId,appId,(int)newSourceType,sourceId);
-		if (CollectionUtils.isEmpty(direSourceList)) {
-			for (Long direId : direIds) {
-				if (direId != null) {
-					DirectorySource tagSource = newDirecotrySource(userId, sourceId, sourceTitle, sourceType, direId);
-					if(tagSource != null){
-						newDireSourceList.add(tagSource);
-					}
-				}
-			}
-			if(newDireSourceList != null){
-				for(DirectorySource direSource:newDireSourceList){
-					this.createDirectorySources(direSource);
-				}
-				logger.info("add DirectorySources success");
-			}
-		} else {
-			List<Long> delIdList = new ArrayList<Long>();
-			List<DirectorySource> addDireSourceList = new ArrayList<DirectorySource>();
-			Set<Long> existIdSet = new HashSet<Long>(direSourceList.size());
+            long newSourceType=sourceType;
+            direSourceList = this.getDirectorySourcesBySourceId(userId,appId,(int)newSourceType,sourceId);
+            if (CollectionUtils.isEmpty(direSourceList)) {
+                for (Long direId : direIds) {
+                    if (direId != null) {
+                        DirectorySource tagSource = newDirecotrySource(userId, sourceId, sourceTitle, sourceType, direId);
+                        if(tagSource != null){
+                            newDireSourceList.add(tagSource);
+                        }
+                    }
+                }
+                if (newDireSourceList != null) {
+                    for (DirectorySource direSource : newDireSourceList) {
+                        this.createDirectorySources(direSource);
+                        logger.info("add DirectorySources success : [" + direSource.getDirectoryId() + "]");
+                    }
+                    logger.info("add DirectorySources success");
+                }
+            } else {
+                List<Long> delIdList = new ArrayList<Long>();
+                List<DirectorySource> addDireSourceList = new ArrayList<DirectorySource>();
+                Set<Long> existIdSet = new HashSet<Long>(direSourceList.size());
 
-			for (DirectorySource source : direSourceList) {
-				existIdSet.add(source.getDirectoryId());
-			}
-			//帅选新增加的目录，并将其写入数据库
-			for (Long direId : direIds) {
-				if (!(existIdSet.contains(direId))) {
-					DirectorySource tagSource = newDirecotrySource(userId, sourceId, sourceTitle, sourceType, direId);
-					if (tagSource != null) {
-						addDireSourceList.add(tagSource);
-					}
-				}
-			}
-			if (addDireSourceList != null) {
-				for (DirectorySource direSource : addDireSourceList) {
-					this.createDirectorySources(direSource);
-					logger.info("add directorySource success : directoryId [" + direSource.getDirectoryId() + "]");
-				}
-				logger.info("add directorySource success");
-			}
-			//删除数据库中已被更新的数据
-			for (DirectorySource directorySource : direSourceList) {
-				long id = directorySource.getId();
-				if (!direIds.contains(directorySource.getDirectoryId())) {
-					delIdList.add(id);
-				}
-			}
-			if (CollectionUtils.isNotEmpty(delIdList)) {
-				for (Long id : delIdList) {
-					logger.info("delete directorySource success : directoryId [" + id + "]");
-				}
-			}
-			this.removeDirectorySourcesByDireIds(delIdList);
-			logger.info("delete directorySource success");
-
-
-		}
+                for (DirectorySource source : direSourceList) {
+                    existIdSet.add(source.getDirectoryId());
+                }
+                //帅选新增加的目录，并将其写入数据库
+                for (Long direId : direIds) {
+                    if (!(existIdSet.contains(direId))) {
+                        DirectorySource tagSource = newDirecotrySource(userId, sourceId, sourceTitle, sourceType, direId);
+                        if (tagSource != null) {
+                            addDireSourceList.add(tagSource);
+                        }
+                    }
+                }
+                if (CollectionUtils.isNotEmpty(addDireSourceList)) {
+                    for (DirectorySource direSource : addDireSourceList) {
+                        this.createDirectorySources(direSource);
+                        logger.info("add directorySource success : directoryId [" + direSource.getDirectoryId() + "]");
+                    }
+                    logger.info("add directorySource success");
+                }
+                //删除数据库中已被更新的数据
+                for (DirectorySource directorySource : direSourceList) {
+                    long id = directorySource.getId();
+                    if (!direIds.contains(directorySource.getDirectoryId())) {
+                        delIdList.add(id);
+                    }
+                }
+                if (CollectionUtils.isNotEmpty(delIdList)) {
+                    for (Long id : delIdList) {
+                        logger.info("delete directorySource success : directoryId [" + id + "]");
+                    }
+                    this.removeDirectorySourcesByDireIds(delIdList);
+                    logger.info("delete directorySource success");
+                }
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
