@@ -338,10 +338,11 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 				}
 				logger.info("add DirectorySources success");
 			}
-		}else {
+		} else {
 			List<Long> delIdList = new ArrayList<Long>();
 			List<DirectorySource> addDireSourceList = new ArrayList<DirectorySource>();
 			Set<Long> existIdSet = new HashSet<Long>(direSourceList.size());
+
 			for (DirectorySource source : direSourceList) {
 				existIdSet.add(source.getDirectoryId());
 			}
@@ -357,6 +358,7 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 			if (addDireSourceList != null) {
 				for (DirectorySource direSource : addDireSourceList) {
 					this.createDirectorySources(direSource);
+					logger.info("add directorySource success : directoryId [" + direSource.getDirectoryId() + "]");
 				}
 				logger.info("add directorySource success");
 			}
@@ -367,13 +369,15 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 					delIdList.add(id);
 				}
 			}
-			this.removeDirectorySourcesByDireIds(delIdList);
 			if (CollectionUtils.isNotEmpty(delIdList)) {
 				for (Long id : delIdList) {
 					logger.info("delete directorySource success : directoryId [" + id + "]");
 				}
 			}
+			this.removeDirectorySourcesByDireIds(delIdList);
 			logger.info("delete directorySource success");
+
+
 		}
 		} catch (Exception e) {
 			e.printStackTrace();
