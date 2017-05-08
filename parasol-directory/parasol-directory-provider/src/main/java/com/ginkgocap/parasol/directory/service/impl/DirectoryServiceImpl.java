@@ -286,30 +286,33 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			targetDirectory.setOrderNo(to == null ? 1 : to.getOrderNo() + 1);
 			String numberCode = "".equals(parentNumberCode) ? directoryId + "" : parentNumberCode + "-" + directoryId;
 			targetDirectory.setNumberCode(numberCode);
+			boolean flag = this.updateEntity(targetDirectory);
+			if (flag) {
+				List<Directory> treeList = this.getTreeDirectorysByParentId(appId, userId, directoryId, type);
 
-			List<Directory> treeList = this.getTreeDirectorysByParentId(appId, userId, directoryId, type);
+				if (CollectionUtils.isNotEmpty(treeList)) {
+					Map<Long, Directory> map = new HashMap<Long, Directory>(treeList.size() + 1);
+					map.put(directoryId, targetDirectory);
+					for(Directory directory : treeList) {
+						if (directory == null)
+							continue;
+						logger.info("directoryId :[" + directory.getId() + "]" + "start.............");
+						long pid = directory.getPid();
+						Directory parentDirectory = map.get(pid);
+						if (parentDirectory == null) {
 
-			if (CollectionUtils.isNotEmpty(treeList)) {
-				Map<Long, Directory> map = new HashMap<Long, Directory>(treeList.size() + 1);
-				for(Directory directory : treeList) {
-					if (directory == null)
-						continue;
-					long pid = directory.getPid();
-					Directory parentDirectory = map.get(pid);
-					if (parentDirectory == null) {
-						map.put(directoryId, targetDirectory);
-					} else {
-						directory.setOrderNo(parentDirectory.getOrderNo() + 1);
-						directory.setNumberCode(parentDirectory.getNumberCode() + "-" + directory.getId());
+						} else {
+							directory.setOrderNo(parentDirectory.getOrderNo() + 1);
+							directory.setNumberCode(parentDirectory.getNumberCode() + "-" + directory.getId());
+							logger.info("directoryId :[" + directory.getId() + "]" + directory.getOrderNo() + directory.getNumberCode());
+							logger.info("directoryId :[" + directory.getId() + "]" + "end.............");
+						}
+						map.put(directory.getId(), directory);
 					}
-					map.put(directory.getId(), directory);
+					return this.updateEntitys(treeList);
 				}
-
-			} else {
-				treeList = new ArrayList<Directory>(1);
 			}
-			treeList.add(targetDirectory);
-			return this.updateEntitys(treeList);
+			return flag;
 
 			// TODO 还的检查不能移动到自己的子目录下
 			// TODO 不能存在相同的文件名字
@@ -623,7 +626,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 
 		try {
 			Long id = (Long)this.getMapId(LIST_DIRECTORY_SUBTREE_MAXORDERNO, appId, userId, directory + "-%", "%-" + directory + "-%", typeId);
-			return this.getEntity(id);
+			return id == null ? null : this.getEntity(id);
 		} catch (BaseServiceException e) {
 			throw new DirectoryServiceException(e);
 		}
