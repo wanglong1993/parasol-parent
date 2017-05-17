@@ -29,6 +29,7 @@ public abstract class ServiceError {
 	public final static int ERROR_NOT_MYSELF = 108; // 不是自己的目录
 	public final static int ERROR_OBJECT_EXIST = 109; // 重复对象存在
 	public final static int ERROR_SQL=200; //数据库错误
+	public final static int ERROR_DIRECTORY_UPDATE = 110; //修改目录失败
 
 	// Define Directory's related assertions.
 	public static void assertPidForDirectory(Long pId) throws DirectoryServiceException {

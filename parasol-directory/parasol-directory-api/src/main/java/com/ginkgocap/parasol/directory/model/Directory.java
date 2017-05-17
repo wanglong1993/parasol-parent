@@ -57,9 +57,9 @@ public class Directory implements Serializable {
 	private String remark; // 描述
 	private String numberCode; // 编码(存放三级，爷爷-父父-自己）
 	private long updateAt; // 更新时间
+	private int sourceCount = 0;
 	// 不持久化
 	private List<Directory> childDirectory = null;// 子目录
-	private int sourceCount;
 
 	@Id
 	@GeneratedValue(generator = "DirectoryId")
@@ -193,7 +193,7 @@ public class Directory implements Serializable {
 		this.childDirectory.add(directory);
 	}
 
-	@Transient // 不持久化：不保存到数据库
+	//@Transient // 不持久化：不保存到数据库
 	public int getSourceCount() {
 		return sourceCount;
 	}
@@ -201,4 +201,11 @@ public class Directory implements Serializable {
 	public void setSourceCount(int sourceCount) {
 		this.sourceCount = sourceCount;
 	}
+	public void addSourceCount(int sourceCount) {
+		this.sourceCount = sourceCount + 1;
+	}
+	public void subtractSourceCount(int sourceCount) {
+		this.sourceCount = sourceCount - 1;
+	}
+
 }

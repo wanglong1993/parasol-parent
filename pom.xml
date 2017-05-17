@@ -489,10 +489,10 @@
 		<maven.test.skip>false</maven.test.skip>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- framework -->
-		<phoenix-framework.version>1.0.0</phoenix-framework.version>
-		<phoenix-framework-cache.version>1.0.0</phoenix-framework-cache.version>
-		<phoenix-framework-id.version>1.0.0</phoenix-framework-id.version>
-		<phoenix-framework-dal.version>1.0.0</phoenix-framework-dal.version>
+		<phoenix-framework.version>1.1.0-SNAPSHOT</phoenix-framework.version>
+		<phoenix-framework-cache.version>1.1.0-SNAPSHOT</phoenix-framework-cache.version>
+		<phoenix-framework-id.version>1.1.0-SNAPSHOT</phoenix-framework-id.version>
+		<phoenix-framework-dal.version>1.1.0-SNAPSHOT</phoenix-framework-dal.version>
 	</properties>
 	<scm>
 		<!-- <connection>scm:git:ssh://git@192.168.101.89/phoenix-parent.git</connection> 

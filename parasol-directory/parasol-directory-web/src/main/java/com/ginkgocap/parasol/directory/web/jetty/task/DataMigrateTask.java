@@ -14,6 +14,7 @@ import java.util.Map;
 
 /**
  * Created by wf on 2017/4/6.
+ * 修改表 orderNo 字段 需要同步数据
  */
 public class DataMigrateTask implements Runnable, InitializingBean {
 

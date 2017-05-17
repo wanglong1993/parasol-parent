@@ -5,6 +5,7 @@ import java.util.List;
 import com.ginkgocap.parasol.directory.exception.DirectoryServiceException;
 import com.ginkgocap.parasol.directory.model.Directory;
 import com.ginkgocap.parasol.directory.model.Page;
+import com.gintong.frame.util.dto.InterfaceResult;
 
 /**
  * 操作Directory的接口定义
@@ -64,7 +65,7 @@ public interface DirectoryService {
 	 * @return
 	 * @throws DirectoryServiceException
 	 */
-	 boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException;
+	InterfaceResult moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException;
 
 	/**
 	 * 应用 用户 查询一个Directory
@@ -203,4 +204,24 @@ public interface DirectoryService {
 	 * @throws DirectoryServiceException
 	 */
 	Directory getSubTreeMaxDirectory(long appId, long userId, long directory, long typeId) throws DirectoryServiceException;
+
+	/**
+	 * 移动目录后 返回树形结构
+	 * @param appId
+	 * @param userId
+	 * @param directoryId
+	 * @param toDirectoryId
+	 * @return
+	 * @throws DirectoryServiceException
+	 */
+	InterfaceResult moveDirectoryAndReturnTree(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException;
+
+	/**
+	 * 减少目录资源 通过目录 ids
+	 * @param userId
+	 * @param appId
+	 * @param ids
+	 * @return
+	 */
+	boolean subtractSourceCountByDirectoryIds(long userId, long appId, List<Long> ids);
 }

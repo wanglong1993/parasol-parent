@@ -3,10 +3,13 @@ package com.ginkgocap.parasol.directory.service.impl;
 import java.util.*;
 
 import com.ginkgocap.parasol.directory.model.Page;
+import com.ginkgocap.parasol.directory.service.DirectorySourceService;
+import com.ginkgocap.parasol.util.PinyinComparatorList4ObjectName;
+import com.gintong.frame.util.dto.CommonResultCode;
+import com.gintong.frame.util.dto.InterfaceResult;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -16,6 +19,9 @@ import com.ginkgocap.parasol.directory.exception.DirectoryServiceException;
 import com.ginkgocap.parasol.directory.model.Directory;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectoryTypeService;
+
+import javax.annotation.Resource;
+
 
 /**
  * 
@@ -36,9 +42,14 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 	private static String LIST_DIRECTORY_ID_APPID_USERID_TYPEID = "List_Directory_Id_AppId_UserId_TypeId"; //查询树形根目录
 	private static String LIST_DIRECTORY_ID_ALL = "List_Directory_Id_All"; //查询所有目录
 	private static String LIST_DIRECTORY_SUBTREE_MAXORDERNO = "List_Directory_SubTree_MaxOrderNo"; //子目录下最大级别目录
-
+	// 以下是 返回 directorySource
+	//private static String LIST_DIRECTORYSOURCE_ID_USERID_TYPEID = "List_DirectorySource_Id_UserId_TypeId";
+	//private static String LIST_DIRECTORYSOURCE_ID_DIRECTORYID = "List_DirectorySource_Id_DirectoryId";
 	/*@Autowired
 	private DirectoryTypeService directoryTypeService;*/
+
+	@Resource
+	private DirectorySourceService directorySourceService;
 
 	/**
 	 * 创建应用分类下边的根目录 比如创建系统应用知识下的根目录
@@ -251,29 +262,62 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 	}
 
 	@Override
-	public boolean moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException {
+	public InterfaceResult moveDirectoryAndReturnTree(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException {
+
+		InterfaceResult result = null;
+		try {
+			result = this.moveDirectoryToDirectory(appId, userId, directoryId, toDirectoryId);
+			if (CommonResultCode.SUCCESS.getCode().equals(result.getNotification().getNotifCode())) {
+				Directory directory = this.getEntity(directoryId);
+				result = this.returnMyDirectoriesTreeList(appId, userId, directory.getTypeId());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	@Override
+	public InterfaceResult moveDirectoryToDirectory(Long appId, Long userId, Long directoryId, Long toDirectoryId) throws DirectoryServiceException {
 		// check parameter
 		ServiceError.assertAppIdForDirectory(appId);
 		ServiceError.assertUserIdForDirectory(userId);
 		ServiceError.assertDirectoryIdForDirectory(directoryId);
 		ServiceError.assertDirectoryIdForDirectory(toDirectoryId);
+
+		InterfaceResult result = null;
+		Directory targetDirectory = null;
+		Directory toDirectory = null;
+		int toOrderNo = 0;
 		try {
-			Directory targetDirectory = this.getEntity(directoryId);
-			if (targetDirectory == null) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("don't find the from Directory by id " + directoryId);
-				throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
-			}
-			Directory to = null;
+
+			targetDirectory = this.getDirectory(appId, userId, directoryId);
 			if (toDirectoryId != 0) {
-				to = this.getEntity(toDirectoryId);
-				if (to == null) {
-					StringBuffer sb = new StringBuffer();
-					sb.append("don't find the to Directory by id " + toDirectoryId);
-					throw new DirectoryServiceException(ServiceError.ERROR_NOT_FOUND, sb.toString());
-				}
+				toDirectory = this.getDirectory(appId, userId, toDirectoryId);
 			}
-			String parentNumberCode = getParentNumberCode(to);
+			if (targetDirectory == null || (toDirectoryId != 0 && toDirectory == null)) {
+				result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
+				result.getNotification().setNotifInfo("当前目录或目标目录已不存在");
+				return result;
+			}
+			if (toDirectory != null) {
+				toOrderNo = toDirectory.getOrderNo();
+			}
+			long typeId = targetDirectory.getTypeId();
+			int orderNo = targetDirectory.getOrderNo();
+			Directory subTreeMaxDirectory = this.getSubTreeMaxDirectory(appId, userId, directoryId, typeId);
+			if (subTreeMaxDirectory != null) {
+				int subOrderNo = subTreeMaxDirectory.getOrderNo();
+				result = checkOrderNo(subOrderNo, orderNo, toOrderNo);
+				if (result != null)
+					return result;
+			} else {
+				result = checkOrderNo(0, 0, toOrderNo);
+				if (result != null)
+					return result;
+			}
+
+			String parentNumberCode = getParentNumberCode(toDirectory);
 			long targetPid = targetDirectory.getPid();
 			long type = targetDirectory.getTypeId();
 			Directory parent = this.getEntity(targetPid);
@@ -283,7 +327,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			}
 			// 移动 targetDirectory 目录 到 toDirectory
 			targetDirectory.setPid(toDirectoryId);
-			targetDirectory.setOrderNo(to == null ? 1 : to.getOrderNo() + 1);
+			targetDirectory.setOrderNo(toDirectory == null ? 1 : toDirectory.getOrderNo() + 1);
 			String numberCode = "".equals(parentNumberCode) ? directoryId + "" : parentNumberCode + "-" + directoryId;
 			targetDirectory.setNumberCode(numberCode);
 			boolean flag = this.updateEntity(targetDirectory);
@@ -293,14 +337,14 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 				if (CollectionUtils.isNotEmpty(treeList)) {
 					Map<Long, Directory> map = new HashMap<Long, Directory>(treeList.size() + 1);
 					map.put(directoryId, targetDirectory);
-					for(Directory directory : treeList) {
+					for (Directory directory : treeList) {
 						if (directory == null)
 							continue;
 						logger.info("directoryId :[" + directory.getId() + "]" + "start.............");
 						long pid = directory.getPid();
 						Directory parentDirectory = map.get(pid);
 						if (parentDirectory == null) {
-
+							logger.error("parentDirectory is not present");
 						} else {
 							directory.setOrderNo(parentDirectory.getOrderNo() + 1);
 							directory.setNumberCode(parentDirectory.getNumberCode() + "-" + directory.getId());
@@ -309,10 +353,15 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 						}
 						map.put(directory.getId(), directory);
 					}
-					return this.updateEntitys(treeList);
+					flag = this.updateEntitys(treeList);
+				}
+				if (flag) {
+					result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS, flag);
+					return result;
 				}
 			}
-			return flag;
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION, flag);
+			return result;
 
 			// TODO 还的检查不能移动到自己的子目录下
 			// TODO 不能存在相同的文件名字
@@ -642,4 +691,131 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			}
 		}
 	}*/
+	/**
+	 * 检查目录级别不能超过20级
+	 */
+	private InterfaceResult checkOrderNo(int subOrderNo, int orderNo, int toOrderNo) {
+
+		InterfaceResult result = null;
+		int level = subOrderNo - orderNo + toOrderNo + 1;
+		if (level > 20) {
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+			result.getNotification().setNotifInfo("目录级别不能超过20级哦");
+		}
+		return result;
+	}
+
+	/**
+	 * 返回树结构
+	 * @param loginAppId
+	 * @param loginUserId
+	 * @param typeId
+	 * @return
+	 * @throws Exception
+	 */
+	private InterfaceResult returnMyDirectoriesTreeList(long loginAppId, long loginUserId, long typeId) throws Exception{
+
+		List<Directory> directoryList = new ArrayList<Directory>();
+		List<Directory> directories = this.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
+		int total = this.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
+		int totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
+		Map<Long, Directory> idMap = new HashMap<Long, Directory>();
+		for (Directory direc: directories) {
+			long dirId = direc.getId();
+			long pid = direc.getPid();
+			//根目录下所有目录
+			if (pid == 0) {
+				directoryList.add(direc);
+			}
+			//int sourceCount = directorySourceService.countDirectorySourcesByDirectoryId(loginAppId, loginUserId, dirId);
+			//direc.setSourceCount(sourceCount);
+			idMap.put(dirId, direc);
+		}
+		for (Map.Entry<Long, Directory> map : idMap.entrySet()) {
+			Directory dire = map.getValue();
+			long pid = dire.getPid();
+			Directory parent = idMap.get(pid);
+			if (parent != null) {
+				parent.addChildList(dire);
+				// 将目录按照拼音 自定义排序
+				Collections.sort(parent.getChildDirectory(), new PinyinComparatorList4ObjectName());
+			}
+		}
+		// 将目录按照拼音 自定义排序
+		Collections.sort(directoryList, new PinyinComparatorList4ObjectName());
+		// 2.转成框架数据
+		Map<String, Object> result = new HashMap();
+		result.put("totalCount", total);
+		result.put("list", directoryList);
+		result.put("sourceCount", totalSourceCount);
+		InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		interfaceResult.setResponseData(result);
+		return interfaceResult;
+	}
+	/*private InterfaceResult returnMyDirectoriesTreeList(long loginAppId, long loginUserId, long typeId) throws Exception{
+
+		List<Directory> directoryList = new ArrayList<Directory>();
+		int total = 0;
+		int totalSourceCount = 0;
+		try {
+			List<Directory> directories = this.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
+			total = this.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
+			totalSourceCount = this.countEntitys(LIST_DIRECTORYSOURCE_ID_USERID_TYPEID, loginAppId, loginUserId, typeId);
+			Map<Long, Directory> idMap = new HashMap<Long, Directory>();
+			for (Directory direc: directories) {
+				long dirId = direc.getId();
+				long pid = direc.getPid();
+				//根目录下所有目录
+				if (pid == 0) {
+					directoryList.add(direc);
+				}
+				int sourceCount = this.countEntitys(LIST_DIRECTORYSOURCE_ID_DIRECTORYID, dirId);
+				direc.setSourceCount(sourceCount);
+				idMap.put(dirId, direc);
+			}
+			for (Map.Entry<Long, Directory> map : idMap.entrySet()) {
+				Directory dire = map.getValue();
+				long pid = dire.getPid();
+				Directory parent = idMap.get(pid);
+				if (parent != null) {
+					parent.addChildList(dire);
+					// 将目录按照拼音 自定义排序
+					Collections.sort(parent.getChildDirectory(), new PinyinComparatorList4ObjectName());
+				}
+			}
+			// 将目录按照拼音 自定义排序
+			Collections.sort(directoryList, new PinyinComparatorList4ObjectName());
+		} catch (Exception e) {
+			InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
+			return interfaceResult;
+		}
+		// 2.转成框架数据
+		Map<String, Object> result = new HashMap();
+		result.put("totalCount", total);
+		result.put("list", directoryList);
+		result.put("sourceCount", totalSourceCount);
+		InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+		interfaceResult.setResponseData(result);
+		return interfaceResult;
+	}*/
+
+	@Override
+	public boolean subtractSourceCountByDirectoryIds(long userId, long appId, List<Long> ids) {
+
+		List<Directory> directories = null;
+		try {
+			directories = this.getDirectoryList(appId, userId, ids);
+			if (CollectionUtils.isNotEmpty(directories)) {
+				for (Directory directory : directories) {
+					if (directory == null)
+						continue;
+					directory.subtractSourceCount(directory.getSourceCount());
+				}
+				return this.updateEntitys(directories);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

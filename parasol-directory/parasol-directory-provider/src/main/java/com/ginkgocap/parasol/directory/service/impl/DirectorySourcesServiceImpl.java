@@ -58,7 +58,10 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 			if (directory == null) { // 目录不存在
 				throw new DirectorySourceServiceException(ServiceError.ERROR_NOT_FOUND, "Don't find then Directory entity by id [" + directoryId + "]");
 			}
-
+			directory.addSourceCount(directory.getSourceCount());
+			boolean b = directoryService.updateDirectory(directory);
+			if (!b)
+				throw new DirectorySourceServiceException(ServiceError.ERROR_DIRECTORY_UPDATE, "update directory sourceCount failed [" + directoryId + "]");
 			DirectorySource existSource = this.getDirectorySource(userId, directoryId, appId, sourceType, sourceId);
 			if (existSource != null) { // 已经存在
 				StringBuilder sb = new StringBuilder();
@@ -342,6 +345,7 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
             } else {
                 List<Long> delIdList = new ArrayList<Long>();
                 List<DirectorySource> addDireSourceList = new ArrayList<DirectorySource>();
+                List<Long> subtractSourceDirIds = new ArrayList<Long>();
                 Set<Long> existIdSet = new HashSet<Long>(direSourceList.size());
 
                 for (DirectorySource source : direSourceList) {
@@ -366,11 +370,17 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
                 //删除数据库中已被更新的数据
                 for (DirectorySource directorySource : direSourceList) {
                     long id = directorySource.getId();
-                    if (!direIds.contains(directorySource.getDirectoryId())) {
+					long dirId = directorySource.getDirectoryId();
+                    if (!direIds.contains(dirId)) {
                         delIdList.add(id);
+						subtractSourceDirIds.add(dirId);
                     }
                 }
-                if (CollectionUtils.isNotEmpty(delIdList)) {
+				boolean b = directoryService.subtractSourceCountByDirectoryIds(userId, appId, subtractSourceDirIds);
+                if (!b) {
+                	logger.error("subtractSourceCountByDirectoryIds method : failed!" );
+				}
+				if (CollectionUtils.isNotEmpty(delIdList)) {
                     for (Long id : delIdList) {
                         logger.info("delete directorySource success : directoryId [" + id + "]");
                     }

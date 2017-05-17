@@ -201,7 +201,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>com.gintong.frame</groupId>
 			<artifactId>phoenix-frame-util</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
@@ -211,7 +211,7 @@
 					<groupId>redis.clients</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>com.ginkgocap.ywxt</groupId>
 			<artifactId>phoenix-entire-api</artifactId>
