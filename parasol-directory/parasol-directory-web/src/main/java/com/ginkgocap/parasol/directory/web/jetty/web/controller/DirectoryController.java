@@ -687,13 +687,13 @@ public class DirectoryController extends BaseControl {
     /**
      * 指定显示那些字段 老版本
      *
-     * @param fileds
+     * @param fields
      * @return
      */
-    private SimpleFilterProvider builderSimpleFilterProviderOld(String fileds) {
+    private SimpleFilterProvider builderSimpleFilterProviderOld(String fields) {
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         // 请求指定字段
-        String[] filedNames = StringUtils.split(fileds, ",");
+        String[] filedNames = StringUtils.split(fields, ",");
         Set<String> filter = new HashSet<String>();
         if (filedNames != null && filedNames.length > 0) {
             for (int i = 0; i < filedNames.length; i++) {
@@ -708,6 +708,7 @@ public class DirectoryController extends BaseControl {
             filter.add("typeId"); // '应用的分类分类ID',
             filter.add("appId"); // '应用ID',
             filter.add("userId"); // '应用的创建者ID',
+            filter.add("sourceCount"); //资源数
         }
 
         filterProvider.addFilter(Directory.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
