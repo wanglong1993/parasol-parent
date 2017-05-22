@@ -507,11 +507,8 @@ public class DirectoryController extends BaseControl {
             if (directoryId == 0) {
                 //下一版本 不再使用 temp
                 directories = directoryService.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
-                logger.info("query directories");
                 total = directoryService.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
-                logger.info("query total");
                 totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
-                logger.info("query totalSourceCount");
             } else {
                 directories = directoryService.getTreeDirectorysByParentId(loginAppId, loginUserId, directoryId, typeId);
                 total = directoryService.getMySubDirectoriesCount(loginAppId, loginUserId, directoryId, typeId);
@@ -521,34 +518,50 @@ public class DirectoryController extends BaseControl {
                 // 2.将返回数据转为树形结构
                 for (Directory directory: directories) {
                     long id = directory.getId();
+                    // 在移动目录（修改目录结构） 之后 目录的 childDirectory 会有数据缓存 设为null 则无缓存
+                    if (CollectionUtils.isNotEmpty(directory.getChildDirectory())) {
+                        directory.setChildDirectory(null);
+                    }
+                    logger.info("*****" + directory.getName() + "**list{" + directory.getChildDirectory() + "}***");
+                    logger.info("---------------");
                     long pid = directory.getPid();
                     //根目录下所有目录
                     if (pid == 0 && directoryId == 0) {
-                        directoryList.add(directory);
+                        //directoryList.add(directory);
                         //其他目录及目录下所有目录
                     }/* else if (directoryId > 0 && directoryId == directory.getId()) {
                         directoryList.add(directory);
                     }*/
-                    //int sourceCount = directorySourceService.countDirectorySourcesByDirectoryId(loginAppId, loginUserId, id);
-                    //logger.info("query sourceCount");
-                    //directory.setSourceCount(sourceCount);
                     idMap.put(id, directory);
                 }
+                Map<Long, Directory> test = new HashMap<Long, Directory>();
+                logger.info("1.start");
                 for (Map.Entry<Long, Directory> map : idMap.entrySet()) {
                     Directory directory = map.getValue();
+                    logger.info("directory : [ " + directory.getName() + "********* list {" + directory.getChildDirectory() + "}*****]");
                     long pid = directory.getPid();
                     Directory parent = idMap.get(pid);
                     if (parent != null) {
+                        logger.info("parent : [" + parent.getName() + "********* list {" + parent.getChildDirectory() + "}***********]");
                         parent.addChildList(directory);
+                        logger.info("child list [: " + parent.getChildDirectory() + "------------------]");
                         // 将目录按照拼音 自定义排序
                         Collections.sort(parent.getChildDirectory(), new PinyinComparatorList4ObjectName());
+                        test.put(parent.getId(),parent);
+                    } else {
+                        test.put(directory.getId(),directory);
+                    }
+                }
+                logger.info("1.end");
+                for (Map.Entry<Long, Directory> map : test.entrySet()) {
+                    Directory dir = map.getValue();
+                    if (dir.getPid() == 0) {
+                        directoryList.add(dir);
                     }
                 }
             }
             // 将目录按照拼音 自定义排序
-            logger.info("query sort start");
             Collections.sort(directoryList, new PinyinComparatorList4ObjectName());
-            logger.info("query sort end");
             // 2.转成框架数据
             Map<String, Object> result = new HashMap();
             result.put("totalCount", total);

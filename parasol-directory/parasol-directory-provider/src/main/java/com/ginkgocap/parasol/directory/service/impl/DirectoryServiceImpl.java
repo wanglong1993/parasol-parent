@@ -267,6 +267,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		InterfaceResult result = null;
 		try {
 			result = this.moveDirectoryToDirectory(appId, userId, directoryId, toDirectoryId);
+			//Thread.sleep(5000);
 			if (CommonResultCode.SUCCESS.getCode().equals(result.getNotification().getNotifCode())) {
 				Directory directory = this.getEntity(directoryId);
 				result = this.returnMyDirectoriesTreeList(appId, userId, directory.getTypeId());
@@ -721,14 +722,16 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		int totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
 		Map<Long, Directory> idMap = new HashMap<Long, Directory>();
 		for (Directory direc: directories) {
+			// 在移动目录（修改目录结构） 之后 目录的 childDirectory 会有数据缓存 设为null 则无缓存
+			if (CollectionUtils.isNotEmpty(direc.getChildDirectory())) {
+				direc.setChildDirectory(null);
+			}
 			long dirId = direc.getId();
 			long pid = direc.getPid();
 			//根目录下所有目录
 			if (pid == 0) {
 				directoryList.add(direc);
 			}
-			//int sourceCount = directorySourceService.countDirectorySourcesByDirectoryId(loginAppId, loginUserId, dirId);
-			//direc.setSourceCount(sourceCount);
 			idMap.put(dirId, direc);
 		}
 		for (Map.Entry<Long, Directory> map : idMap.entrySet()) {
@@ -736,7 +739,9 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			long pid = dire.getPid();
 			Directory parent = idMap.get(pid);
 			if (parent != null) {
+				logger.info("parent : [" + parent.getName() + "********************]");
 				parent.addChildList(dire);
+				logger.info("child list [: " + parent.getChildDirectory() + "------------------]");
 				// 将目录按照拼音 自定义排序
 				Collections.sort(parent.getChildDirectory(), new PinyinComparatorList4ObjectName());
 			}
@@ -752,52 +757,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		interfaceResult.setResponseData(result);
 		return interfaceResult;
 	}
-	/*private InterfaceResult returnMyDirectoriesTreeList(long loginAppId, long loginUserId, long typeId) throws Exception{
-
-		List<Directory> directoryList = new ArrayList<Directory>();
-		int total = 0;
-		int totalSourceCount = 0;
-		try {
-			List<Directory> directories = this.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
-			total = this.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
-			totalSourceCount = this.countEntitys(LIST_DIRECTORYSOURCE_ID_USERID_TYPEID, loginAppId, loginUserId, typeId);
-			Map<Long, Directory> idMap = new HashMap<Long, Directory>();
-			for (Directory direc: directories) {
-				long dirId = direc.getId();
-				long pid = direc.getPid();
-				//根目录下所有目录
-				if (pid == 0) {
-					directoryList.add(direc);
-				}
-				int sourceCount = this.countEntitys(LIST_DIRECTORYSOURCE_ID_DIRECTORYID, dirId);
-				direc.setSourceCount(sourceCount);
-				idMap.put(dirId, direc);
-			}
-			for (Map.Entry<Long, Directory> map : idMap.entrySet()) {
-				Directory dire = map.getValue();
-				long pid = dire.getPid();
-				Directory parent = idMap.get(pid);
-				if (parent != null) {
-					parent.addChildList(dire);
-					// 将目录按照拼音 自定义排序
-					Collections.sort(parent.getChildDirectory(), new PinyinComparatorList4ObjectName());
-				}
-			}
-			// 将目录按照拼音 自定义排序
-			Collections.sort(directoryList, new PinyinComparatorList4ObjectName());
-		} catch (Exception e) {
-			InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
-			return interfaceResult;
-		}
-		// 2.转成框架数据
-		Map<String, Object> result = new HashMap();
-		result.put("totalCount", total);
-		result.put("list", directoryList);
-		result.put("sourceCount", totalSourceCount);
-		InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
-		interfaceResult.setResponseData(result);
-		return interfaceResult;
-	}*/
 
 	@Override
 	public boolean subtractSourceCountByDirectoryIds(long userId, long appId, List<Long> ids) {
