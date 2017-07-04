@@ -25,8 +25,68 @@ public class DataMigrateTask implements Runnable, InitializingBean {
 
     @Override
     public void run() {
-        updateLevel();
+        updateData();
+        //updateLevel();
     }
+
+    private void updateData() {
+        int total = 0;
+        int page = 0;
+        int sonPage = 0;
+        int page1 = 0;
+        final int size = 30;
+        // 查询 pid = 0 的 目录集合
+        List<Directory> list = directoryService.getListByPId(1, page++, size, 0);
+        while (CollectionUtils.isNotEmpty(list)) {
+            for (Directory directory : list) {
+                long id = directory.getId();
+                String numberCode = directory.getNumberCode();
+                long pid = directory.getPid();
+                List<Directory> directoryList = directoryService.getListByPId(1, sonPage++, size, id);
+                if (CollectionUtils.isEmpty(directoryList)) {
+                    //check numberCode and orderNo
+                    if (pid == 0 && !numberCode.equals("" + id)) {
+                        directory.setNumberCode("" + id);
+                        directory.setOrderNo(1);
+                        boolean flag = directoryService.updateDirectory(directory);
+                        if (!flag) {
+                            logger.error("update directory fail : directoryId [ " + id + " ]");
+                        }
+                        logger.info("update directory success : directoryId [ " + id + " ]");
+                        total += directoryList.size();
+                    }
+                    //directoryList = directoryService.getListByPId(1, sonPage++, size, id);
+                }
+                while (CollectionUtils.isNotEmpty(directoryList)) {
+                    for (Directory directory1 : directoryList) {
+                        if (directory1 == null)
+                            continue;
+                        long id1 = directory1.getId();
+                        String numberCode1 = directory1.getNumberCode();
+                        //int orderNo = directory1.getOrderNo();
+                        long pid1 = directory1.getPid();
+                        List<Directory> dirList = directoryService.getListByPId(1, page1++, size, id1);
+                        if (CollectionUtils.isEmpty(dirList)) {
+                            Directory dir = directoryService.getDirectory(1l, pid1);
+                            if (!numberCode1.equals(dir.getNumberCode() + "-" + id1)) {
+                                directory1.setNumberCode(dir.getNumberCode() + "-" + id1);
+                                directory1.setOrderNo(dir.getOrderNo() + 1);
+                                boolean flag = directoryService.updateDirectory(directory);
+                                if (!flag) {
+                                    logger.error("update directory fail : directoryId [ " + id + " ]");
+                                }
+                                logger.info("update directory success : directoryId [ " + id + " ]");
+                                total += total;
+                            }
+                        }
+                    }
+                    logger.info("update directory total : " + total);
+                    directoryList = directoryService.getListByPId(1, sonPage++, size, id);
+                }
+            }
+        }
+    }
+
     private void updateLevel() {
         int total = 0;
         int page = 0;

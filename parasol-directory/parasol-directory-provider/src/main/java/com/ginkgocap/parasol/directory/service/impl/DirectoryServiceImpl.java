@@ -399,7 +399,19 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			throw new DirectoryServiceException(e);
 		}
 	}
-	
+
+	@Override
+	public Directory getDirectory(Long appId, Long id) {
+
+		Directory directory = null;
+		try {
+			directory = (Directory) this.getMapId("GET_DIRECTORY_ID", appId, id);
+		} catch (Exception e) {
+			logger.error("invoke getMapId method failed! id = " + id);
+		}
+		return directory;
+	}
+
 	@Override
 	public List<Directory> getDirectoryList(Long appId, Long userId, List<Long> ids) throws DirectoryServiceException {
 		ServiceError.assertAppIdForDirectory(appId);
@@ -776,5 +788,28 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public List<Directory> getListByPId(long appId, int page, int size, long pid) {
+
+		int count = 0;
+		try {
+			count = countEntitys(LIST_DIRECTORY_PID_ID, pid);
+		} catch (Exception e) {
+			logger.error("invoke countEntitys method failed! sql : LIST_DIRECTORY_PID_ID,");
+		}
+		int start = page * size;
+		if (count < start) {
+			logger.info("because start > count, so return null");
+			return null;
+		}
+		List<Directory> directoryList = null;
+		try {
+			directoryList = getSubEntitys(LIST_DIRECTORY_PID_ID, start, size, pid);
+		} catch (Exception e) {
+			logger.error("invoke getSubEntitys method failed! sql : LIST_DIRECTORY_PID_ID, pid = " + pid);
+		}
+		return directoryList;
 	}
 }

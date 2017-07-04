@@ -76,7 +76,16 @@ public interface DirectoryService {
 	 * @throws DirectoryServiceException
 	 */
 	 Directory getDirectory(Long appId, Long userId, Long id) throws DirectoryServiceException;
-	
+
+	/**
+	 * 应用 用户 查询一个Directory
+	 * @param appId
+	 * @param id
+	 * @return
+	 * @throws DirectoryServiceException
+	 */
+	Directory getDirectory(Long appId, Long id);
+
 	/**
 	 * 根据 Directory Id列表 查询
 	 * 
@@ -224,4 +233,14 @@ public interface DirectoryService {
 	 * @return
 	 */
 	boolean subtractSourceCountByDirectoryIds(long userId, long appId, List<Long> ids);
+
+	/**
+	 * 查询目录 通过 pid and appId 分页
+	 * @param appId
+	 * @param start
+	 * @param size
+	 * @param pid
+	 * @return
+	 */
+	List<Directory> getListByPId(long appId, int start, int size, long pid);
 }

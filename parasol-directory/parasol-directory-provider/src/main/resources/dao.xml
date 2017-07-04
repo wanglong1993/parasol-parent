@@ -18,8 +18,12 @@
            
            <!-- 通过父目录ID找字目录 --> 
            <list name="List_Directory_Id_Pid"
-                  sqlitem="select id from tb_directory where pid=? order by orderNo"
+                  sqlitem="select id from tb_directory where pid=? and appId=1 order by orderNo"
                   sqlType="hsql" keyProperty="pid" valueProperty="id"/>
+			<!-- 通过 id，appId 查询 目录-->
+           <list name="GET_DIRECTORY_ID"
+                  sqlitem="select id from tb_directory where appId = ? and id = ? order by orderNo"
+                  sqlType="hsql" keyProperty="appId,id" valueProperty="id"/>
 
            <!-- 查询一个用户应用分类下指定的目录列表 --> 
            <list name="List_Directory_Id_AppId_UserId_TypeId_Pid"
