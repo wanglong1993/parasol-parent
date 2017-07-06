@@ -1,6 +1,7 @@
 package com.ginkgocap.parasol.file.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -63,6 +64,10 @@ public class FileIndex implements Serializable {
 	private String thumbnailsPath;
 	// appid
 	private long appId;
+	// 创建时间
+	private Date ctime;
+	// 备注信息（拓展用）
+	private String remark;
 
 	@Id
 	@GeneratedValue(generator = "id")
@@ -202,4 +207,21 @@ public class FileIndex implements Serializable {
 		this.appId = appId;
 	}
 
+	@Column(name = "ctime")
+	public Date getCtime() {
+		return ctime;
+	}
+
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
+	}
+
+	@Column(name = "remark")
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 }
