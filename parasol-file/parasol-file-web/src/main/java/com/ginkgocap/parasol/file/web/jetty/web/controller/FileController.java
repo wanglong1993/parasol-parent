@@ -100,7 +100,7 @@ public class FileController extends BaseControl {
 //	String taskId = MakePrimaryKey.getPrimaryKey();
 	
 	/**
-	 * 获取文件taskId 
+	 * 获取上传文件需要的taskId
 	 */
 	@RequestMapping(path = { "/file/getTaskId" }, method = { RequestMethod.GET })
 	public MappingJacksonValue getTaskId(HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
@@ -327,7 +327,7 @@ public class FileController extends BaseControl {
 	}
 	
 	/**
-	 * 文件下载
+	 * 根据taskId获取文件集合信息
 	 * @param fileds
 	 * @param debug
 	 * @param taskId
@@ -412,7 +412,7 @@ public class FileController extends BaseControl {
 	}
 	
 	/**
-	 * 文件下载
+	 * 根据文件ID删除文件(硬删除，文件服务器内的文件直接删除)
 	 * @param fileds
 	 * @param debug
 	 * @return	文件索引列表
