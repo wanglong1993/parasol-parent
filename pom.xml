@@ -16,6 +16,7 @@
 		<module>parasol-tags</module>
 		<module>parasol-sms</module>
 		<module>parasol-common</module>
+		<module>parasol-column</module>
 		<module>parasol-message</module>
 		<module>parasol-user</module>
 	   	<module>parasol-sensitive</module>

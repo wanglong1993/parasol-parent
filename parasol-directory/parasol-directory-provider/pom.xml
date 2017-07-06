@@ -177,23 +177,14 @@
 		</profile>
 		<profile>
 			<id>online</id>
-			<properties>
-				<!-- database -->
-				<jdbc.url>jdbc:mysql://mysql.gintong.local/parasol_directory?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
-				<!-- 数据库访问帐号 -->
-				<jdbc.username>ph_kfpt</jdbc.username>
-				<!-- 数据库访问密码 -->
-				<jdbc.password>Cual17jc5qd4</jdbc.password>
-				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
-				<log4j.level>info</log4j.level>
-				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
-				<log4j.path>./logs</log4j.path>
-				<!-- dubbo -->
-				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
-				<dubbo.registry.address>zookeeper://zk.gintong.local:2181?client=zkclient</dubbo.registry.address>
-				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
-				<dubbo.protocol.port>8824</dubbo.protocol.port>
-			</properties>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<filters>
+					<filter>sa-online.properties</filter>
+				</filters>
+			</build>
 		</profile>
 		<profile>
 			<id>testOnline</id>
