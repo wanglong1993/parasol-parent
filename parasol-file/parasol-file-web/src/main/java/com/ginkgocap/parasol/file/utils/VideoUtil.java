@@ -157,7 +157,7 @@ public class VideoUtil {
             Matcher m = pattern.matcher(sb.toString());
             if (m.find()) {
                 //float time = getTimelen(m.group(1));
-                String time = m.group(1).substring(0,8);
+                String time = m.group(1).substring(0,8);//把后面的毫秒数截掉 只要时分秒
                 System.out.println(videoPath+",视频时长："+time+", 开始时间："+m.group(2)+",比特率："+m.group(3)+"kb/s");
                 return time;
             }
@@ -169,7 +169,7 @@ public class VideoUtil {
     }
 
     /**
-     *
+     * 时间格式化为秒
      * @param timelen 格式:"00:00:10.68"
      * @return 返回时长单位为秒
      */
