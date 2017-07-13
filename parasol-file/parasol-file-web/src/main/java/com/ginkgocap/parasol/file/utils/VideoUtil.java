@@ -127,7 +127,7 @@ public class VideoUtil {
     }
 
     /**
-     * 获取视频总时间
+     * 获取 视频/音频 总时长
      * @param videoPath    视频路径
      * @param ffmpegPath   ffmpeg路径
      * @return "00:35:51"
