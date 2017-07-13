@@ -52,7 +52,7 @@ public class FileIndex implements Serializable {
 	// taskId
 	private String taskId;
 	// 类型	1:用户头像、2：知识模块、3：人脉模块、4：需求模块、5：组织客户 、6：会议模块 、7：事务、8：动态、
-	// 9：畅聊、10：社群、11：其他（可扩展）
+	// 9：畅聊、10：社群、11：云盘文件、12：其他（可扩展）、100：老数据同步
 	private int moduleType;
 	// 类型	1-图片，2-视频，3-音频, 4-附件（包含文档和其他）
 	private int fileType;

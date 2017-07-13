@@ -103,5 +103,5 @@ public interface FileIndexService {
      * @return 文件索引列表
      */
     List<FileIndex> selectFileIndexesByIds(List<Long> ids) throws FileIndexServiceException;
-    
+
 }
