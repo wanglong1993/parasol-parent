@@ -186,7 +186,11 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+		</dependency>
 		<!-- slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -231,6 +235,11 @@
 			<groupId>net.spy</groupId>
 			<artifactId>spymemcached</artifactId>
 			<version>2.11.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-file-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 		<!-- dubbo 服务注册方式 end -->
 		
@@ -399,6 +408,16 @@
 				<!-- redis端口 -->
 				<redis.port>6379</redis.port>
 				<!-- mysql -->
+				<jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
+				<c3p0.acquireIncrement>2</c3p0.acquireIncrement>
+				<c3p0.initialPoolSize>10</c3p0.initialPoolSize>
+				<c3p0.minPoolSize>10</c3p0.minPoolSize>
+				<c3p0.maxPoolSize>30</c3p0.maxPoolSize>
+				<c3p0.maxIdleTime>60</c3p0.maxIdleTime>
+				<c3p0.idleConnectionTestPeriod>28000</c3p0.idleConnectionTestPeriod>
+				<c3p0.maxStatements>0</c3p0.maxStatements>
+				<c3p0.numHelperThreads>0</c3p0.numHelperThreads>
+				<c3p0.checkoutTimeout>120</c3p0.checkoutTimeout>
 				<jdbc.url>jdbc:mysql://192.168.101.131:3306/parasol_file?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
 				<jdbc.username>zhangwei</jdbc.username>
 				<jdbc.password>zhangwei</jdbc.password>
@@ -467,6 +486,16 @@
 				<!-- redis端口 -->
 				<redis.port>6379</redis.port>
 				<!-- mysql -->
+				<jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
+				<c3p0.acquireIncrement>2</c3p0.acquireIncrement>
+				<c3p0.initialPoolSize>10</c3p0.initialPoolSize>
+				<c3p0.minPoolSize>10</c3p0.minPoolSize>
+				<c3p0.maxPoolSize>30</c3p0.maxPoolSize>
+				<c3p0.maxIdleTime>60</c3p0.maxIdleTime>
+				<c3p0.idleConnectionTestPeriod>28000</c3p0.idleConnectionTestPeriod>
+				<c3p0.maxStatements>0</c3p0.maxStatements>
+				<c3p0.numHelperThreads>0</c3p0.numHelperThreads>
+				<c3p0.checkoutTimeout>120</c3p0.checkoutTimeout>
 				<jdbc.url>jdbc:mysql://192.168.101.42:3306/parasol_file?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
 				<jdbc.username>ph_kfpt</jdbc.username>
 				<jdbc.password>Cual17jc5qd4</jdbc.password>
