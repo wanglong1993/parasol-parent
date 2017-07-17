@@ -23,9 +23,6 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 * @date 2015-11-30 
 * @version 1.0
  */
-@JsonFilter("com.ginkgocap.parasol.file.model.FileIndex")
-@Entity
-@Table(name = "tb_file_index")
 public class FileIndex implements Serializable {
 
 	/**
@@ -69,10 +66,6 @@ public class FileIndex implements Serializable {
 	// 备注信息（拓展用）
 	private String remark;
 
-	@Id
-	@GeneratedValue(generator = "id")
-	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator", parameters = { @Parameter(name = "sequence", value = "tb_file_index") })
-	@Column(name = "id")	
 	public long getId() {
 		return id;
 	}
@@ -81,7 +74,6 @@ public class FileIndex implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "file_type")
 	public int getFileType() {
         return fileType;
     }
@@ -90,7 +82,6 @@ public class FileIndex implements Serializable {
         this.fileType = fileType;
     }
 
-	@Column(name = "file_path")
 	public String getFilePath() {
 		return filePath;
 	}
@@ -99,7 +90,6 @@ public class FileIndex implements Serializable {
 		this.filePath = filePath;
 	}
 
-	@Column(name = "file_title")
 	public String getFileTitle() {
 		return fileTitle;
 	}
@@ -108,7 +98,6 @@ public class FileIndex implements Serializable {
 		this.fileTitle = fileTitle;
 	}
 
-	@Column(name = "file_size")
 	public long getFileSize() {
 		return fileSize;
 	}
@@ -117,7 +106,6 @@ public class FileIndex implements Serializable {
 		this.fileSize = fileSize;
 	}
 	
-	@Column(name = "status")
 	public int getStatus() {
 		return status;
 	}
@@ -126,7 +114,6 @@ public class FileIndex implements Serializable {
 		this.status = status;
 	}
 
-	@Column(name = "md5")
 	public String getMd5() {
 		return md5;
 	}
@@ -135,7 +122,6 @@ public class FileIndex implements Serializable {
 		this.md5 = md5;
 	}
 
-	@Column(name = "task_id")
 	public String getTaskId() {
 		return taskId;
 	}
@@ -144,7 +130,6 @@ public class FileIndex implements Serializable {
 		this.taskId = taskId;
 	}
 
-	@Column(name = "module_type")
 	public int getModuleType() {
 		return moduleType;
 	}
@@ -153,7 +138,6 @@ public class FileIndex implements Serializable {
 		this.moduleType = moduleType;
 	}
 
-	@Column(name = "crc32")
 	public String getCrc32() {
 		return crc32;
 	}
@@ -162,7 +146,6 @@ public class FileIndex implements Serializable {
 		this.crc32 = crc32;
 	}
 
-	@Column(name = "server_host")
 	public String getServerHost() {
 		return serverHost;
 	}
@@ -171,7 +154,6 @@ public class FileIndex implements Serializable {
 		this.serverHost = serverHost;
 	}
 
-	@Column(name = "creater_id")
 	public long getCreaterId() {
 		return createrId;
 	}
@@ -180,7 +162,6 @@ public class FileIndex implements Serializable {
 		this.createrId = createrId;
 	}
 
-	@Column(name = "transcoding")	
 	public int getTranscoding() {
 		return transcoding;
 	}
@@ -189,7 +170,6 @@ public class FileIndex implements Serializable {
 		this.transcoding = transcoding;
 	}
 
-	@Column(name = "thumbnails_path")
 	public String getThumbnailsPath() {
 		return thumbnailsPath;
 	}
@@ -198,7 +178,6 @@ public class FileIndex implements Serializable {
 		this.thumbnailsPath = thumbnailsPath;
 	}
 
-	@Column(name = "appId")	
 	public long getAppId() {
 		return appId;
 	}
@@ -207,7 +186,6 @@ public class FileIndex implements Serializable {
 		this.appId = appId;
 	}
 
-	@Column(name = "ctime")
 	public Date getCtime() {
 		return ctime;
 	}
@@ -216,7 +194,6 @@ public class FileIndex implements Serializable {
 		this.ctime = ctime;
 	}
 
-	@Column(name = "remark")
 	public String getRemark() {
 		return remark;
 	}
