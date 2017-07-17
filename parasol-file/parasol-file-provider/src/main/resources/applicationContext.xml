@@ -20,7 +20,7 @@
 	http://www.springframework.org/schema/data/jpa 
 	http://www.springframework.org/schema/data/jpa/spring-jpa-1.2.xsd">
 	
-	<context:component-scan base-package="com.ginkgocap.parasol.*">
+	<context:component-scan base-package="com.ginkgocap.parasol.file.*" >
 	</context:component-scan>
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -34,7 +34,7 @@
 	</bean>
 	<import resource="classpath:file-dubbo-config.xml" />
 	<import resource="classpath:file-dubbo-provider.xml" />
-	<bean name="dao" class="com.ginkgocap.ywxt.framework.dal.dao.impl.CompositeDaoImpl"/>
+	<!--<bean name="dao" class="com.ginkgocap.ywxt.framework.dal.dao.impl.CompositeDaoImpl"/>-->
 	<!-- Datasource -->
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		  p:driverClass="${jdbc.driverClassName}" p:jdbcUrl="${jdbc.url}" p:user="${jdbc.username}"
@@ -57,10 +57,10 @@
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 	<bean id="mybatisSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="mapperLocations" value="classpath:**Mapper.xml"/>
+		<property name="mapperLocations" value="classpath:**Dao.xml"/>
 	</bean>
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.ginkgocap.ywxt.affair.mapper.gen"/>
+		<property name="basePackage" value="com.ginkgocap.parasol.file.dao"/>
 		<property name="sqlSessionFactoryBeanName" value="mybatisSqlSessionFactory"/>
 	</bean>
 </beans>
