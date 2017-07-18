@@ -39,7 +39,7 @@
         crc32,
         transcoding,
         thumbnails_path,
-        app_id,
+        appId,
         ctime,
         remark
     </sql>
