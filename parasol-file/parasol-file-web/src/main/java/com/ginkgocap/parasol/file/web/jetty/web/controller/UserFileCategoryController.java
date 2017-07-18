@@ -68,15 +68,15 @@ public class UserFileCategoryController extends BaseControl {
             // 1.查询后台服务
             // 1.1 先获取用户的对应云盘记录（包括文件和目录）
 
-            List<UserFileCategory> userFileCategoryList = userFileCategoryServer.getFileAndCategoryByFileType("",loginUserId,
+            List<UserFileCategoryExt> userFileCategoryList = userFileCategoryServer.getFileAndCategoryByFileType("",loginUserId,
                         Integer.parseInt(filetype),Long.parseLong(categoryId),3,Integer.parseInt(page),Integer.parseInt(size));
             // 1.2 再根据文件ids获取文件的具体信息
             // 1.2.1 先组装ids
             List<UserFileCategoryExt> userFileCategoryExtList = new ArrayList<UserFileCategoryExt>();
             List<Long> fileIds = new ArrayList<Long>();
-            for (UserFileCategory u : userFileCategoryList) {
+            for (UserFileCategoryExt u : userFileCategoryList) {
                 if (u.getIsDir() == 0) // 把目录去除掉
-                    fileIds.add(u.getFielId());
+                    fileIds.add(u.getFileId());
             }
             if (fileIds.size() == 0) {
                 result.put("page",userFileCategoryExtList);
@@ -87,7 +87,7 @@ public class UserFileCategoryController extends BaseControl {
             List<FileIndex> fileList =  fileIndexService.selectFileIndexesByIds(fileIds);
             // 1.2.3 用户云盘记录集合和文件详情组合
 
-            for (UserFileCategory ufc : userFileCategoryList) {
+            for (UserFileCategoryExt ufc : userFileCategoryList) {
                 UserFileCategoryExt ue = new UserFileCategoryExt();
                 ue.setCtime(ufc.getCtime());
                 ue.setIsDir(ufc.getIsDir());
@@ -95,7 +95,7 @@ public class UserFileCategoryController extends BaseControl {
                 ue.setParentId(ufc.getParentId());
                 if (ufc.getIsDir() == 0) {
                     for (FileIndex f : fileList) {
-                        if (f.getId() == ufc.getFielId()) {
+                        if (f.getId() == ufc.getFileId()) {
                             ue.setFileSize(f.getFileSize());
                             ue.setFileType(f.getFileType());
                             ue.setThumbnailsPath(f.getThumbnailsPath());
@@ -147,18 +147,18 @@ public class UserFileCategoryController extends BaseControl {
         Map<String, Object> result = new HashMap<String,Object>();
         long userId = getUserId(request);
         try {
-            List<UserFileCategory> ulist = userFileCategoryServer.getFileAndCategoryByFileType(keyword,userId,Integer.parseInt(fileType),
+            List<UserFileCategoryExt> ulist = userFileCategoryServer.getFileAndCategoryByFileType(keyword,userId,Integer.parseInt(fileType),
                     Long.parseLong(parentId),0,Integer.parseInt(page),Integer.parseInt(size));
             List<Long> fileIds = new ArrayList<Long>();
-            for (UserFileCategory u : ulist) {
+            for (UserFileCategoryExt u : ulist) {
                 if (u.getIsDir() == 0) // 把目录去除掉
-                    fileIds.add(u.getFielId());
+                    fileIds.add(u.getFileId());
             }
             // 1.2.2 查询到文件集合
             List<FileIndex> fileList =  fileIndexService.selectFileIndexesByIds(fileIds);
             // 1.2.3 用户云盘记录集合和文件详情组合
             List<UserFileCategoryExt> userFileCategoryExtList = null;
-            for (UserFileCategory ufc : ulist) {
+            for (UserFileCategoryExt ufc : ulist) {
                 UserFileCategoryExt ue = new UserFileCategoryExt();
                 ue.setCtime(ufc.getCtime());
                 ue.setIsDir(ufc.getIsDir());
@@ -166,7 +166,7 @@ public class UserFileCategoryController extends BaseControl {
                 ue.setParentId(ufc.getParentId());
                 if (ufc.getIsDir() == 0) {
                     for (FileIndex f : fileList) {
-                        if (f.getId() == ufc.getFielId()) {
+                        if (f.getId() == ufc.getFileId()) {
                             ue.setFileSize(f.getFileSize());
                             ue.setFileType(f.getFileType());
                             ue.setThumbnailsPath(f.getThumbnailsPath());
