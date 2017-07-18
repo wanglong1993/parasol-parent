@@ -7,6 +7,6 @@
 	http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
     
-    <dubbo:service interface="com.ginkgocap.parasol.file.service.FileIndexService" ref="fileIndexService" version="2.0.0" />
-    <dubbo:service interface="com.ginkgocap.parasol.file.service.UserFileCategoryServer" ref="userFileCategoryServer" version="2.0.0"/>
+    <dubbo:service interface="com.ginkgocap.parasol.file.service.FileIndexService" ref="fileIndexService" version="3.0.0" />
+    <dubbo:service interface="com.ginkgocap.parasol.file.service.UserFileCategoryServer" ref="userFileCategoryServer" version="3.0.0"/>
 </beans>
