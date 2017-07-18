@@ -23,4 +23,6 @@ public interface FileIndexDao {
     List<FileIndex> getFileIndexesByCreaterId(@Param("userId") long createrId);
 
     int deleteFileIndexesByTaskId(@Param("taskId") String taskId);
+
+    List<FileIndex> selectFileIndexesByIds(@Param("ids") List<Long> ids);
 }

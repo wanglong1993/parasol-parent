@@ -24,7 +24,7 @@
         <result column="fiel_id" property="fielId"/>
         <result column="is_dir" property="isDir"/>
         <result column="file_type" property="fileType" />
-        <result column="file_size" property="file_size" />
+        <result column="file_size" property="fileSize" />
         <result column="thumbnails_path" property="thumbnailsPath" />
         <result column="remark" property="remark" />
         <result column="file_title" property="fileTitle" />

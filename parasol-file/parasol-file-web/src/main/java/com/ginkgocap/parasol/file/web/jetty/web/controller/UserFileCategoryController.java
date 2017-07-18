@@ -1,23 +1,16 @@
 package com.ginkgocap.parasol.file.web.jetty.web.controller;
 
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.model.UserFileCategory;
 import com.ginkgocap.parasol.file.model.UserFileCategoryExt;
 import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.file.service.UserFileCategoryServer;
-import com.ginkgocap.parasol.file.web.jetty.modle.User;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
-import org.apache.commons.collections.map.HashedMap;
 import org.csource.common.MyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -26,6 +19,7 @@ import java.util.*;
 /**
  * Created by xutlong on 2017/7/7.
  */
+@RestController
 public class UserFileCategoryController extends BaseControl {
 
     @Value("jtmobileserver.root")
@@ -73,19 +67,26 @@ public class UserFileCategoryController extends BaseControl {
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
             // 1.查询后台服务
             // 1.1 先获取用户的对应云盘记录（包括文件和目录）
+
             List<UserFileCategory> userFileCategoryList = userFileCategoryServer.getFileAndCategoryByFileType("",loginUserId,
                         Integer.parseInt(filetype),Long.parseLong(categoryId),3,Integer.parseInt(page),Integer.parseInt(size));
             // 1.2 再根据文件ids获取文件的具体信息
             // 1.2.1 先组装ids
+            List<UserFileCategoryExt> userFileCategoryExtList = new ArrayList<UserFileCategoryExt>();
             List<Long> fileIds = new ArrayList<Long>();
             for (UserFileCategory u : userFileCategoryList) {
                 if (u.getIsDir() == 0) // 把目录去除掉
                     fileIds.add(u.getFielId());
             }
+            if (fileIds.size() == 0) {
+                result.put("page",userFileCategoryExtList);
+                result.put("success",true);
+                return genRespBody(result,null);
+            }
             // 1.2.2 查询到文件集合
             List<FileIndex> fileList =  fileIndexService.selectFileIndexesByIds(fileIds);
             // 1.2.3 用户云盘记录集合和文件详情组合
-            List<UserFileCategoryExt> userFileCategoryExtList = null;
+
             for (UserFileCategory ufc : userFileCategoryList) {
                 UserFileCategoryExt ue = new UserFileCategoryExt();
                 ue.setCtime(ufc.getCtime());

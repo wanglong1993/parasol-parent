@@ -172,6 +172,15 @@
         WHERE id = #{id}
     </select>
 
+    <select id="selectFileIndexesByIds" resultMap="AllColumnMap">
+        SELECT <include refid="all_column"/>
+        FROM tb_file_index
+        WHERE id IN 
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
     <select id="getFileIndexByTaskId" resultMap="AllColumnMap" >
         SELECT <include refid="all_column"/>
         FROM tb_file_index

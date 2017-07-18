@@ -171,12 +171,12 @@ public class FileIndexServiceImpl  implements FileIndexService {
     	if( ids==null || ids.size()==0 ) throw new FileIndexServiceException(error_idList_null,"ids list is null!");
     	logger.info("进入根据id列表获取上传文件索引列表：参数ids：{}", ids);       	
         List<FileIndex> list = null;
-//        try {
-//			list = getEntityByIds(ids);
-//		} catch (BaseServiceException e) {
-//	    	logger.error("根据id列表获取上传文件索引列表失败：参数ids：{}", ids);
-//	    	throw new FileIndexServiceException(e);
-//		}
+        try {
+			list = fileIndexDao.selectFileIndexesByIds(ids);
+		} catch (Exception e) {
+	    	logger.error("根据id列表获取上传文件索引列表失败：参数ids：{}", ids);
+	    	throw new FileIndexServiceException(e);
+		}
         return list;
     }
 

@@ -1,4 +1,4 @@
-package com.ginkgocap.parasol.file.utils;
+package com.example.demo.utils;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGEncodeParam;

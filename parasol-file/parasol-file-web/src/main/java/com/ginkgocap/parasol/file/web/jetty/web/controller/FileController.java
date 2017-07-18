@@ -16,18 +16,19 @@
 
 package com.ginkgocap.parasol.file.web.jetty.web.controller;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
+import com.alibaba.dubbo.rpc.RpcException;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.ginkgocap.parasol.file.dataimporter.service.PicPersonService;
+import com.ginkgocap.parasol.file.dataimporter.service.PicUserService;
+import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
+import com.ginkgocap.parasol.file.model.FileIndex;
+import com.ginkgocap.parasol.file.model.PicPerson;
+import com.ginkgocap.parasol.file.model.PicUser;
+import com.ginkgocap.parasol.file.service.FileIndexService;
+import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
+import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
+import com.ginkgocap.ywxt.util.MakePrimaryKey;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
@@ -45,20 +46,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.dubbo.rpc.RpcException;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.ginkgocap.parasol.file.dataimporter.service.PicPersonService;
-import com.ginkgocap.parasol.file.dataimporter.service.PicUserService;
-import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
-import com.ginkgocap.parasol.file.model.FileIndex;
-import com.ginkgocap.parasol.file.model.PicPerson;
-import com.ginkgocap.parasol.file.model.PicUser;
-import com.ginkgocap.parasol.file.service.FileIndexService;
-import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
-import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
+import javax.servlet.http.HttpServletRequest;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
+
 //import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
-import com.ginkgocap.ywxt.util.MakePrimaryKey;
 
 /**
  * 
@@ -88,7 +82,7 @@ public class FileController extends BaseControl {
 	private static final String parameterAppId = "appId"; // y开始坐标
 	private static final String parameterUserId = "userId"; // y开始坐标
 
-	@Resource
+	@Autowired
 	private FileIndexService fileIndexService;
 
 	@Autowired
