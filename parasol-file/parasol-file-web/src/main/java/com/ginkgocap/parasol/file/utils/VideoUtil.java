@@ -1,4 +1,4 @@
-package com.example.demo.utils;
+package com.ginkgocap.parasol.file.utils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
