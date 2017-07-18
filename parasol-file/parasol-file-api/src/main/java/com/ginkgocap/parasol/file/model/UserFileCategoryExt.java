@@ -37,6 +37,8 @@ public class UserFileCategoryExt implements Serializable{
     private String remark = "";
     // 文件名称
     private String fileTitle = "";
+    // 文件类型
+    private int ModuleType = 0;
 
     public String getFileTitle() {
         return fileTitle;
@@ -164,5 +166,13 @@ public class UserFileCategoryExt implements Serializable{
 
     public void setServerHost(String serverHost) {
         this.serverHost = serverHost;
+    }
+
+    public int getModuleType() {
+        return ModuleType;
+    }
+
+    public void setModuleType(int moduleType) {
+        ModuleType = moduleType;
     }
 }

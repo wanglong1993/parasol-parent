@@ -30,6 +30,7 @@
         <result column="file_title" property="fileTitle" />
         <result column="file_path" property="filePath" />
         <result column="server_host" property="serverHost" />
+        <result column="module_type" property="moduleType" />
     </resultMap>
 
 <!--auto generated Code-->
@@ -143,7 +144,8 @@
            f.file_type,
            f.file_size,
            f.thumbnails_path,
-           f.remark
+           f.remark,
+           f.module_type
         FROM
            tb_user_file_category fc
            LEFT JOIN tb_file_index f ON fc.`file_id` = f.id
