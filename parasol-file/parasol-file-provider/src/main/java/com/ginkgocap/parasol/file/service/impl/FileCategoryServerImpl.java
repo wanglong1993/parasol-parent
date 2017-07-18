@@ -1,6 +1,5 @@
 package com.ginkgocap.parasol.file.service.impl;
 
-import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.file.service.FileCategoryServer;
 import org.springframework.stereotype.Service;
 
@@ -9,5 +8,5 @@ import org.springframework.stereotype.Service;
  */
 
 @Service("fileCategoryServerImpl")
-public class FileCategoryServerImpl extends BaseService implements FileCategoryServer {
+public class FileCategoryServerImpl implements FileCategoryServer {
 }

@@ -153,7 +153,7 @@
                AND f.file_type is not null
            </if>
            <if test="pojos.parentId != null">
-               AND f.parent_id = #{pojos.parentId}
+               AND fc.parent_id = #{pojos.parentId}
            </if>
         ORDER BY is_dir DESC,ctime DESC
         <if test="pojos.start != null and pojos.size != null">
