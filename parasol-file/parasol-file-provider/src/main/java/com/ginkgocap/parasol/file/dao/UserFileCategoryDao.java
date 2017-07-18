@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.file.dao;
 
+import com.ginkgocap.parasol.file.model.UserFileCategoryExt;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ public interface UserFileCategoryDao {
 
     int update(@Param("pojo") UserFileCategory pojo);
 
-    List<UserFileCategory> getFileAndCategoryByFileType(@Param("pojos") Map<String, Object> pojos);
+    List<UserFileCategoryExt> getFileAndCategoryByFileType(@Param("pojos") Map<String, Object> pojos);
 
     boolean existUserCategory(@Param("pojo") Map<String, Object> pojo);
 

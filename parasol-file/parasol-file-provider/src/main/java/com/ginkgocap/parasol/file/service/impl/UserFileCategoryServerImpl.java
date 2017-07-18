@@ -2,6 +2,7 @@ package com.ginkgocap.parasol.file.service.impl;
 
 import com.ginkgocap.parasol.file.dao.UserFileCategoryDao;
 import com.ginkgocap.parasol.file.model.UserFileCategory;
+import com.ginkgocap.parasol.file.model.UserFileCategoryExt;
 import com.ginkgocap.parasol.file.service.UserFileCategoryServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
     }
 
     @Override
-    public List<UserFileCategory> getFileAndCategoryByFileType(String keyword,Long loginUserId, int fileType, Long category,int isDir, int page, int size) {
+    public List<UserFileCategoryExt> getFileAndCategoryByFileType(String keyword, Long loginUserId, int fileType, Long category, int isDir, int page, int size) {
         Map<String,Object> pojo = new HashMap<String, Object>();
         pojo.put("userId",loginUserId);
         pojo.put("fileType",fileType);
