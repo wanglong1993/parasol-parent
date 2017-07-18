@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.ginkgocap.parasol.file.model.UserFileCategory;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface UserFileCategoryDao {
 
     int insert(@Param("pojo") UserFileCategory pojo);

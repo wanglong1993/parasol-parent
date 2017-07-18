@@ -1,15 +1,11 @@
 package com.ginkgocap.parasol.file.service.impl;
 
-import com.ginkgocap.parasol.common.service.impl.BaseService;
 import com.ginkgocap.parasol.file.dao.UserFileCategoryDao;
 import com.ginkgocap.parasol.file.model.UserFileCategory;
-import com.ginkgocap.parasol.file.model.UserFileCategoryExt;
 import com.ginkgocap.parasol.file.service.UserFileCategoryServer;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +13,12 @@ import java.util.Map;
 /**
  * Created by xutlong on 2017/7/7.
  */
-public class UserFileCategoryServerImpl extends BaseService<UserFileCategory> implements UserFileCategoryServer{
+@Service("userFileCategoryServer")
+public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
 
     @Autowired
     UserFileCategoryDao userFileCategoryDao;
+
     @Override
     public List<UserFileCategory> getFileAndCategory(long userId, long category, int page, int size) {
         return null;
