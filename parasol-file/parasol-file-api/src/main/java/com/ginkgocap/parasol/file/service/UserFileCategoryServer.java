@@ -64,7 +64,7 @@ public interface UserFileCategoryServer {
      * @param size
      * @return
      */
-    List<UserFileCategory> getFileAndCategoryByFileType(String keyword,Long loginUserId, int fileType, Long category,
+    List<UserFileCategoryExt> getFileAndCategoryByFileType(String keyword,Long loginUserId, int fileType, Long category,
                                                         int isDir,int page, int size);
 
     /**
