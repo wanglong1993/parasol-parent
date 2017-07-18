@@ -336,7 +336,8 @@ public class FileController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = { "/file/getFileIndexesByTaskId" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getFileIndexesByTaskId(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+	public MappingJacksonValue getFileIndexesByTaskId(
+			@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId
 			) throws FileIndexServiceException {
@@ -969,7 +970,6 @@ public class FileController extends BaseControl {
 	@Override
 	protected <T> void processBusinessException(ResponseError error, Exception ex) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	@RequestMapping(path = { "/file/test" }, method = { RequestMethod.POST })

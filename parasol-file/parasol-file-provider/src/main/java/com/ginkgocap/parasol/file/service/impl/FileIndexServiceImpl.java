@@ -177,7 +177,7 @@ public class FileIndexServiceImpl extends BaseService<FileIndex> implements File
         return list;
     }
 
-    @Override
+	@Override
     public boolean deleteFileIndexesByTaskId(String taskId) throws FileIndexServiceException {
 		if(StringUtils.isBlank(taskId)) throw new FileIndexServiceException(error_taskId_blank,"taskId is null!");
     	logger.info("进入根据taskid删除上传文件索引列表：参数taskid：{}", taskId);   
