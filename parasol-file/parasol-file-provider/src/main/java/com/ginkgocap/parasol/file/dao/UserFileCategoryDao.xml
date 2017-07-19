@@ -10,7 +10,7 @@
         <result column="sort_id" property="sortId"/>
         <result column="ctime" property="ctime"/>
         <result column="parent_id" property="parentId"/>
-        <result column="fiel_id" property="fielId"/>
+        <result column="file_id" property="fileId"/>
         <result column="is_dir" property="isDir"/>
     </resultMap>
 
