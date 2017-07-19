@@ -47,7 +47,7 @@
 
 <!--auto generated Code-->
     <insert id="insert">
-        INSERT INTO user_file_category
+        INSERT INTO tb_user_file_category
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pojo.id != null"> id, </if>
             <if test="pojo.userId != null"> user_id, </if>
@@ -73,7 +73,7 @@
 
 <!--auto generated Code-->
     <insert id="insertList">
-        INSERT INTO user_file_category(
+        INSERT INTO tb_user_file_category(
         <include refid="all_column"/>
         )VALUES
         <foreach collection="pojos" item="pojo" index="index" separator=",">
@@ -92,7 +92,7 @@
 
 <!--auto generated Code-->
     <update id="update">
-        UPDATE user_file_category
+        UPDATE tb_user_file_category
         <set>
             <if test="pojo.id != null"> id = #{pojo.id}, </if>
             <if test="pojo.userId != null"> user_id = #{pojo.userId}, </if>
