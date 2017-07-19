@@ -214,6 +214,15 @@
 
     </select>
 
+    <select id="selectByAndCId" resultMap="AllColumnMap" >
+        SELECT <include refid="all_column" />
+        FROM tb_user_file_category
+        WHERE
+          user_id = #{userId}
+          AND file_id = #{id}
+          AND parent_id = #{cid}
+    </select>
+
 <!--auto generated Code-->
     <delete id="delete">
         DELETE FROM tb_user_file_category where id = #{pojo.id}
