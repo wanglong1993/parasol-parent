@@ -22,9 +22,9 @@ import java.util.*;
 @RestController
 public class UserFileCategoryController extends BaseControl {
 
-    @Value("jtmobileserver.root")
+    @Value("${jtmobileserver.root}")
     private String nginxRoot;
-    @Value("nginxDFSRoot")
+    @Value("${nginxDFSRoot}")
     private String nginxDFSRoot;
 
     private static final String parameterId = "id";
@@ -57,8 +57,8 @@ public class UserFileCategoryController extends BaseControl {
     @RequestMapping(path = { "/file/queryAllRCategory" }, method = { RequestMethod.GET })
     public Map<String,Object> queryAllRCategory(
             @RequestParam(name = UserFileCategoryController.parameterCategoryId ,defaultValue = "0") String categoryId,
-            @RequestParam(name = UserFileCategoryController.parameterpage) String page,
-            @RequestParam(name = UserFileCategoryController.parametersize, defaultValue = "-1") String size,
+            @RequestParam(name = UserFileCategoryController.parameterpage,defaultValue = "0") String page,
+            @RequestParam(name = UserFileCategoryController.parametersize, defaultValue = "9999") String size,
             @RequestParam(name = UserFileCategoryController.parameterfileType, defaultValue = "0") String filetype,
             HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -70,23 +70,6 @@ public class UserFileCategoryController extends BaseControl {
 
             List<UserFileCategoryExt> userFileCategoryList = userFileCategoryServer.getFileAndCategoryByFileType("",loginUserId,
                         Integer.parseInt(filetype),Long.parseLong(categoryId),3,Integer.parseInt(page),Integer.parseInt(size));
-            // 1.2 再根据文件ids获取文件的具体信息
-            // 1.2.1 先组装ids
-            List<UserFileCategoryExt> userFileCategoryExtList = new ArrayList<UserFileCategoryExt>();
-            List<Long> fileIds = new ArrayList<Long>();
-            for (UserFileCategoryExt u : userFileCategoryList) {
-                if (u.getIsDir() == 0) // 把目录去除掉
-                    fileIds.add(u.getFileId());
-            }
-            if (fileIds.size() == 0) {
-                result.put("page",userFileCategoryExtList);
-                result.put("success",true);
-                return genRespBody(result,null);
-            }
-            // 1.2.2 查询到文件集合
-            List<FileIndex> fileList =  fileIndexService.selectFileIndexesByIds(fileIds);
-            // 1.2.3 用户云盘记录集合和文件详情组合
-
             for (UserFileCategoryExt ufc : userFileCategoryList) {
                 UserFileCategoryExt ue = new UserFileCategoryExt();
                 ue.setCtime(ufc.getCtime());
@@ -94,26 +77,14 @@ public class UserFileCategoryController extends BaseControl {
                 ue.setServerFilename(ufc.getServerFilename());
                 ue.setParentId(ufc.getParentId());
                 if (ufc.getIsDir() == 0) {
-                    for (FileIndex f : fileList) {
-                        if (f.getId() == ufc.getFileId()) {
-                            ue.setFileSize(f.getFileSize());
-                            ue.setFileType(f.getFileType());
-                            ue.setThumbnailsPath(f.getThumbnailsPath());
-                            ue.setRemark(f.getRemark());
-                            // url需要判断
-                            if (f.getModuleType() == 100) {
-                                ue.setUrl(nginxRoot + "/mobile/download?id=" + f.getId());
-                            } else {
-                                ue.setUrl(nginxDFSRoot + "/" + f.getServerHost() + "/" + f.getFilePath() + "?filename=" + f.getFileTitle());
-                            }
-                        } else  {
-                            ue.setSortId(ufc.getSortId());
-                        }
+                    if (ufc.getModuleType() == 100) {
+                        ufc.setUrl(nginxRoot + "/mobile/download?id=" + ufc.getFileId());
+                    } else {
+                        ufc.setUrl(nginxDFSRoot + "/" + ufc.getServerHost() + "/" + ufc.getFilePath() + "?filename=" + ufc.getFileTitle());
                     }
                 }
-                userFileCategoryExtList.add(ue);
             }
-            result.put("page",userFileCategoryExtList);
+            result.put("page",userFileCategoryList);
             result.put("success",true);
             return genRespBody(result,null);
         } catch (Exception e) {
@@ -140,7 +111,7 @@ public class UserFileCategoryController extends BaseControl {
     public Map<String,Object> searchRCategory(
             @RequestParam(name = UserFileCategoryController.paramrterKeyWord, defaultValue = "") String keyword,
             @RequestParam(name = UserFileCategoryController.parameterfileType,defaultValue = "0") String fileType,
-            @RequestParam(name = UserFileCategoryController.parameterpage,defaultValue = "1") String page,
+            @RequestParam(name = UserFileCategoryController.parameterpage,defaultValue = "0") String page,
             @RequestParam(name = UserFileCategoryController.parametersize,defaultValue = "9999") String size,
             @RequestParam(name = UserFileCategoryController.parameterParentId,defaultValue = "0") String parentId,
             HttpServletRequest request) {
@@ -149,15 +120,6 @@ public class UserFileCategoryController extends BaseControl {
         try {
             List<UserFileCategoryExt> ulist = userFileCategoryServer.getFileAndCategoryByFileType(keyword,userId,Integer.parseInt(fileType),
                     Long.parseLong(parentId),0,Integer.parseInt(page),Integer.parseInt(size));
-            List<Long> fileIds = new ArrayList<Long>();
-            for (UserFileCategoryExt u : ulist) {
-                if (u.getIsDir() == 0) // 把目录去除掉
-                    fileIds.add(u.getFileId());
-            }
-            // 1.2.2 查询到文件集合
-            List<FileIndex> fileList =  fileIndexService.selectFileIndexesByIds(fileIds);
-            // 1.2.3 用户云盘记录集合和文件详情组合
-            List<UserFileCategoryExt> userFileCategoryExtList = null;
             for (UserFileCategoryExt ufc : ulist) {
                 UserFileCategoryExt ue = new UserFileCategoryExt();
                 ue.setCtime(ufc.getCtime());
@@ -165,27 +127,15 @@ public class UserFileCategoryController extends BaseControl {
                 ue.setServerFilename(ufc.getServerFilename());
                 ue.setParentId(ufc.getParentId());
                 if (ufc.getIsDir() == 0) {
-                    for (FileIndex f : fileList) {
-                        if (f.getId() == ufc.getFileId()) {
-                            ue.setFileSize(f.getFileSize());
-                            ue.setFileType(f.getFileType());
-                            ue.setThumbnailsPath(f.getThumbnailsPath());
-                            ue.setRemark(f.getRemark());
-                            // url需要判断
-                            if (f.getModuleType() == 100) {
-                                ue.setUrl(nginxRoot + "/mobile/download?id=" + f.getId());
-                            } else {
-                                ue.setUrl(nginxDFSRoot + "/" + f.getServerHost() + "/" + f.getFilePath() + "?filename=" + f.getFileTitle());
-                            }
-                        } else  {
-                            ue.setSortId(ufc.getSortId());
-                        }
+                    if (ufc.getModuleType() == 100) {
+                        ufc.setUrl(nginxRoot + "/mobile/download?id=" + ufc.getFileId());
+                    } else {
+                        ufc.setUrl(nginxDFSRoot + "/" + ufc.getServerHost() + "/" + ufc.getFilePath() + "?filename=" + ufc.getFileTitle());
                     }
                 }
-                userFileCategoryExtList.add(ue);
             }
+            result.put("page",ulist);
             result.put("success",true);
-            result.put("page",userFileCategoryExtList);
             return genRespBody(result,null);
         } catch (Exception e) {
             Map<String,Object> notificationMap = new HashMap();
