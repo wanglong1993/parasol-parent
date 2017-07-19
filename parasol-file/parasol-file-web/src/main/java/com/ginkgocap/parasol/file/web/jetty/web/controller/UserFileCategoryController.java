@@ -185,7 +185,7 @@ public class UserFileCategoryController extends BaseControl {
                 // 添加文件或目录
                 UserFileCategory userFileCategory = new UserFileCategory();
                 userFileCategory.setServerFilename(name);
-                userFileCategory.setFielId(0l);
+                userFileCategory.setFileId(0l);
                 userFileCategory.setSortId("");
                 userFileCategory.setParentId(parentId);
                 userFileCategory.setUserId(userId);
@@ -244,7 +244,7 @@ public class UserFileCategoryController extends BaseControl {
             userFileCategory.setCtime(new Date());
             userFileCategory.setIsDir(0);
             userFileCategory.setUserId(userId);
-            userFileCategory.setFielId(Long.parseLong(fid));
+            userFileCategory.setFileId(Long.parseLong(fid));
             int id = userFileCategoryServer.insert(userFileCategory);
             if (id > 0) {
                 result.put("success",true);
