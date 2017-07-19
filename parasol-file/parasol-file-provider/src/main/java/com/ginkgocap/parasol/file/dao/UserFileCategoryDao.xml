@@ -129,6 +129,7 @@
     </select>
 
     <select id="getFileAndCategoryByFileType" resultMap="userFileCategoryExt">
+        <bind name="keyword" value="'%' + pojos.keyword + '%'"></bind>
         SELECT
            fc.id ,
            fc.user_id ,
@@ -156,6 +157,23 @@
            </if>
            <if test="pojos.parentId != null">
                AND fc.parent_id = #{pojos.parentId}
+           </if>
+           <if test="pojos.isDir == 0 or pojos.isDir ==1">
+               AND fc.is_dir = #{pojos.isDir}
+           </if>
+           <if test="pojos.keyword != null and pojos.keyword != ''.toString()">
+               AND(
+                   CASE
+                       WHEN(
+                           fc.server_filename IS NULL
+                           OR fc.server_filename = 'null'
+                           OR fc.server_filename = ''
+                       )THEN
+                           f.file_title LIKE #{keyword}
+                       ELSE
+                           fc.server_filename LIKE #{keyword}
+                   END
+               )
            </if>
         ORDER BY is_dir DESC,ctime DESC
         <if test="pojos.start != null and pojos.size != null">

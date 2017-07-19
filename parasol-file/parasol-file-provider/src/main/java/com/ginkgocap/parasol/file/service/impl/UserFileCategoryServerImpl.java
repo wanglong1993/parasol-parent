@@ -31,7 +31,7 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
         pojo.put("userId",loginUserId);
         pojo.put("fileType",fileType);
         pojo.put("parentId",category);
-        pojo.put("start",page);
+        pojo.put("start",(page+1)*size);
         pojo.put("size",size);
         pojo.put("keyword",keyword);
         pojo.put("isDir",isDir);
