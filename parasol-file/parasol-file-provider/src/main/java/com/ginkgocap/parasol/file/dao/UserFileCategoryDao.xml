@@ -117,7 +117,7 @@
             <if test="pojo.sortId != null"> AND sort_id = #{pojo.sortId} </if>
             <if test="pojo.ctime != null"> AND ctime = #{pojo.ctime} </if>
             <if test="pojo.parentId != null"> AND parent_id = #{pojo.parentId} </if>
-            <if test="pojo.fileId != null"> AND fiel_id = #{pojo.fileId} </if>
+            <if test="pojo.fileId != null"> AND file_id = #{pojo.fileId} </if>
             <if test="pojo.isDir != null"> AND is_dir = #{pojo.isDir} </if>
         </where>
     </select>
