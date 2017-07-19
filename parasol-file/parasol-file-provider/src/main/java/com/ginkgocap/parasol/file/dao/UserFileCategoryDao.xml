@@ -47,7 +47,7 @@
 
 <!--auto generated Code-->
     <insert id="insert">
-        INSERT INTO user_file_category
+        INSERT INTO tb_user_file_category
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pojo.id != null"> id, </if>
             <if test="pojo.userId != null"> user_id, </if>
@@ -55,7 +55,7 @@
             <if test="pojo.sortId != null"> sort_id, </if>
             <if test="pojo.ctime != null"> ctime, </if>
             <if test="pojo.parentId != null"> parent_id, </if>
-            <if test="pojo.fielId != null"> fiel_id, </if>
+            <if test="pojo.fileId != null"> file_id, </if>
             <if test="pojo.isDir != null"> is_dir, </if>
         </trim>
         VALUES
@@ -66,14 +66,14 @@
             <if test="pojo.sortId != null"> #{pojo.sortId}, </if>
             <if test="pojo.ctime != null"> #{pojo.ctime}, </if>
             <if test="pojo.parentId != null"> #{pojo.parentId}, </if>
-            <if test="pojo.fielId != null"> #{pojo.fielId}, </if>
+            <if test="pojo.fileId != null"> #{pojo.fileId}, </if>
             <if test="pojo.isDir != null"> #{pojo.isDir}, </if>
         </trim>
     </insert>
 
 <!--auto generated Code-->
     <insert id="insertList">
-        INSERT INTO user_file_category(
+        INSERT INTO tb_user_file_category(
         <include refid="all_column"/>
         )VALUES
         <foreach collection="pojos" item="pojo" index="index" separator=",">
@@ -84,7 +84,7 @@
             #{pojo.sortId},
             #{pojo.ctime},
             #{pojo.parentId},
-            #{pojo.fielId},
+            #{pojo.fileId},
             #{pojo.isDir}
             )
         </foreach>
@@ -92,7 +92,7 @@
 
 <!--auto generated Code-->
     <update id="update">
-        UPDATE user_file_category
+        UPDATE tb_user_file_category
         <set>
             <if test="pojo.id != null"> id = #{pojo.id}, </if>
             <if test="pojo.userId != null"> user_id = #{pojo.userId}, </if>
@@ -100,7 +100,7 @@
             <if test="pojo.sortId != null"> sort_id = #{pojo.sortId}, </if>
             <if test="pojo.ctime != null"> ctime = #{pojo.ctime}, </if>
             <if test="pojo.parentId != null"> parent_id = #{pojo.parentId}, </if>
-            <if test="pojo.fielId != null"> fiel_id = #{pojo.fielId}, </if>
+            <if test="pojo.fileId != null"> fiel_id = #{pojo.fileId}, </if>
             <if test="pojo.isDir != null"> is_dir = #{pojo.isDir} </if>
         </set>
          WHERE id = #{pojo.id}
@@ -117,7 +117,7 @@
             <if test="pojo.sortId != null"> AND sort_id = #{pojo.sortId} </if>
             <if test="pojo.ctime != null"> AND ctime = #{pojo.ctime} </if>
             <if test="pojo.parentId != null"> AND parent_id = #{pojo.parentId} </if>
-            <if test="pojo.fielId != null"> AND fiel_id = #{pojo.fielId} </if>
+            <if test="pojo.fileId != null"> AND fiel_id = #{pojo.fileId} </if>
             <if test="pojo.isDir != null"> AND is_dir = #{pojo.isDir} </if>
         </where>
     </select>
