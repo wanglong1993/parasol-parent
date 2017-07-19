@@ -74,7 +74,7 @@ public interface UserFileCategoryServer {
      * @param name
      * @return
      */
-    boolean existUserCategory(Long userId, Long parentId, String name);
+    boolean existUserCategory(Long userId, Long parentId, String name,int isDir);
 
     /**
      * 根据文件id和目录Id确定文件是否存在于目录下
