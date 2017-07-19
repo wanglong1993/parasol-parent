@@ -31,7 +31,7 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
         pojo.put("userId",loginUserId);
         pojo.put("fileType",fileType);
         pojo.put("parentId",category);
-        pojo.put("start",(page+1)*size);
+        pojo.put("start",page * size);
         pojo.put("size",size);
         pojo.put("keyword",keyword);
         pojo.put("isDir",isDir);
@@ -45,8 +45,7 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
         pojo.put("parentId",parentId);
         pojo.put("name", name);
         pojo.put("isDir",isDir);
-        System.out.println(userFileCategoryDao.existUserCategory(pojo));
-        return userFileCategoryDao.existUserCategory(pojo) > 0 ? false : true;
+        return userFileCategoryDao.existUserCategory(pojo) == 0 ? false : true;
     }
 
     public int insert(UserFileCategory pojo){
