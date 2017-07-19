@@ -1,13 +1,14 @@
 package com.ginkgocap.parasol.file.model;
 
 import javax.persistence.Column;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by xutlong on 2017/7/7.
  * 用户目录文件组合结构 最新表结构
  */
-public class UserFileCategory {
+public class UserFileCategory implements Serializable{
     private static final long serialVersionUID = 1L;
 
     private Long id;
