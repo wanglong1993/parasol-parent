@@ -107,7 +107,7 @@ public class UserFileCategoryController extends BaseControl {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/file/search",method = RequestMethod.POST)
+    @RequestMapping(value = "/file/search",method = RequestMethod.GET)
     public Map<String,Object> searchRCategory(
             @RequestParam(name = UserFileCategoryController.paramrterKeyWord, defaultValue = "") String keyword,
             @RequestParam(name = UserFileCategoryController.parameterfileType,defaultValue = "0") String fileType,
@@ -119,7 +119,7 @@ public class UserFileCategoryController extends BaseControl {
         long userId = getUserId(request);
         try {
             List<UserFileCategoryExt> ulist = userFileCategoryServer.getFileAndCategoryByFileType(keyword,userId,Integer.parseInt(fileType),
-                    Long.parseLong(parentId),0,Integer.parseInt(page),Integer.parseInt(size));
+                    parentId.equals("0")?null:Long.parseLong(parentId),0,Integer.parseInt(page),Integer.parseInt(size));
             for (UserFileCategoryExt ufc : ulist) {
                 UserFileCategoryExt ue = new UserFileCategoryExt();
                 ue.setCtime(ufc.getCtime());
@@ -147,10 +147,10 @@ public class UserFileCategoryController extends BaseControl {
     }
 
     /**
-     * 新增或者修改用户目录
+     * 新增或者修改云盘文件信息
      */
     @ResponseBody
-    @RequestMapping("/file/saveCategory")
+    @RequestMapping("/file/saveOrUpdateCategoryOrFile")
     public Map<String,Object> saveOrUpdateCategory(
             @RequestParam(name = UserFileCategoryController.parameterId , defaultValue = "0") String _id,
             @RequestParam(name = UserFileCategoryController.parameterParentId, defaultValue = "0") String _parentId,
@@ -173,12 +173,12 @@ public class UserFileCategoryController extends BaseControl {
                 return genRespBody(result,notificationMap);
             }
             // 检查文件名是否合法
-            if (existUserCategory(userId,parentId,name)) {
+            if (existUserCategory(userId,parentId,name,Integer.parseInt(isDir))) {
                 // 名称无效 直接返回
                 Map<String,Object> notificationMap = new HashMap<String,Object>();
                 result.put("success",false);
                 notificationMap.put("notifCode", "1013");
-                notificationMap.put("notifInfo", "目录重复");
+                notificationMap.put("notifInfo", "名称重复");
                 return genRespBody(result,notificationMap);
             }
             if (id == 0) {
@@ -302,8 +302,8 @@ public class UserFileCategoryController extends BaseControl {
 
     }
 
-    private boolean existUserCategory(Long userId, Long parentId, String name) {
-        return userFileCategoryServer.existUserCategory(userId,parentId,name);
+    private boolean existUserCategory(Long userId, Long parentId, String name,int isDir) {
+        return userFileCategoryServer.existUserCategory(userId,parentId,name,isDir);
     }
 
     private List<Long> covertIdsToLong(String fileIds) {
