@@ -23,11 +23,10 @@ public class UserFileCategory implements Serializable{
     // 父目录ID
     private Long parentId;
     // 文件ID
-    private Long fielId;
+    private Long fileId;
     // 是否目录（0：不是，1：是）
     private int isDir;
 
-    @Column(name = "id")
     public Long getId() {
         return id;
     }
@@ -36,7 +35,6 @@ public class UserFileCategory implements Serializable{
         this.id = id;
     }
 
-    @Column(name = "user_id")
     public Long getUserId() {
         return userId;
     }
@@ -45,7 +43,6 @@ public class UserFileCategory implements Serializable{
         this.userId = userId;
     }
 
-    @Column(name = "category_name")
     public String getServerFilename() {
         return serverFilename;
     }
@@ -54,7 +51,6 @@ public class UserFileCategory implements Serializable{
         this.serverFilename = serverFilename;
     }
 
-    @Column(name = "sort_id")
     public String getSortId() {
         return sortId;
     }
@@ -63,7 +59,6 @@ public class UserFileCategory implements Serializable{
         this.sortId = sortId;
     }
 
-    @Column(name = "ctime")
     public Date getCtime() {
         return ctime;
     }
@@ -72,7 +67,6 @@ public class UserFileCategory implements Serializable{
         this.ctime = ctime;
     }
 
-    @Column(name = "parent_id")
     public Long getParentId() {
         return parentId;
     }
@@ -81,16 +75,14 @@ public class UserFileCategory implements Serializable{
         this.parentId = parentId;
     }
 
-    @Column(name = "file_id")
-    public Long getFielId() {
-        return fielId;
+    public Long getFileId() {
+        return fileId;
     }
 
-    public void setFielId(Long fielId) {
-        this.fielId = fielId;
+    public void setFileId(Long fileId) {
+        this.fileId = fileId;
     }
 
-    @Column(name = "is_dir")
     public int getIsDir() {
         return isDir;
     }

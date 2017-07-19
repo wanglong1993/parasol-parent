@@ -48,6 +48,7 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
         return userFileCategoryDao.existUserCategory(pojo) == 0 ? false : true;
     }
 
+    @Override
     public int insert(UserFileCategory pojo){
         return userFileCategoryDao.insert(pojo);
     }

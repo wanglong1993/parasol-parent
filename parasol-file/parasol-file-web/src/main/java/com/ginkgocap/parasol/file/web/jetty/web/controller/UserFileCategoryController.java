@@ -150,7 +150,7 @@ public class UserFileCategoryController extends BaseControl {
      * 新增或者修改云盘文件信息
      */
     @ResponseBody
-    @RequestMapping("/file/saveOrUpdateCategoryOrFile")
+    @RequestMapping("/file/saveOrUpdateCategory")
     public Map<String,Object> saveOrUpdateCategory(
             @RequestParam(name = UserFileCategoryController.parameterId , defaultValue = "0") String _id,
             @RequestParam(name = UserFileCategoryController.parameterParentId, defaultValue = "0") String _parentId,
