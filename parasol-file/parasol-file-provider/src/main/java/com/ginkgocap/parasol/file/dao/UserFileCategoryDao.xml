@@ -189,7 +189,7 @@
            LEFT JOIN tb_file_index f ON fc.`file_id` = f.id
         WHERE
            user_Id = #{pojo.userId}
-           fc.is_dir = #{pojo.isDir}
+           AND fc.is_dir = #{pojo.isDir}
            <if test="pojo.parentId != null">
                AND fc.parent_id = #{pojo.parentId}
            </if>
