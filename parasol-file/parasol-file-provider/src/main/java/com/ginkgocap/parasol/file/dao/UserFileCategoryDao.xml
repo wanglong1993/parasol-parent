@@ -181,7 +181,7 @@
         </if>
     </select>
 
-    <select id="existUserCategory" resultMap="int" >
+    <select id="existUserCategory" resultType="int" >
         SELECT
           count(1)
         FROM
