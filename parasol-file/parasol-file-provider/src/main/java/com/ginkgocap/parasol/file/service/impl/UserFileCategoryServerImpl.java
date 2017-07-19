@@ -39,12 +39,13 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
     }
 
     @Override
-    public boolean existUserCategory(Long userId, Long parentId, String name) {
+    public boolean existUserCategory(Long userId, Long parentId, String name, int isDir) {
         Map<String, Object> pojo = new HashMap<String, Object>();
         pojo.put("userId",userId);
         pojo.put("parentId",parentId);
         pojo.put("name", name);
-        return userFileCategoryDao.existUserCategory(pojo);
+        pojo.put("isDir",isDir);
+        return userFileCategoryDao.existUserCategory(pojo) > 0?false:true;
     }
 
     public int insert(UserFileCategory pojo){

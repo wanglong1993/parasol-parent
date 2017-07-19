@@ -181,12 +181,37 @@
         </if>
     </select>
 
-    <select id="existUserCategory" resultMap="AllColumnMap" >
+    <select id="existUserCategory" resultMap="int" >
         SELECT
           count(1)
         FROM
-          tb_user_file_category
-        WHERE AND
+           tb_user_file_category fc
+           LEFT JOIN tb_file_index f ON fc.`file_id` = f.id
+        WHERE
+           user_Id = #{pojo.userId}
+           fc.is_dir = #{pojo.isDir}
+           <if test="pojo.parentId != null">
+               AND fc.parent_id = #{pojo.parentId}
+           </if>
+           <if test="pojo.isDir == 0">
+               AND(
+                   CASE
+                       WHEN(
+                           fc.server_filename IS NULL
+                           OR fc.server_filename = 'null'
+                           OR fc.server_filename = ''
+                       )
+                       THEN
+                           f.file_title = #{pojo.name}
+                       ELSE
+                           fc.server_filename = #{pojo.name}
+                   END
+               )
+           </if>
+           <if test="pojo.isDir == 1">
+               AND fc.server_filename = #{pojo.name}
+           </if>
+
     </select>
 
 <!--auto generated Code-->

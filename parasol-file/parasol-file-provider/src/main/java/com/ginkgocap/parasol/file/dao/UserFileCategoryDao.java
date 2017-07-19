@@ -21,7 +21,7 @@ public interface UserFileCategoryDao {
 
     List<UserFileCategoryExt> getFileAndCategoryByFileType(@Param("pojos") Map<String, Object> pojos);
 
-    boolean existUserCategory(@Param("pojo") Map<String, Object> pojo);
+    int existUserCategory(@Param("pojo") Map<String, Object> pojo);
 
     UserFileCategory selectById(@Param("id") Long id);
 
