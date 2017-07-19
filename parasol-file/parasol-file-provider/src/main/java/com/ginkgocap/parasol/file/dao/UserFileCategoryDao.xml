@@ -41,7 +41,7 @@
         sort_id,
         ctime,
         parent_id,
-        fiel_id,
+        file_id,
         is_dir
     </sql>
 
