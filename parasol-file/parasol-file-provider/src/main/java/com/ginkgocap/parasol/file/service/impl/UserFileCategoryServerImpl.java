@@ -45,7 +45,8 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
         pojo.put("parentId",parentId);
         pojo.put("name", name);
         pojo.put("isDir",isDir);
-        return userFileCategoryDao.existUserCategory(pojo) > 0?false:true;
+        System.out.println(userFileCategoryDao.existUserCategory(pojo));
+        return userFileCategoryDao.existUserCategory(pojo) > 0 ? false : true;
     }
 
     public int insert(UserFileCategory pojo){
