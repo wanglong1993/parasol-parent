@@ -28,6 +28,7 @@ import com.ginkgocap.parasol.file.model.PicPerson;
 import com.ginkgocap.parasol.file.model.PicUser;
 import com.ginkgocap.parasol.file.service.FileIndexService;
 import com.ginkgocap.parasol.file.utils.FileTypeUtil;
+import com.ginkgocap.parasol.file.utils.VideoUtil;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
 import com.ginkgocap.ywxt.util.MakePrimaryKey;
@@ -41,11 +42,13 @@ import org.csource.fastdfs.TrackerServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -89,8 +92,11 @@ public class FileController extends BaseControl {
 	
 	@Autowired
 	private PicUserService picUserService;
-	
-//	String taskId = MakePrimaryKey.getPrimaryKey();
+
+	@Value("${jtmobileserver.root}")
+	private String nginxRoot;
+	@Value("${nginxDFSRoot}")
+	private String nginxDFSRoot;
 	
 	/**
 	 * 获取上传文件需要的taskId
@@ -133,7 +139,12 @@ public class FileController extends BaseControl {
 			HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> result = new HashMap<String, Object>();
-		try {
+        File dir = new File("tempFile");
+        if(!dir.exists()) {
+            dir.mkdir();
+        }
+        String temp_file_path = null;
+        try {
 			Long loginAppId=this.DefaultAppId;
 			Long loginUserId=this.getUserId(request);
 
@@ -148,6 +159,9 @@ public class FileController extends BaseControl {
 			byte[] file_buff = file.getBytes();
 			StorageClient storageClient = getStorageClient();
 			String fileName = file.getOriginalFilename();
+
+            temp_file_path = dir.getAbsolutePath() + File.separator + fileName;
+            File temp_file = VideoUtil.getFile(file_buff, dir.getAbsolutePath(), fileName);
 			int f = fileName.lastIndexOf(".");
 			String fileExtName = "";
 			if (f>-1) fileExtName = fileName.substring(f+1);
@@ -164,10 +178,14 @@ public class FileController extends BaseControl {
 			
 			FileIndex index = new FileIndex();
 			String videoThumbnailsPath = "";
-			// TODO
 			if (FileTypeUtil.getFileTypeByFileSuffix(fileName) == FileType.VIDEO.getKey()) {
-				byte[] videoTh = null; // 等待工具获取
-				String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
+                byte[] videoTh = new byte[0];
+                try {
+                    videoTh = VideoUtil.executePrintScreenCodecs(temp_file.getAbsolutePath(), "5", "320*240");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
 				videoThumbnailsPath = thFields[0] + "/" + thFields[1];
 				index.setThumbnailsPath(videoThumbnailsPath);
 			}
@@ -200,8 +218,14 @@ public class FileController extends BaseControl {
 			notificationMap.put("notifCode", "1013");
 			notificationMap.put("notifInfo", error);
 			return genRespBody(result,notificationMap);
-		}
-	}
+		} finally {
+            try{
+                new File(temp_file_path).delete();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 	/**
 	 * 通过坐标截图，生成头像，生成140*140,90*90,60*60px缩略图
