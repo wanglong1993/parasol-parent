@@ -158,17 +158,25 @@ public class FileController extends BaseControl {
 				generateAvatar(fields[0], fields[1], fileExtName, null);
 				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
 			}
+
+
 			FileIndex index = new FileIndex();
 			index.setAppId(loginAppId);
 			index.setCreaterId(loginUserId);
 			index.setServerHost(fields[0]);
-			index.setFilePath(fields[1]);
+			if (moduleType == 2 || moduleType == 3 || moduleType == 4
+					|| moduleType == 5 || moduleType == 7) {
+				index.setFilePath(fields[1]+ "filename=" + file.getOriginalFilename());
+			} else {
+				index.setFilePath(fields[1]);
+			}
 			index.setFileSize(file.getSize());
 			index.setFileTitle(file.getOriginalFilename());
 			index.setFileType(fileType);
 			index.setModuleType(moduleType);
 			index.setTaskId(taskId);
 			index.setThumbnailsPath(thumbnailsPath);
+			index.setCtime(new Date());
 			index = fileIndexService.insertFileIndex(index);
 
 			result.put("success",true);
