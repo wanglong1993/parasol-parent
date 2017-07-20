@@ -218,14 +218,48 @@ public class FileController extends BaseControl {
 			notificationMap.put("notifCode", "1013");
 			notificationMap.put("notifInfo", error);
 			return genRespBody(result,notificationMap);
-		} finally {
-            try{
-                new File(temp_file_path).delete();
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+		}
+	}
+
+	/**
+	 * 根据taskId获取文件集合信息
+	 * @param fileds
+	 * @param debug
+	 * @param taskId
+	 * @return	文件索引列表
+	 * @throws FileIndexServiceException
+	 * @throws Exception
+	 */
+	@RequestMapping(path = { "/file/getFileIndexesByTaskId" }, method = { RequestMethod.GET })
+	public Map<String, Object> getFileIndexesByTaskId(
+			@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
+			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId
+	) throws FileIndexServiceException {
+		// MappingJacksonValue mappingJacksonValue = null;
+		Map<String,Object> result = new HashMap<String,Object>();
+		try {
+			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
+			for (FileIndex ufc : files) {
+				if (ufc.getModuleType() == 100) {
+					ufc.setUrl(nginxRoot + "/mobile/download?id=" + ufc.getId());
+				} else {
+					ufc.setUrl(nginxDFSRoot + "/" + ufc.getServerHost() + "/" + ufc.getFilePath());
+				}
+			}
+			result.put("success",true);
+			result.put("page",files);
+			return genRespBody(result,null);
+		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			Map<String,Object> notificationMap = new HashMap<String,Object>();
+			result.put("success",false);
+			notificationMap.put("notifCode", "1013");
+			notificationMap.put("notifInfo", error);
+			return genRespBody(result,notificationMap);
+		}
+	}
 
 	/**
 	 * 通过坐标截图，生成头像，生成140*140,90*90,60*60px缩略图
@@ -282,49 +316,7 @@ public class FileController extends BaseControl {
 		}
 	}
 	
-	/**
-	 * 根据taskId获取文件集合信息
-	 * @param fileds
-	 * @param debug
-	 * @param taskId
-	 * @return	文件索引列表
-	 * @throws FileIndexServiceException 
-	 * @throws Exception
-	 */
-	@RequestMapping(path = { "/file/getFileIndexesByTaskId" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getFileIndexesByTaskId(
-			@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId
-			) throws FileIndexServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			// 1.查询后台服务
-			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(files);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
-		} 
-	}
+
 
 	/**
 	 * 根据文件索引Id获取文件
