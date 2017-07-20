@@ -245,10 +245,10 @@ public class UserFileCategoryController extends BaseControl {
             userFileCategory.setIsDir(0);
             userFileCategory.setUserId(userId);
             userFileCategory.setFileId(Long.parseLong(fid));
-            int id = userFileCategoryServer.insert(userFileCategory);
-            if (id > 0) {
+            userFileCategoryServer.insert(userFileCategory);
+            if (userFileCategory.getId() > 0) {
                 result.put("success",true);
-                result.put("id",id);
+                result.put("id",userFileCategory.getId());
                 return genRespBody(result,null);
             }
         } catch (Exception e) {
@@ -295,6 +295,54 @@ public class UserFileCategoryController extends BaseControl {
         }
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/file/rename",method = RequestMethod.POST)
+    public Map<String,Object> renameFile(
+            @RequestParam(name = UserFileCategoryController.parameterServerFileName) String name,
+            @RequestParam(name = UserFileCategoryController.parameterId) String id,
+            @RequestParam(name = UserFileCategoryController.parameterParentId) String parentId,
+            HttpServletRequest request ) {
+        Map<String,Object> result = new HashMap<String,Object>();
+        long userId = getUserId(request);
+        try {
+            if (id == null || Integer.parseInt(id) <= 0) {
+                Map<String,Object> notificationMap = new HashMap<String,Object>();
+                result.put("success", false);
+                notificationMap.put("notifCode", "1014");
+                notificationMap.put("notifInfo", "文件id不合法");
+                return genRespBody(result,notificationMap);
+            }
+            if (name == null || name.trim().equals("")) {
+                Map<String,Object> notificationMap = new HashMap<String,Object>();
+                result.put("success", false);
+                notificationMap.put("notifCode", "1014");
+                notificationMap.put("notifInfo", "文件名不合法");
+                return genRespBody(result,notificationMap);
+            }
+            // 检查文件名是否合法
+            if (existUserCategory(userId,Long.parseLong(parentId),name,0)){
+                // 名称无效 直接返回
+                Map<String,Object> notificationMap = new HashMap<String,Object>();
+                result.put("success",false);
+                notificationMap.put("notifCode", "1013");
+                notificationMap.put("notifInfo", "文件名已存在");
+                return genRespBody(result,notificationMap);
+            }
+            UserFileCategory ufc = new UserFileCategory();
+            ufc.setId(Long.parseLong(id));
+            ufc.setUserId(userId);
+            ufc.setServerFilename(name);
+            userFileCategoryServer.update(ufc);
+            result.put("success",true);
+            return genRespBody(result,null);
+        } catch (Exception e) {
+            Map<String,Object> notificationMap = new HashMap<String,Object>();
+            result.put("success",false);
+            notificationMap.put("notifCode", "1013");
+            notificationMap.put("notifInfo", "服务器异常");
+            return genRespBody(result,notificationMap);
+        }
+    }
 
 
     @Override
