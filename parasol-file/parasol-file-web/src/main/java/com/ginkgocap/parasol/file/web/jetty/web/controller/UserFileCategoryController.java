@@ -1,7 +1,6 @@
 package com.ginkgocap.parasol.file.web.jetty.web.controller;
 
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
-import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.model.UserFileCategory;
 import com.ginkgocap.parasol.file.model.UserFileCategoryExt;
 import com.ginkgocap.parasol.file.service.FileIndexService;
