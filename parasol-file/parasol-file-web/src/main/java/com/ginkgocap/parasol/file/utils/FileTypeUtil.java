@@ -80,7 +80,7 @@ public class FileTypeUtil {
             return result;
         }
         if(-1 == fileNameWithSuffix.indexOf(".")) {
-            return result;
+            return FileType.OTHER.getKey();
         }
         String fileSuffix = fileNameWithSuffix.substring(fileNameWithSuffix.lastIndexOf(".") + 1, fileNameWithSuffix.length())
                 .toUpperCase();
@@ -90,8 +90,6 @@ public class FileTypeUtil {
             result = FileType.VIDEO.getKey();
         } else if (audio.contains(fileSuffix)) {
             result = FileType.AUDIO.getKey();
-        } else if (doc.contains(fileSuffix)) {
-            result = FileType.DOC.getKey();
         } else {
             result = FileType.OTHER.getKey();
         }

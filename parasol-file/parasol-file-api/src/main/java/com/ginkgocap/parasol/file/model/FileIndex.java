@@ -66,6 +66,8 @@ public class FileIndex implements Serializable {
 	private Date ctime;
 	// 备注信息（拓展用）
 	private String remark;
+	// 方便前端使用
+	private String url;
 
 	public long getId() {
 		return id;
@@ -201,5 +203,13 @@ public class FileIndex implements Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }
