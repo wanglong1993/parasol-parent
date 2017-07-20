@@ -268,7 +268,7 @@ public class UserFileCategoryController extends BaseControl {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/file/deleteBoth.json",method = RequestMethod.GET)
+    @RequestMapping(value = "/file/deleteBoth",method = RequestMethod.GET)
     public Map<String,Object> delete(
             @RequestParam(name = UserFileCategoryController.parameterIds,defaultValue = "0") String ids,
             HttpServletRequest request ) {
@@ -283,7 +283,7 @@ public class UserFileCategoryController extends BaseControl {
                 return genRespBody(result,notificationMap);
             }
             List<Long> idList = covertIdsToLong(ids);
-            userFileCategoryServer.bathDelete(idList);
+            userFileCategoryServer.bathDelete(userId,idList);
             result.put("success",true);
             return genRespBody(result,null);
         } catch (Exception e) {

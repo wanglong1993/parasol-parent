@@ -27,5 +27,5 @@ public interface UserFileCategoryDao {
 
     List<UserFileCategory> selectByAndCId(@Param("userId") long userId, @Param("id") String fid,@Param("cid") String cid);
 
-    void bathDelete(@Param("ids") List<Long> idList);
+    void bathDelete(@Param("userId") long userId ,@Param("ids") List<Long> idList);
 }

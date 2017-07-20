@@ -87,8 +87,9 @@ public interface UserFileCategoryServer {
 
     /**
      * 批量删除文件目录
-     * @param idList
+     * @Param userId 用户Id
+     * @param idList ids id的集合逗号分隔
      */
-    void bathDelete(List<Long> idList);
+    void bathDelete(long userId,List<Long> idList);
 
 }

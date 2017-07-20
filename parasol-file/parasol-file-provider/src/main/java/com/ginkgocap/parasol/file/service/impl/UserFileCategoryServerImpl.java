@@ -81,7 +81,7 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
     }
 
     @Override
-    public void bathDelete(List<Long> idList) {
-        userFileCategoryDao.bathDelete(idList);
+    public void bathDelete(long userId,List<Long> idList) {
+        userFileCategoryDao.bathDelete(userId,idList);
     }
 }
