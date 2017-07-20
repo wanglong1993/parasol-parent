@@ -19,6 +19,7 @@ package com.ginkgocap.parasol.file.web.jetty.web.controller;
 import com.alibaba.dubbo.rpc.RpcException;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.ginkgocap.parasol.file.constant.FileType;
 import com.ginkgocap.parasol.file.dataimporter.service.PicPersonService;
 import com.ginkgocap.parasol.file.dataimporter.service.PicUserService;
 import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
@@ -26,6 +27,7 @@ import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.model.PicPerson;
 import com.ginkgocap.parasol.file.model.PicUser;
 import com.ginkgocap.parasol.file.service.FileIndexService;
+import com.ginkgocap.parasol.file.utils.FileTypeUtil;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
 import com.ginkgocap.ywxt.util.MakePrimaryKey;
@@ -159,8 +161,16 @@ public class FileController extends BaseControl {
 				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
 			}
 
-
+			
 			FileIndex index = new FileIndex();
+			String videoThumbnailsPath = "";
+			// TODO
+			if (FileTypeUtil.getFileTypeByFileSuffix(fileName) == FileType.VIDEO.getKey()) {
+				byte[] videoTh = null; // 等待工具获取
+				String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
+				videoThumbnailsPath = thFields[0] + "/" + thFields[1];
+				index.setThumbnailsPath(videoThumbnailsPath);
+			}
 			index.setAppId(loginAppId);
 			index.setCreaterId(loginUserId);
 			index.setServerHost(fields[0]);
@@ -172,7 +182,7 @@ public class FileController extends BaseControl {
 			}
 			index.setFileSize(file.getSize());
 			index.setFileTitle(file.getOriginalFilename());
-			index.setFileType(fileType);
+			index.setFileType(FileTypeUtil.getFileTypeByFileSuffix(fileName));
 			index.setModuleType(moduleType);
 			index.setTaskId(taskId);
 			index.setThumbnailsPath(thumbnailsPath);
@@ -190,85 +200,6 @@ public class FileController extends BaseControl {
 			notificationMap.put("notifCode", "1013");
 			notificationMap.put("notifInfo", error);
 			return genRespBody(result,notificationMap);
-		}
-	}
-	/**
-	 * 
-	 * @param fileds
-	 * @param debug
-	 * @param appId
-	 * @param file
-	 * @param userId
-	 * @return
-	 * @throws FileIndexServiceException 
-	 * @throws IOException 
-	 * @throws MyException 
-	 */
-	@RequestMapping(path = { "/fileext/upload" }, method = { RequestMethod.POST })
-	public MappingJacksonValue fileextUpload(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
-			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
-			@RequestParam(name = FileController.parameterModuleType, defaultValue = "1") Integer moduleType,
-			@RequestParam(name = FileController.parameterAppId) Integer appId,
-			@RequestParam(name = FileController.parameterUserId) Integer userId,
-			@RequestParam(name = FileController.parameterTaskId, required = true) String taskId ) throws FileIndexServiceException, IOException, MyException {
-		MappingJacksonValue mappingJacksonValue = null;
-		Map<String, Object> result = new HashMap<String, Object>();
-		try {
-			if(file.getSize() == 0) {
-				result.put("error", "上传文件无效，请重新上传！");
-				return new MappingJacksonValue(result);
-			}
-			
-			byte[] file_buff = file.getBytes();
-			StorageClient storageClient = getStorageClient();
-			String fileName = file.getOriginalFilename();
-			int f = fileName.lastIndexOf(".");
-			String fileExtName = "";
-			if (f>-1) fileExtName = fileName.substring(f+1);
-			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
-			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
-			String thumbnailsPath = "";
-			
-			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-				generateAvatar(fields[0], fields[1], fileExtName, null);
-				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
-			}
-			FileIndex index = new FileIndex();
-			index.setAppId(appId);
-			index.setCreaterId(userId);
-			index.setServerHost(fields[0]);
-			index.setFilePath(fields[1]);
-			index.setFileSize(file.getSize());
-			index.setFileTitle(file.getOriginalFilename());
-			index.setFileType(fileType);
-			index.setModuleType(moduleType);
-			index.setTaskId(taskId);
-			index.setThumbnailsPath(thumbnailsPath);
-			index = fileIndexService.insertFileIndex(index);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(index);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			storageClient=null;
-			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
 		}
 	}
 
@@ -464,58 +395,7 @@ public class FileController extends BaseControl {
 			return mappingJacksonValue;	
 		}
 	}
-	/**
-	 * 文件下载
-	 * @param fileds
-	 * @param debug
-	 * @return	文件索引列表
-	 * @throws FileIndexServiceException 
-	 * @throws Exception
-	 */
-	@RequestMapping(path = { "/fileext/deleteById" }, method = { RequestMethod.GET })
-	public MappingJacksonValue deleteextFileById(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = FileController.parameterIndexId, required = true) long indexId
-			) throws FileIndexServiceException {
-		MappingJacksonValue mappingJacksonValue = null;
-		try {
-			// 0.校验输入参数（框架搞定，如果业务业务搞定）
-			FileIndex index = fileIndexService.getFileIndexById(indexId);
-			Map<String, Object> result = new HashMap<String, Object>();
-			
-			if(index == null) {
-				result.put("error", "文件索引id不存在，请检查参数！");
-				return new MappingJacksonValue(result);
-			} 
-			// fastDFS中删除上传的文件
-			deleteFileByFileId(index.getServerHost(),index.getFilePath(),index.getModuleType());
-			// 1.查询后台服务
-			boolean flag = fileIndexService.deleteFileIndexById(indexId);
-			result.put("result", flag);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(result);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			// 4.返回结果
-			return mappingJacksonValue;
-		} catch (RpcException e) {
-			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
-			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;	
-		}
-	}
-	
+
 	private void deleteFileByFileId(String group, String fileId, int moduleType) {
 		try {
 			StorageClient storageClient = getStorageClient();
