@@ -95,6 +95,7 @@ public class FileTypeUtil {
         } else {
             result = FileType.OTHER.getKey();
         }
+        fileSuffix = null;
         return  result;
     }
 
