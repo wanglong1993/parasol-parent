@@ -18,7 +18,7 @@
         <result column="crc32" property="crc32"/>
         <result column="transcoding" property="transcoding"/>
         <result column="thumbnails_path" property="thumbnailsPath"/>
-        <result column="app_id" property="appId"/>
+        <result column="appId" property="appId"/>
         <result column="ctime" property="ctime"/>
         <result column="remark" property="remark"/>
     </resultMap>
@@ -62,7 +62,7 @@
             <if test="pojo.crc32 != null"> crc32, </if>
             <if test="pojo.transcoding != null"> transcoding, </if>
             <if test="pojo.thumbnailsPath != null"> thumbnails_path, </if>
-            <if test="pojo.appId != null"> app_id, </if>
+            <if test="pojo.appId != null"> appId, </if>
             <if test="pojo.ctime != null"> ctime, </if>
             <if test="pojo.remark != null"> remark, </if>
         </trim>
@@ -134,7 +134,7 @@
             <if test="pojo.crc32 != null"> crc32 = #{pojo.crc32}, </if>
             <if test="pojo.transcoding != null"> transcoding = #{pojo.transcoding}, </if>
             <if test="pojo.thumbnailsPath != null"> thumbnails_path = #{pojo.thumbnailsPath}, </if>
-            <if test="pojo.appId != null"> app_id = #{pojo.appId}, </if>
+            <if test="pojo.appId != null"> appId = #{pojo.appId}, </if>
             <if test="pojo.ctime != null"> ctime = #{pojo.ctime}, </if>
             <if test="pojo.remark != null"> remark = #{pojo.remark} </if>
         </set>
@@ -160,7 +160,7 @@
             <if test="pojo.crc32 != null"> AND crc32 = #{pojo.crc32} </if>
             <if test="pojo.transcoding != null"> AND transcoding = #{pojo.transcoding} </if>
             <if test="pojo.thumbnailsPath != null"> AND thumbnails_path = #{pojo.thumbnailsPath} </if>
-            <if test="pojo.appId != null"> AND app_id = #{pojo.appId} </if>
+            <if test="pojo.appId != null"> AND appId = #{pojo.appId} </if>
             <if test="pojo.ctime != null"> AND ctime = #{pojo.ctime} </if>
             <if test="pojo.remark != null"> AND remark = #{pojo.remark} </if>
         </where>
