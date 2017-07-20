@@ -46,7 +46,7 @@
 
 <!--auto generated Code-->
     <insert id="insert">
-        INSERT INTO file_index
+        INSERT INTO tb_file_index
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pojo.id != null"> id, </if>
             <if test="pojo.filePath != null"> file_path, </if>
@@ -90,7 +90,7 @@
 
 <!--auto generated Code-->
     <insert id="insertList">
-        INSERT INTO file_index(
+        INSERT INTO tb_file_index(
         <include refid="all_column"/>
         )VALUES
         <foreach collection="pojos" item="pojo" index="index" separator=",">
@@ -118,7 +118,7 @@
 
 <!--auto generated Code-->
     <update id="update">
-        UPDATE file_index
+        UPDATE tb_file_index
         <set>
             <if test="pojo.id != null"> id = #{pojo.id}, </if>
             <if test="pojo.filePath != null"> file_path = #{pojo.filePath}, </if>

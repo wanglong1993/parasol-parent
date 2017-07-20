@@ -40,10 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,17 +93,26 @@ public class FileController extends BaseControl {
 	/**
 	 * 获取上传文件需要的taskId
 	 */
+	@ResponseBody
 	@RequestMapping(path = { "/file/getTaskId" }, method = { RequestMethod.GET })
-	public MappingJacksonValue getTaskId(HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
-		MappingJacksonValue mappingJacksonValue = null;
+	public Map<String,Object> getTaskId(HttpServletRequest request){
 		Map<String, Object> result = new HashMap<String, Object>();
-		String taskId = MakePrimaryKey.getPrimaryKey();
-		result.put("taskId", taskId);
-		mappingJacksonValue = new MappingJacksonValue(result);
-		return mappingJacksonValue;
+		try {
+			String taskId = MakePrimaryKey.getPrimaryKey();
+			result.put("taskId", taskId);
+			result.put("success",true);
+			return genRespBody(result,null);
+		}catch (Exception e) {
+			Map<String,Object> notificationMap = new HashMap<String,Object>();
+			result.put("success",false);
+			notificationMap.put("notifCode", "1013");
+			notificationMap.put("notifInfo", "获取taskId失败");
+			return genRespBody(result,notificationMap);
+		}
 	}
+
 	/**
-	 * 
+	 * 文件上传
 	 * @param fileds
 	 * @param debug
 	 * @param file
@@ -116,7 +122,7 @@ public class FileController extends BaseControl {
 	 * @throws MyException 
 	 */
 	@RequestMapping(path = { "/file/upload" }, method = { RequestMethod.POST })
-	public MappingJacksonValue fileUpload(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
+	public Map<String,Object> fileUpload(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = FileController.parameterFile, required = true) MultipartFile file,
 			@RequestParam(name = FileController.parameterFileType, defaultValue = "1") Integer fileType,
@@ -126,15 +132,17 @@ public class FileController extends BaseControl {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
-			if(file.getSize() == 0) {
-				result.put("error", "上传文件无效，请重新上传！");
-				return new MappingJacksonValue(result);
-			}
-
-//			Long loginAppId = LoginUserContextHolder.getAppKey();
-//			Long loginUserId = LoginUserContextHolder.getUserId();
 			Long loginAppId=this.DefaultAppId;
 			Long loginUserId=this.getUserId(request);
+
+			if(file.getSize() == 0) {
+				Map<String,Object> notificationMap = new HashMap<String,Object>();
+				result.put("success",false);
+				notificationMap.put("notifCode", "1013");
+				notificationMap.put("notifInfo", "上传文件无效，请重新上传！");
+				return genRespBody(result,notificationMap);
+			}
+
 			byte[] file_buff = file.getBytes();
 			StorageClient storageClient = getStorageClient();
 			String fileName = file.getOriginalFilename();
@@ -162,27 +170,18 @@ public class FileController extends BaseControl {
 			index.setTaskId(taskId);
 			index.setThumbnailsPath(thumbnailsPath);
 			index = fileIndexService.insertFileIndex(index);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(index);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
-			storageClient=null;
-			return mappingJacksonValue;
+
+			result.put("success",true);
+			result.put("page",index);
+			return genRespBody(result,null);
 		} catch (RpcException e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
 			ResponseError error = processResponseError(e);
-			if (error != null) {
-				resultMap.put("error", error);
-			}
-			if (ObjectUtils.equals(debug, "all")) {
-				// if (e.getErrorCode() > 0 ) {
-				resultMap.put("__debug__", e.getMessage());
-				// }
-			}
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			e.printStackTrace(System.err);
-			return mappingJacksonValue;
+			Map<String,Object> notificationMap = new HashMap<String,Object>();
+			result.put("success",false);
+			notificationMap.put("notifCode", "1013");
+			notificationMap.put("notifInfo", error);
+			return genRespBody(result,notificationMap);
 		}
 	}
 	/**
