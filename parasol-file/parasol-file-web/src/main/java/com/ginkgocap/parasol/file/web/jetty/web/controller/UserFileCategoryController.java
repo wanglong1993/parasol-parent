@@ -343,6 +343,38 @@ public class UserFileCategoryController extends BaseControl {
         }
     }
 
+    /**
+     * 获取当前文件存储容量
+     * @param categoryId
+     * @return
+     * @throws FileIndexServiceException
+     * @throws IOException
+     * @throws MyException
+     */
+    @ResponseBody
+    @RequestMapping(path = { "/file/getFileSizeSumByFileType" }, method = { RequestMethod.GET })
+    public Map<String,Object> getFileSizeSumByFileType(
+            @RequestParam(name = UserFileCategoryController.parameterCategoryId ,defaultValue = "0") String categoryId,
+            @RequestParam(name = UserFileCategoryController.parameterfileType, defaultValue = "0") String filetype,
+            HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            Long loginUserId=this.getUserId(request);
+
+            long sumByFileType = userFileCategoryServer.getFileSizeSumByFileType(loginUserId,
+                    Integer.parseInt(filetype), Long.parseLong(categoryId), 3);
+            result.put("fileSize",sumByFileType);
+            result.put("success",true);
+            return genRespBody(result,null);
+        } catch (Exception e) {
+            Map<String,Object> notificationMap = new HashMap<String,Object>();
+            notificationMap.put("notifCode", "1010");
+            notificationMap.put("notifInfo", e.getMessage());
+            result.put("success",false);
+            return genRespBody(result,notificationMap);
+        }
+    }
+
 
     @Override
     protected <T> void processBusinessException(ResponseError error, Exception ex) {

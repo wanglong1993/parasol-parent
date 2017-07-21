@@ -181,6 +181,25 @@
         </if>
     </select>
 
+    <select id="getFileSizeSumByFileType" resultType="long">
+        SELECT
+          sum(f.file_size)
+        FROM
+        tb_user_file_category fc
+        LEFT JOIN tb_file_index f ON fc.`file_id` = f.id
+        WHERE
+        user_Id = #{pojos.userId}
+        <if test="pojos.fileType != 0 and pojos.fileType != null">
+            AND f.file_type = #{pojos.fileType}
+        </if>
+        <if test="pojos.parentId != null">
+            AND fc.parent_id = #{pojos.parentId}
+        </if>
+        <if test="pojos.isDir == 0 or pojos.isDir ==1">
+            AND fc.is_dir = #{pojos.isDir}
+        </if>
+    </select>
+
     <select id="existUserCategory" resultType="int" >
         SELECT
           count(1)

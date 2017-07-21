@@ -21,6 +21,8 @@ public interface UserFileCategoryDao {
 
     List<UserFileCategoryExt> getFileAndCategoryByFileType(@Param("pojos") Map<String, Object> pojos);
 
+    long getFileSizeSumByFileType(@Param("pojos") Map<String, Object> pojos);
+
     int existUserCategory(@Param("pojo") Map<String, Object> pojo);
 
     UserFileCategory selectById(@Param("id") Long id);

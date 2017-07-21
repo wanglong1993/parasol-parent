@@ -38,6 +38,25 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
         return userFileCategoryDao.getFileAndCategoryByFileType(pojo);
     }
 
+    /**
+     * 根据目录Id和fileType获取云盘文件 文件所占容量
+     *
+     * @param loginUserId
+     * @param fileType
+     * @param category
+     * @param isDir
+     * @return
+     */
+    @Override
+    public long getFileSizeSumByFileType(Long loginUserId, int fileType, Long category, int isDir) {
+        Map<String,Object> pojo = new HashMap<String, Object>();
+        pojo.put("userId",loginUserId);
+        pojo.put("fileType",fileType);
+        pojo.put("parentId",category);
+        pojo.put("isDir",isDir);
+        return userFileCategoryDao.getFileSizeSumByFileType(pojo);
+    }
+
     @Override
     public boolean existUserCategory(Long userId, Long parentId, String name, int isDir) {
         Map<String, Object> pojo = new HashMap<String, Object>();

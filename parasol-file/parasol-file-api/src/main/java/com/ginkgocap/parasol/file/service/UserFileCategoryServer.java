@@ -68,6 +68,17 @@ public interface UserFileCategoryServer {
                                                         int isDir,int page, int size);
 
     /**
+     * 根据目录Id和fileType获取云盘文件 文件所占容量
+     * @param loginUserId
+     * @param fileType
+     * @param category
+     * @param isDir
+     * @return
+     */
+    long getFileSizeSumByFileType(Long loginUserId, int fileType, Long category,
+                                                           int isDir);
+
+    /**
      * 检查名称是否合法
      * @param userId
      * @param parentId
