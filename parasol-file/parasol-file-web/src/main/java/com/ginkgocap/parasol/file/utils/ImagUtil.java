@@ -46,7 +46,7 @@ public class ImagUtil {
      * 图片缩放
      * @param originalFile 原图片
      * @param resizedFile 缩放后的图片
-     * @param newWidth 缩放后的宽度
+     * @param newWidth 缩放后的宽度 高度会等比例缩放
      * @param quality 压缩比列 0-1
      * @throws IOException
      */

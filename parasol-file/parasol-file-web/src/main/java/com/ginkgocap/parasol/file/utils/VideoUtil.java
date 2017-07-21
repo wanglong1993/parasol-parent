@@ -143,7 +143,7 @@ public class VideoUtil {
             dir.mkdir();
         }
         String mediaPicPath = dir.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".jpg";
-        byte[] file_buff = null;
+        byte[] file_buff = new byte[0];
         String ffmpegPath = "ffmpeg";
         //String ffmpegPath = "E:\\ffmpeg\\ffmpeg.exe";
 
@@ -253,7 +253,7 @@ public class VideoUtil {
     /**
      * 获得指定文件的byte数组
      */
-    private static byte[] getBytes(String filePath){
+    public static byte[] getBytes(String filePath){
         byte[] buffer = null;
         try {
             File file = new File(filePath);
@@ -287,7 +287,7 @@ public class VideoUtil {
             if(!dir.exists()&&dir.isDirectory()){//判断文件目录是否存在
                 dir.mkdirs();
             }
-            file = new File(filePath+"\\"+fileName);
+            file = new File(filePath + File.separator + fileName);
             fos = new FileOutputStream(file);
             bos = new BufferedOutputStream(fos);
             bos.write(bfile);
@@ -316,16 +316,16 @@ public class VideoUtil {
 /*    public static void main(String [] args) throws Exception {
         //当前时间毫秒数
         long presentTime = System.currentTimeMillis();
-        String ffmpegPath = "E:\\ffmpeg\\ffmpeg.exe";
-        String upFilePath = "E:\\妙味课堂-XHTML+CSS2整站视频教程-4.avi";
-        String mediaPicPath = "E:\\imag\\999_352_240.jpg";
+        //String ffmpegPath = "E:\\ffmpeg\\ffmpeg.exe";
+        String upFilePath = "/usr/local/demo/星月神话_官方版--音悦台.mp4";
+        String mediaPicPath = "/usr/local/demo/999_352_240.jpg";
         String second = "96";
         String format = "352*240";
         //executePrintScreenCodecs(ffmpegPath, upFilePath, mediaPicPath,second, format);
         byte[] bytes = executePrintScreenCodecs(upFilePath, second, format);
-        getFile(bytes, "E:\\imag", "99999_352_240.jpg");
-        // String videoTime = getVideoTime(ffmpegPath, upFilePath);
-       // System.out.println("视频时长:" + videoTime);
+        getFile(bytes, "/usr/local/demo/", "99999_352_240.jpg");
+        String videoTime = getVideoTime("ffmpeg", upFilePath);
+        System.out.println("视频时长:" + videoTime);
         long presentTime_back = System.currentTimeMillis();
         System.out.println("花费的时间:" + (presentTime_back - presentTime));
     }*/

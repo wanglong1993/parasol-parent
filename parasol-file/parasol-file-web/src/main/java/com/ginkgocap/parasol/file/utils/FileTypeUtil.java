@@ -90,6 +90,8 @@ public class FileTypeUtil {
             result = FileType.VIDEO.getKey();
         } else if (audio.contains(fileSuffix)) {
             result = FileType.AUDIO.getKey();
+        }  else if (doc.contains(fileSuffix)) {
+            result = FileType.DOC.getKey();
         } else {
             result = FileType.OTHER.getKey();
         }
