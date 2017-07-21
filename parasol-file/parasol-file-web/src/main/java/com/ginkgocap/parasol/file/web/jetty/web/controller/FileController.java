@@ -181,7 +181,7 @@ public class FileController extends BaseControl {
 			if (FileTypeUtil.getFileTypeByFileSuffix(fileName) == FileType.VIDEO.getKey()) {
                 byte[] videoTh = new byte[0];
                 try {
-                    videoTh = VideoUtil.executePrintScreenCodecs(temp_file.getAbsolutePath(), "5", "320*240");
+                    videoTh = VideoUtil.executePrintScreenCodecs(temp_file.getAbsolutePath(), "5", "200*200");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
