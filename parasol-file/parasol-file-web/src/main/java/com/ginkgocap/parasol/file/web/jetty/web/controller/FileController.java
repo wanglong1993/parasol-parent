@@ -188,6 +188,9 @@ public class FileController extends BaseControl {
                 String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
 				videoThumbnailsPath = thFields[0] + "/" + thFields[1];
 				index.setThumbnailsPath(videoThumbnailsPath);
+                String videoDuration = VideoUtil.getVideoTime("ffmpeg", temp_file.getAbsolutePath());
+                logger.info("video duration = {}",videoDuration);
+                index.setRemark(videoDuration);
 			}
 			index.setAppId(loginAppId);
 			index.setCreaterId(loginUserId);
