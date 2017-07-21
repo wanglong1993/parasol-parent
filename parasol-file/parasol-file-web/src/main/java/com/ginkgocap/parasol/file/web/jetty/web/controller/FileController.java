@@ -221,7 +221,13 @@ public class FileController extends BaseControl {
 			notificationMap.put("notifCode", "1013");
 			notificationMap.put("notifInfo", error);
 			return genRespBody(result,notificationMap);
-		}
+		} finally {
+            try{
+                new File(temp_file_path).delete();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 	}
 
 	/**
