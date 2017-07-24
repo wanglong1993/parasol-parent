@@ -190,8 +190,8 @@ public class UserFileCategoryController extends BaseControl {
                 userFileCategory.setUserId(userId);
                 userFileCategory.setIsDir(Integer.parseInt(isDir));
                 userFileCategory.setCtime(new Date());
-                int uid = userFileCategoryServer.insert(userFileCategory);
-                result.put("id",uid);
+                userFileCategoryServer.insert(userFileCategory);
+                result.put("id",userFileCategory.getId());
             } else {
                 // 修改名称操作
                 UserFileCategory userFileCategory = userFileCategoryServer.selectById(id);

@@ -68,8 +68,8 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
     }
 
     @Override
-    public long insert(UserFileCategory pojo){
-        return userFileCategoryDao.insert(pojo);
+    public void insert(UserFileCategory pojo){
+        userFileCategoryDao.insert(pojo);
     }
 
     public int insertList(List< UserFileCategory> pojos){

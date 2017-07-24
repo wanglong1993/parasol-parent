@@ -15,7 +15,7 @@ public interface UserFileCategoryServer {
      * @param pojo
      * @return
      */
-    long insert(UserFileCategory pojo);
+    void insert(UserFileCategory pojo);
 
     /**
      * 集合方式添加用户文件或者目录
