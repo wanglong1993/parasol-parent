@@ -46,7 +46,8 @@
     </sql>
 
 <!--auto generated Code-->
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.ginkgocap.parasol.file.model.UserFileCategory"
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_user_file_category
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pojo.id != null"> id, </if>
