@@ -70,6 +70,7 @@ public class UserFileCategoryServerImpl  implements UserFileCategoryServer{
     @Override
     public void insert(UserFileCategory pojo){
         userFileCategoryDao.insert(pojo);
+        System.out.println("pojo is id " + pojo.getId());
     }
 
     public int insertList(List< UserFileCategory> pojos){
