@@ -354,8 +354,8 @@ public class UserFileCategoryController extends BaseControl {
     @ResponseBody
     @RequestMapping(path = { "/file/getFileSizeSumByFileType" }, method = { RequestMethod.GET })
     public Map<String,Object> getFileSizeSumByFileType(
-            @RequestParam(name = UserFileCategoryController.parameterCategoryId ,defaultValue = "0") String categoryId,
-            @RequestParam(name = UserFileCategoryController.parameterfileType, defaultValue = "0") String filetype,
+            @RequestParam(name = UserFileCategoryController.parameterCategoryId) String categoryId,
+            @RequestParam(name = UserFileCategoryController.parameterfileType) String filetype,
             HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
         Map<String, Object> result = new HashMap<String, Object>();
         try {

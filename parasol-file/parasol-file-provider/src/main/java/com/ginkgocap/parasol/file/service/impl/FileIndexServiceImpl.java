@@ -80,12 +80,12 @@ public class FileIndexServiceImpl  implements FileIndexService {
 	}	
 	
 	@Override
-    public boolean deleteFileIndexById(long id) throws FileIndexServiceException {
+    public boolean deleteFileIndexById(long userId,long id) throws FileIndexServiceException {
 		if(id <= 0) throw new FileIndexServiceException(error_fileIndexId_blank,"fileIndexId is null!");
     	logger.info("进入根据id删除上传文件索引：参数id：{}", id);
     	boolean flag = false;
     	try {
-			flag = fileIndexDao.delete(id) > 0 ? true:false;
+			flag = fileIndexDao.delete(userId,id) > 0 ? true:false;
 		} catch (Exception e) {
 	    	logger.error("根据id删除上传文件索引失败：参数id：{}", id);
 	    	throw new FileIndexServiceException(e);

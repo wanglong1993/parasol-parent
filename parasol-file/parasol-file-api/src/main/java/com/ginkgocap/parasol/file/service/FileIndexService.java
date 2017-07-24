@@ -72,7 +72,7 @@ public interface FileIndexService {
      * @param id
      * @return true or false
      */
-    boolean deleteFileIndexById(long id) throws FileIndexServiceException;
+    boolean deleteFileIndexById(long userId,long id) throws FileIndexServiceException;
     
     /**
      * 根据taskid删除数据

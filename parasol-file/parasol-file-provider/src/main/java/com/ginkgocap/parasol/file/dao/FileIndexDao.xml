@@ -195,7 +195,7 @@
 
 <!--auto generated Code-->
     <delete id="delete">
-        DELETE FROM tb_file_index where id = #{pojo.id}
+        DELETE FROM tb_file_index where id = #{id} AND creater_id = #{userId}
     </delete>
 
     <delete id="deleteFileIndexesByTaskId">
