@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public interface UserFileCategoryDao {
 
-    int insert(@Param("pojo") UserFileCategory pojo);
+    int insert(UserFileCategory pojo);
 
     int insertList(@Param("pojos") List< UserFileCategory> pojo);
 
