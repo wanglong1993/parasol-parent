@@ -46,8 +46,10 @@
     </sql>
 
 <!--auto generated Code-->
-    <insert id="insert" parameterType="com.ginkgocap.parasol.file.model.UserFileCategory"
-            useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.ginkgocap.parasol.file.model.UserFileCategory">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
         INSERT INTO tb_user_file_category
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null"> id, </if>
