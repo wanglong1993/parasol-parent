@@ -112,13 +112,13 @@ public class UserFileCategoryController extends BaseControl {
             @RequestParam(name = UserFileCategoryController.parameterfileType,defaultValue = "0") String fileType,
             @RequestParam(name = UserFileCategoryController.parameterpage,defaultValue = "0") String page,
             @RequestParam(name = UserFileCategoryController.parametersize,defaultValue = "9999") String size,
-            @RequestParam(name = UserFileCategoryController.parameterParentId,defaultValue = "0") String parentId,
+            @RequestParam(name = UserFileCategoryController.parameterParentId) String parentId,
             HttpServletRequest request) {
         Map<String, Object> result = new HashMap<String,Object>();
         long userId = getUserId(request);
         try {
             List<UserFileCategoryExt> ulist = userFileCategoryServer.getFileAndCategoryByFileType(keyword,userId,Integer.parseInt(fileType),
-                    parentId.equals("0")?null:Long.parseLong(parentId),0,Integer.parseInt(page),Integer.parseInt(size));
+                    null == parentId?null:Long.parseLong(parentId),0,Integer.parseInt(page),Integer.parseInt(size));
             for (UserFileCategoryExt ufc : ulist) {
                 UserFileCategoryExt ue = new UserFileCategoryExt();
                 ue.setCtime(ufc.getCtime());
