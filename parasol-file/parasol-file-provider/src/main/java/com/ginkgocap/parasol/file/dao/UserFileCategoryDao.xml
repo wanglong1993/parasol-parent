@@ -46,7 +46,7 @@
     </sql>
 
 <!--auto generated Code-->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_user_file_category
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pojo.id != null"> id, </if>
