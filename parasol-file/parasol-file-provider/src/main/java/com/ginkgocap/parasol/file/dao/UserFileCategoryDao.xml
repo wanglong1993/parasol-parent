@@ -47,17 +47,17 @@
 
 <!--auto generated Code-->
     <insert id="insert" parameterType="com.ginkgocap.parasol.file.model.UserFileCategory"
-            useGeneratedKeys="true" keyProperty="pojo.id">
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_user_file_category
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="pojo.id != null"> id, </if>
-            <if test="pojo.userId != null"> user_id, </if>
-            <if test="pojo.serverFilename != null"> server_filename, </if>
-            <if test="pojo.sortId != null"> sort_id, </if>
-            <if test="pojo.ctime != null"> ctime, </if>
-            <if test="pojo.parentId != null"> parent_id, </if>
-            <if test="pojo.fileId != null"> file_id, </if>
-            <if test="pojo.isDir != null"> is_dir, </if>
+            <if test="id != null"> id, </if>
+            <if test="userId != null"> user_id, </if>
+            <if test="serverFilename != null"> server_filename, </if>
+            <if test="sortId != null"> sort_id, </if>
+            <if test="ctime != null"> ctime, </if>
+            <if test="parentId != null"> parent_id, </if>
+            <if test="fileId != null"> file_id, </if>
+            <if test="isDir != null"> is_dir, </if>
         </trim>
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">

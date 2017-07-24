@@ -6,7 +6,7 @@ import com.ginkgocap.parasol.file.model.FileIndex;
 
 public interface FileIndexDao {
 
-    long insert(@Param("pojo") FileIndex pojo);
+    long insert(FileIndex pojo);
 
     int insertList(@Param("pojos") List< FileIndex> pojo);
 
