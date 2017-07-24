@@ -244,10 +244,10 @@ public class UserFileCategoryController extends BaseControl {
             userFileCategory.setIsDir(0);
             userFileCategory.setUserId(userId);
             userFileCategory.setFileId(Long.parseLong(fid));
-            userFileCategoryServer.insert(userFileCategory);
-            if (userFileCategory.getId() > 0) {
+            long uid = userFileCategoryServer.insert(userFileCategory);
+            if (uid > 0) {
                 result.put("success",true);
-                result.put("id",userFileCategory.getId());
+                result.put("id",uid);
                 return genRespBody(result,null);
             }
         } catch (Exception e) {
@@ -294,6 +294,14 @@ public class UserFileCategoryController extends BaseControl {
         }
     }
 
+    /**
+     * 修改文件名称
+     * @param name
+     * @param id
+     * @param parentId
+     * @param request
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/file/rename",method = RequestMethod.POST)
     public Map<String,Object> renameFile(
@@ -354,15 +362,15 @@ public class UserFileCategoryController extends BaseControl {
     @ResponseBody
     @RequestMapping(path = { "/file/getFileSizeSumByFileType" }, method = { RequestMethod.GET })
     public Map<String,Object> getFileSizeSumByFileType(
-            @RequestParam(name = UserFileCategoryController.parameterCategoryId) String categoryId,
-            @RequestParam(name = UserFileCategoryController.parameterfileType) String filetype,
+            @RequestParam(name = UserFileCategoryController.parameterCategoryId,defaultValue = "null") String categoryId,
+            @RequestParam(name = UserFileCategoryController.parameterfileType,defaultValue = "0") String filetype,
             HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
         Map<String, Object> result = new HashMap<String, Object>();
         try {
             Long loginUserId=this.getUserId(request);
 
             long sumByFileType = userFileCategoryServer.getFileSizeSumByFileType(loginUserId,
-                    Integer.parseInt(filetype), Long.parseLong(categoryId), 3);
+                    Integer.parseInt(filetype), categoryId.equals("null")?null:Long.parseLong(categoryId), 3);
             result.put("fileSize",sumByFileType);
             result.put("success",true);
             return genRespBody(result,null);
