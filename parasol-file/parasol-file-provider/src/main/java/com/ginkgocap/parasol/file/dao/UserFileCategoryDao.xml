@@ -61,14 +61,14 @@
         </trim>
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null"> #{pojo.id}, </if>
-            <if test="userId != null"> #{pojo.userId}, </if>
-            <if test="serverFilename != null"> #{pojo.serverFilename}, </if>
-            <if test="sortId != null"> #{pojo.sortId}, </if>
-            <if test="ctime != null"> #{pojo.ctime}, </if>
-            <if test="parentId != null"> #{pojo.parentId}, </if>
-            <if test="fileId != null"> #{pojo.fileId}, </if>
-            <if test="isDir != null"> #{pojo.isDir}, </if>
+            <if test="id != null"> #{id}, </if>
+            <if test="userId != null"> #{userId}, </if>
+            <if test="serverFilename != null"> #{serverFilename}, </if>
+            <if test="sortId != null"> #{sortId}, </if>
+            <if test="ctime != null"> #{ctime}, </if>
+            <if test="parentId != null"> #{parentId}, </if>
+            <if test="fileId != null"> #{fileId}, </if>
+            <if test="isDir != null"> #{isDir}, </if>
         </trim>
     </insert>
 
