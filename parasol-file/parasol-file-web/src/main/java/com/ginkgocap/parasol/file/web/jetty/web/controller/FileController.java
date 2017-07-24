@@ -160,8 +160,7 @@ public class FileController extends BaseControl {
 			StorageClient storageClient = getStorageClient();
 			String fileName = file.getOriginalFilename();
 
-            temp_file_path = dir.getAbsolutePath() + File.separator + fileName;
-            File temp_file = VideoUtil.getFile(file_buff, dir.getAbsolutePath(), fileName);
+
 			int f = fileName.lastIndexOf(".");
 			String fileExtName = "";
 			if (f>-1) fileExtName = fileName.substring(f+1);
@@ -178,6 +177,8 @@ public class FileController extends BaseControl {
 			
 			FileIndex index = new FileIndex();
 			String videoThumbnailsPath = "";
+			temp_file_path = dir.getAbsolutePath() + File.separator + fileName;
+			File temp_file = VideoUtil.getFile(file_buff, dir.getAbsolutePath(), fileName);
 			if (FileTypeUtil.getFileTypeByFileSuffix(fileName) == FileType.VIDEO.getKey()) {
                 byte[] videoTh = new byte[0];
                 try {
