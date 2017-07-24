@@ -48,7 +48,7 @@
 <!--auto generated Code-->
     <insert id="insert" parameterType="com.ginkgocap.parasol.file.model.UserFileCategory">
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
-            SELECT LAST_INSERT_ID()
+            SELECT LAST_INSERT_ID() as id
         </selectKey>
         INSERT INTO tb_user_file_category
         <trim prefix="(" suffix=")" suffixOverrides=",">
