@@ -3,7 +3,7 @@ package com.ginkgocap.parasol.directory.web.jetty.modle;
 import java.io.Serializable;
 
 /**
- * Created by 123 on 2017/4/6.
+ * Created by wf on 2017/4/6.
  */
 public class Ids implements Serializable{
 
