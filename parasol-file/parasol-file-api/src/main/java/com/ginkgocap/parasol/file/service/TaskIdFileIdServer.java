@@ -4,7 +4,7 @@ import com.ginkgocap.parasol.file.model.TaskIdFileId;
 
 import java.util.List;
 
-public interface TaskIdFileIdService {
+public interface TaskIdFileIdServer {
 
     int insert(TaskIdFileId pojo);
 
