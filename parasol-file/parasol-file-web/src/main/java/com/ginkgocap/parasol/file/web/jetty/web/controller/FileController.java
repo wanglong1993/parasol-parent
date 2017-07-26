@@ -26,7 +26,9 @@ import com.ginkgocap.parasol.file.exception.FileIndexServiceException;
 import com.ginkgocap.parasol.file.model.FileIndex;
 import com.ginkgocap.parasol.file.model.PicPerson;
 import com.ginkgocap.parasol.file.model.PicUser;
+import com.ginkgocap.parasol.file.model.TaskIdFileId;
 import com.ginkgocap.parasol.file.service.FileIndexService;
+import com.ginkgocap.parasol.file.service.TaskIdFileIdService;
 import com.ginkgocap.parasol.file.utils.FileTypeUtil;
 import com.ginkgocap.parasol.file.utils.VideoUtil;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
@@ -76,6 +78,7 @@ public class FileController extends BaseControl {
 	private static final String parameterIndexId = "indexId"; // 索引文件id
 	private static final String parameterFileType = "fileType"; // 文件类型
 	private static final String parameterTaskId = "taskId"; // taskId
+	private static final String parameterFileIds = "fileIds"; // file Id 集合
 	private static final String parameterModuleType = "moduleType"; // 业务模块
 	private static final String parameterXEnd = "xEnd"; // x结束坐标
 	private static final String parameterYEnd = "yEnd"; // y结束坐标
@@ -86,6 +89,9 @@ public class FileController extends BaseControl {
 
 	@Autowired
 	private FileIndexService fileIndexService;
+
+	@Autowired
+	private TaskIdFileIdService taskIdFileIdService;
 
 	@Autowired
 	private PicPersonService picPersonService;
@@ -116,6 +122,74 @@ public class FileController extends BaseControl {
 			notificationMap.put("notifCode", "1013");
 			notificationMap.put("notifInfo", "获取taskId失败");
 			return genRespBody(result,notificationMap);
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/file/insertBothTaskFile", method = RequestMethod.POST)
+	public Map<String,Object> insertBothTaskIdAndFileId(
+			@RequestParam(name = FileController.parameterTaskId) String taskId,
+			@RequestParam(name = FileController.parameterFileIds) String fileIds,
+			HttpServletRequest request) {
+		Map<String,Object> result = new HashMap<String,Object>();
+		try {
+			long userId = getUserId(request);
+			// 先删除原有的taskId 将新的插入
+			if (taskId == null || fileIds == null) {
+				Map<String, Object> notificationMap = new HashMap<String, Object>();
+				result.put("success", false);
+				notificationMap.put("notifCode", "1013");
+				notificationMap.put("notifInfo", "taskId或者fileIds不合法");
+				return genRespBody(result, notificationMap);
+			}
+			List<Long> ids = covertIdsToLong(fileIds);
+			List<TaskIdFileId> TFs = new ArrayList<TaskIdFileId>();
+			for (Long id : ids) {
+				TaskIdFileId tf = new TaskIdFileId();
+				tf.setFileId(id);
+				tf.setTaskId(taskId);
+				tf.setUserId(userId);
+				TFs.add(tf);
+			}
+			if (TFs.size() > 0) {
+				taskIdFileIdService.deleteByTaskId(taskId);
+				taskIdFileIdService.insertList(TFs);
+			}
+			result.put("success",true);
+			return genRespBody(result,null);
+		}catch (Exception e) {
+			Map<String, Object> notificationMap = new HashMap<String, Object>();
+			result.put("success", false);
+			notificationMap.put("notifCode", "1013");
+			notificationMap.put("notifInfo", e.getMessage());
+			return genRespBody(result, notificationMap);
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/file/deleteFileByTaskAndFileId")
+	public Map<String,Object> deleteFileByTaskAndFileId(
+			@RequestParam(name = FileController.parameterTaskId) String taskId,
+			@RequestParam(name = FileController.parameterIndexId) String fileId,
+			HttpServletRequest request ) {
+		Map<String,Object> result = new HashMap<String,Object>();
+		try {
+			if (taskId == null || fileId == null) {
+				Map<String, Object> notificationMap = new HashMap<String, Object>();
+				result.put("success", false);
+				notificationMap.put("notifCode", "1013");
+				notificationMap.put("notifInfo", "taskId或者fileId不合法");
+				return genRespBody(result, notificationMap);
+			}
+			taskIdFileIdService.deleteByTaskIdAndFileId(taskId,fileId);
+			result.put("success",true);
+			return genRespBody(result,null);
+		} catch (Exception e) {
+			Map<String, Object> notificationMap = new HashMap<String, Object>();
+			result.put("success", false);
+			notificationMap.put("notifCode", "1013");
+			notificationMap.put("notifInfo", e.getMessage());
+			return genRespBody(result, notificationMap);
 		}
 	}
 
@@ -859,6 +933,17 @@ public class FileController extends BaseControl {
 	@Override
 	protected <T> void processBusinessException(ResponseError error, Exception ex) {
 		// TODO Auto-generated method stub
+	}
+
+	private List<Long> covertIdsToLong(String fileIds) {
+		List<Long> ids = new ArrayList<Long>();
+		String[] fids = fileIds.split(",");
+		for (String id : fids) {
+			if (!id.trim().equals("")) {
+				ids.add(Long.parseLong(id));
+			}
+		}
+		return ids;
 	}
 	
 	@RequestMapping(path = { "/file/test" }, method = { RequestMethod.POST })
