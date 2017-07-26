@@ -80,7 +80,7 @@ public class DirectorySourceController extends BaseControl {
 	 * 
 	 * @param request
 	 * @return
-	 * @throws CodeServiceException
+	 * @throws DirectorySourceServiceException
 	 */
 	@RequestMapping(path = "/directory/source/getSourceList", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceList(@RequestParam(name = DirectorySourceController.parameterFields, defaultValue = "") String fileds,
@@ -116,7 +116,7 @@ public class DirectorySourceController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException
-	 * @throws CodeServiceException
+	 * @throws DirectorySourceServiceException
 	 */
 	@RequestMapping(path = "/directory/source/createSource", method = { RequestMethod.POST })
 	public MappingJacksonValue createDirectorySource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
@@ -163,7 +163,7 @@ public class DirectorySourceController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws com.ginkgocap.parasol.directory.exception.DirectorySourceServiceException
-	 * @throws CodeServiceException
+	 * @throws DirectorySourceServiceException
 	 */
 	@RequestMapping(path = "/directory/source/deleteSource", method = { RequestMethod.GET })
 	public MappingJacksonValue deleteDirectorySource(@RequestParam(name = DirectorySourceController.parameterDebug, defaultValue = "") String debug,
