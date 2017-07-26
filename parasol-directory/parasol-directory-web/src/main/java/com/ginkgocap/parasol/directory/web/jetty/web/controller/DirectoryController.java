@@ -743,8 +743,6 @@ public class DirectoryController extends BaseControl {
             if (pid == 0) {
                 directoryList.add(direc);
             }
-           /* int sourceCount = directorySourceService.countDirectorySourcesByDirectoryId(loginAppId, loginUserId, dirId);
-            direc.setSourceCount(sourceCount);*/
             idMap.put(dirId, direc);
         }
         for (Map.Entry<Long, Directory> map : idMap.entrySet()) {
