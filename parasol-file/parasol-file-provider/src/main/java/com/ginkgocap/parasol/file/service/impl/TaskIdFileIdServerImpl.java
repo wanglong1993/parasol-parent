@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by xutlong on 2017/7/25.
  */
-@Service("taskIdFileIdServerImpl")
+@Service("taskIdFileIdServer")
 public class TaskIdFileIdServerImpl implements TaskIdFileIdService {
 
     @Autowired
