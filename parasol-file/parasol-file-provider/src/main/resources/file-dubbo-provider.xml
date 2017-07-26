@@ -9,5 +9,5 @@
     
     <dubbo:service interface="com.ginkgocap.parasol.file.service.FileIndexService" ref="fileIndexService" version="3.0.0" />
     <dubbo:service interface="com.ginkgocap.parasol.file.service.UserFileCategoryServer" ref="userFileCategoryServer" version="3.0.0"/>
-	<dubbo:service interface="com.ginkgocap.parasol.file.service.TaskIdFileIdService" ref="taskIdFileIdService" version="3.0.0"/>
+	<dubbo:service interface="com.ginkgocap.parasol.file.service.TaskIdFileIdServer" ref="taskIdFileIdServer" version="3.0.0"/>
 </beans>

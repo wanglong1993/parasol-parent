@@ -2,7 +2,7 @@ package com.ginkgocap.parasol.file.service.impl;
 
 import com.ginkgocap.parasol.file.dao.TaskIdFileIdDao;
 import com.ginkgocap.parasol.file.model.TaskIdFileId;
-import com.ginkgocap.parasol.file.service.TaskIdFileIdService;
+import com.ginkgocap.parasol.file.service.TaskIdFileIdServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by xutlong on 2017/7/25.
  */
 @Service("taskIdFileIdServer")
-public class TaskIdFileIdServerImpl implements TaskIdFileIdService {
+public class TaskIdFileIdServerImpl implements TaskIdFileIdServer {
 
     @Autowired
     TaskIdFileIdDao taskIdFileIdDao;
