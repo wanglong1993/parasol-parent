@@ -195,7 +195,7 @@ public class Directory implements Serializable {
 		this.childDirectory.add(directory);
 	}
 
-	//@Transient // 不持久化：不保存到数据库
+	@Transient // 不持久化：不保存到数据库
 	public int getSourceCount() {
 		return sourceCount;
 	}

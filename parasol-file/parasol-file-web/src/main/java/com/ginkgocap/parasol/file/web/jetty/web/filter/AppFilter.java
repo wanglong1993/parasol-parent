@@ -31,16 +31,10 @@ public class AppFilter implements Filter {
 	String excludedUrl = "";
 	String[] excludedUrlArray = {};//任何情况都不需要登录，在web.xml里面配置
 	//允许游客状态的接口
-	String[] webExcludedUrl = { "mobileApp/getVCodeForPassword.json",
-			"mobileApp/setNewPassword.json","register/pwd/reset.json",
-			"org/dynamicNews/dynamicNewsList.json","dynamicNews/getDynamicComment",
-			"person/peopleHomeList.json","person/getPeopleDetail.json","code/peopleCodeList.json",
-			"code/peopleCodeListByName.json","get/area.json","/dynamicNews/getListDynamicNews.json","/register/sendValidateEmail.json",
-			"person/getPeopleTemplate.json","/register/isExistByMobileOrByEmail.json","/knowledge/getKnowledgeDetails.json","/file/nginx/downloadFJ","/org/orgAndProInfo.json","/customer/findCusProfile.json","/demand/getDemandDetail.json","/demand/findDemandFile.json",
-			"/webknowledge/home/separate.json","/webknowledge/home/getAggregationRead.json","/webknowledge/home/getHotTag.json","/webknowledge/home/getRecommendedKnowledge.json",
-			"/webknowledge/getKnowledgeByColumnAndSource.json","/webknowledge/queryMore.json","/webknowledge/home/getHotList.json","/webknowledge/home/getCommentList.json",
-		   "set/checkMailByStatus.json","/register/checkOrganRegister.json","metadata/search.json","get/code.json","/knowledge/getKnowledgeComment.json","/org/getDiscoverList.json","/resource/hotList.json",
-		   "/register/checkIdentifyCode.json","/demand/getDemandList.json","/demandComment/getDemandCommentList.json","/file/nginx/downloadFJ2"};
+	String[] webExcludedUrl = {
+			"/file/nginx/downloadFJ",
+			"/file/nginx/downloadFJ2"
+	};
 	
 	@Override
 	public void destroy() { 

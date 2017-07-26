@@ -2,6 +2,8 @@ package com.ginkgocap.parasol.file.web.jetty.web.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,8 +44,24 @@ public abstract class BaseControl {
 		}
 		return null;
 	}
-	
-	
+
+	/**
+	 * 讲notification统一包装起来
+	 * @param responseDataMap 协议的消息体部分， 对应 responseData
+	 * @param notificationMap 协议的消息部分， 对应 notification
+	 */
+	public Map<String, Object> genRespBody(Map<String, Object> responseDataMap,
+										   Map<String, Object> notificationMap) {
+		if (notificationMap == null) {
+			notificationMap = new HashMap<String, Object>();
+			notificationMap.put("notifCode", "");
+			notificationMap.put("notifInfo", "");
+		}
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("responseData", responseDataMap);
+		model.put("notification", notificationMap);
+		return model;
+	}
 	
 	/**
 	 * 处理RpcException
@@ -88,7 +106,7 @@ public abstract class BaseControl {
 
 	protected abstract <T> void processBusinessException(ResponseError error, Exception ex);
 	
-protected final Long DefaultAppId=1l;
+	protected final Long DefaultAppId=1l;
 	
 	/**
 	 * 获取用户

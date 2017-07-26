@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ginkgocap.parasol.file.dao.FileIndexDao">
+
+<!--auto generated Code-->
+    <resultMap id="AllColumnMap" type="com.ginkgocap.parasol.file.model.FileIndex">
+        <result column="id" property="id"/>
+        <result column="file_path" property="filePath"/>
+        <result column="server_host" property="serverHost"/>
+        <result column="file_title" property="fileTitle"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="status" property="status"/>
+        <result column="creater_id" property="createrId"/>
+        <result column="md5" property="md5"/>
+        <result column="task_id" property="taskId"/>
+        <result column="module_type" property="moduleType"/>
+        <result column="file_type" property="fileType"/>
+        <result column="crc32" property="crc32"/>
+        <result column="transcoding" property="transcoding"/>
+        <result column="thumbnails_path" property="thumbnailsPath"/>
+        <result column="appId" property="appId"/>
+        <result column="ctime" property="ctime"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+<!--auto generated Code-->
+    <sql id="all_column">
+        id,
+        file_path,
+        server_host,
+        file_title,
+        file_size,
+        status,
+        creater_id,
+        md5,
+        task_id,
+        module_type,
+        file_type,
+        crc32,
+        transcoding,
+        thumbnails_path,
+        appId,
+        ctime,
+        remark
+    </sql>
+
+<!--auto generated Code-->
+    <insert id="insert">
+        INSERT INTO tb_file_index
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pojo.id != null"> id, </if>
+            <if test="pojo.filePath != null"> file_path, </if>
+            <if test="pojo.serverHost != null"> server_host, </if>
+            <if test="pojo.fileTitle != null"> file_title, </if>
+            <if test="pojo.fileSize != null"> file_size, </if>
+            <if test="pojo.status != null"> status, </if>
+            <if test="pojo.createrId != null"> creater_id, </if>
+            <if test="pojo.md5 != null"> md5, </if>
+            <if test="pojo.taskId != null"> task_id, </if>
+            <if test="pojo.moduleType != null"> module_type, </if>
+            <if test="pojo.fileType != null"> file_type, </if>
+            <if test="pojo.crc32 != null"> crc32, </if>
+            <if test="pojo.transcoding != null"> transcoding, </if>
+            <if test="pojo.thumbnailsPath != null"> thumbnails_path, </if>
+            <if test="pojo.appId != null"> appId, </if>
+            <if test="pojo.ctime != null"> ctime, </if>
+            <if test="pojo.remark != null"> remark, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pojo.id != null"> #{pojo.id}, </if>
+            <if test="pojo.filePath != null"> #{pojo.filePath}, </if>
+            <if test="pojo.serverHost != null"> #{pojo.serverHost}, </if>
+            <if test="pojo.fileTitle != null"> #{pojo.fileTitle}, </if>
+            <if test="pojo.fileSize != null"> #{pojo.fileSize}, </if>
+            <if test="pojo.status != null"> #{pojo.status}, </if>
+            <if test="pojo.createrId != null"> #{pojo.createrId}, </if>
+            <if test="pojo.md5 != null"> #{pojo.md5}, </if>
+            <if test="pojo.taskId != null"> #{pojo.taskId}, </if>
+            <if test="pojo.moduleType != null"> #{pojo.moduleType}, </if>
+            <if test="pojo.fileType != null"> #{pojo.fileType}, </if>
+            <if test="pojo.crc32 != null"> #{pojo.crc32}, </if>
+            <if test="pojo.transcoding != null"> #{pojo.transcoding}, </if>
+            <if test="pojo.thumbnailsPath != null"> #{pojo.thumbnailsPath}, </if>
+            <if test="pojo.appId != null"> #{pojo.appId}, </if>
+            <if test="pojo.ctime != null"> #{pojo.ctime}, </if>
+            <if test="pojo.remark != null"> #{pojo.remark}, </if>
+        </trim>
+    </insert>
+
+<!--auto generated Code-->
+    <insert id="insertList">
+        INSERT INTO tb_file_index(
+        <include refid="all_column"/>
+        )VALUES
+        <foreach collection="pojos" item="pojo" index="index" separator=",">
+            (
+            #{pojo.id},
+            #{pojo.filePath},
+            #{pojo.serverHost},
+            #{pojo.fileTitle},
+            #{pojo.fileSize},
+            #{pojo.status},
+            #{pojo.createrId},
+            #{pojo.md5},
+            #{pojo.taskId},
+            #{pojo.moduleType},
+            #{pojo.fileType},
+            #{pojo.crc32},
+            #{pojo.transcoding},
+            #{pojo.thumbnailsPath},
+            #{pojo.appId},
+            #{pojo.ctime},
+            #{pojo.remark}
+            )
+        </foreach>
+    </insert>
+
+<!--auto generated Code-->
+    <update id="update">
+        UPDATE tb_file_index
+        <set>
+            <if test="pojo.id != null"> id = #{pojo.id}, </if>
+            <if test="pojo.filePath != null"> file_path = #{pojo.filePath}, </if>
+            <if test="pojo.serverHost != null"> server_host = #{pojo.serverHost}, </if>
+            <if test="pojo.fileTitle != null"> file_title = #{pojo.fileTitle}, </if>
+            <if test="pojo.fileSize != null"> file_size = #{pojo.fileSize}, </if>
+            <if test="pojo.status != null"> status = #{pojo.status}, </if>
+            <if test="pojo.createrId != null"> creater_id = #{pojo.createrId}, </if>
+            <if test="pojo.md5 != null"> md5 = #{pojo.md5}, </if>
+            <if test="pojo.taskId != null"> task_id = #{pojo.taskId}, </if>
+            <if test="pojo.moduleType != null"> module_type = #{pojo.moduleType}, </if>
+            <if test="pojo.fileType != null"> file_type = #{pojo.fileType}, </if>
+            <if test="pojo.crc32 != null"> crc32 = #{pojo.crc32}, </if>
+            <if test="pojo.transcoding != null"> transcoding = #{pojo.transcoding}, </if>
+            <if test="pojo.thumbnailsPath != null"> thumbnails_path = #{pojo.thumbnailsPath}, </if>
+            <if test="pojo.appId != null"> appId = #{pojo.appId}, </if>
+            <if test="pojo.ctime != null"> ctime = #{pojo.ctime}, </if>
+            <if test="pojo.remark != null"> remark = #{pojo.remark} </if>
+        </set>
+         WHERE id = #{pojo.id}
+    </update>
+
+<!--auto generated Code-->
+    <select id="select" resultMap="AllColumnMap">
+        SELECT <include refid="all_column"/>
+        FROM tb_file_index
+        <where>
+            <if test="pojo.id != null"> AND id = #{pojo.id} </if>
+            <if test="pojo.filePath != null"> AND file_path = #{pojo.filePath} </if>
+            <if test="pojo.serverHost != null"> AND server_host = #{pojo.serverHost} </if>
+            <if test="pojo.fileTitle != null"> AND file_title = #{pojo.fileTitle} </if>
+            <if test="pojo.fileSize != null"> AND file_size = #{pojo.fileSize} </if>
+            <if test="pojo.status != null"> AND status = #{pojo.status} </if>
+            <if test="pojo.createrId != null"> AND creater_id = #{pojo.createrId} </if>
+            <if test="pojo.md5 != null"> AND md5 = #{pojo.md5} </if>
+            <if test="pojo.taskId != null"> AND task_id = #{pojo.taskId} </if>
+            <if test="pojo.moduleType != null"> AND module_type = #{pojo.moduleType} </if>
+            <if test="pojo.fileType != null"> AND file_type = #{pojo.fileType} </if>
+            <if test="pojo.crc32 != null"> AND crc32 = #{pojo.crc32} </if>
+            <if test="pojo.transcoding != null"> AND transcoding = #{pojo.transcoding} </if>
+            <if test="pojo.thumbnailsPath != null"> AND thumbnails_path = #{pojo.thumbnailsPath} </if>
+            <if test="pojo.appId != null"> AND appId = #{pojo.appId} </if>
+            <if test="pojo.ctime != null"> AND ctime = #{pojo.ctime} </if>
+            <if test="pojo.remark != null"> AND remark = #{pojo.remark} </if>
+        </where>
+    </select>
+
+    <select id="selectById" resultMap="AllColumnMap" >
+        SELECT <include refid="all_column"/>
+        FROM tb_file_index
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectFileIndexesByIds" resultMap="AllColumnMap">
+        SELECT <include refid="all_column"/>
+        FROM tb_file_index
+        WHERE id IN 
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getFileIndexByTaskId" resultMap="AllColumnMap" >
+        SELECT <include refid="all_column"/>
+        FROM tb_file_index
+        WHERE task_id = #{taskId}
+    </select>
+
+    <select id="getFileIndexesByCreaterId" resultMap="AllColumnMap" >
+        SELECT <include refid="all_column"/>
+        FROM tb_file_index
+        WHERE creater_id = #{userId}
+    </select>
+
+<!--auto generated Code-->
+    <delete id="delete">
+        DELETE FROM tb_file_index where id = #{id} AND creater_id = #{userId}
+    </delete>
+
+    <delete id="deleteFileIndexesByTaskId">
+        DELETE FROM tb_file_index WHERE task_id = #{taskId}
+    </delete>
+</mapper>

@@ -353,9 +353,13 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 					<showWarnings>true</showWarnings>
+					<compilerArguments>
+						<verbose />
+						<bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>
+					</compilerArguments>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -379,6 +383,9 @@
 		<profile>
 			<id>test</id>
 			<properties>
+				<!-- <jdbc.host>192.168.101.42:3306</jdbc.host>
+				<jdbc.username>ph_parent</jdbc.username>
+				<jdbc.password>QHuqURq5EW</jdbc.password> -->
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
@@ -392,6 +399,7 @@
 				<jdbc.username>ph_parent</jdbc.username>
 				<jdbc.password>QHuqURq5EW</jdbc.password>
 				<jtmobileserver.root>http://www.gintong.com/cross/</jtmobileserver.root>
+				<nginx.root>dfs.test.gintong.com/</nginx.root>
 			</properties>
 		</profile>
 		<profile>
@@ -421,10 +429,11 @@
 				<redis.host>192.168.101.42</redis.host>
 				<!-- redis端口 -->
 				<redis.port>6379</redis.port>
-				<jdbc.host>192.168.101.42:3306</jdbc.host>
-				<jdbc.username>ph_parent</jdbc.username>
-				<jdbc.password>QHuqURq5EW</jdbc.password>
+				<!--<jdbc.host>192.168.101.131:3306</jdbc.host>-->
+				<!--<jdbc.username>zhangwei</jdbc.username>-->
+				<!--<jdbc.password>zhangwei</jdbc.password>-->
 				<jtmobileserver.root>http://www.gintong.com/cross/</jtmobileserver.root>
+				<nginx.root>dfs.test.gintong.com/</nginx.root>
 			</properties>
 		</profile>
 	</profiles>
