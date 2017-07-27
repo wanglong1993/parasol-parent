@@ -28,7 +28,7 @@ import com.ginkgocap.parasol.file.model.PicPerson;
 import com.ginkgocap.parasol.file.model.PicUser;
 import com.ginkgocap.parasol.file.model.TaskIdFileId;
 import com.ginkgocap.parasol.file.service.FileIndexService;
-import com.ginkgocap.parasol.file.service.TaskIdFileIdService;
+import com.ginkgocap.parasol.file.service.TaskIdFileIdServer;
 import com.ginkgocap.parasol.file.utils.FileTypeUtil;
 import com.ginkgocap.parasol.file.utils.VideoUtil;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
@@ -91,7 +91,7 @@ public class FileController extends BaseControl {
 	private FileIndexService fileIndexService;
 
 	@Autowired
-	private TaskIdFileIdService taskIdFileIdService;
+	private TaskIdFileIdServer taskIdFileIdService;
 
 	@Autowired
 	private PicPersonService picPersonService;
@@ -355,7 +355,9 @@ public class FileController extends BaseControl {
 		// MappingJacksonValue mappingJacksonValue = null;
 		Map<String,Object> result = new HashMap<String,Object>();
 		try {
-			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
+			// 1、先获取taskID下的所有
+			List<Long> fileids = taskIdFileIdService.selectByTaskId(taskId);
+			List<FileIndex> files = fileIndexService.selectFileIndexesByIds(fileids);
 			for (FileIndex ufc : files) {
 				if (ufc.getModuleType() == 100) {
 					ufc.setUrl(nginxRoot + "/mobile/download?id=" + ufc.getId());

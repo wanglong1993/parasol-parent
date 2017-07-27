@@ -82,6 +82,12 @@
         </where>
     </select>
 
+    <select id="selectByTaskId" resultType="long">
+        SELECT file_id
+        FROM tb_task_fileid
+        WHERE task_id = #{taskId}
+    </select>
+
 <!--auto generated Code-->
     <delete id="delete">
         DELETE FROM tb_task_fileid where id = #{pojo.id}

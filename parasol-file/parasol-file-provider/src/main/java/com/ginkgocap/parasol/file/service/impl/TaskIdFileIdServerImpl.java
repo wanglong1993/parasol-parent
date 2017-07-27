@@ -46,4 +46,9 @@ public class TaskIdFileIdServerImpl implements TaskIdFileIdServer {
     public void deleteByTaskIdAndFileId(String taskId, String fileId) {
         taskIdFileIdDao.deleteByTaskIdAndFileId(taskId,fileId);
     }
+
+    @Override
+    public List<Long> selectByTaskId(String taskId) {
+        return taskIdFileIdDao.selectByTaskId(taskId);
+    }
 }

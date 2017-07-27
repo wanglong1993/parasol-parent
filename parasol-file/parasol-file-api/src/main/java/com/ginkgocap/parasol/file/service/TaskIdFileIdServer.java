@@ -17,4 +17,6 @@ public interface TaskIdFileIdServer {
     void deleteByTaskId(String taskId);
 
     void deleteByTaskIdAndFileId(String taskId, String fileId);
+
+    List<Long> selectByTaskId(String taskId);
 }
