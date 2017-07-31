@@ -167,7 +167,9 @@ public class FileIndexServiceImpl  implements FileIndexService {
 
     @Override
     public List<FileIndex> selectFileIndexesByIds(List<Long> ids) throws FileIndexServiceException {
-    	if( ids==null || ids.size()==0 ) throw new FileIndexServiceException(error_idList_null,"ids list is null!");
+    	if( ids==null || ids.size()==0 ) {
+    		return new ArrayList<FileIndex>(0);
+		}
     	logger.info("进入根据id列表获取上传文件索引列表：参数ids：{}", ids);       	
         List<FileIndex> list = null;
         try {
