@@ -125,6 +125,13 @@ public class FileController extends BaseControl {
 		}
 	}
 
+	/**
+	 * 建立taskId和多个文件的关联
+	 * @param taskId
+	 * @param fileIds
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/file/insertBothTaskFile", method = RequestMethod.POST)
 	public Map<String,Object> insertBothTaskIdAndFileId(
@@ -166,6 +173,13 @@ public class FileController extends BaseControl {
 		}
 	}
 
+	/**
+	 * 删除taskId和fileid的关联
+	 * @param taskId
+	 * @param fileId
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/file/deleteFileByTaskAndFileId")
 	public Map<String,Object> deleteFileByTaskAndFileId(
@@ -276,6 +290,7 @@ public class FileController extends BaseControl {
 			} else {
 				index.setFilePath(fields[1]);
 			}
+			System.out.println(index.getFilePath());
 			index.setFileSize(file.getSize());
 			index.setFileTitle(file.getOriginalFilename());
 			index.setFileType(FileTypeUtil.getFileTypeByFileSuffix(fileName));
@@ -283,6 +298,7 @@ public class FileController extends BaseControl {
 			index.setTaskId(taskId);
 			index.setThumbnailsPath(thumbnailsPath);
 			index.setCtime(new Date());
+			index.setUrl(nginxDFSRoot + "/" + index.getServerHost() + "/" + index.getFilePath());
 			index = fileIndexService.insertFileIndex(index);
 
 			result.put("success",true);
