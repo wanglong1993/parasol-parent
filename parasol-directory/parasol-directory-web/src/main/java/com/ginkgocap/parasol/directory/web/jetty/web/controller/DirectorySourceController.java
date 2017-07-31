@@ -386,7 +386,7 @@ public class DirectorySourceController extends BaseControl {
 					return new MappingJacksonValue(interfaceResult);
 				}
 				Long sType = new Long(sourceType);
-				directorySourceService.updateDiresources(loginAppId,loginUserId,sourceId,sType,direIds,sourceTitle);
+				directorySourceService.updateDiresources(loginAppId, loginUserId, sourceId, sType, direIds, sourceTitle);
 				if (sourceType == 8) {
 					try {
 						knowledgeService.updateDirectory(loginUserId, sourceId, columnType, direIds);

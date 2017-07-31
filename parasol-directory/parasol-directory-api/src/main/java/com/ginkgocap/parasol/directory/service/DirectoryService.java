@@ -229,6 +229,15 @@ public interface DirectoryService {
 	 * 减少目录资源 通过目录 ids
 	 * @param userId
 	 * @param appId
+	 * @param id
+	 * @return
+	 */
+	boolean subtractSourceCountByDirId(long userId, long appId, long id);
+
+	/**
+	 * 减少目录资源 通过目录 ids
+	 * @param userId
+	 * @param appId
 	 * @param ids
 	 * @return
 	 */
