@@ -286,7 +286,7 @@ public class FileController extends BaseControl {
 			index.setServerHost(fields[0]);
 			if (moduleType == 2 || moduleType == 3 || moduleType == 4
 					|| moduleType == 5 || moduleType == 7) {
-				index.setFilePath(fields[1]+ "filename=" + file.getOriginalFilename());
+				index.setFilePath(fields[1]+ "?filename=" + file.getOriginalFilename());
 			} else {
 				index.setFilePath(fields[1]);
 			}
