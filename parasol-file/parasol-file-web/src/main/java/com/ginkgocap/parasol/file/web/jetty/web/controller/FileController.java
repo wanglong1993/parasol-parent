@@ -160,7 +160,6 @@ public class FileController extends BaseControl {
 				TFs.add(tf);
 			}
 			if (TFs.size() > 0) {
-				taskIdFileIdService.deleteByTaskId(taskId);
 				taskIdFileIdService.insertList(TFs);
 			}
 			result.put("success",true);
