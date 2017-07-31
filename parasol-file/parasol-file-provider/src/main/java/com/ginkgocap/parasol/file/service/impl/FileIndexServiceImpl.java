@@ -54,9 +54,7 @@ public class FileIndexServiceImpl  implements FileIndexService {
 		if(fileIndex == null) throw new FileIndexServiceException(error_fileIndex_blank,"fileIndex is null!");
     	logger.info("进入保存上传文件索引：参数fileTitle：{}", fileIndex.getFileTitle());
     	try {
-			Long id = fileIndexDao.insert(fileIndex);
-			System.out.println(id);
-			fileIndex.setId(id);
+			fileIndexDao.insert(fileIndex);
 		} catch (Exception e) {
 	    	logger.error("保存上传文件索引失败：参数fileTitle：{}", fileIndex.getFileTitle());
 	    	throw new FileIndexServiceException(e);
