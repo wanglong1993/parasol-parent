@@ -75,6 +75,7 @@ public class FileController extends BaseControl {
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
 	private static final String parameterFile = "file"; // 上传文件
+    private static final String parameterFileId = "fileId";
 	private static final String parameterIndexId = "indexId"; // 索引文件id
 	private static final String parameterFileType = "fileType"; // 文件类型
 	private static final String parameterTaskId = "taskId"; // taskId
@@ -181,10 +182,10 @@ public class FileController extends BaseControl {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/file/deleteFileByTaskAndFileId")
+	@RequestMapping(value = "/file/deleteFileByTaskAndFileId",method = RequestMethod.POST)
 	public Map<String,Object> deleteFileByTaskAndFileId(
 			@RequestParam(name = FileController.parameterTaskId) String taskId,
-			@RequestParam(name = FileController.parameterIndexId) String fileId,
+			@RequestParam(name = FileController.parameterFileId) String fileId,
 			HttpServletRequest request ) {
 		Map<String,Object> result = new HashMap<String,Object>();
 		try {
