@@ -240,7 +240,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 					logger.info("don't find the old Directory entity by id " + directory.getId());
 				}
 			} else {
-				logger.info("update diectory entity is null");
+				logger.info("update directory entity is null");
 			}
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
@@ -439,7 +439,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 
 	/**
 	 * 最多返回500
-	 * 
+	 *
 	 * @param appId
 	 * @param userId
 	 * @param pId
@@ -608,7 +608,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 	}
 
 	/**
-	 * 
+	 *
 	 * @param directory
 	 * @return
 	 */
@@ -666,6 +666,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			throw new DirectoryServiceException(e);
 		}
 	}
+
 	@Override
 	public int getMySubDirectoriesCount(long loginAppId, long userId, long pid, long typeId) throws DirectoryServiceException {
 
@@ -679,7 +680,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			throw new DirectoryServiceException(e);
 		}
 	}
-
 	@Override
 	public Directory getSubTreeMaxDirectory(long appId, long userId, long directory, long typeId) throws DirectoryServiceException {
 
@@ -694,16 +694,7 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		}
 
 	}
-	/*private void assertDuplicateName(List<Directory> directorys, Directory directory) throws DirectoryServiceException {
-		if (!CollectionUtils.isEmpty(directorys)) {
-			for (Directory dir : directorys) {
-				if (dir != null && !ObjectUtils.equals(dir.getId(), directory.getId()) && ObjectUtils.equals(dir.getName(), directory.getName())) {
-					throw new DirectoryServiceException(ServiceError.ERROR_DUPLICATE, "the " + directory.getName() + " already exists");
 
-				}
-			}
-		}
-	}*/
 	/**
 	 * 检查目录级别不能超过20级
 	 */
@@ -717,7 +708,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		}
 		return result;
 	}
-
 	/**
 	 * 返回树结构
 	 * @param loginAppId
@@ -768,6 +758,30 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 		interfaceResult.setResponseData(result);
 		return interfaceResult;
+	}
+
+	/*private void assertDuplicateName(List<Directory> directorys, Directory directory) throws DirectoryServiceException {
+		if (!CollectionUtils.isEmpty(directorys)) {
+			for (Directory dir : directorys) {
+				if (dir != null && !ObjectUtils.equals(dir.getId(), directory.getId()) && ObjectUtils.equals(dir.getName(), directory.getName())) {
+					throw new DirectoryServiceException(ServiceError.ERROR_DUPLICATE, "the " + directory.getName() + " already exists");
+
+				}
+			}
+		}
+	}*/
+
+	@Override
+	public boolean subtractSourceCountByDirId(long userId, long appId, long id) {
+
+		Directory directory = null;
+		try {
+			directory = this.getEntity(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		directory.subtractSourceCount(directory.getSourceCount());
+		return this.updateDirectory(directory);
 	}
 
 	@Override

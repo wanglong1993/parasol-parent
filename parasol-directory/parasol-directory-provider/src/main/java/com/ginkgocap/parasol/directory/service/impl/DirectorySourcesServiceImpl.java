@@ -125,8 +125,36 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 
 	@Override
 	public boolean removeDirectorySourcesBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException {
+
+		boolean b = false;
+		List<DirectorySource> directorySourceList = null;
+		List<Long> ids = null;
+		List<Long> dirIds = new ArrayList<Long>();
 		try {
-			List<Long> ids = this.getIds(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID, userId, appId, sourceType, sourceId);
+			ids = this.getIds(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID, userId, appId, sourceType, sourceId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace();
+		}
+		try {
+			directorySourceList = this.getEntityByIds(ids);
+			for (DirectorySource directorySource : directorySourceList) {
+				if (directorySource == null)
+					continue;
+				long directoryId = directorySource.getDirectoryId();
+				dirIds.add(directoryId);
+			}
+		} catch (BaseServiceException e) {
+			e.printStackTrace();
+		}
+		try {
+			b = directoryService.subtractSourceCountByDirectoryIds(userId, appId, dirIds);
+		} catch (Exception e) {
+			logger.error("invoke directory service failed, method : [ subtractSourceCountByDirectoryIds ]. sourceId = " + sourceId);
+		}
+		if (!b) {
+			logger.error("subtractSourceCountByDirectoryIds method : failed!" );
+		}
+		try {
 			return this.deleteEntityByIds(ids);
 		} catch (BaseServiceException e) {
 			e.printStackTrace();
@@ -319,19 +347,19 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	 * @throws DirectorySourceServiceException
 	 */
 	@Override
-	public boolean updateDiresources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> direIds,String sourceTitle) throws DirectorySourceServiceException{
+	public boolean updateDiresources(Long appId, Long userId, Long sourceId, Long sourceType, List<Long> direIds, String sourceTitle) throws DirectorySourceServiceException{
 
-		List<DirectorySource> newDireSourceList=new ArrayList<DirectorySource>();
-		List<DirectorySource> direSourceList=null;
+		List<DirectorySource> newDireSourceList = new ArrayList<DirectorySource>();
+		List<DirectorySource> direSourceList = null;
 		try {
-            long newSourceType=sourceType;
+            long newSourceType = sourceType;
             direSourceList = this.getDirectorySourcesBySourceId(userId,appId,(int)newSourceType,sourceId);
             if (CollectionUtils.isEmpty(direSourceList)) {
                 for (Long direId : direIds) {
                     if (direId != null) {
-                        DirectorySource tagSource = newDirecotrySource(userId, sourceId, sourceTitle, sourceType, direId);
-                        if(tagSource != null){
-                            newDireSourceList.add(tagSource);
+                        DirectorySource dirSource = newDirecotrySource(userId, sourceId, sourceTitle, sourceType, direId);
+                        if(dirSource != null){
+                            newDireSourceList.add(dirSource);
                         }
                     }
                 }
