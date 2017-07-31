@@ -374,6 +374,11 @@ public class FileController extends BaseControl {
 		try {
 			// 1、先获取taskID下的所有
 			List<Long> fileids = taskIdFileIdService.selectByTaskId(taskId);
+			if (fileids.size() == 0 || fileids == null) {
+				result.put("success",true);
+				result.put("page",new ArrayList<FileIndex>());
+				return genRespBody(result,null);
+			}
 			List<FileIndex> files = fileIndexService.selectFileIndexesByIds(fileids);
 			for (FileIndex ufc : files) {
 				if (ufc.getModuleType() == 100) {
