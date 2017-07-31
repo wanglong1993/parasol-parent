@@ -54,8 +54,7 @@ public class FileIndexServiceImpl  implements FileIndexService {
 		if(fileIndex == null) throw new FileIndexServiceException(error_fileIndex_blank,"fileIndex is null!");
     	logger.info("进入保存上传文件索引：参数fileTitle：{}", fileIndex.getFileTitle());
     	try {
-			Long id = fileIndexDao.insert(fileIndex);
-			fileIndex.setId(id);
+			fileIndexDao.insert(fileIndex);
 		} catch (Exception e) {
 	    	logger.error("保存上传文件索引失败：参数fileTitle：{}", fileIndex.getFileTitle());
 	    	throw new FileIndexServiceException(e);
@@ -168,7 +167,9 @@ public class FileIndexServiceImpl  implements FileIndexService {
 
     @Override
     public List<FileIndex> selectFileIndexesByIds(List<Long> ids) throws FileIndexServiceException {
-    	if( ids==null || ids.size()==0 ) throw new FileIndexServiceException(error_idList_null,"ids list is null!");
+    	if( ids==null || ids.size()==0 ) {
+    		return new ArrayList<FileIndex>(0);
+		}
     	logger.info("进入根据id列表获取上传文件索引列表：参数ids：{}", ids);       	
         List<FileIndex> list = null;
         try {

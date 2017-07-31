@@ -45,46 +45,47 @@
     </sql>
 
 <!--auto generated Code-->
-    <insert id="insert">
+    <insert id="insert" parameterType="com.ginkgocap.parasol.file.model.FileIndex"
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_file_index
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="pojo.id != null"> id, </if>
-            <if test="pojo.filePath != null"> file_path, </if>
-            <if test="pojo.serverHost != null"> server_host, </if>
-            <if test="pojo.fileTitle != null"> file_title, </if>
-            <if test="pojo.fileSize != null"> file_size, </if>
-            <if test="pojo.status != null"> status, </if>
-            <if test="pojo.createrId != null"> creater_id, </if>
-            <if test="pojo.md5 != null"> md5, </if>
-            <if test="pojo.taskId != null"> task_id, </if>
-            <if test="pojo.moduleType != null"> module_type, </if>
-            <if test="pojo.fileType != null"> file_type, </if>
-            <if test="pojo.crc32 != null"> crc32, </if>
-            <if test="pojo.transcoding != null"> transcoding, </if>
-            <if test="pojo.thumbnailsPath != null"> thumbnails_path, </if>
-            <if test="pojo.appId != null"> appId, </if>
-            <if test="pojo.ctime != null"> ctime, </if>
-            <if test="pojo.remark != null"> remark, </if>
+            <if test="id != null"> id, </if>
+            <if test="filePath != null"> file_path, </if>
+            <if test="serverHost != null"> server_host, </if>
+            <if test="fileTitle != null"> file_title, </if>
+            <if test="fileSize != null"> file_size, </if>
+            <if test="status != null"> status, </if>
+            <if test="createrId != null"> creater_id, </if>
+            <if test="md5 != null"> md5, </if>
+            <if test="taskId != null"> task_id, </if>
+            <if test="moduleType != null"> module_type, </if>
+            <if test="fileType != null"> file_type, </if>
+            <if test="crc32 != null"> crc32, </if>
+            <if test="transcoding != null"> transcoding, </if>
+            <if test="thumbnailsPath != null"> thumbnails_path, </if>
+            <if test="appId != null"> appId, </if>
+            <if test="ctime != null"> ctime, </if>
+            <if test="remark != null"> remark, </if>
         </trim>
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="pojo.id != null"> #{pojo.id}, </if>
-            <if test="pojo.filePath != null"> #{pojo.filePath}, </if>
-            <if test="pojo.serverHost != null"> #{pojo.serverHost}, </if>
-            <if test="pojo.fileTitle != null"> #{pojo.fileTitle}, </if>
-            <if test="pojo.fileSize != null"> #{pojo.fileSize}, </if>
-            <if test="pojo.status != null"> #{pojo.status}, </if>
-            <if test="pojo.createrId != null"> #{pojo.createrId}, </if>
-            <if test="pojo.md5 != null"> #{pojo.md5}, </if>
-            <if test="pojo.taskId != null"> #{pojo.taskId}, </if>
-            <if test="pojo.moduleType != null"> #{pojo.moduleType}, </if>
-            <if test="pojo.fileType != null"> #{pojo.fileType}, </if>
-            <if test="pojo.crc32 != null"> #{pojo.crc32}, </if>
-            <if test="pojo.transcoding != null"> #{pojo.transcoding}, </if>
-            <if test="pojo.thumbnailsPath != null"> #{pojo.thumbnailsPath}, </if>
-            <if test="pojo.appId != null"> #{pojo.appId}, </if>
-            <if test="pojo.ctime != null"> #{pojo.ctime}, </if>
-            <if test="pojo.remark != null"> #{pojo.remark}, </if>
+            <if test="id != null"> #{id}, </if>
+            <if test="filePath != null"> #{filePath}, </if>
+            <if test="serverHost != null"> #{serverHost}, </if>
+            <if test="fileTitle != null"> #{fileTitle}, </if>
+            <if test="fileSize != null"> #{fileSize}, </if>
+            <if test="status != null"> #{status}, </if>
+            <if test="createrId != null"> #{createrId}, </if>
+            <if test="md5 != null"> #{md5}, </if>
+            <if test="taskId != null"> #{taskId}, </if>
+            <if test="moduleType != null"> #{moduleType}, </if>
+            <if test="fileType != null"> #{fileType}, </if>
+            <if test="crc32 != null"> #{crc32}, </if>
+            <if test="transcoding != null"> #{transcoding}, </if>
+            <if test="thumbnailsPath != null"> #{thumbnailsPath}, </if>
+            <if test="appId != null"> #{appId}, </if>
+            <if test="ctime != null"> #{ctime}, </if>
+            <if test="remark != null"> #{remark}, </if>
         </trim>
     </insert>
 

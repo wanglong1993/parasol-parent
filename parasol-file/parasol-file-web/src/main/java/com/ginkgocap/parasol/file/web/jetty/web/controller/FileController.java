@@ -28,7 +28,7 @@ import com.ginkgocap.parasol.file.model.PicPerson;
 import com.ginkgocap.parasol.file.model.PicUser;
 import com.ginkgocap.parasol.file.model.TaskIdFileId;
 import com.ginkgocap.parasol.file.service.FileIndexService;
-import com.ginkgocap.parasol.file.service.TaskIdFileIdService;
+import com.ginkgocap.parasol.file.service.TaskIdFileIdServer;
 import com.ginkgocap.parasol.file.utils.FileTypeUtil;
 import com.ginkgocap.parasol.file.utils.VideoUtil;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
@@ -75,6 +75,7 @@ public class FileController extends BaseControl {
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
 	private static final String parameterFile = "file"; // 上传文件
+    private static final String parameterFileId = "fileId";
 	private static final String parameterIndexId = "indexId"; // 索引文件id
 	private static final String parameterFileType = "fileType"; // 文件类型
 	private static final String parameterTaskId = "taskId"; // taskId
@@ -91,7 +92,7 @@ public class FileController extends BaseControl {
 	private FileIndexService fileIndexService;
 
 	@Autowired
-	private TaskIdFileIdService taskIdFileIdService;
+	private TaskIdFileIdServer taskIdFileIdService;
 
 	@Autowired
 	private PicPersonService picPersonService;
@@ -125,6 +126,13 @@ public class FileController extends BaseControl {
 		}
 	}
 
+	/**
+	 * 建立taskId和多个文件的关联
+	 * @param taskId
+	 * @param fileIds
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/file/insertBothTaskFile", method = RequestMethod.POST)
 	public Map<String,Object> insertBothTaskIdAndFileId(
@@ -166,11 +174,18 @@ public class FileController extends BaseControl {
 		}
 	}
 
+	/**
+	 * 删除taskId和fileid的关联
+	 * @param taskId
+	 * @param fileId
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
-	@RequestMapping(value = "/file/deleteFileByTaskAndFileId")
+	@RequestMapping(value = "/file/deleteFileByTaskAndFileId",method = RequestMethod.POST)
 	public Map<String,Object> deleteFileByTaskAndFileId(
 			@RequestParam(name = FileController.parameterTaskId) String taskId,
-			@RequestParam(name = FileController.parameterIndexId) String fileId,
+			@RequestParam(name = FileController.parameterFileId) String fileId,
 			HttpServletRequest request ) {
 		Map<String,Object> result = new HashMap<String,Object>();
 		try {
@@ -272,10 +287,11 @@ public class FileController extends BaseControl {
 			index.setServerHost(fields[0]);
 			if (moduleType == 2 || moduleType == 3 || moduleType == 4
 					|| moduleType == 5 || moduleType == 7) {
-				index.setFilePath(fields[1]+ "filename=" + file.getOriginalFilename());
+				index.setFilePath(fields[1]+ "?filename=" + file.getOriginalFilename());
 			} else {
 				index.setFilePath(fields[1]);
 			}
+			System.out.println(index.getFilePath());
 			index.setFileSize(file.getSize());
 			index.setFileTitle(file.getOriginalFilename());
 			index.setFileType(FileTypeUtil.getFileTypeByFileSuffix(fileName));
@@ -283,6 +299,7 @@ public class FileController extends BaseControl {
 			index.setTaskId(taskId);
 			index.setThumbnailsPath(thumbnailsPath);
 			index.setCtime(new Date());
+			index.setUrl(nginxDFSRoot + "/" + index.getServerHost() + "/" + index.getFilePath());
 			index = fileIndexService.insertFileIndex(index);
 
 			result.put("success",true);
@@ -355,7 +372,14 @@ public class FileController extends BaseControl {
 		// MappingJacksonValue mappingJacksonValue = null;
 		Map<String,Object> result = new HashMap<String,Object>();
 		try {
-			List<FileIndex> files = fileIndexService.getFileIndexesByTaskId(taskId);
+			// 1、先获取taskID下的所有
+			List<Long> fileids = taskIdFileIdService.selectByTaskId(taskId);
+			if (fileids.size() == 0 || fileids == null) {
+				result.put("success",true);
+				result.put("page",new ArrayList<FileIndex>());
+				return genRespBody(result,null);
+			}
+			List<FileIndex> files = fileIndexService.selectFileIndexesByIds(fileids);
 			for (FileIndex ufc : files) {
 				if (ufc.getModuleType() == 100) {
 					ufc.setUrl(nginxRoot + "/mobile/download?id=" + ufc.getId());

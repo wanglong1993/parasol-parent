@@ -4,7 +4,7 @@ import com.ginkgocap.parasol.file.model.TaskIdFileId;
 
 import java.util.List;
 
-public interface TaskIdFileIdService {
+public interface TaskIdFileIdServer {
 
     int insert(TaskIdFileId pojo);
 
@@ -17,4 +17,6 @@ public interface TaskIdFileIdService {
     void deleteByTaskId(String taskId);
 
     void deleteByTaskIdAndFileId(String taskId, String fileId);
+
+    List<Long> selectByTaskId(String taskId);
 }

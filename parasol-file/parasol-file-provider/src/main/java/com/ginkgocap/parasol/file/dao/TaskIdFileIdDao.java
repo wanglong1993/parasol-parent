@@ -17,4 +17,6 @@ public interface TaskIdFileIdDao {
     void deleteByTaskId(@Param("taskId") String taskId);
 
     void deleteByTaskIdAndFileId(@Param("taskId") String taskId,@Param("fileId") String fileId);
+
+    List<Long> selectByTaskId(@Param("taskId") String taskId);
 }
