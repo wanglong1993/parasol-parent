@@ -760,17 +760,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		return interfaceResult;
 	}
 
-	/*private void assertDuplicateName(List<Directory> directorys, Directory directory) throws DirectoryServiceException {
-		if (!CollectionUtils.isEmpty(directorys)) {
-			for (Directory dir : directorys) {
-				if (dir != null && !ObjectUtils.equals(dir.getId(), directory.getId()) && ObjectUtils.equals(dir.getName(), directory.getName())) {
-					throw new DirectoryServiceException(ServiceError.ERROR_DUPLICATE, "the " + directory.getName() + " already exists");
-
-				}
-			}
-		}
-	}*/
-
 	@Override
 	public boolean subtractSourceCountByDirId(long userId, long appId, long id) {
 
