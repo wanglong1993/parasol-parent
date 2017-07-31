@@ -45,7 +45,8 @@
     </sql>
 
 <!--auto generated Code-->
-    <insert id="insert">
+    <insert id="insert" parameterType="com.ginkgocap.parasol.file.model.FileIndex"
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_file_index
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pojo.id != null"> id, </if>
