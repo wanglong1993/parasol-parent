@@ -55,6 +55,7 @@ public class FileIndexServiceImpl  implements FileIndexService {
     	logger.info("进入保存上传文件索引：参数fileTitle：{}", fileIndex.getFileTitle());
     	try {
 			Long id = fileIndexDao.insert(fileIndex);
+			System.out.println(id);
 			fileIndex.setId(id);
 		} catch (Exception e) {
 	    	logger.error("保存上传文件索引失败：参数fileTitle：{}", fileIndex.getFileTitle());
