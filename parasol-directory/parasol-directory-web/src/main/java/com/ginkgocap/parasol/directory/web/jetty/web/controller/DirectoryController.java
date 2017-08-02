@@ -557,6 +557,7 @@ public class DirectoryController extends BaseControl {
                     Directory dir = map.getValue();
                     if (dir.getPid() == 0) {
                         directoryList.add(dir);
+                        logger.info(dir.getName() + " sourceCount : " + dir.getSourceCount());
                     }
                 }
             }

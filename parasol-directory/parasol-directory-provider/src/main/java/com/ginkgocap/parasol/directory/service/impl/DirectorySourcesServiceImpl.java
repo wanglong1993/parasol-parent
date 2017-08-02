@@ -181,6 +181,21 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 			throw new DirectorySourceServiceException(e);
 		}
 	}
+
+	@Override
+	public boolean removeDirectorySourcesByDirId(long directoryId) {
+
+		int count = 0;
+		try {
+			count = this.deleteList(LIST_DIRECTORYSOURCE_ID_DIRECTORYID, directoryId);
+			logger.info("deleteList {LIST_DIRECTORYSOURCE_ID_DIRECTORYID} count : " + count + "directoryId = " + directoryId);
+			return count >= 0;
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+		}
+		return false;
+	}
+
 	@Override
 	public List<DirectorySource> getSourcesByDirectoryIdAndSourceType(int start,int size,Object... parameters) throws DirectorySourceServiceException 
 	{

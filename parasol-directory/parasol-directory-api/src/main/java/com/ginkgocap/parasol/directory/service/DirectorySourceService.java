@@ -143,7 +143,13 @@ public interface DirectorySourceService {
 	public List<Long> getDirectoryIdsBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException;
 
 	/**
-	 *批量删除资源目录
+	 * 删除资源目录 通过目录id
+	 * @param directoryId
+	 * @return
+	 */
+	boolean removeDirectorySourcesByDirId(long directoryId);
+	/**
+	 * 批量删除资源目录
 	 * @throws DirectorySourceServiceException
 	 */
 	public boolean removeDirectorySourcesByDireIds(List<Long> ids) throws DirectorySourceServiceException;

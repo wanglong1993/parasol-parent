@@ -182,7 +182,12 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 				}
 			}
 
-			// 删除自己
+			// 删除自己 并删除目录下资源(不是真正删除资源，只是删除目录和资源的关系)
+			try {
+				directorySourceService.removeDirectorySourcesByDirId(directoryId);
+			} catch (Exception e) {
+				logger.error("invoke directorySourceService failed! method : [removeDirectorySourcesBySourceId] directoryId = " + directoryId);
+			}
 			return this.deleteEntity(directoryId);
 
 		} catch (BaseServiceException e) {
