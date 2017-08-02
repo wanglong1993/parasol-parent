@@ -177,7 +177,7 @@ public class Directory implements Serializable {
 	@Override
 	public String toString() {
 		return "Directory [appId=" + appId + ", userId=" + userId + ", id=" + id + ", pid=" + pid + ", name=" + name + ", nameIndex=" + nameIndex + ", nameIndexAll="
-				+ nameIndexAll + ", orderNo=" + orderNo + ", typeId=" + typeId + ", remark=" + remark + ", numberCode=" + numberCode + ", updateAt=" + updateAt + "]";
+				+ nameIndexAll + ", orderNo=" + orderNo + ", typeId=" + typeId + ", remark=" + remark + ", numberCode=" + numberCode + ", updateAt=" + updateAt + ", sourceCount" + sourceCount + "]";
 	}
 	@Transient // 不持久化：不保存到数据库
 	public List<Directory> getChildDirectory() {
