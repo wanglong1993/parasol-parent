@@ -254,15 +254,7 @@ public class FileController extends BaseControl {
 			if (f>-1) fileExtName = fileName.substring(f+1);
 			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
 			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
-			String thumbnailsPath = "";
-			
-			// 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-			if(fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-				generateAvatar(fields[0], fields[1], fileExtName, null);
-				thumbnailsPath = fields[1].replace("."+fileExtName, "_140_140."+fileExtName);
-			}
 
-			
 			FileIndex index = new FileIndex();
 			String videoThumbnailsPath = "";
 			temp_file_path = dir.getAbsolutePath() + File.separator + fileName;
@@ -280,6 +272,10 @@ public class FileController extends BaseControl {
                 String videoDuration = VideoUtil.getVideoTime("ffmpeg", temp_file.getAbsolutePath());
                 logger.info("video duration = {}",videoDuration);
                 index.setRemark(videoDuration);
+                // 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
+			} else if (fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
+				generateAvatar(fields[0], fields[1], fileExtName, null);
+				index.setThumbnailsPath(fields[1].replace("."+fileExtName, "_140_140."+fileExtName));
 			}
 			index.setAppId(loginAppId);
 			index.setCreaterId(loginUserId);
@@ -296,13 +292,12 @@ public class FileController extends BaseControl {
 			index.setFileType(FileTypeUtil.getFileTypeByFileSuffix(fileName));
 			index.setModuleType(moduleType);
 			index.setTaskId(taskId);
-			index.setThumbnailsPath(thumbnailsPath);
 			index.setCtime(new Date());
 			index.setUrl(nginxDFSRoot + "/" + index.getServerHost() + "/" + index.getFilePath());
 			index = fileIndexService.insertFileIndex(index);
 
 			result.put("success",true);
-			result.put("page",index);
+			result.put("jtFile",index);
 			return genRespBody(result,null);
 		} catch (RpcException e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
