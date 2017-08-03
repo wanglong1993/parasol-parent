@@ -83,7 +83,7 @@ public class UserFileCategoryController extends BaseControl {
                     }
                 }
             }
-            result.put("page",userFileCategoryList);
+            result.put("jtFiles",userFileCategoryList);
             result.put("success",true);
             return genRespBody(result,null);
         } catch (Exception e) {
@@ -133,7 +133,7 @@ public class UserFileCategoryController extends BaseControl {
                     }
                 }
             }
-            result.put("page",ulist);
+            result.put("jtFiles",ulist);
             result.put("success",true);
             return genRespBody(result,null);
         } catch (Exception e) {
