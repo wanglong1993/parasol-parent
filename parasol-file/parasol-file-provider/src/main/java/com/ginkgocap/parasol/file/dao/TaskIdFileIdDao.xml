@@ -9,6 +9,7 @@
         <result column="file_id" property="fileId"/>
         <result column="source" property="source"/>
         <result column="user_id" property="userId"/>
+        <result column="file_title" property="fileTitle" />
     </resultMap>
 
 <!--auto generated Code-->
@@ -17,7 +18,8 @@
         task_id,
         file_id,
         source,
-        user_id
+        user_id,
+        file_title
     </sql>
 
 <!--auto generated Code-->
@@ -29,6 +31,7 @@
             <if test="pojo.fileId != null"> file_id, </if>
             <if test="pojo.source != null"> source, </if>
             <if test="pojo.userId != null"> user_id,</if>
+            <if test="pojo.fileTitle != null"> file_title,</if>
         </trim>
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -37,6 +40,7 @@
             <if test="pojo.fileId != null"> #{pojo.fileId}, </if>
             <if test="pojo.source != null"> #{pojo.source}, </if>
             <if test="pojo.userId != null"> #{pojo.userId}, </if>
+            <if test="pojo.fileTitle != null" > #{pojo.fileTitle}, </if>
         </trim>
     </insert>
 
@@ -51,7 +55,8 @@
             #{pojo.taskId},
             #{pojo.fileId},
             #{pojo.source},
-            #{pojo.userId}
+            #{pojo.userId},
+            #{pojo.fileTitle}
             )
         </foreach>
     </insert>
@@ -64,7 +69,8 @@
             <if test="pojo.taskId != null"> task_id = #{pojo.taskId}, </if>
             <if test="pojo.fileId != null"> file_id = #{pojo.fileId}, </if>
             <if test="pojo.source != null"> source = #{pojo.source}, </if>
-            <if test="pojo.userId != null"> user_id = #{pojo.userId} </if>
+            <if test="pojo.userId != null"> user_id = #{pojo.userId}, </if>
+            <if test="pojo.fileTitle != null" > file_title = #{pojo.fileTitle} </if>
         </set>
          WHERE id = #{pojo.id}
     </update>
@@ -82,7 +88,7 @@
         </where>
     </select>
 
-    <select id="selectByTaskId" resultType="long">
+    <select id="selectByTaskId" resultMap="AllColumnMap">
         SELECT file_id
         FROM tb_task_fileid
         WHERE task_id = #{taskId}
