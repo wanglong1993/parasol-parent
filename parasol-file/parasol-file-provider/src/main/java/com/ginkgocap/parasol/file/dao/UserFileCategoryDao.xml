@@ -155,6 +155,7 @@
            user_Id = #{pojos.userId}
            <if test="pojos.fileType != 0 and pojos.fileType != null">
                AND f.file_type is not null
+               AND f.file_type = #{pojos.fileType}
            </if>
            <if test="pojos.parentId != null">
                AND fc.parent_id = #{pojos.parentId}
