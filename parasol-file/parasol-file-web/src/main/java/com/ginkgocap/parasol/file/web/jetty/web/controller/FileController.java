@@ -273,8 +273,12 @@ public class FileController extends BaseControl {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
-				videoThumbnailsPath = thFields[0] + "/" + thFields[1];
+                if (null != videoTh) {
+					String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
+					videoThumbnailsPath = thFields[0] + "/" + thFields[1];
+				}else {
+                	videoThumbnailsPath = "http://file.online.gintong.com/web/pic/video/video_default.jpg";
+				}
 				index.setThumbnailsPath(videoThumbnailsPath);
                 String videoDuration = VideoUtil.getVideoTime("ffmpeg", temp_file.getAbsolutePath());
                 logger.info("video duration = {}",videoDuration);
