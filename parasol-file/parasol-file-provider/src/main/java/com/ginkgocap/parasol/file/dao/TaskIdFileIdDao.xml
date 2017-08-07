@@ -88,7 +88,7 @@
         </where>
     </select>
 
-    <select id="selectByTaskId" resultMap="AllColumnMap">
+    <select id="selectByTaskId" resultType="long">
         SELECT file_id
         FROM tb_task_fileid
         WHERE task_id = #{taskId}
