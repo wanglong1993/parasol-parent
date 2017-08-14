@@ -507,6 +507,7 @@ public class DirectoryController extends BaseControl {
             if (directoryId == 0) {
                 //下一版本 不再使用 temp
                 directories = directoryService.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
+                logger.info(loginUserId + " ----directories : " + directories);
                 total = directoryService.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
                 totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
             } else {
