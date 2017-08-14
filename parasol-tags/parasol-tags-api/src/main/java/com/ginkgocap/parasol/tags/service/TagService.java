@@ -88,7 +88,6 @@ public interface TagService {
 	 * 
 	 * @param appId
 	 * @param userId
-	 * @param pId
 	 * @return
 	 * @throws TagServiceException
 	 */
@@ -115,4 +114,6 @@ public interface TagService {
 	 * @return
 	 */
 	public List<Tag> getTagsByUserIdAppidTagTypePage(Long userId, Long appId, Long tagType, int start, int size) throws TagServiceException;
+
+	boolean batchDeleteTags(long userId, List<Long> ids);
 }
