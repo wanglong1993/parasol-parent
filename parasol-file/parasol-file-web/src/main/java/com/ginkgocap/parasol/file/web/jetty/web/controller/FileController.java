@@ -69,13 +69,14 @@ import java.util.*;
  */
 @RestController
 public class FileController extends BaseControl {
-	
+
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
 	private static final String parameterFile = "file"; // 上传文件
     private static final String parameterFileId = "fileId";
+	private static final String parameterFileTitle = "fileTitle";
 	private static final String parameterIndexId = "indexId"; // 索引文件id
 	private static final String parameterFileType = "fileType"; // 文件类型
 	private static final String parameterTaskId = "taskId"; // taskId
@@ -127,7 +128,7 @@ public class FileController extends BaseControl {
 	}
 
 	/**
-	 * 建立taskId和多个文件的关联
+	 * 建立taskId和文件的关联
 	 * @param taskId
 	 * @param fileIds
 	 * @param request
@@ -138,6 +139,7 @@ public class FileController extends BaseControl {
 	public Map<String,Object> insertBothTaskIdAndFileId(
 			@RequestParam(name = FileController.parameterTaskId) String taskId,
 			@RequestParam(name = FileController.parameterFileIds) String fileIds,
+			@RequestParam(name = FileController.parameterFileTitle) String fileTitle,
 			HttpServletRequest request) {
 		Map<String,Object> result = new HashMap<String,Object>();
 		try {
@@ -150,18 +152,23 @@ public class FileController extends BaseControl {
 				notificationMap.put("notifInfo", "taskId或者fileIds不合法");
 				return genRespBody(result, notificationMap);
 			}
-			List<Long> ids = covertIdsToLong(fileIds);
-			List<TaskIdFileId> TFs = new ArrayList<TaskIdFileId>();
-			for (Long id : ids) {
-				TaskIdFileId tf = new TaskIdFileId();
-				tf.setFileId(id);
-				tf.setTaskId(taskId);
-				tf.setUserId(userId);
-				TFs.add(tf);
-			}
-			if (TFs.size() > 0) {
-				taskIdFileIdService.insertList(TFs);
-			}
+//			List<Long> ids = covertIdsToLong(fileIds);
+//			List<TaskIdFileId> TFs = new ArrayList<TaskIdFileId>();
+//			for (Long id : ids) {
+//				TaskIdFileId tf = new TaskIdFileId();
+//				tf.setFileId(id);
+//				tf.setTaskId(taskId);
+//				tf.setUserId(userId);
+//				TFs.add(tf);
+//			}
+//			if (TFs.size() > 0) {
+			TaskIdFileId tf = new TaskIdFileId();
+			tf.setUserId(userId);
+			tf.setFileId(Long.parseLong(fileIds));
+			tf.setTaskId(taskId);
+			tf.setFileTitle(fileTitle);
+			taskIdFileIdService.insert(tf);
+			//}
 			result.put("success",true);
 			return genRespBody(result,null);
 		}catch (Exception e) {
@@ -266,8 +273,12 @@ public class FileController extends BaseControl {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
-				videoThumbnailsPath = thFields[0] + "/" + thFields[1];
+                if (null != videoTh) {
+					String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
+					videoThumbnailsPath = thFields[0] + "/" + thFields[1];
+				}else {
+                	videoThumbnailsPath = "http://file.online.gintong.com/web/pic/video/video_default.jpg";
+				}
 				index.setThumbnailsPath(videoThumbnailsPath);
                 String videoDuration = VideoUtil.getVideoTime("ffmpeg", temp_file.getAbsolutePath());
                 logger.info("video duration = {}",videoDuration);

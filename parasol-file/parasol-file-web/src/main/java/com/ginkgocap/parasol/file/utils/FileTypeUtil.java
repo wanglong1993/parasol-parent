@@ -51,8 +51,6 @@ public class FileTypeUtil {
             add("PPT");
             add("PPTX");
             add("XLS");
-            add("ZIP");
-            add("RAR");
             add("XLSX");
         }
     };
@@ -66,6 +64,17 @@ public class FileTypeUtil {
             add("VOC");
             add("WAV");
             add("MP3");
+        }
+    };
+    public static final List<String> compressedFiles = new ArrayList<String>() {
+        {
+            add("ZIP");
+            add("RAR");
+            add("GZ");
+            add("GZIP");
+            add("Z");
+            add("XZ");
+            add("TAR");
         }
     };
 
@@ -92,10 +101,11 @@ public class FileTypeUtil {
             result = FileType.AUDIO.getKey();
         }  else if (doc.contains(fileSuffix)) {
             result = FileType.DOC.getKey();
+        } else if (compressedFiles.contains(fileSuffix)) {
+            result = FileType.COMPRESSED_FILES.getKey();
         } else {
             result = FileType.OTHER.getKey();
         }
-        fileSuffix = null;
         return  result;
     }
 

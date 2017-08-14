@@ -9,7 +9,8 @@ public enum FileType {
     VIDEO(2,"视频"),
     AUDIO(3,"音频"),
     DOC(4,"文档"),
-    OTHER(5,"其它");
+    COMPRESSED_FILES(5,"压缩文件"),
+    OTHER(9,"其它");
 
     private int key;
     private String value;

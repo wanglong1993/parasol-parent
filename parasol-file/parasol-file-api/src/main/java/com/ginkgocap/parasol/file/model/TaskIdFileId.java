@@ -9,6 +9,7 @@ public class TaskIdFileId implements Serializable{
 
     private long id;
     private String taskId;
+    private String fileTitle;
     private long fileId;
     private int source;
     private long userId;
@@ -51,5 +52,13 @@ public class TaskIdFileId implements Serializable{
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public String getFileTitle() {
+        return fileTitle;
+    }
+
+    public void setFileTitle(String fileTitle) {
+        this.fileTitle = fileTitle;
     }
 }
