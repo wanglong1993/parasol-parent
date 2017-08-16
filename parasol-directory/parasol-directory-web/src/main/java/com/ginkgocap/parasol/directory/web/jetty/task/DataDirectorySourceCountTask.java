@@ -59,7 +59,7 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
     @Override
     public void afterPropertiesSet() throws Exception {
         logger.info("synchronized data begin ====================================");
-        new Thread(this).start();
+        //new Thread(this).start();
         logger.info("synchronized data complete ====================================");
     }
 }
