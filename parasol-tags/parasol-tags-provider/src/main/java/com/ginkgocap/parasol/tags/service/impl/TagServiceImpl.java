@@ -33,6 +33,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	private static Logger logger = LoggerFactory.getLogger(TagServiceImpl.class);
 	private static final String LIST_TAG_ID_USERID_APPID_TAGTYPE = "List_Tag_Id_UserId_AppId_TagType";
 	private static final String LIST_TAG_ID_USERID_APPID_TAGTYPE_DEFAULT = "List_Tag_Id_UserId_AppId_TagType_Default";
+	private static final String LIST_TAG_ID_USERID_IDS = "List_Tag_Id_UserId_Ids";
 
 	private static final int MAX_TAG = 300; // 最多创建的标签数量
 	private static final int MAX_LEN_TAG = 30; // Tag的长度30个字符
@@ -234,6 +235,18 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 			throw new TagServiceException(e);
 		}
 		return new ArrayList<Tag>();
+	}
+
+	@Override
+	public boolean batchDeleteTags(long userId, List<Long> ids) {
+
+		boolean flag = false;
+		try {
+			flag = this.deleteEntityByIds(ids);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return flag;
 	}
 
 	@Override

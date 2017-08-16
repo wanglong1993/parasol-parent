@@ -25,10 +25,15 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ginkgocap.parasol.tags.model.Ids;
 import com.ginkgocap.parasol.tags.model.Page;
+import com.ginkgocap.parasol.util.Constants;
+import com.ginkgocap.parasol.util.JsonUtils;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +54,9 @@ import com.ginkgocap.parasol.tags.service.TagService;
  */
 @RestController
 public class TagController extends BaseControl {
+
+	private static Logger logger = LoggerFactory.getLogger(TagController.class);
+
 	private static final String parameterFields = "fields";
 	private static final String parameterDebug = "debug";
 	private static final String parameterTagId = "tagId";
@@ -65,7 +73,6 @@ public class TagController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws TagServiceException
-	 * @throws CodeServiceException
 	 */
 							
 	@RequestMapping(path = "/tags/tags/getTagList", method = { RequestMethod.GET })
@@ -105,7 +112,6 @@ public class TagController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws TagServiceException
-	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/getRecomTagList", method = { RequestMethod.GET })
 	public MappingJacksonValue getRecomTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
@@ -150,7 +156,6 @@ public class TagController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws TagServiceException
-	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/getRecomDefaultTagList", method = { RequestMethod.GET })
 	public MappingJacksonValue getRecomDefaultTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
@@ -207,7 +212,6 @@ public class TagController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws TagSourceServiceException
-	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/createTag", method = { RequestMethod.POST })
 	public MappingJacksonValue createTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
@@ -248,7 +252,6 @@ public class TagController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws TagSourceServiceException
-	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/updateTag", method = { RequestMethod.PUT })
 	public MappingJacksonValue updateTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
@@ -290,7 +293,6 @@ public class TagController extends BaseControl {
 	 * @return
 	 * @throws TagSourceServiceException
 	 * @throws TagServiceException
-	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/deleteTag", method = { RequestMethod.GET , RequestMethod.DELETE})
 	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
@@ -299,10 +301,8 @@ public class TagController extends BaseControl {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-//			Long loginAppId = LoginUserContextHolder.getAppKey();
-//			Long loginUserId = LoginUserContextHolder.getUserId();
-			Long loginAppId=this.DefaultAppId;
-			Long loginUserId=this.getUserId(request);
+			Long loginAppId = this.DefaultAppId;
+			Long loginUserId = this.getUserId(request);
 			Boolean success = tagService.removeTag(loginUserId, id); // 服务验证Owner
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
@@ -316,6 +316,36 @@ public class TagController extends BaseControl {
 		}
 	}
 
+	/**
+	 * 批量 删除 tag 标签 (知识 需求)
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(path = "/tags/tags/batchDeleteTags", method = RequestMethod.POST)
+	public InterfaceResult batchDeleteTags(HttpServletRequest request) {
+
+		InterfaceResult result = null;
+		Long userId = this.getUserId(request);
+		boolean flag;
+		String requestJson = this.getBodyParam(request);
+		Ids<Long> ids =  null;
+		try {
+			ids = (Ids<Long>) JsonUtils.jsonToBean(requestJson, Ids.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			flag = tagService.batchDeleteTags(userId, ids.getIdList());
+		} catch (Exception e) {
+			logger.error("invoke tagService failed! method : batchDeleteTags. userId : " + userId);
+			result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
+			return result;
+		}
+		return InterfaceResult.getSuccessInterfaceResultInstance(flag);
+
+
+
+	}
 	/**
 	 * 指定显示那些字段
 	 * 
