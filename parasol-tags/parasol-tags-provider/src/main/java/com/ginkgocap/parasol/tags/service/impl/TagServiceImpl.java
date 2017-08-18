@@ -60,9 +60,9 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		}
 
 		// 检查长度
-		if (StringUtils.length(tag.getTagName()) > MAX_LEN_TAG) {
+		/*if (StringUtils.length(tag.getTagName()) > MAX_LEN_TAG) {
 			throw new TagServiceException(ServiceError.ERROR_TAG_NAME_TOO_LENGTH, "tagName too length， max is " + MAX_LEN_TAG);
-		}
+		}*/
 
 		//tag.setTagName(tag.getTagName().replace(" ", "")); //replace tab blank , 有英文情况
 		int count = countTagsByUserIdAppidTagType(userId, tag.getAppId(), tag.getTagType());
