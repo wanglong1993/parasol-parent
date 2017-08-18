@@ -358,7 +358,7 @@
 					<showWarnings>true</showWarnings>
 					<compilerArguments>
 						<verbose />
-						<bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>
+						<bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>
 					</compilerArguments>
 				</configuration>
 			</plugin>
@@ -398,8 +398,8 @@
 				<jdbc.host>192.168.101.42:3306</jdbc.host>
 				<jdbc.username>ph_parent</jdbc.username>
 				<jdbc.password>QHuqURq5EW</jdbc.password>
-				<jtmobileserver.root>http://www.gintong.com/cross/</jtmobileserver.root>
-				<nginx.root>dfs.test.gintong.com/</nginx.root>
+				<jtmobileserver.root>http://file.online.gintong.com/</jtmobileserver.root>
+				<nginx.root>http://192.168.101.148</nginx.root>
 			</properties>
 		</profile>
 		<profile>
