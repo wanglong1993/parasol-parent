@@ -36,6 +36,7 @@ import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
 import com.ginkgocap.ywxt.util.MakePrimaryKey;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.csource.common.MyException;
 import org.csource.fastdfs.StorageClient;
 import org.csource.fastdfs.StorageServer;
@@ -224,6 +225,7 @@ public class FileController extends BaseControl {
 	 * @throws IOException 
 	 * @throws MyException 
 	 */
+	@ResponseBody
 	@RequestMapping(path = { "/file/upload" }, method = { RequestMethod.POST })
 	public Map<String,Object> fileUpload(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
@@ -335,6 +337,7 @@ public class FileController extends BaseControl {
      * @throws FileIndexServiceException
      * @throws Exception
      */
+	@ResponseBody
     @RequestMapping(path = { "/file/deleteById" }, method = { RequestMethod.GET })
     public Map<String,Object> deleteFileById(
     		@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
@@ -368,6 +371,7 @@ public class FileController extends BaseControl {
 	 * @throws FileIndexServiceException
 	 * @throws Exception
 	 */
+	@ResponseBody
 	@RequestMapping(path = { "/file/getFileIndexesByTaskId" }, method = { RequestMethod.GET })
 	public Map<String, Object> getFileIndexesByTaskId(
 			@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
@@ -396,6 +400,42 @@ public class FileController extends BaseControl {
 			result.put("page",files);
 			return genRespBody(result,null);
 		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			Map<String,Object> notificationMap = new HashMap<String,Object>();
+			result.put("success",false);
+			notificationMap.put("notifCode", "1013");
+			notificationMap.put("notifInfo", error);
+			return genRespBody(result,notificationMap);
+		}
+	}
+
+	/**
+	 * 根据文件ID获取文件详情
+	 * @param fileId
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/file/getFileById", method = RequestMethod.GET)
+	public Map<String,Object> getFileById(
+			@RequestParam(FileController.parameterFileId) String fileId,
+			HttpServletRequest request ) {
+		Map<String,Object> result = new HashMap<String,Object>();
+		try {
+			if (fileId == null || "".equals(fileId)) {
+				return genRespBody(result,null);
+			}
+			FileIndex file = fileIndexService.getFileIndexById(Long.parseLong(fileId));
+			if (file.getModuleType() == 100) {
+				file.setUrl(nginxRoot + "/mobile/download?id=" + file.getId());
+			} else {
+				file.setUrl(nginxDFSRoot + "/" + file.getServerHost() + "/" + file.getFilePath());
+			}
+			result.put("success",true);
+			result.put("jtFile",file);
+			return genRespBody(result,null);
+		} catch (Exception e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
 			ResponseError error = processResponseError(e);
 			Map<String,Object> notificationMap = new HashMap<String,Object>();
