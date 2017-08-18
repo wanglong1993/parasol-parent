@@ -24,8 +24,9 @@ import org.springframework.http.converter.json.MappingJacksonValue;
  * @Copyright Copyright©2015 www.gintong.com
  */
 public abstract class BaseControl {
+
 	private static Logger logger = LoggerFactory.getLogger(BaseControl.class);
-protected final Long DefaultAppId=1l;
+	protected final Long DefaultAppId=1l;
 	
 	/**
 	 * 获取用户

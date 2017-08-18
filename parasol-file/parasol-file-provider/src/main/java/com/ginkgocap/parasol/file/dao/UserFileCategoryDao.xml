@@ -185,7 +185,7 @@
 
     <select id="getFileSizeSumByFileType" resultType="long">
         SELECT
-          sum(f.file_size)
+          IF(ISNULL(SUM(f.file_size)),0,SUM(f.file_size))
         FROM
         tb_user_file_category fc
         LEFT JOIN tb_file_index f ON fc.`file_id` = f.id
