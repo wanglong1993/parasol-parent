@@ -316,12 +316,12 @@ public class FileController extends BaseControl {
 						heigth = tmp;
 					}
 					if((float)width/heigth <= 2.0){
-						Thumbnails.of(temp_file).scale((float)width/1280).toFile(thFilePath);
+						Thumbnails.of(temp_file).scale(1280/(float)width).toFile(thFilePath);
 						byte[] th_image = VideoUtil.getBytes(thFilePath);
 						String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
 						index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
 					} else if ((float)width/heigth > 2.0) {
-						Thumbnails.of(temp_file).scale((float)heigth/1280).toFile(thFilePath);
+						Thumbnails.of(temp_file).scale(1280/(float)heigth).toFile(thFilePath);
 						byte[] th_image = VideoUtil.getBytes(thFilePath);
 						String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
 						index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
@@ -342,9 +342,9 @@ public class FileController extends BaseControl {
 			index.setServerHost(fields[0]);
 			if (moduleType == 2 || moduleType == 3 || moduleType == 4
 					|| moduleType == 5 || moduleType == 7) {
-				index.setFilePath(fields[1]+ "?filename=" + file.getOriginalFilename());
+				index.setFilePath(fields[0] + "/" + fields[1]+ "?filename=" + file.getOriginalFilename());
 			} else {
-				index.setFilePath(fields[1]);
+				index.setFilePath(fields[0] + "/" + fields[1]);
 			}
 			index.setFileSize(file.getSize());
 			index.setFileTitle(file.getOriginalFilename());
@@ -352,7 +352,7 @@ public class FileController extends BaseControl {
 			index.setModuleType(moduleType);
 			index.setTaskId(taskId);
 			index.setCtime(new Date());
-			index.setUrl(nginxDFSRoot + "/" + index.getServerHost() + "/" + index.getThumbnailsPath());
+			index.setUrl(nginxDFSRoot + "/" + index.getThumbnailsPath());
 			index = fileIndexService.insertFileIndex(index);
 
 			result.put("success",true);
@@ -476,7 +476,10 @@ public class FileController extends BaseControl {
 			if (file.getModuleType() == 100) {
 				file.setUrl(nginxRoot + "/mobile/download?id=" + file.getId());
 			} else {
-				file.setUrl(nginxDFSRoot + "/" + file.getServerHost() + "/" + file.getFilePath());
+				file.setUrl(nginxDFSRoot + "/" + file.getThumbnailsPath());
+				file.setThumbnailsPath(nginxDFSRoot + "/" + file.getThumbnailsPath());
+				file.setFilePath(nginxDFSRoot + "/" + file.getFilePath());
+				file.setRemark(nginxDFSRoot + "/" + file.getRemark());
 			}
 			result.put("success",true);
 			result.put("jtFile",file);
