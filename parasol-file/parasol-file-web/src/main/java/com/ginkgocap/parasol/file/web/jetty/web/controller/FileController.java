@@ -34,6 +34,7 @@ import com.ginkgocap.parasol.file.utils.VideoUtil;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
 import com.ginkgocap.ywxt.util.MakePrimaryKey;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
@@ -50,11 +51,10 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.*;
 
 //import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
@@ -236,7 +236,8 @@ public class FileController extends BaseControl {
 			HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> result = new HashMap<String, Object>();
-        File dir = new File("tempFile");
+        // 创建临时文件路径
+		File dir = new File("tempFile");
         if(!dir.exists()) {
             dir.mkdir();
         }
@@ -261,10 +262,12 @@ public class FileController extends BaseControl {
 			int f = fileName.lastIndexOf(".");
 			String fileExtName = "";
 			if (f>-1) fileExtName = fileName.substring(f+1);
+			// 上传文件到fastdfs文件服务器 获取返回的主要信息
 			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
 			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
 
 			FileIndex index = new FileIndex();
+			// 视频文件的缩略图
 			String videoThumbnailsPath = "";
 			temp_file_path = dir.getAbsolutePath() + File.separator + fileName;
 			File temp_file = VideoUtil.getFile(file_buff, dir.getAbsolutePath(), fileName);
@@ -279,16 +282,60 @@ public class FileController extends BaseControl {
 					String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
 					videoThumbnailsPath = thFields[0] + "/" + thFields[1];
 				}else {
-                	videoThumbnailsPath = "http://file.online.gintong.com/web/pic/video/video_default.jpg";
+                	videoThumbnailsPath = "http://file.gintong.com/web/pic/video/video_default.jpg";
 				}
 				index.setThumbnailsPath(videoThumbnailsPath);
                 String videoDuration = VideoUtil.getVideoTime("ffmpeg", temp_file.getAbsolutePath());
                 logger.info("video duration = {}",videoDuration);
                 index.setRemark(videoDuration);
                 // 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-			} else if (fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-				generateAvatar(fields[0], fields[1], fileExtName, null);
-				index.setThumbnailsPath(fields[1].replace("."+fileExtName, "_140_140."+fileExtName));
+			} else if (fileType == 1 && StringUtils.isNotBlank(fileExtName)) {
+				// generateAvatar(fields[0], fields[1], fileExtName, null);
+				// new File(Thumbnails.of(temp_file));
+				// index.setThumbnailsPath(fields[1].replace("."+fileExtName, "_140_140."+fileExtName));
+				BufferedImage bufferedImage = ImageIO.read(temp_file);
+				int width = bufferedImage.getWidth();
+				int heigth = bufferedImage.getHeight();
+				// 生成大图
+				Thumbnails.of(temp_file).size(width,heigth).toFile(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
+				File bigFile = new File(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
+				byte[] big_image = VideoUtil.getBytes(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
+				String bigfields[] = storageClient.upload_file(big_image,fileExtName,null);
+				index.setRemark(bigfields[0] +"/" +bigfields[1]);
+
+				// 生成缩略图
+				String thFilePath = dir.getAbsoluteFile() + File.separator + "th" + file.getOriginalFilename();
+				// 图片宽或者高均小于或等于1280时图片尺寸保持不变，但仍然经过图片压缩处理，得到小文件的同尺寸图片
+				if (width <= 1280 && heigth <= 1280){
+					index.setThumbnailsPath(bigfields[0] +"/" +bigfields[1]);
+				}else if (width > 1280 || heigth > 1280) {
+
+					if (width - heigth < 0) {
+						int tmp = heigth;
+						width = heigth;
+						heigth = tmp;
+					}
+					if((float)width/heigth <= 2.0){
+						Thumbnails.of(temp_file).scale((float)width/1280).toFile(thFilePath);
+						byte[] th_image = VideoUtil.getBytes(thFilePath);
+						String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
+						index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
+					} else if ((float)width/heigth > 2.0) {
+						Thumbnails.of(temp_file).scale((float)heigth/1280).toFile(thFilePath);
+						byte[] th_image = VideoUtil.getBytes(thFilePath);
+						String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
+						index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
+					}
+
+				} else {
+					Thumbnails.of(temp_file).size(1280,1280).toFile(thFilePath);
+					byte[] th_image = VideoUtil.getBytes(thFilePath);
+					String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
+					index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
+				}
+				// 删除临时文件
+				new File(thFilePath).delete();
+				bigFile.delete();
 			}
 			index.setAppId(loginAppId);
 			index.setCreaterId(loginUserId);
@@ -299,14 +346,13 @@ public class FileController extends BaseControl {
 			} else {
 				index.setFilePath(fields[1]);
 			}
-			System.out.println(index.getFilePath());
 			index.setFileSize(file.getSize());
 			index.setFileTitle(file.getOriginalFilename());
 			index.setFileType(FileTypeUtil.getFileTypeByFileSuffix(fileName));
 			index.setModuleType(moduleType);
 			index.setTaskId(taskId);
 			index.setCtime(new Date());
-			index.setUrl(nginxDFSRoot + "/" + index.getServerHost() + "/" + index.getFilePath());
+			index.setUrl(nginxDFSRoot + "/" + index.getServerHost() + "/" + index.getThumbnailsPath());
 			index = fileIndexService.insertFileIndex(index);
 
 			result.put("success",true);
