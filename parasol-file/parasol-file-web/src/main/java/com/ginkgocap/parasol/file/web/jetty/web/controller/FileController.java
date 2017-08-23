@@ -352,7 +352,11 @@ public class FileController extends BaseControl {
 			index.setModuleType(moduleType);
 			index.setTaskId(taskId);
 			index.setCtime(new Date());
-			index.setUrl(nginxDFSRoot + "/" + index.getThumbnailsPath());
+			if (fileType == 1) {
+				index.setUrl(nginxDFSRoot + "/" + index.getThumbnailsPath());
+			} else {
+				index.setUrl(nginxDFSRoot + "/" + index.getFilePath());
+			}
 			index = fileIndexService.insertFileIndex(index);
 
 			result.put("success",true);
