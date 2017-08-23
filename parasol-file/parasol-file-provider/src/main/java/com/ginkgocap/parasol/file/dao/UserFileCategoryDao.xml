@@ -177,6 +177,7 @@
                    END
                )
            </if>
+        AND (fc.is_dir = 1 OR (fc.is_dir = 0 AND f.server_host is not null))
         ORDER BY is_dir DESC,ctime DESC
         <if test="pojos.start != null and pojos.size != null">
             LIMIT #{pojos.start},#{pojos.size}
@@ -200,6 +201,7 @@
         <if test="pojos.isDir == 0 or pojos.isDir ==1">
             AND fc.is_dir = #{pojos.isDir}
         </if>
+        AND (fc.is_dir = 1 OR (fc.is_dir = 0 AND f.server_host is not null))
     </select>
 
     <select id="existUserCategory" resultType="int" >
@@ -232,7 +234,7 @@
            <if test="pojo.isDir == 1">
                AND fc.server_filename = #{pojo.name}
            </if>
-
+        AND (fc.is_dir = 1 OR (fc.is_dir = 0 AND f.server_host is not null))
     </select>
 
     <select id="selectByAndCId" resultMap="AllColumnMap" >
