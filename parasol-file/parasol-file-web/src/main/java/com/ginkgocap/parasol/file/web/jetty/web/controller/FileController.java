@@ -289,7 +289,7 @@ public class FileController extends BaseControl {
                 logger.info("video duration = {}",videoDuration);
                 index.setRemark(videoDuration);
                 // 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-			} else if (fileType == 1 && StringUtils.isNotBlank(fileExtName)) {
+			} else if (StringUtils.isNotBlank(fileExtName) && FileTypeUtil.getFileTypeByFileSuffix(fileName) == FileType.PIC.getKey()) {
 				// generateAvatar(fields[0], fields[1], fileExtName, null);
 				// new File(Thumbnails.of(temp_file));
 				// index.setThumbnailsPath(fields[1].replace("."+fileExtName, "_140_140."+fileExtName));
