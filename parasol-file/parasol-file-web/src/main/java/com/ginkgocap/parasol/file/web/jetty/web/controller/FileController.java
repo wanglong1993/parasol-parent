@@ -480,10 +480,16 @@ public class FileController extends BaseControl {
 			if (file.getModuleType() == 100) {
 				file.setUrl(nginxRoot + "/mobile/download?id=" + file.getId());
 			} else {
-				file.setUrl(nginxDFSRoot + "/" + file.getThumbnailsPath());
-				file.setThumbnailsPath(nginxDFSRoot + "/" + file.getThumbnailsPath());
+				if (file.getThumbnailsPath() == null) {
+					file.setUrl(nginxDFSRoot + "/" + file.getFilePath());
+					file.setThumbnailsPath(null);
+				} else {
+					file.setUrl(nginxDFSRoot + "/" + file.getThumbnailsPath());
+					file.setThumbnailsPath(nginxDFSRoot + "/" + file.getThumbnailsPath());
+				}
 				file.setFilePath(nginxDFSRoot + "/" + file.getFilePath());
-				file.setRemark(nginxDFSRoot + "/" + file.getRemark());
+				if (file.getRemark() != null)
+					file.setRemark(nginxDFSRoot + "/" + file.getRemark());
 			}
 			result.put("success",true);
 			result.put("jtFile",file);
