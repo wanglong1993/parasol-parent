@@ -358,10 +358,9 @@ public class FileController extends BaseControl {
 				index.setUrl(nginxDFSRoot + "/" + index.getFilePath());
 			}
 			index = fileIndexService.insertFileIndex(index);
-
+			index.setSfid(String.valueOf(index.getId()));
 			result.put("success",true);
 			result.put("jtFile",index);
-			System.out.println("文件id --- : " + index.getId());
 			return genRespBody(result,null);
 		} catch (RpcException e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();

@@ -68,6 +68,7 @@ public class FileIndex implements Serializable {
 	private String remark;
 	// 方便前端使用
 	private String url;
+	private String sfid;
 
 	public long getId() {
 		return id;
@@ -211,5 +212,13 @@ public class FileIndex implements Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getSfid() {
+		return sfid;
+	}
+
+	public void setSfid(String sfid) {
+		this.sfid = sfid;
 	}
 }
