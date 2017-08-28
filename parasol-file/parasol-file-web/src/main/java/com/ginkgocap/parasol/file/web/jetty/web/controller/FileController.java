@@ -443,7 +443,7 @@ public class FileController extends BaseControl {
 				if (ufc.getModuleType() == 100) {
 					ufc.setUrl(nginxRoot + "/mobile/download?id=" + ufc.getId());
 				} else {
-					ufc.setUrl(nginxDFSRoot + "/" + ufc.getServerHost() + "/" + ufc.getFilePath());
+					ufc.setUrl(nginxDFSRoot + "/"+ ufc.getFilePath());
 				}
 			}
 			result.put("success",true);

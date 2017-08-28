@@ -87,7 +87,7 @@ public class UserFileCategoryController extends BaseControl {
                     if (ufc.getModuleType() == 100) {
                         ufc.setUrl(nginxRoot + "/mobile/download?id=" + ufc.getFileId());
                     } else {
-                        ufc.setUrl(nginxDFSRoot + "/" + ufc.getServerHost() + "/" + ufc.getFilePath() + "?filename=" + ufc.getFileTitle());
+                        ufc.setUrl(nginxDFSRoot + "/" + ufc.getFilePath() + "?filename=" + ufc.getFileTitle());
                     }
                 }
             }
