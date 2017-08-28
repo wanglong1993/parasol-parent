@@ -361,6 +361,7 @@ public class FileController extends BaseControl {
 
 			result.put("success",true);
 			result.put("jtFile",index);
+			System.out.println("文件id --- : " + index.getId());
 			return genRespBody(result,null);
 		} catch (RpcException e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
