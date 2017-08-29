@@ -445,6 +445,7 @@ public class FileController extends BaseControl {
 				} else {
 					ufc.setUrl(nginxDFSRoot + "/"+ ufc.getFilePath());
 				}
+				ufc.setSfid(String.valueOf(ufc.getId()));
 			}
 			result.put("success",true);
 			result.put("page",files);
