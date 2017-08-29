@@ -341,7 +341,7 @@ public class FileController extends BaseControl {
 			index.setCreaterId(loginUserId);
 			index.setServerHost(fields[0]);
 			if (moduleType == 2 || moduleType == 3 || moduleType == 4
-					|| moduleType == 5 || moduleType == 7) {
+					|| moduleType == 5 || moduleType == 7 || moduleType == 10) {
 				index.setFilePath(fields[0] + "/" + fields[1]+ "?filename=" + file.getOriginalFilename());
 			} else {
 				index.setFilePath(fields[0] + "/" + fields[1]);
