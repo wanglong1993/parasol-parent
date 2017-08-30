@@ -300,14 +300,15 @@ public class FileController extends BaseControl {
 				Thumbnails.of(temp_file).size(width,heigth).toFile(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
 				File bigFile = new File(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
 				byte[] big_image = VideoUtil.getBytes(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
-				String bigfields[] = storageClient.upload_file(big_image,fileExtName,null);
-				index.setRemark(bigfields[0] +"/" +bigfields[1]);
+				// String bigfields[] = storageClient.upload_file(big_image,fileExtName,null);
+				getPicThumbnail(fields[0],fields[1],1,fileExtName,big_image);
+				index.setRemark(fields[0] +"/" +fields[1].replace("."+fileExtName,"_1."+fileExtName));
 
 				// 生成缩略图
 				String thFilePath = dir.getAbsoluteFile() + File.separator + "th" + file.getOriginalFilename();
 				// 图片宽或者高均小于或等于1280时图片尺寸保持不变，但仍然经过图片压缩处理，得到小文件的同尺寸图片
 				if (width <= 1280 && heigth <= 1280){
-					index.setThumbnailsPath(bigfields[0] +"/" +bigfields[1]);
+					index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_1."+fileExtName));
 				}else if (width > 1280 || heigth > 1280) {
 
 					if (width - heigth < 0) {
@@ -318,20 +319,24 @@ public class FileController extends BaseControl {
 					if((float)width/heigth <= 2.0){
 						Thumbnails.of(temp_file).scale(1280/(float)width).toFile(thFilePath);
 						byte[] th_image = VideoUtil.getBytes(thFilePath);
-						String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
-						index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
+						// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
+						getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
+						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
 					} else if ((float)width/heigth > 2.0) {
 						Thumbnails.of(temp_file).scale(1280/(float)heigth).toFile(thFilePath);
 						byte[] th_image = VideoUtil.getBytes(thFilePath);
-						String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
-						index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
+						// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
+						getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
+						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
 					}
 
 				} else {
 					Thumbnails.of(temp_file).size(1280,1280).toFile(thFilePath);
 					byte[] th_image = VideoUtil.getBytes(thFilePath);
-					String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
-					index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
+					// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
+					// index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
+					getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
+					index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
 				}
 				// 删除临时文件
 				new File(thFilePath).delete();
@@ -658,6 +663,18 @@ public class FileController extends BaseControl {
 		// 根据文件id删除文件
 		storageClient.delete_file(group, mfileId);
 		storageClient.upload_file(group, fileId, suffix, sImage, fileExtName, null);
+		return;
+	}
+
+	private void getPicThumbnail(String group, String fileId, int target, String fileExtName, byte[] mImage) throws IOException, MyException {
+		StorageClient storageClient = getStorageClient();
+		// 如果mImage为空，则通过fileId下载文件，生成字节数组
+		if (mImage==null || mImage.length==0) {
+			return;
+		}
+		String suffix = new StringBuilder("_").append(target).toString();
+		String mfileId = fileId.replace("." + fileExtName, suffix+ "." + fileExtName);
+		storageClient.upload_file(group, fileId, suffix, mImage, fileExtName, null);
 		return;
 	}
 	
