@@ -255,17 +255,15 @@ public class VideoUtil {
      */
     public static byte[] getBytes(String filePath){
         byte[] buffer = null;
-        try {
-            File file = new File(filePath);
+        File file = new File(filePath);
+        try (
             FileInputStream fis = new FileInputStream(file);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(1000)) {
             byte[] b = new byte[1000];
             int n;
             while ((n = fis.read(b)) != -1) {
                 bos.write(b, 0, n);
             }
-            fis.close();
-            bos.close();
             buffer = bos.toByteArray();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -279,52 +277,35 @@ public class VideoUtil {
      * 根据byte数组，生成文件
      */
     public static File getFile(byte[] bfile, String filePath,String fileName) {
-        BufferedOutputStream bos = null;
-        FileOutputStream fos = null;
-        File file = null;
-        try {
-            File dir = new File(filePath);
-            if(!dir.exists()&&dir.isDirectory()){//判断文件目录是否存在
-                dir.mkdirs();
-            }
-            file = new File(filePath + File.separator + fileName);
-            fos = new FileOutputStream(file);
-            bos = new BufferedOutputStream(fos);
+        File dir = new File(filePath);
+        if(!dir.exists() && dir.isDirectory()) {//判断文件目录是否存在
+            dir.mkdirs();
+        }
+        File file = new File(filePath + File.separator + fileName);
+        try (
+            FileOutputStream fos = new FileOutputStream(file);
+            BufferedOutputStream bos = new BufferedOutputStream(fos)) {
             bos.write(bfile);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (bos != null) {
-                try {
-                    bos.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
         }
         return file;
     }
 
 
-/*    public static void main(String [] args) throws Exception {
+  /*  public static void main(String [] args) throws Exception {
         //当前时间毫秒数
         long presentTime = System.currentTimeMillis();
-        //String ffmpegPath = "E:\\ffmpeg\\ffmpeg.exe";
-        String upFilePath = "/usr/local/demo/星月神话_官方版--音悦台.mp4";
-        String mediaPicPath = "/usr/local/demo/999_352_240.jpg";
-        String second = "96";
+        String ffmpegPath = "E:\\ffmpeg\\ffmpeg.exe";
+        String upFilePath = "E:\\星月神话 官方版--音悦台.mp4";
+        //String mediaPicPath = "/usr/local/demo/999_352_240.jpg";
+        String second = "20";
         String format = "352*240";
         //executePrintScreenCodecs(ffmpegPath, upFilePath, mediaPicPath,second, format);
         byte[] bytes = executePrintScreenCodecs(upFilePath, second, format);
-        getFile(bytes, "/usr/local/demo/", "99999_352_240.jpg");
-        String videoTime = getVideoTime("ffmpeg", upFilePath);
+        //getFile(bytes, "/usr/local/demo/", "99999_352_240.jpg");
+        getFile(bytes, "E:\\", "99999_352_240.jpg");
+        String videoTime = getVideoTime(ffmpegPath, upFilePath);
         System.out.println("视频时长:" + videoTime);
         long presentTime_back = System.currentTimeMillis();
         System.out.println("花费的时间:" + (presentTime_back - presentTime));
