@@ -308,7 +308,8 @@ public class FileController extends BaseControl {
 				String thFilePath = dir.getAbsoluteFile() + File.separator + "th" + file.getOriginalFilename();
 				// 图片宽或者高均小于或等于1280时图片尺寸保持不变，但仍然经过图片压缩处理，得到小文件的同尺寸图片
 				if (width <= 1280 && heigth <= 1280){
-					index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_1."+fileExtName));
+					getPicThumbnail(fields[0],fields[1],2,fileExtName,big_image);
+					index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
 				}else if (width > 1280 || heigth > 1280) {
 
 					if (width - heigth < 0) {
@@ -357,7 +358,7 @@ public class FileController extends BaseControl {
 			index.setModuleType(moduleType);
 			index.setTaskId(taskId);
 			index.setCtime(new Date());
-			if (fileType == 1) {
+			if (FileTypeUtil.getFileTypeByFileSuffix(fileName) == 1) {
 				index.setUrl(nginxDFSRoot + "/" + index.getThumbnailsPath());
 			} else {
 				index.setUrl(nginxDFSRoot + "/" + index.getFilePath());
