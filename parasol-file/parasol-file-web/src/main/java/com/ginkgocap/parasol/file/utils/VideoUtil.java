@@ -277,10 +277,10 @@ public class VideoUtil {
      * 根据byte数组，生成文件
      */
     public static File getFile(byte[] bfile, String filePath,String fileName) {
-        File dir = new File(filePath);
-        if(!dir.exists() && dir.isDirectory()) {//判断文件目录是否存在
-            dir.mkdirs();
-        }
+       // File dir = new File(filePath);
+       // if(!dir.exists() && dir.isDirectory()) {//判断文件目录是否存在
+       //     dir.mkdirs();
+       // }
         File file = new File(filePath + File.separator + fileName);
         try (
             FileOutputStream fos = new FileOutputStream(file);
