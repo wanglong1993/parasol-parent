@@ -237,9 +237,9 @@ public class FileController extends BaseControl {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> result = new HashMap<String, Object>();
         // 创建临时文件路径
-		File dir = new File("tempFile" + File.separator + new Date());
+		File dir = new File("tempFile" + File.separator + System.currentTimeMillis());
         if(!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         String temp_file_path = null;
         try {
