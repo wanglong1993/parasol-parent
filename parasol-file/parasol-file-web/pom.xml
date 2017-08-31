@@ -220,6 +220,11 @@
 			<artifactId>zkclient</artifactId>
 			<version>0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+			<version>0.4.8</version>
+		</dependency>
 
 		<!-- business -->
 		<dependency>
@@ -398,8 +403,8 @@
 				<jdbc.host>192.168.101.42:3306</jdbc.host>
 				<jdbc.username>ph_parent</jdbc.username>
 				<jdbc.password>QHuqURq5EW</jdbc.password>
-				<jtmobileserver.root>http://www.gintong.com/cross/</jtmobileserver.root>
-				<nginx.root>dfs.test.gintong.com/</nginx.root>
+				<jtmobileserver.root>http://file.online.gintong.com/</jtmobileserver.root>
+				<nginx.root>http://192.168.101.148</nginx.root>
 			</properties>
 		</profile>
 		<profile>
@@ -435,6 +440,17 @@
 				<jtmobileserver.root>http://www.gintong.com/cross/</jtmobileserver.root>
 				<nginx.root>dfs.test.gintong.com/</nginx.root>
 			</properties>
+		</profile>
+		<profile>
+			<id>delivery</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<filters>
+					<filter>${sa.config.file}</filter>
+				</filters>
+			</build>
 		</profile>
 	</profiles>
 </project>

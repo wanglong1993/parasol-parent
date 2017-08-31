@@ -50,12 +50,14 @@ public class AppFilter implements Filter {
 		// 判断客户端请求方式
 		if (CommonUtil.getRequestIsFromWebFlag()) {
 			String sessionId = request.getHeader("sessionID");
+			logger.info("sessionID : " + sessionId);
 			if (StringUtils.isNotBlank(sessionId)) {
 				String key = RedisKeyUtils.getSessionIdKey(sessionId);
 				return getUser(request, key);
 			}
 		} else {
 			String sessionId = request.getHeader("sessionID");
+			logger.info("sessionID : " + sessionId);
 			if (sessionId != null && !"null".equals(sessionId)
 					&& !"".equals(sessionId)) {
 				String key = "user" + sessionId;

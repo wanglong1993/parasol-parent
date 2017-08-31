@@ -12,7 +12,7 @@
     <module>parasol-column-api</module>
     <module>parasol-column-provider</module>
     <!-- <module>parasol-column-ui</module> -->
-    <module>parasol-column-ui</module>
+    <module>parasol-column-web</module>
   </modules>
   <properties>
   	<packtype>pom</packtype>

@@ -34,8 +34,10 @@ import com.ginkgocap.parasol.file.utils.VideoUtil;
 import com.ginkgocap.parasol.file.web.jetty.util.ImageProcessUtil;
 import com.ginkgocap.parasol.file.web.jetty.web.ResponseError;
 import com.ginkgocap.ywxt.util.MakePrimaryKey;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.csource.common.MyException;
 import org.csource.fastdfs.StorageClient;
 import org.csource.fastdfs.StorageServer;
@@ -49,11 +51,10 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.*;
 
 //import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
@@ -224,6 +225,7 @@ public class FileController extends BaseControl {
 	 * @throws IOException 
 	 * @throws MyException 
 	 */
+	@ResponseBody
 	@RequestMapping(path = { "/file/upload" }, method = { RequestMethod.POST })
 	public Map<String,Object> fileUpload(@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = FileController.parameterDebug, defaultValue = "") String debug,
@@ -234,7 +236,8 @@ public class FileController extends BaseControl {
 			HttpServletRequest request) throws FileIndexServiceException, IOException, MyException {
 		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> result = new HashMap<String, Object>();
-        File dir = new File("tempFile");
+        // 创建临时文件路径
+		File dir = new File("tempFile");
         if(!dir.exists()) {
             dir.mkdir();
         }
@@ -259,10 +262,12 @@ public class FileController extends BaseControl {
 			int f = fileName.lastIndexOf(".");
 			String fileExtName = "";
 			if (f>-1) fileExtName = fileName.substring(f+1);
+			// 上传文件到fastdfs文件服务器 获取返回的主要信息
 			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
 			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
 
 			FileIndex index = new FileIndex();
+			// 视频文件的缩略图
 			String videoThumbnailsPath = "";
 			temp_file_path = dir.getAbsolutePath() + File.separator + fileName;
 			File temp_file = VideoUtil.getFile(file_buff, dir.getAbsolutePath(), fileName);
@@ -277,36 +282,89 @@ public class FileController extends BaseControl {
 					String thFields[] = storageClient.upload_file(videoTh, ".jpg", null);
 					videoThumbnailsPath = thFields[0] + "/" + thFields[1];
 				}else {
-                	videoThumbnailsPath = "http://file.online.gintong.com/web/pic/video/video_default.jpg";
+                	videoThumbnailsPath = "http://file.gintong.com/web/pic/video/video_default.jpg";
 				}
 				index.setThumbnailsPath(videoThumbnailsPath);
                 String videoDuration = VideoUtil.getVideoTime("ffmpeg", temp_file.getAbsolutePath());
                 logger.info("video duration = {}",videoDuration);
                 index.setRemark(videoDuration);
                 // 如果是moduleType是头像，且是图片fileType是1，且扩展名不为空时，生成头像缩略图
-			} else if (fileType == 1 && moduleType == 1 && StringUtils.isNotBlank(fileExtName)) {
-				generateAvatar(fields[0], fields[1], fileExtName, null);
-				index.setThumbnailsPath(fields[1].replace("."+fileExtName, "_140_140."+fileExtName));
+			} else if (StringUtils.isNotBlank(fileExtName) && FileTypeUtil.getFileTypeByFileSuffix(fileName) == FileType.PIC.getKey()) {
+				// generateAvatar(fields[0], fields[1], fileExtName, null);
+				// new File(Thumbnails.of(temp_file));
+				// index.setThumbnailsPath(fields[1].replace("."+fileExtName, "_140_140."+fileExtName));
+				BufferedImage bufferedImage = ImageIO.read(temp_file);
+				int width = bufferedImage.getWidth();
+				int heigth = bufferedImage.getHeight();
+				// 生成大图
+				Thumbnails.of(temp_file).size(width,heigth).toFile(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
+				File bigFile = new File(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
+				byte[] big_image = VideoUtil.getBytes(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
+				// String bigfields[] = storageClient.upload_file(big_image,fileExtName,null);
+				getPicThumbnail(fields[0],fields[1],1,fileExtName,big_image);
+				index.setRemark(fields[0] +"/" +fields[1].replace("."+fileExtName,"_1."+fileExtName));
+
+				// 生成缩略图
+				String thFilePath = dir.getAbsoluteFile() + File.separator + "th" + file.getOriginalFilename();
+				// 图片宽或者高均小于或等于1280时图片尺寸保持不变，但仍然经过图片压缩处理，得到小文件的同尺寸图片
+				if (width <= 1280 && heigth <= 1280){
+					getPicThumbnail(fields[0],fields[1],2,fileExtName,big_image);
+					index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
+				}else if (width > 1280 || heigth > 1280) {
+
+					if (width - heigth < 0) {
+						int tmp = heigth;
+						width = heigth;
+						heigth = tmp;
+					}
+					if((float)width/heigth <= 2.0){
+						Thumbnails.of(temp_file).scale(1280/(float)width).toFile(thFilePath);
+						byte[] th_image = VideoUtil.getBytes(thFilePath);
+						// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
+						getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
+						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
+					} else if ((float)width/heigth > 2.0) {
+						Thumbnails.of(temp_file).scale(1280/(float)heigth).toFile(thFilePath);
+						byte[] th_image = VideoUtil.getBytes(thFilePath);
+						// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
+						getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
+						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
+					}
+
+				} else {
+					Thumbnails.of(temp_file).size(1280,1280).toFile(thFilePath);
+					byte[] th_image = VideoUtil.getBytes(thFilePath);
+					// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
+					// index.setThumbnailsPath(th_fields[0] + "/" + th_fields[1]);
+					getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
+					index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
+				}
+				// 删除临时文件
+				new File(thFilePath).delete();
+				bigFile.delete();
 			}
 			index.setAppId(loginAppId);
 			index.setCreaterId(loginUserId);
 			index.setServerHost(fields[0]);
 			if (moduleType == 2 || moduleType == 3 || moduleType == 4
-					|| moduleType == 5 || moduleType == 7) {
-				index.setFilePath(fields[1]+ "?filename=" + file.getOriginalFilename());
+					|| moduleType == 5 || moduleType == 7 || moduleType == 10) {
+				index.setFilePath(fields[0] + "/" + fields[1]+ "?filename=" + file.getOriginalFilename());
 			} else {
-				index.setFilePath(fields[1]);
+				index.setFilePath(fields[0] + "/" + fields[1]);
 			}
-			System.out.println(index.getFilePath());
 			index.setFileSize(file.getSize());
 			index.setFileTitle(file.getOriginalFilename());
 			index.setFileType(FileTypeUtil.getFileTypeByFileSuffix(fileName));
 			index.setModuleType(moduleType);
 			index.setTaskId(taskId);
 			index.setCtime(new Date());
-			index.setUrl(nginxDFSRoot + "/" + index.getServerHost() + "/" + index.getFilePath());
+			if (FileTypeUtil.getFileTypeByFileSuffix(fileName) == 1) {
+				index.setUrl(nginxDFSRoot + "/" + index.getThumbnailsPath());
+			} else {
+				index.setUrl(nginxDFSRoot + "/" + index.getFilePath());
+			}
 			index = fileIndexService.insertFileIndex(index);
-
+			index.setSfid(String.valueOf(index.getId()));
 			result.put("success",true);
 			result.put("jtFile",index);
 			return genRespBody(result,null);
@@ -335,6 +393,7 @@ public class FileController extends BaseControl {
      * @throws FileIndexServiceException
      * @throws Exception
      */
+	@ResponseBody
     @RequestMapping(path = { "/file/deleteById" }, method = { RequestMethod.GET })
     public Map<String,Object> deleteFileById(
     		@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
@@ -368,6 +427,7 @@ public class FileController extends BaseControl {
 	 * @throws FileIndexServiceException
 	 * @throws Exception
 	 */
+	@ResponseBody
 	@RequestMapping(path = { "/file/getFileIndexesByTaskId" }, method = { RequestMethod.GET })
 	public Map<String, Object> getFileIndexesByTaskId(
 			@RequestParam(name = FileController.parameterFields, defaultValue = "") String fileds,
@@ -389,13 +449,59 @@ public class FileController extends BaseControl {
 				if (ufc.getModuleType() == 100) {
 					ufc.setUrl(nginxRoot + "/mobile/download?id=" + ufc.getId());
 				} else {
-					ufc.setUrl(nginxDFSRoot + "/" + ufc.getServerHost() + "/" + ufc.getFilePath());
+					ufc.setUrl(nginxDFSRoot + "/"+ ufc.getFilePath());
 				}
+				ufc.setSfid(String.valueOf(ufc.getId()));
 			}
 			result.put("success",true);
 			result.put("page",files);
 			return genRespBody(result,null);
 		} catch (RpcException e) {
+			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
+			ResponseError error = processResponseError(e);
+			Map<String,Object> notificationMap = new HashMap<String,Object>();
+			result.put("success",false);
+			notificationMap.put("notifCode", "1013");
+			notificationMap.put("notifInfo", error);
+			return genRespBody(result,notificationMap);
+		}
+	}
+
+	/**
+	 * 根据文件ID获取文件详情
+	 * @param fileId
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/file/getFileById", method = RequestMethod.GET)
+	public Map<String,Object> getFileById(
+			@RequestParam(FileController.parameterFileId) String fileId,
+			HttpServletRequest request ) {
+		Map<String,Object> result = new HashMap<String,Object>();
+		try {
+			if (fileId == null || "".equals(fileId)) {
+				return genRespBody(result,null);
+			}
+			FileIndex file = fileIndexService.getFileIndexById(Long.parseLong(fileId));
+			if (file.getModuleType() == 100) {
+				file.setUrl(nginxRoot + "/mobile/download?id=" + file.getId());
+			} else {
+				if (file.getThumbnailsPath() == null) {
+					file.setUrl(nginxDFSRoot + "/" + file.getFilePath());
+					file.setThumbnailsPath(null);
+				} else {
+					file.setUrl(nginxDFSRoot + "/" + file.getThumbnailsPath());
+					file.setThumbnailsPath(nginxDFSRoot + "/" + file.getThumbnailsPath());
+				}
+				file.setFilePath(nginxDFSRoot + "/" + file.getFilePath());
+				if (file.getRemark() != null)
+					file.setRemark(nginxDFSRoot + "/" + file.getRemark());
+			}
+			result.put("success",true);
+			result.put("jtFile",file);
+			return genRespBody(result,null);
+		} catch (Exception e) {
 			Map<String, Serializable> resultMap = new HashMap<String, Serializable>();
 			ResponseError error = processResponseError(e);
 			Map<String,Object> notificationMap = new HashMap<String,Object>();
@@ -558,6 +664,18 @@ public class FileController extends BaseControl {
 		// 根据文件id删除文件
 		storageClient.delete_file(group, mfileId);
 		storageClient.upload_file(group, fileId, suffix, sImage, fileExtName, null);
+		return;
+	}
+
+	private void getPicThumbnail(String group, String fileId, int target, String fileExtName, byte[] mImage) throws IOException, MyException {
+		StorageClient storageClient = getStorageClient();
+		// 如果mImage为空，则通过fileId下载文件，生成字节数组
+		if (mImage==null || mImage.length==0) {
+			return;
+		}
+		String suffix = new StringBuilder("_").append(target).toString();
+		String mfileId = fileId.replace("." + fileExtName, suffix+ "." + fileExtName);
+		storageClient.upload_file(group, fileId, suffix, mImage, fileExtName, null);
 		return;
 	}
 	
