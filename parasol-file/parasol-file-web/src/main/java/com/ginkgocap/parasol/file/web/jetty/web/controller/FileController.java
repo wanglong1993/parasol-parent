@@ -241,6 +241,8 @@ public class FileController extends BaseControl {
         if(!dir.exists()) {
             dir.mkdirs();
         }
+        int source_h = 0;
+        int source_w = 0;
         String temp_file_path = null;
         try {
 			Long loginAppId=this.DefaultAppId;
@@ -296,8 +298,8 @@ public class FileController extends BaseControl {
 				BufferedImage bufferedImage = ImageIO.read(temp_file);
 				int width = bufferedImage.getWidth();
 				int heigth = bufferedImage.getHeight();
-				index.setWidth(width);
-				index.setHeigth(heigth);
+				source_w = width;
+				source_h = heigth;
 				// 生成大图
 				Thumbnails.of(temp_file).size(width,heigth).toFile(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
 				File bigFile = new File(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
@@ -366,7 +368,8 @@ public class FileController extends BaseControl {
 				index.setUrl(nginxDFSRoot + "/" + index.getFilePath());
 			}
 			index = fileIndexService.insertFileIndex(index);
-
+			index.setHeigth(source_h);
+			index.setWidth(source_w);
 			index.setSfid(String.valueOf(index.getId()));
 			result.put("success",true);
 			result.put("jtFile",index);
