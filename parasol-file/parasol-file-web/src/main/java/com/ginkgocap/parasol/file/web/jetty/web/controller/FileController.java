@@ -485,6 +485,7 @@ public class FileController extends BaseControl {
 			}
 			FileIndex file = fileIndexService.getFileIndexById(Long.parseLong(fileId));
 			if (file.getModuleType() == 100) {
+			    file.setFilePath(null);
 				file.setUrl(nginxRoot + "/mobile/download?id=" + file.getId());
 			} else {
 				if (file.getThumbnailsPath() == null) {
