@@ -296,6 +296,8 @@ public class FileController extends BaseControl {
 				BufferedImage bufferedImage = ImageIO.read(temp_file);
 				int width = bufferedImage.getWidth();
 				int heigth = bufferedImage.getHeight();
+				index.setWidth(width);
+				index.setHeigth(heigth);
 				// 生成大图
 				Thumbnails.of(temp_file).size(width,heigth).toFile(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
 				File bigFile = new File(dir.getAbsoluteFile() + File.separator + "big" + file.getOriginalFilename());
@@ -364,6 +366,7 @@ public class FileController extends BaseControl {
 				index.setUrl(nginxDFSRoot + "/" + index.getFilePath());
 			}
 			index = fileIndexService.insertFileIndex(index);
+
 			index.setSfid(String.valueOf(index.getId()));
 			result.put("success",true);
 			result.put("jtFile",index);
