@@ -40,7 +40,6 @@ public class DirectoryDaoImpl extends SqlSessionDaoSupport implements DirectoryD
     @Override
     public int insert(Directory record) {
         //SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) applicationContext.getBean("sqlSessionFactory");
-
         return 0;
     }
 
