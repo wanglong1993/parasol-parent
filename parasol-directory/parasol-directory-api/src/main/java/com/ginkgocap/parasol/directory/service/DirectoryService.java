@@ -252,4 +252,24 @@ public interface DirectoryService {
 	 * @return
 	 */
 	List<Directory> getListByPId(long appId, int start, int size, long pid);
+
+	/**
+	 * 通过 mongoDB 查询 目录 通过 userId，typeId
+	 * @param userId
+	 * @param typeId
+	 * @return
+	 */
+	List<Directory> getDirectoriesTreeByCache(long userId, long typeId);
+
+	/**
+	 * 向 mongo 中 批量插入数据
+	 * @param directoryList
+	 */
+	void saveDirectoriesTreeByCache(List<Directory> directoryList);
+
+	/**
+	 * 向 mongo 中插入数据
+	 * @param directory
+	 */
+	void saveDirectoryByCache(Directory directory);
 }

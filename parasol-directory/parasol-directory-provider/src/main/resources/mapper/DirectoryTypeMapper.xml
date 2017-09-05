@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ginkgocap.parasol.directory.dao.DirectoryTypeDao" >
+  <resultMap id="BaseResultMap" type="com.ginkgocap.parasol.directory.model.DirectoryType" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="appId" property="appId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="updateAt" property="updateAt" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, appId, name, updateAt
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_directory_type
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_directory_type
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ginkgocap.parasol.directory.model.DirectoryType" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tb_directory_type (id, appId, name, 
+      updateAt)
+    values (#{id,jdbcType=BIGINT}, #{appId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{updateAt,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ginkgocap.parasol.directory.model.DirectoryType" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tb_directory_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      id,
+      <if test="appId != null" >
+        appId,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="updateAt != null" >
+        updateAt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{id,jdbcType=BIGINT},
+      <if test="appId != null" >
+        #{appId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateAt != null" >
+        #{updateAt,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ginkgocap.parasol.directory.model.DirectoryType" >
+    update tb_directory_type
+    <set >
+      <if test="appId != null" >
+        appId = #{appId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateAt != null" >
+        updateAt = #{updateAt,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ginkgocap.parasol.directory.model.DirectoryType" >
+    update tb_directory_type
+    set appId = #{appId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      updateAt = #{updateAt,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

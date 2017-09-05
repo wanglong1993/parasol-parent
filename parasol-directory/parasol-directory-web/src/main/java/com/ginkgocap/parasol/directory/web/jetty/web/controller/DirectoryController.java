@@ -139,6 +139,19 @@ public class DirectoryController extends BaseControl {
                 mappingJacksonValue = new MappingJacksonValue(resultMap);
                 return mappingJacksonValue;
             }
+            // 在 mysql 创建成功后，准备同步到 mongo 中，但需先检查 mongo 中是否有数据，
+            // 若有数据，则直接同步；若无数据，则不同步，在下面returnMyDirectoriesTreeList方法中整体同步（这种情况是 mysql 没同步到 mongo 中）
+            List<Directory> directoryList = directoryService.getDirectoriesTreeByCache(loginUserId, rootType);
+            if (CollectionUtils.isNotEmpty(directoryList)) {
+                Directory directoryDB = directoryService.getDirectory(loginAppId, loginUserId, id);
+                if (null != directoryDB) {
+                    try {
+                        directoryService.saveDirectoryByCache(directoryDB);
+                    } catch (Exception e) {
+                        logger.error("invoke directoryService failed! method : [ saveDirectoryByCache ] userId : " + loginUserId);
+                    }
+                }
+            }
             return returnMyDirectoriesTreeList(loginAppId, loginUserId, rootType, fields);
         }  catch (Exception e) {
             if (isOld) {
@@ -494,63 +507,77 @@ public class DirectoryController extends BaseControl {
 
         MappingJacksonValue mappingJacksonValue = null;
         InterfaceResult interfaceResult = null;
+        Long loginAppId = this.DefaultAppId;
+        Long loginUserId = this.getUserId(request);
+        List<Directory> directories = null;
+        List<Directory> directoryList = null;
+        Map<Long, Directory> idMap = null;
+        Map<String, Object> result = new HashMap(3);
+        int total = 0;
+        int totalSourceCount = 0;
         try {
-            Long loginAppId = this.DefaultAppId;
-            Long loginUserId = this.getUserId(request);
-            List<Directory> directories = null;
-            List<Directory> directoryList = new ArrayList<Directory>();
-            Map<Long, Directory> idMap = new HashMap();
-            int total = 0;
-            int totalSourceCount = 0;
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
             // 1.查询后台服务
             if (directoryId == 0) {
-                //下一版本 不再使用 temp
+                logger.info("-----------------mysql query-startTime-- :" + System.currentTimeMillis());
+                //total = directoryService.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
                 directories = directoryService.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
-                logger.info(loginUserId + " ----directories : " + directories);
-                total = directoryService.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
-                totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
+                logger.info("-----------------mysql query-endTime-- :" + System.currentTimeMillis());
+                total = directories.size();
+                //totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
+                //directoryList = directoryService.getDirectoriesTreeByCache(loginUserId, typeId);
+                if (CollectionUtils.isNotEmpty(directoryList)) {
+                    result.put("totalCount", total);
+                    result.put("list", directoryList);
+                    result.put("sourceCount", totalSourceCount);
+                    interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+                    interfaceResult.setResponseData(result);
+                    mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+                    // 3.创建页面显示数据项的过滤器
+                    SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+                    mappingJacksonValue.setFilters(filterProvider);
+                    // 4.返回结果
+                    return mappingJacksonValue;
+                }
+                //下一版本 不再使用 temp
+                //logger.info(loginUserId + " ----directories : " + directories);
             } else {
                 directories = directoryService.getTreeDirectorysByParentId(loginAppId, loginUserId, directoryId, typeId);
                 total = directoryService.getMySubDirectoriesCount(loginAppId, loginUserId, directoryId, typeId);
             }
+            directoryList = new ArrayList<Directory>(total);
+            idMap = new HashMap(total);
             // 判断空
             if (CollectionUtils.isNotEmpty(directories)) {
                 // 2.将返回数据转为树形结构
+                logger.info("--------------遍历排序 sort start ------------------ ：" + System.currentTimeMillis());
                 for (Directory directory: directories) {
                     long id = directory.getId();
                     // 在移动目录（修改目录结构） 之后 目录的 childDirectory 会有数据缓存 设为null 则无缓存
                     if (CollectionUtils.isNotEmpty(directory.getChildDirectory())) {
                         directory.setChildDirectory(null);
                     }
-                    logger.info("*****" + directory.getName() + "**list{" + directory.getChildDirectory() + "}***");
-                    logger.info("---------------");
+                    //logger.info("*****" + directory.getName() + "**list{" + directory.getChildDirectory() + "}***");
+                    //logger.info("---------------");
                     long pid = directory.getPid();
-                    //根目录下所有目录
-                    if (pid == 0 && directoryId == 0) {
-                        //directoryList.add(directory);
-                        //其他目录及目录下所有目录
-                    }/* else if (directoryId > 0 && directoryId == directory.getId()) {
-                        directoryList.add(directory);
-                    }*/
                     idMap.put(id, directory);
                 }
-                Map<Long, Directory> test = new HashMap<Long, Directory>();
+                Map<Long, Directory> test = new HashMap<Long, Directory>(total);
                 logger.info("1.start");
                 for (Map.Entry<Long, Directory> map : idMap.entrySet()) {
                     Directory directory = map.getValue();
-                    logger.info("directory : [ " + directory.getName() + "********* list {" + directory.getChildDirectory() + "}*****]");
+                    //logger.info("directory : [ " + directory.getName() + "********* list {" + directory.getChildDirectory() + "}*****]");
                     long pid = directory.getPid();
                     Directory parent = idMap.get(pid);
                     if (parent != null) {
-                        logger.info("parent : [" + parent.getName() + "********* list {" + parent.getChildDirectory() + "}***********]");
+                        //logger.info("parent : [" + parent.getName() + "********* list {" + parent.getChildDirectory() + "}***********]");
                         parent.addChildList(directory);
-                        logger.info("child list [: " + parent.getChildDirectory() + "------------------]");
+                        //logger.info("child list [: " + parent.getChildDirectory() + "------------------]");
                         // 将目录按照拼音 自定义排序
                         Collections.sort(parent.getChildDirectory(), new PinyinComparatorList4ObjectName());
-                        test.put(parent.getId(),parent);
+                        test.put(parent.getId(), parent);
                     } else {
-                        test.put(directory.getId(),directory);
+                        test.put(directory.getId(), directory);
                     }
                 }
                 logger.info("1.end");
@@ -558,14 +585,16 @@ public class DirectoryController extends BaseControl {
                     Directory dir = map.getValue();
                     if (dir.getPid() == 0) {
                         directoryList.add(dir);
-                        logger.info(dir.getName() + " sourceCount : " + dir.getSourceCount());
+                        //logger.info(dir.getName() + " sourceCount : " + dir.getSourceCount());
                     }
                 }
             }
             // 将目录按照拼音 自定义排序
             Collections.sort(directoryList, new PinyinComparatorList4ObjectName());
+            // 将排好序的 tree 目录同步到 mongoDB
+            // directoryService.saveDirectoriesTreeByCache(directoryList);
             // 2.转成框架数据
-            Map<String, Object> result = new HashMap();
+            logger.info("--------------遍历排序 sort end ------------------ ：" + System.currentTimeMillis());
             result.put("totalCount", total);
             result.put("list", directoryList);
             result.put("sourceCount", totalSourceCount);
@@ -733,11 +762,29 @@ public class DirectoryController extends BaseControl {
     private MappingJacksonValue returnMyDirectoriesTreeList(long loginAppId, long loginUserId, long typeId, String fileds) throws Exception{
 
         MappingJacksonValue mappingJacksonValue = null;
-        List<Directory> directoryList = new ArrayList<Directory>();
-        List<Directory> directories = directoryService.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
+        Map<String, Object> result = new HashMap(3);
+        List<Directory> directoryList = null;
         int total = directoryService.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
         int totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
-        Map<Long, Directory> idMap = new HashMap<Long, Directory>();
+        try {
+            directoryList = directoryService.getDirectoriesTreeByCache(loginUserId, typeId);
+        } catch (Exception e) {
+            logger.error("invoke directoryService failed, method : [ getDirectoriesTreeByCache ]. userId :" + loginUserId);
+        }
+        if (CollectionUtils.isNotEmpty(directoryList)) {
+            result.put("totalCount", total);
+            result.put("list", directoryList);
+            result.put("sourceCount", totalSourceCount);
+            InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
+            interfaceResult.setResponseData(result);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+            SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+            mappingJacksonValue.setFilters(filterProvider);
+            return mappingJacksonValue;
+        }
+        List<Directory> directories = directoryService.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
+        Map<Long, Directory> idMap = new HashMap<Long, Directory>(total);
+        directoryList = new ArrayList<Directory>(total);
         for (Directory direc: directories) {
             long dirId = direc.getId();
             long pid = direc.getPid();
@@ -759,8 +806,9 @@ public class DirectoryController extends BaseControl {
         }
         // 将目录按照拼音 自定义排序
         Collections.sort(directoryList, new PinyinComparatorList4ObjectName());
+        // 将排好序的目录 同步到 mongo 中 （一般情况执行此代码是因为 第一次加载目录mongo中没数据）
+        directoryService.saveDirectoriesTreeByCache(directoryList);
         // 2.转成框架数据
-        Map<String, Object> result = new HashMap();
         result.put("totalCount", total);
         result.put("list", directoryList);
         result.put("sourceCount", totalSourceCount);

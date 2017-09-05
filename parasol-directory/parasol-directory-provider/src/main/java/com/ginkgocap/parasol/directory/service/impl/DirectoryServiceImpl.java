@@ -2,6 +2,7 @@ package com.ginkgocap.parasol.directory.service.impl;
 
 import java.util.*;
 
+import com.ginkgocap.parasol.directory.dao.DirectoryDao;
 import com.ginkgocap.parasol.directory.model.Page;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
 import com.ginkgocap.parasol.util.PinyinComparatorList4ObjectName;
@@ -10,6 +11,10 @@ import com.gintong.frame.util.dto.InterfaceResult;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -50,6 +55,12 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 
 	@Resource
 	private DirectorySourceService directorySourceService;
+
+	@Autowired
+	private DirectoryDao myDirectoryDao;
+
+	@Resource
+	private MongoTemplate mongoTemplate;
 
 	/**
 	 * 创建应用分类下边的根目录 比如创建系统应用知识下的根目录
@@ -652,8 +663,9 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		ServiceError.assertDirectoryTypeIdForDirectory(typeId);
 
 		try {
-			return this.getEntitys(LIST_DIRECTORY_ID_APPID_USERID_TYPEID, appId, userId, typeId);
-		} catch (BaseServiceException e) {
+			return myDirectoryDao.selectMyTreeDirectories(appId, userId, typeId);
+			//return this.getEntitys(LIST_DIRECTORY_ID_APPID_USERID_TYPEID, appId, userId, typeId);
+		} catch (Exception e) {
 			e.printStackTrace(System.err);
 			throw new DirectoryServiceException(e);
 		}
@@ -819,5 +831,26 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 			logger.error("invoke getSubEntitys method failed! sql : LIST_DIRECTORY_PID_ID, pid = " + pid);
 		}
 		return directoryList;
+	}
+
+	@Override
+	public List<Directory> getDirectoriesTreeByCache(long userId, long typeId) {
+
+		Query query = new Query();
+		query.addCriteria(Criteria.where("userId").is(userId));
+		query.addCriteria(Criteria.where("typeId").is(typeId));
+		return mongoTemplate.find(query, Directory.class, "directory");
+	}
+
+	@Override
+	public void saveDirectoriesTreeByCache(List<Directory> directoryList) {
+
+		mongoTemplate.insert(directoryList, "directory");
+	}
+
+	@Override
+	public void saveDirectoryByCache(Directory directory) {
+
+		mongoTemplate.insert(directory);
 	}
 }

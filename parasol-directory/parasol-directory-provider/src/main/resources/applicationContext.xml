@@ -32,7 +32,49 @@
 	</bean>
 	<import resource="classpath:directory-dubbo-config.xml" />
 	<import resource="classpath:directory-dubbo-provider.xml" />
+	<import resource="classpath:directory-mongo-config.xml"/>
 	<context:component-scan base-package="com.ginkgocap.parasol.directory">
 	</context:component-scan>
 	<bean name="dao" class="com.ginkgocap.ywxt.framework.dal.dao.impl.CompositeDaoImpl"/>
+
+	<bean id="directoryDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		  destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialPoolSize">
+			<value>10</value>
+		</property>
+		<property name="minPoolSize">
+			<value>10</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>2</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>30</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>60</value>
+		</property>
+		<property name="maxStatements">
+			<value>0</value>
+		</property>
+		<property name="idleConnectionTestPeriod">
+			<value>60</value>
+		</property>
+	</bean>
+	<!-- mybatis文件配置，扫描所有mapper文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" p:dataSource-ref="directoryDataSource"
+		  p:configLocation="classpath:directory-mybatis-config.xml"
+		  p:mapperLocations="classpath:mapper/*.xml"/>
+
+	<!-- spring与mybatis整合配置，扫描所有dao -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" p:basePackage="com.ginkgocap.parasol.directory.dao"
+		  p:sqlSessionFactoryBeanName="sqlSessionFactory"/>
+
+	<!-- 对dataSource 数据源进行事务管理 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		  p:dataSource-ref="directoryDataSource"/>
 </beans>

@@ -45,7 +45,7 @@ public class FileIndexServiceTest extends TestBase{
 	@Test
 	public void TestDeleteFileById() throws FileIndexServiceException {
 		long id = 3915182137147397l;
-		boolean flag = fileIndexService.deleteFileIndexById(id);
+		boolean flag = fileIndexService.deleteFileIndexById(1,id);
 		System.out.println("flag ==="+flag);
 	}
 	
