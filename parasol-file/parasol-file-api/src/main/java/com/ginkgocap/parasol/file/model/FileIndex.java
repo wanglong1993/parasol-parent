@@ -70,6 +70,9 @@ public class FileIndex implements Serializable {
 	private String url;
 	private String sfid;
 
+	private int width;
+	private int heigth;
+
 	public long getId() {
 		return id;
 	}
@@ -220,5 +223,21 @@ public class FileIndex implements Serializable {
 
 	public void setSfid(String sfid) {
 		this.sfid = sfid;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeigth() {
+		return heigth;
+	}
+
+	public void setHeigth(int heigth) {
+		this.heigth = heigth;
 	}
 }
