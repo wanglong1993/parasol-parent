@@ -130,7 +130,7 @@ public class UserFileCategoryController extends BaseControl {
         }
         try {
             List<UserFileCategoryExt> ulist = userFileCategoryServer.getFileAndCategoryByFileType(keyword,userId,Integer.parseInt(fileType),
-                    parentId.equals("null")?null:Long.parseLong(parentId),0,Integer.parseInt(page),Integer.parseInt(size));
+                    parentId.equals("0")?null:Long.parseLong(parentId),0,Integer.parseInt(page),Integer.parseInt(size));
             for (UserFileCategoryExt ufc : ulist) {
                 UserFileCategoryExt ue = new UserFileCategoryExt();
                 ue.setCtime(ufc.getCtime());
@@ -141,7 +141,7 @@ public class UserFileCategoryController extends BaseControl {
                     if (ufc.getModuleType() == 100) {
                         ufc.setUrl(nginxRoot + "/mobile/download?id=" + ufc.getFileId());
                     } else {
-                        ufc.setUrl(nginxDFSRoot + "/" + ufc.getServerHost() + "/" + ufc.getFilePath() + "?filename=" + ufc.getFileTitle());
+                        ufc.setUrl(nginxDFSRoot + "/" + ufc.getFilePath() + "?filename=" + ufc.getFileTitle());
                     }
                 }
             }
