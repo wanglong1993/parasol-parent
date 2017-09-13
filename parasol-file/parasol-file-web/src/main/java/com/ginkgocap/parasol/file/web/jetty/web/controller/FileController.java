@@ -327,11 +327,15 @@ public class FileController extends BaseControl {
 						// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
 						getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
 						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
-					} else if ((float)width/heigth > 2.0) {
+					} else if ((float)width/heigth > 2.0 && (float)width/heigth < 3.0){
 						Thumbnails.of(temp_file).scale(1280/(float)heigth).toFile(thFilePath);
 						byte[] th_image = VideoUtil.getBytes(thFilePath);
 						// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
 						getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
+						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
+					} else if ((float)width/heigth >= 3.0) {
+						// 长图特殊处理
+						getPicThumbnail(fields[0],fields[1],2,fileExtName,big_image);
 						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
 					}
 
