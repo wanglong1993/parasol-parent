@@ -37,7 +37,6 @@ import com.ginkgocap.ywxt.util.MakePrimaryKey;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.csource.common.MyException;
 import org.csource.fastdfs.StorageClient;
 import org.csource.fastdfs.StorageServer;
@@ -54,7 +53,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 //import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
@@ -318,8 +320,8 @@ public class FileController extends BaseControl {
 
 					if (width - heigth < 0) {
 						int tmp = heigth;
-						width = heigth;
-						heigth = tmp;
+						heigth = width;
+						width = tmp;
 					}
 					if((float)width/heigth <= 2.0){
 						Thumbnails.of(temp_file).scale(1280/(float)width).toFile(thFilePath);
@@ -327,11 +329,15 @@ public class FileController extends BaseControl {
 						// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
 						getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
 						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
-					} else if ((float)width/heigth > 2.0) {
+					} else if ((float)width/heigth > 2.0 && (float)width/heigth < 3.0){
 						Thumbnails.of(temp_file).scale(1280/(float)heigth).toFile(thFilePath);
 						byte[] th_image = VideoUtil.getBytes(thFilePath);
 						// String[] th_fields = storageClient.upload_file(th_image,fileExtName,null);
 						getPicThumbnail(fields[0],fields[1],2,fileExtName,th_image);
+						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
+					} else if ((float)width/heigth >= 3.0) {
+						// 长图特殊处理
+						getPicThumbnail(fields[0],fields[1],2,fileExtName,big_image);
 						index.setThumbnailsPath(fields[0] +"/" +fields[1].replace("."+fileExtName,"_2."+fileExtName));
 					}
 
