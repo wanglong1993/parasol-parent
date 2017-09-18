@@ -251,13 +251,13 @@ public class DirectoryController extends BaseControl {
                 return mappingJacksonValue;
             }
             long typeId = dir.getTypeId();
-            List<Directory> directories = null;
             // 创建非根节点
+            /*List<Directory> directories = null;
             directories = directoryService.getDirectorysByParentId(loginAppId, loginUserId, parentId);
             MappingJacksonValue isDuplicate = assertDuplicateName(directories, directory);
             if (isDuplicate != null) {
                 return isDuplicate;
-            }
+            }*/
             Long id = null;
             try {
                  id = directoryService.createDirectoryForChildren(parentId, directory);
