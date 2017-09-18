@@ -132,4 +132,22 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 		System.err.println(souceList);
 	}
 
+	@org.junit.Test
+	public void testCreateDirectoryForChildren() {
+		//'1-0-4-我的目录4-8'
+		Directory directory = new Directory();
+		directory.setAppId(1);
+		directory.setUserId(4);
+		directory.setPid(0l);
+		directory.setName("我的目录4");
+		directory.setTypeId(8);
+		Long id = null;
+		try {
+			id = directoryService.createDirectoryForRoot(8l, directory);
+		} catch (DirectoryServiceException e) {
+			e.printStackTrace();
+		}
+		System.out.println("*******************id:" + id);
+	}
+
 }
