@@ -265,7 +265,8 @@ public class FileController extends BaseControl {
 
 			int f = fileName.lastIndexOf(".");
 			String fileExtName = "";
-			if (f>-1) fileExtName = fileName.substring(f+1);
+			if (f > -1)
+				fileExtName = fileName.substring(f+1);
 			// 上传文件到fastdfs文件服务器 获取返回的主要信息
 			String fields[] = storageClient.upload_file(file_buff, fileExtName, null);
 			logger.info("field, field[0]:{},field[1]:{}", fields[0],fields[1]);
@@ -358,7 +359,10 @@ public class FileController extends BaseControl {
 			index.setServerHost(fields[0]);
 			if (moduleType == 2 || moduleType == 3 || moduleType == 4
 					|| moduleType == 5 || moduleType == 7 || moduleType == 10) {
-				index.setFilePath(fields[0] + "/" + fields[1]+ "?filename=" + file.getOriginalFilename());
+				String originalFilename = fileName.substring(0,f);
+				if (originalFilename.length() > 20)
+					originalFilename = originalFilename.substring(0,20);
+				index.setFilePath(fields[0] + "/" + fields[1]+ "?filename=" + originalFilename + "……" + fileExtName);
 			} else {
 				index.setFilePath(fields[0] + "/" + fields[1]);
 			}
