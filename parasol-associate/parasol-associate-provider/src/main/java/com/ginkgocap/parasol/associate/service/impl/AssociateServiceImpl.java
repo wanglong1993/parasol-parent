@@ -4,7 +4,6 @@ import java.util.*;
 
 import com.ginkgocap.parasol.associate.model.Page;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.ObjectUtils;
@@ -66,6 +65,7 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
         try {
             AssociateType associateTypeDict = associateTypeService.getAssociateType(appId, associate.getAssocTypeId());
             if (associateTypeDict == null) {
+                logger.error("the AssociateType not find by associateTypeId [ " + associate.getAssocTypeId() + "]");
                 throw new AssociateServiceException(ServiceError.ERROR_NOT_FOUND, "the AssociateType not find by associateTypeId [ " + associate.getAssocTypeId() + "]");
             }
         } catch (AssociateTypeServiceException e) {
@@ -87,6 +87,7 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
                                                     ObjectUtils.equals(existAssoc.getAssocId(), associate.getAssocId())
                                     )
                                     ) {
+                                logger.error("the assocId[" + associate.getAssocId() + "] and assocType[" + associate.getAssocTypeId() + "]  already exists");
                                 throw new AssociateServiceException(ServiceError.ERROR_DUPLICATE, "the assocId[" + associate.getAssocId() + "] and assocType[" + associate.getAssocTypeId() + "]  already exists");
                             }
                         }
@@ -102,6 +103,9 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
         } catch (BaseServiceException e) {
             e.printStackTrace(System.err);
             throw new AssociateServiceException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return 0l;
         }
     }
 

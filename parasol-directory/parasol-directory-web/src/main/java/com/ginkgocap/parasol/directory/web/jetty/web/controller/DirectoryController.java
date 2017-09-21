@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 import java.util.*;
 /**
  * @author allenshen
@@ -109,6 +110,8 @@ public class DirectoryController extends BaseControl {
 
         MappingJacksonValue mappingJacksonValue = null;
         InterfaceResult interfaceResult = null;
+
+        logger.info("----createDirectoryRootTemp---start---" + System.currentTimeMillis());
         try {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
@@ -125,13 +128,28 @@ public class DirectoryController extends BaseControl {
             directory.setOrderNo(1); // 根目录下是一级目录
             List<Directory> directories = null;
             // 创建根节点
-            directories = directoryService.getDirectorysForRoot(directory.getAppId(), directory.getUserId(), directory.getTypeId());
+            //directories = directoryService.getDirectorysForRoot(directory.getAppId(), directory.getUserId(), directory.getTypeId());
 
-            MappingJacksonValue isDuplicate = assertDuplicateName(directories, directory);
-            if (isDuplicate != null) {
-                return isDuplicate;
+            //logger.info("---assertDuplicateName----start time: " + System.currentTimeMillis());
+            //MappingJacksonValue isDuplicate = assertDuplicateName(directories, directory);
+            ///logger.info("---assertDuplicateName----end time: " + System.currentTimeMillis());
+//            if (isDuplicate != null) {
+//                return isDuplicate;
+//            }
+            Long id = null;
+            try {
+                id = directoryService.createDirectoryForRoot(rootType, directory);
+            } catch (Exception e) {
+                logger.error("invoke createDirectoryForRoot method failed userId : " + loginUserId);
             }
-            Long id = directoryService.createDirectoryForRoot(rootType, directory);
+            // id < 0 sqlException 插入数据库错误，验证是否重名
+            if (id < 0) {
+                logger.info("-------------return result time : " + System.currentTimeMillis());
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+                interfaceResult.getNotification().setNotifInfo("已经有同名的目录了哦");
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+                return mappingJacksonValue;
+            }
             if (isOld) {
                 Map<String, Long> resultMap = new HashMap<String, Long>();
                 resultMap.put("id", id);
@@ -141,17 +159,22 @@ public class DirectoryController extends BaseControl {
             }
             // 在 mysql 创建成功后，准备同步到 mongo 中，但需先检查 mongo 中是否有数据，
             // 若有数据，则直接同步；若无数据，则不同步，在下面returnMyDirectoriesTreeList方法中整体同步（这种情况是 mysql 没同步到 mongo 中）
+            logger.info("-----getDirectoriesTreeByCache----start time : " + System.currentTimeMillis());
             List<Directory> directoryList = directoryService.getDirectoriesTreeByCache(loginUserId, rootType);
+            logger.info("-----getDirectoriesTreeByCache----end time : " + System.currentTimeMillis());
             if (CollectionUtils.isNotEmpty(directoryList)) {
                 Directory directoryDB = directoryService.getDirectory(loginAppId, loginUserId, id);
                 if (null != directoryDB) {
                     try {
+                        logger.info("-----saveDirectoryByCache-----start time : " + System.currentTimeMillis());
                         directoryService.saveDirectoryByCache(directoryDB);
+                        logger.info("-----saveDirectoryByCache-----end time : " + System.currentTimeMillis());
                     } catch (Exception e) {
                         logger.error("invoke directoryService failed! method : [ saveDirectoryByCache ] userId : " + loginUserId);
                     }
                 }
             }
+            logger.info("----createDirectoryRootTemp---end---" + System.currentTimeMillis());
             return returnMyDirectoriesTreeList(loginAppId, loginUserId, rootType, fields);
         }  catch (Exception e) {
             if (isOld) {
@@ -162,7 +185,6 @@ public class DirectoryController extends BaseControl {
             return mappingJacksonValue;
 
         }
-
     }
 
     /**
@@ -229,14 +251,27 @@ public class DirectoryController extends BaseControl {
                 return mappingJacksonValue;
             }
             long typeId = dir.getTypeId();
-            List<Directory> directories = null;
             // 创建非根节点
+            /*List<Directory> directories = null;
             directories = directoryService.getDirectorysByParentId(loginAppId, loginUserId, parentId);
             MappingJacksonValue isDuplicate = assertDuplicateName(directories, directory);
             if (isDuplicate != null) {
                 return isDuplicate;
+            }*/
+            Long id = null;
+            try {
+                 id = directoryService.createDirectoryForChildren(parentId, directory);
+            } catch (Exception e) {
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+                return mappingJacksonValue;
             }
-            Long id = directoryService.createDirectoryForChildren(parentId, directory);
+            if (id < 0) {
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+                interfaceResult.getNotification().setNotifInfo("已经有同名的目录了哦");
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+                return mappingJacksonValue;
+            }
             if (isOld) {
                 Map<String, Long> resultMap = new HashMap<String, Long>();
                 resultMap.put("id", id);
@@ -764,17 +799,19 @@ public class DirectoryController extends BaseControl {
         MappingJacksonValue mappingJacksonValue = null;
         Map<String, Object> result = new HashMap(3);
         List<Directory> directoryList = null;
-        int total = directoryService.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
-        int totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
+        //int total = directoryService.getMyDirectoriesCount(loginAppId, loginUserId, typeId);
+        //int totalSourceCount = directorySourceService.getMyDirectoriesSouceCount(loginAppId, loginUserId, typeId);
         try {
+            logger.info("------getDirectoriesTreeByCache------start---time : " + System.currentTimeMillis());
             directoryList = directoryService.getDirectoriesTreeByCache(loginUserId, typeId);
+            logger.info("------getDirectoriesTreeByCache------end---time : " + System.currentTimeMillis());
         } catch (Exception e) {
             logger.error("invoke directoryService failed, method : [ getDirectoriesTreeByCache ]. userId :" + loginUserId);
         }
         if (CollectionUtils.isNotEmpty(directoryList)) {
-            result.put("totalCount", total);
+            result.put("totalCount", 0);
             result.put("list", directoryList);
-            result.put("sourceCount", totalSourceCount);
+            result.put("sourceCount", 0);
             InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
             interfaceResult.setResponseData(result);
             mappingJacksonValue = new MappingJacksonValue(interfaceResult);
@@ -782,9 +819,11 @@ public class DirectoryController extends BaseControl {
             mappingJacksonValue.setFilters(filterProvider);
             return mappingJacksonValue;
         }
+        logger.info("------byCache------end---time : " + System.currentTimeMillis());
         List<Directory> directories = directoryService.getDirectoryListByUserIdType(loginAppId, loginUserId, typeId);
-        Map<Long, Directory> idMap = new HashMap<Long, Directory>(total);
-        directoryList = new ArrayList<Directory>(total);
+        int size = directories.size();
+        Map<Long, Directory> idMap = new HashMap<Long, Directory>(size);
+        directoryList = new ArrayList<Directory>(size);
         for (Directory direc: directories) {
             long dirId = direc.getId();
             long pid = direc.getPid();
@@ -807,11 +846,13 @@ public class DirectoryController extends BaseControl {
         // 将目录按照拼音 自定义排序
         Collections.sort(directoryList, new PinyinComparatorList4ObjectName());
         // 将排好序的目录 同步到 mongo 中 （一般情况执行此代码是因为 第一次加载目录mongo中没数据）
+        logger.info("-----saveDirectoriesTreeByCache------start time ---" + System.currentTimeMillis());
         directoryService.saveDirectoriesTreeByCache(directoryList);
+        logger.info("-----saveDirectoriesTreeByCache------end time ---" + System.currentTimeMillis());
         // 2.转成框架数据
-        result.put("totalCount", total);
+        result.put("totalCount", size);
         result.put("list", directoryList);
-        result.put("sourceCount", totalSourceCount);
+        result.put("sourceCount", 0);
         InterfaceResult interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
         interfaceResult.setResponseData(result);
         mappingJacksonValue = new MappingJacksonValue(interfaceResult);

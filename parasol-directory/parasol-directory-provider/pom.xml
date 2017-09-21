@@ -234,8 +234,8 @@
 				<jdbc.username>zhangwei</jdbc.username>
 				<jdbc.password>zhangwei</jdbc.password>
 				<!-- mongoDB -->
-				<!--<mongodb.address>192.168.101.131:27017</mongodb.address>-->
-				<mongodb.address>192.168.120.133:27017</mongodb.address>
+				<mongodb.address>192.168.101.131:27017</mongodb.address>
+				<!--<mongodb.address>192.168.120.133:27017</mongodb.address>-->
 				<mongodb.database>directory</mongodb.database>
 				<!-- memcached -->
 				<memcached.list1.ip>192.168.101.131</memcached.list1.ip>

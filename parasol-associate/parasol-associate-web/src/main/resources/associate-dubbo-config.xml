@@ -32,7 +32,6 @@
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
 	
     <dubbo:application name="${dubbo.application.name}" />
-    <dubbo:registry address="${dubbo.registry.address}" protocol="${dubbo.protocol.name}"/>
-	<dubbo:registry file="${dubbo.application.name}.properties"/>
+    <dubbo:registry address="${dubbo.registry.address}" file="${dubbo.application.name}.properties" protocol="${dubbo.protocol.name}"/>
     <dubbo:consumer timeout="10000" check="false" />
 </beans>

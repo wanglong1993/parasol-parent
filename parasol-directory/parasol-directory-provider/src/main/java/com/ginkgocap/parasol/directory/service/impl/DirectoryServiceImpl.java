@@ -1,5 +1,6 @@
 package com.ginkgocap.parasol.directory.service.impl;
 
+import java.sql.SQLException;
 import java.util.*;
 
 import com.ginkgocap.parasol.directory.dao.DirectoryDao;
@@ -10,6 +11,7 @@ import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,7 +40,7 @@ import javax.annotation.Resource;
 @Service("directoryService")
 public class DirectoryServiceImpl extends BaseService<Directory> implements DirectoryService {
 	private static Logger logger = Logger.getLogger(DirectoryServiceImpl.class);
-	private static int len_name = 20;
+	private static int len_name = 200;
 
 	private static String LIST_DIRECTORY_PID_ID = "List_Directory_Id_Pid"; // 查询子节点
 	private static String LIST_DIRECTORY_ID_APPID_USERID_TYPEID_PID = "List_Directory_Id_AppId_UserId_TypeId_Pid"; // 查询一个应用的分类根目录
@@ -148,9 +150,11 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 
 		// 4.创建
 		try {
+			logger.info("-------saveEntity start time : " + System.currentTimeMillis());
 			directory.setPid(pId);
 			directory.setUpdateAt(System.currentTimeMillis());
 			Long id = (Long) this.saveEntity(directory);
+			logger.info("-------saveEntity start time : " + System.currentTimeMillis());
 			if (id > 0) {
 				directory.setId(id);
 				String parentNumberCode = getParentNumberCode(parentDirectory);
@@ -159,12 +163,25 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 				} else {
 					directory.setNumberCode(parentNumberCode + "-" + id);
 				}
+				logger.info("-------updateEntity start time : " + System.currentTimeMillis());
 				this.updateEntity(directory);
+				logger.info("-------updateEntity start time : " + System.currentTimeMillis());
 			}
 			return id;
-		} catch (BaseServiceException e) {
-			e.printStackTrace(System.err);
-			throw new DirectoryServiceException(e);
+		} catch (Throwable e) {
+			List<Directory> directorys = null;
+			try {
+				if (pId != null && pId != 0) { // 创建非根节点
+					directorys = getDirectorysByParentId(directory.getAppId(), directory.getUserId(), pId);
+				} else { // 创建根节点
+					directorys = getDirectorysForRoot(directory.getAppId(), directory.getUserId(), directory.getTypeId());
+				}
+			} catch (Exception ex) {
+				e.printStackTrace();
+				throw new DirectoryServiceException(e);
+			}
+			// 不是数据库连接问题，就是数据重复sqlException，返回-1判断
+			return -1l;
 		}
 	}
 
