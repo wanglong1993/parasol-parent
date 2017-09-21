@@ -361,7 +361,7 @@ public class FileController extends BaseControl {
 					|| moduleType == 5 || moduleType == 7 || moduleType == 10) {
 				String originalFilename = fileName.substring(0,f);
 				if (originalFilename.length() > 20)
-					originalFilename = originalFilename.substring(0,20);
+					originalFilename = originalFilename.substring(0,19);
 				index.setFilePath(fields[0] + "/" + fields[1]+ "?filename=" + originalFilename + "……" + fileExtName);
 			} else {
 				index.setFilePath(fields[0] + "/" + fields[1]);
