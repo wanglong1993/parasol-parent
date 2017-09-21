@@ -358,7 +358,7 @@ public class FileController extends BaseControl {
 			index.setCreaterId(loginUserId);
 			index.setServerHost(fields[0]);
 			if (moduleType == 2 || moduleType == 3 || moduleType == 4
-					|| moduleType == 5 || moduleType == 7 || moduleType == 10) {
+					|| moduleType == 5 || moduleType == 6 || moduleType == 7 || moduleType == 10) {
 				String originalFilename = fileName.substring(0,f);
 				if (originalFilename.length() > 20)
 					originalFilename = originalFilename.substring(0,19);
