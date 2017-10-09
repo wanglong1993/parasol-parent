@@ -110,11 +110,12 @@ public class DirectoryController extends BaseControl {
 
         MappingJacksonValue mappingJacksonValue = null;
         InterfaceResult interfaceResult = null;
+        Map<String, Long> resultMap = new HashMap<String, Long>(2);
 
         logger.info("----createDirectoryRootTemp---start---" + System.currentTimeMillis());
+        Long loginUserId = this.getUserId(request);
+        Long loginAppId = this.DefaultAppId;
         try {
-            Long loginAppId = this.DefaultAppId;
-            Long loginUserId = this.getUserId(request);
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
             Directory directory = new Directory();
             directory.setAppId(loginAppId);
@@ -141,6 +142,9 @@ public class DirectoryController extends BaseControl {
                 id = directoryService.createDirectoryForRoot(rootType, directory);
             } catch (Exception e) {
                 logger.error("invoke createDirectoryForRoot method failed userId : " + loginUserId);
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+                return mappingJacksonValue;
             }
             // id < 0 sqlException 插入数据库错误，验证是否重名
             if (id < 0) {
@@ -151,10 +155,10 @@ public class DirectoryController extends BaseControl {
                 return mappingJacksonValue;
             }
             if (isOld) {
-                Map<String, Long> resultMap = new HashMap<String, Long>();
-                resultMap.put("id", id);
+                interfaceResult = InterfaceResult.getSuccessInterfaceResultInstance(id);
+                // resultMap.put("id", id);
                 // 2.转成框架数据
-                mappingJacksonValue = new MappingJacksonValue(resultMap);
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
                 return mappingJacksonValue;
             }
             // 在 mysql 创建成功后，准备同步到 mongo 中，但需先检查 mongo 中是否有数据，
@@ -176,9 +180,13 @@ public class DirectoryController extends BaseControl {
             }
             logger.info("----createDirectoryRootTemp---end---" + System.currentTimeMillis());
             return returnMyDirectoriesTreeList(loginAppId, loginUserId, rootType, fields);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             if (isOld) {
-                throw e;
+                logger.error("create root directory failed! userId :" + loginUserId);
+                //resultMap.put("id", 0l);
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+                return mappingJacksonValue;
             }
             interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
             mappingJacksonValue = new MappingJacksonValue(interfaceResult);
@@ -225,9 +233,10 @@ public class DirectoryController extends BaseControl {
 
         MappingJacksonValue mappingJacksonValue = null;
         InterfaceResult interfaceResult = null;
+        Map<String, Long> resultMap = new HashMap<String, Long>(2);
+        Long loginUserId = this.getUserId(request);
         try {
             Long loginAppId = this.DefaultAppId;
-            Long loginUserId = this.getUserId(request);
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
             Directory directory = new Directory();
             directory.setAppId(loginAppId);
@@ -273,16 +282,20 @@ public class DirectoryController extends BaseControl {
                 return mappingJacksonValue;
             }
             if (isOld) {
-                Map<String, Long> resultMap = new HashMap<String, Long>();
-                resultMap.put("id", id);
+                interfaceResult = InterfaceResult.getSuccessInterfaceResultInstance(id);
+                // resultMap.put("id", id);
                 // 2.转成框架数据
-                mappingJacksonValue = new MappingJacksonValue(resultMap);
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
                 return mappingJacksonValue;
             }
             return returnMyDirectoriesTreeList(loginAppId, loginUserId, typeId, fields);
         }  catch (Exception e) {
             if (isOld) {
-                throw e;
+                logger.error("create children directory failed! userId : " + loginUserId);
+                // resultMap.put("id", 0l);
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+                return mappingJacksonValue;
             }
             interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
             mappingJacksonValue = new MappingJacksonValue(interfaceResult);
@@ -321,9 +334,10 @@ public class DirectoryController extends BaseControl {
 
         MappingJacksonValue mappingJacksonValue = null;
         InterfaceResult interfaceResult = null;
+        Map<String, Boolean> resultMap = new HashMap<String, Boolean>(2);
+        Long loginUserId = this.getUserId(request);
         try {
             Long loginAppId = this.DefaultAppId;
-            Long loginUserId = this.getUserId(request);
             // 0.校验输入参数（框架搞定，如果业务业务搞定）
             Directory directory = directoryService.getDirectory(loginAppId, loginUserId, directoryId);
             long typeId = directory.getTypeId();
@@ -331,14 +345,18 @@ public class DirectoryController extends BaseControl {
             if (b && !isOld) {
                 return returnMyDirectoriesTreeList(loginAppId, loginUserId, typeId, fields);
             }
-            Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-            resultMap.put("success", b);
+            interfaceResult = InterfaceResult.getSuccessInterfaceResultInstance(b);
+            // resultMap.put("success", b);
             // 2.转成框架数据
-            mappingJacksonValue = new MappingJacksonValue(resultMap);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
             return mappingJacksonValue;
         }  catch (Exception e) {
             if (isOld) {
-                throw e;
+                logger.error("delete directory failed! userId : " + loginUserId);
+                interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION);
+                //resultMap.put("success", false);
+                mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+                return mappingJacksonValue;
             }
             interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
             mappingJacksonValue = new MappingJacksonValue(interfaceResult);
@@ -410,7 +428,7 @@ public class DirectoryController extends BaseControl {
     }
 
     /**
-     * 移动目录
+     * 移动目录 返回tree结构
      * @param fields
      * @param debug
      * @param directoryId
@@ -435,6 +453,40 @@ public class DirectoryController extends BaseControl {
             if (CommonResultCode.SUCCESS.equals(result.getNotification().getNotifCode())) {
                 return returnMyDirectoriesTreeList(loginAppId, loginUserId, directory.getTypeId(), fields);
             }*/
+            // 2.转成框架数据
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+            SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fields);
+            mappingJacksonValue.setFilters(filterProvider);
+            return mappingJacksonValue;
+        }  catch (Exception e) {
+            interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
+            mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+            return mappingJacksonValue;
+        }
+    }
+
+    /**
+     * 移动目录 不返回tree结构
+     * @param fields
+     * @param debug
+     * @param directoryId
+     * @param toDirectoryId
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(path = { "/directory/directory/moveDirectory.json" }, method = { RequestMethod.POST })
+    public MappingJacksonValue moveDirectoryNew(@RequestParam(name = DirectoryController.parameterFields, defaultValue = "") String fields,
+                                             @RequestParam(name = DirectoryController.parameterDebug, defaultValue = "") String debug,
+                                             @RequestParam(name = DirectoryController.parameterDirectoryId, required = true) Long directoryId,
+                                             @RequestParam(name = DirectoryController.parameterToDirectoryId, required = true) Long toDirectoryId,
+                                             HttpServletRequest request) throws Exception {
+        MappingJacksonValue mappingJacksonValue = null;
+        InterfaceResult interfaceResult = null;
+        try {
+            Long loginAppId = this.DefaultAppId;
+            Long loginUserId = this.getUserId(request);
+            interfaceResult = directoryService.moveDirectoryToDirectory(loginAppId, loginUserId, directoryId, toDirectoryId);
             // 2.转成框架数据
             mappingJacksonValue = new MappingJacksonValue(interfaceResult);
             SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fields);
