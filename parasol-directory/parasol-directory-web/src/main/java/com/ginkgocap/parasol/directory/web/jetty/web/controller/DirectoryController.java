@@ -449,10 +449,6 @@ public class DirectoryController extends BaseControl {
             Long loginAppId = this.DefaultAppId;
             Long loginUserId = this.getUserId(request);
             interfaceResult = directoryService.moveDirectoryAndReturnTree(loginAppId, loginUserId, directoryId, toDirectoryId);
-            /*InterfaceResult result = directoryService.moveDirectoryToDirectory(loginAppId, loginUserId, directoryId, toDirectoryId);
-            if (CommonResultCode.SUCCESS.equals(result.getNotification().getNotifCode())) {
-                return returnMyDirectoriesTreeList(loginAppId, loginUserId, directory.getTypeId(), fields);
-            }*/
             // 2.转成框架数据
             mappingJacksonValue = new MappingJacksonValue(interfaceResult);
             SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fields);
@@ -492,7 +488,7 @@ public class DirectoryController extends BaseControl {
             SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fields);
             mappingJacksonValue.setFilters(filterProvider);
             return mappingJacksonValue;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             interfaceResult = InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
             mappingJacksonValue = new MappingJacksonValue(interfaceResult);
             return mappingJacksonValue;
