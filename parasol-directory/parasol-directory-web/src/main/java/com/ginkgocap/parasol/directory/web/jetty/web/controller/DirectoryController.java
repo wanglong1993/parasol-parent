@@ -110,7 +110,6 @@ public class DirectoryController extends BaseControl {
 
         MappingJacksonValue mappingJacksonValue = null;
         InterfaceResult interfaceResult = null;
-        Map<String, Long> resultMap = new HashMap<String, Long>(2);
 
         logger.info("----createDirectoryRootTemp---start---" + System.currentTimeMillis());
         Long loginUserId = this.getUserId(request);
@@ -127,16 +126,7 @@ public class DirectoryController extends BaseControl {
             directory.setName(name);
             directory.setTypeId(rootType);
             directory.setOrderNo(1); // 根目录下是一级目录
-            List<Directory> directories = null;
             // 创建根节点
-            //directories = directoryService.getDirectorysForRoot(directory.getAppId(), directory.getUserId(), directory.getTypeId());
-
-            //logger.info("---assertDuplicateName----start time: " + System.currentTimeMillis());
-            //MappingJacksonValue isDuplicate = assertDuplicateName(directories, directory);
-            ///logger.info("---assertDuplicateName----end time: " + System.currentTimeMillis());
-//            if (isDuplicate != null) {
-//                return isDuplicate;
-//            }
             Long id = null;
             try {
                 id = directoryService.createDirectoryForRoot(rootType, directory);
@@ -156,7 +146,6 @@ public class DirectoryController extends BaseControl {
             }
             if (isOld) {
                 interfaceResult = InterfaceResult.getSuccessInterfaceResultInstance(id);
-                // resultMap.put("id", id);
                 // 2.转成框架数据
                 mappingJacksonValue = new MappingJacksonValue(interfaceResult);
                 return mappingJacksonValue;
