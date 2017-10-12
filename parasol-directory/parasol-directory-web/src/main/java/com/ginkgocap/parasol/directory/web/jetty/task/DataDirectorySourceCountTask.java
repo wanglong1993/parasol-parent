@@ -36,11 +36,17 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
 
     @Override
     public void run() {
-        //deleteUselessSource();
-        updateSourceCount();
+        try {
+            deleteUselessSource();
+            updateSourceCount();
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+            logger.error("............");
+        }
     }
 
     private void updateSourceCount() {
+        logger.info("updateSourceCount........");
         int total = 0;
         int page = 0;
         final int size = 30;
@@ -61,12 +67,13 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
                 allDirectory = directoryService.getAllDirectory(page++, size);
             }
             logger.info("update directory size: " + total);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
     private void deleteUselessSource() {
+        logger.info("deleteUselessSource begin........");
         int total = 0;
         int page = 0;
         final int size = 30;
@@ -75,8 +82,8 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
         List<DirectorySource> allDirectorySource = null;
         List<Long> deleteList = new LinkedList<Long>();
         try {
-            final int index = page * size;
-            allDirectorySource = directorySourceService.getSourcesBySourceType(index, size, type);
+            logger.info("deleteUselessSource running.......");
+            allDirectorySource = directorySourceService.getSourcesBySourceType(page++, size, type);
             while (CollectionUtils.isNotEmpty(allDirectorySource)) {
                 for (DirectorySource directorySource : allDirectorySource) {
                     long sourceId = directorySource.getSourceId();
@@ -87,15 +94,15 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
                         deleteList.add(id);
                     }
                 }
-                page++;
                 total += allDirectorySource.size();
-                allDirectorySource = directorySourceService.getSourcesBySourceType(index, size, type);
+                allDirectorySource = directorySourceService.getSourcesBySourceType(page++, size, type);
             }
-            logger.info("delete source size is {}" + total);
+            logger.info("delete source size is: " + total);
             directorySourceService.removeDirectorySourceByIds(deleteList);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
+        logger.info("deleteUselessSource complete.......");
     }
     @Override
     public void afterPropertiesSet() throws Exception {
