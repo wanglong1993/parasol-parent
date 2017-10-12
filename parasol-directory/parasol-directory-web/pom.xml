@@ -22,7 +22,7 @@
 		<jetty.version>8.1.15.v20140411</jetty.version>
 		<jetty-jsp.version>2.2.0.v201112011158</jetty-jsp.version>
 		<main.basedir>${basedir}/../..</main.basedir>
-		<util.dependencied>5.6.3</util.dependencied>
+		<util.dependencied>5.6.3-SNAPSHOT</util.dependencied>
 		<start-class>com.ginkgocap.parasol.directory.web.jetty.ParasolDirectoryApplication</start-class>
 	</properties>
 	<repositories>
