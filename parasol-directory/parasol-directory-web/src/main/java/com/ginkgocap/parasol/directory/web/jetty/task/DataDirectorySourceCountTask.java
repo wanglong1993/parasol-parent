@@ -75,7 +75,8 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
         List<DirectorySource> allDirectorySource = null;
         List<Long> deleteList = new LinkedList<Long>();
         try {
-            allDirectorySource = directorySourceService.getSourcesBySourceType(page++, size, type);
+            final int index = page * size;
+            allDirectorySource = directorySourceService.getSourcesBySourceType(index, size, type);
             while (CollectionUtils.isNotEmpty(allDirectorySource)) {
                 for (DirectorySource directorySource : allDirectorySource) {
                     long sourceId = directorySource.getSourceId();
@@ -86,8 +87,9 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
                         deleteList.add(id);
                     }
                 }
+                page++;
                 total += allDirectorySource.size();
-                allDirectorySource = directorySourceService.getSourcesBySourceType(page++, size, type);
+                allDirectorySource = directorySourceService.getSourcesBySourceType(index, size, type);
             }
             logger.info("delete source size is {}" + total);
             directorySourceService.removeDirectorySourceByIds(deleteList);
