@@ -3,12 +3,17 @@ package com.ginkgocap.parasol.directory.web.jetty.task;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.ginkgocap.parasol.directory.model.Directory;
+import com.ginkgocap.parasol.directory.model.DirectorySource;
 import com.ginkgocap.parasol.directory.service.DirectoryService;
 import com.ginkgocap.parasol.directory.service.DirectorySourceService;
+import com.ginkgocap.ywxt.knowledge.model.KnowledgeBase;
+import com.ginkgocap.ywxt.knowledge.service.KnowledgeService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -26,8 +31,12 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
     @Autowired
     private DirectorySourceService directorySourceService;
 
+    @Autowired
+    private KnowledgeService knowledgeService;
+
     @Override
     public void run() {
+        deleteUselessSource();
         updateSourceCount();
     }
 
@@ -52,6 +61,36 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
                 allDirectory = directoryService.getAllDirectory(page++, size);
             }
             logger.info("update directory size: " + total);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteUselessSource() {
+        int total = 0;
+        int page = 0;
+        final int size = 30;
+        // 知识类型
+        final byte type = 8;
+        List<DirectorySource> allDirectorySource = null;
+        List<Long> deleteList = new LinkedList<Long>();
+        try {
+            allDirectorySource = directorySourceService.getSourcesBySourceType(page++, size, type);
+            while (CollectionUtils.isNotEmpty(allDirectorySource)) {
+                for (DirectorySource directorySource : allDirectorySource) {
+                    long sourceId = directorySource.getSourceId();
+                    long id = directorySource.getId();
+                    KnowledgeBase base = knowledgeService.getBaseById(sourceId);
+                    if (base == null) {
+                        logger.info("----------------KnowledgeBase is empty, id is {}" + sourceId);
+                        deleteList.add(id);
+                    }
+                }
+                total += allDirectorySource.size();
+                allDirectorySource = directorySourceService.getSourcesBySourceType(page++, size, type);
+            }
+            logger.info("delete source size is {}" + total);
+            directorySourceService.removeDirectorySourceByIds(deleteList);
         } catch (Exception e) {
             e.printStackTrace();
         }
