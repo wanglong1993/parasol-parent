@@ -36,7 +36,7 @@ public class DataDirectorySourceCountTask implements Runnable, InitializingBean{
 
     @Override
     public void run() {
-        deleteUselessSource();
+        //deleteUselessSource();
         updateSourceCount();
     }
 
