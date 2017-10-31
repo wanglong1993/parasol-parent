@@ -15,17 +15,7 @@
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
-			<!-- 	
-			<map name="VctlUser_Map_userId_passport"
-                 sqlitem="select user_id from vctl_user where passport=?"
-                 keyProperty="passport" valueProperty="userId" />
-			 
-			 <list name="User_List_userId_gender"
-                  sqlitem="select user_id from vctl_user where gender =? order by update_at desc"
-                  sqlType="hsql" keyProperty="gender" valueProperty="userId"  update="false"/>
-            -->
-           
-           <!-- 通过名字找Code --> 
+           <!-- 通过名字找Code -->
            <list name="Code_List_Id_Root"
                   sqlitem="select id from tb_code where isRoot=? order by orderNo"
                   sqlType="hsql" keyProperty="root" valueProperty="id"  update="true"/>
@@ -48,16 +38,7 @@
 				<pattern value="[02468]$" group="g2" />
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
-			<!-- 	
-			<map name="VctlUser_Map_userId_passport"
-                 sqlitem="select user_id from vctl_user where passport=?"
-                 keyProperty="passport" valueProperty="userId" />
-			 
-			 <list name="User_List_userId_gender"
-                  sqlitem="select user_id from vctl_user where gender =? order by update_at desc"
-                  sqlType="hsql" keyProperty="gender" valueProperty="userId"  update="false"/>
-            -->
-           
+
            <!-- 通过名字找Code --> 
            <list name="CodeRegion_List_Id_ParentId"
                   sqlitem="select id from tb_code_region where parentId=? order by orders"
@@ -69,8 +50,17 @@
            <list name="CodeRegion_List_Id_TbId"
                   sqlitem="select id from tb_code_region where tbId=?"
                   sqlType="hsql" keyProperty="tbId" valueProperty="id"  update="true"/>
-           
-            
+		</object>
+
+		<object name = "com.ginkgocap.parasol.metadata.model.NewRegion" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="parentId">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+
+			<list name ="NewRegion_list_Id"
+				  sqlitem="select id from tb_new_region where id like ? and id != ?"
+				  sqlType="hsql" keyProperty="cid,id" valueProperty="id" update="true"/>
 		</object>
 	</route>
 </dal>
