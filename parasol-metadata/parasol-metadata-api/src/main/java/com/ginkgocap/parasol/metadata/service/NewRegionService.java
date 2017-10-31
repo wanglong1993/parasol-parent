@@ -10,6 +10,6 @@ import java.util.List;
  */
 public interface NewRegionService {
 
-    public List<NewRegion> getNewRegionListById(String cid, String id) throws NewRegionServiceException;
+    public List<NewRegion> getNewRegionListById(long parentId) throws NewRegionServiceException;
 
 }

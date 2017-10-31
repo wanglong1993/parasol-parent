@@ -59,8 +59,8 @@
 			</dbStrategy>
 
 			<list name ="NewRegion_list_Id"
-				  sqlitem="select id from tb_new_region where id like ? and id != ?"
-				  sqlType="hsql" keyProperty="cid,id" valueProperty="id" update="true"/>
+				  sqlitem="select id from tb_new_region where parent_id = ?"
+				  sqlType="hsql" keyProperty="parentId" valueProperty="id" update="true"/>
 		</object>
 	</route>
 </dal>

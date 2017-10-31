@@ -19,10 +19,10 @@ public class NewRegionServiceImpl extends BaseService<NewRegion> implements NewR
     private static final String NEWREGION_LIST_BY_ID = "NewRegion_list_Id";
 
     @Override
-    public List<NewRegion> getNewRegionListById(String cid, String id) throws NewRegionServiceException {
+    public List<NewRegion> getNewRegionListById(long parentId) throws NewRegionServiceException {
 
         try {
-            return getEntitys(NEWREGION_LIST_BY_ID,cid,id);
+            return getEntitys(NEWREGION_LIST_BY_ID,parentId);
         } catch (BaseServiceException e) {
             e.printStackTrace();
             throw new NewRegionServiceException(e);
