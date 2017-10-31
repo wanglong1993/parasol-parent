@@ -38,6 +38,14 @@ public interface DirectorySourceService {
 	public boolean removeDirectorySources(Long appId, Long userId, Long id) throws DirectorySourceServiceException;
 
 	/**
+	 * 批量删除资源 通过ids
+	 * @param ids
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 */
+	public boolean removeDirectorySourceByIds(List<Long> ids) throws Exception;
+
+	/**
 	 * 从资源中是删除具有资源Id的所有目录资源 小心使用
 	 * 
 	 * @param appId
@@ -169,4 +177,14 @@ public interface DirectorySourceService {
 	 * @throws DirectorySourceServiceException
 	 */
 	int getMyDirectoriesSouceCount(Long appId, Long userId, Long typeId) throws DirectorySourceServiceException;
+
+	/**
+	 * 查找所有资源 通过资源类型
+	 * @param start
+	 * @param size
+	 * @param sourceType
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 */
+	List<DirectorySource> getSourcesBySourceType(int start, int size, byte sourceType) throws DirectorySourceServiceException;
 }

@@ -86,10 +86,12 @@
            <list name="List_DirectorySources_Id_userId_appId_sourceType_sourceId"
                   sqlitem="select id from tb_directory_source where userId=? and appId=? and sourceType=? and sourceId=? order by createAt desc"
                   sqlType="hsql" keyProperty="userId,appId,sourceType,sourceId" valueProperty="id"  update="true"/>
-           <!-- 查找用户同一目录下有多少相同类型的资源（UserId,appId,sourceType,directoryId)。 --> 
            <list name="List_DirectorySources_Id_userId_appId_sourceType_directoryId"
                   sqlitem="select id from tb_directory_source where userId=? and appId=? and sourceType=? and directoryId=? order by createAt desc"
                   sqlType="hsql" keyProperty="userId,appId,sourceType,directoryId" valueProperty="id"  update="true"/>               
+           <list name="List_DirectorySources_Id_appId_sourceType"
+                  sqlitem="select id from tb_directory_source where appId=1 and sourceType=?"
+                  sqlType="hsql" keyProperty="userId,appId,sourceType,directoryId" valueProperty="id"  update="true"/>
            <list name="List_DirectorySource_Id_UserId_TypeId"
                   sqlitem="select id from tb_directory_source where appId=? and userId=? and sourceType=?"
                   sqlType="hsql" keyProperty="appId,userId,sourceType" valueProperty="id"  update="true"/>

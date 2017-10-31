@@ -33,6 +33,7 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	private static Logger logger = Logger.getLogger(DirectorySourcesServiceImpl.class);
 	private static String LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID = "List_DirectorySources_Id_userId_appId_sourceType_sourceId";
 	private static String LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_DIRECTORYID = "List_DirectorySources_Id_userId_appId_sourceType_directoryId";
+	private static String LIST_DIRECTORYSOURCES_ID_APPID_SOURCETYPE = "List_DirectorySources_Id_appId_sourceType";
 	private static String LIST_DIRECTORYSOURCE_ID_DIRECTORYID = "List_DirectorySource_Id_DirectoryId";
 	private static String MAP_DIRECTORYSOURCE_ID_USERID_DIRECTORYID_APPID_SOURCETYPE_SOURICEID = "Map_DirectorySource_Id_UserId_DirectoryId_AppId_SourceType_SourceId";
 	private static String LIST_DIRECTORYSOURCE_ID_USERID_TYPEID = "List_DirectorySource_Id_UserId_TypeId";
@@ -124,6 +125,12 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	}
 
 	@Override
+	public boolean removeDirectorySourceByIds(List<Long> ids) throws Exception {
+
+		return this.deleteEntityByIds(ids);
+	}
+
+	@Override
 	public boolean removeDirectorySourcesBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException {
 
 		boolean b = false;
@@ -201,6 +208,18 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	{
 		try {
 			return this.getSubEntitys(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_DIRECTORYID, start, size, parameters);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
+	}
+
+	@Override
+	public List<DirectorySource> getSourcesBySourceType(int page, int size, byte sourceType) throws DirectorySourceServiceException
+	{
+		try {
+			final int start = page * size;
+			return this.getSubEntitys(LIST_DIRECTORYSOURCES_ID_APPID_SOURCETYPE, start, size, sourceType);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new DirectorySourceServiceException(e);
