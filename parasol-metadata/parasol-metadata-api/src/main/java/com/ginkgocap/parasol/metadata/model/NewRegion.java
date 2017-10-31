@@ -17,8 +17,8 @@ public class NewRegion implements Serializable {
     private String name;
     private String firstSpell;
     private String fullSpell;
-    private long parentId;
-    private int sort;
+    private Long parentId;
+    private Integer sort;
     private String firstCode;
 
     @Id
@@ -60,20 +60,20 @@ public class NewRegion implements Serializable {
     }
 
     @Column(name = "parent_id")
-    public long getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(long parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
     @Column(name = "sort")
-    public int getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(int sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 
