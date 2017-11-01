@@ -59,7 +59,7 @@
 			</dbStrategy>
 
 			<list name ="NewRegion_list_Id"
-				  sqlitem="select id from tb_new_region where parent_id = ?"
+				  sqlitem="select id from tb_new_region where parent_id = ? order by first_code"
 				  sqlType="hsql" keyProperty="parentId" valueProperty="id" update="true"/>
 		</object>
 	</route>
