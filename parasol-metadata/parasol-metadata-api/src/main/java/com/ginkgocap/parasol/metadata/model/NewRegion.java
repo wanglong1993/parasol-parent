@@ -20,6 +20,7 @@ public class NewRegion implements Serializable {
     private Long parentId;
     private Integer sort;
     private String firstCode;
+    private Integer childs;
 
     @Id
     @Column(name = "Id")
@@ -84,5 +85,14 @@ public class NewRegion implements Serializable {
 
     public void setFirstCode(String firstCode) {
         this.firstCode = firstCode;
+    }
+
+    @Column(name = "childs")
+    public Integer getChilds() {
+        return childs;
+    }
+
+    public void setChilds(Integer childs) {
+        this.childs = childs;
     }
 }

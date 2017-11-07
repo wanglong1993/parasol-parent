@@ -26,7 +26,7 @@ import java.util.Set;
 @RestController
 public class MetadataNewRegionController extends BaseControl {
 
-    private static final Logger logger = Logger.getLogger(MetadataRegionCtroller.class);
+    private static final Logger logger = Logger.getLogger(MetadataNewRegionController.class);
     private static final String parameterFields = "fields";
     private static final String parameterCId ="cid"; //区县ID
     private static final String parameterPid ="parentId"; //父Id
@@ -78,6 +78,7 @@ public class MetadataNewRegionController extends BaseControl {
             filter.add("id"); // 主键',
             filter.add("name"); // '类型名称',
             filter.add("firstCode");
+            filter.add("childs");
         }
 
         filterProvider.addFilter(NewRegion.class.getName(), SimpleBeanPropertyFilter.filterOutAllExcept(filter));
