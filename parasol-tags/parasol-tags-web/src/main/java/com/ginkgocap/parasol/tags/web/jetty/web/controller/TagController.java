@@ -219,12 +219,11 @@ public class TagController extends BaseControl {
 			@RequestParam(name = TagController.parameterTagName, required = true) String tagName,
 			HttpServletRequest request)
 			throws TagServiceException {
-		//@formatter:on
-//		Long loginAppId = LoginUserContextHolder.getAppKey();
-//		Long loginUserId = LoginUserContextHolder.getUserId();
+
 		Long loginAppId=this.DefaultAppId;
 		Long loginUserId=this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
+		InterfaceResult result = null;
 		try {
 			Tag tag = new Tag();
 			tag.setAppId(loginAppId);
@@ -241,7 +240,16 @@ public class TagController extends BaseControl {
 			return mappingJacksonValue;
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
-			throw e;
+			int errorCode = e.getErrorCode();
+			logger.info("errorCode : " + errorCode);
+			if (errorCode == 109) {
+				result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION, "标签已重复");
+				mappingJacksonValue = new MappingJacksonValue(result);
+				// 4.返回结果
+				return mappingJacksonValue;
+			} else {
+				throw e;
+			}
 		}
 	}
 	
