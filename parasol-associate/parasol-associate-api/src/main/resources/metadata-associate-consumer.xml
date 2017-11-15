@@ -32,4 +32,5 @@
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
     <dubbo:reference id="associateService" interface="com.ginkgocap.parasol.associate.service.AssociateService" version="2.0.0"/>
     <dubbo:reference id="associateServiceType" interface="com.ginkgocap.parasol.associate.service.AssociateTypeService" version="2.0.0"/>
+	<dubbo:reference id="associaterShareService" interface="com.ginkgocap.parasol.associate.service.AssociateShareService" version="2.0.0" />
 </beans>
