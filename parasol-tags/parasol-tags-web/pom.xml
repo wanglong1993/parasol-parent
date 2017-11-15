@@ -83,6 +83,17 @@
 	    </pluginRepository>
 	</pluginRepositories>
 	<dependencies>
+		<!-- business -->
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-tags-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-cache</artifactId>
+			<version>5.6.3</version>
+		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.ywxt</groupId>
 			<artifactId>phoenix-knowledge-api</artifactId>
@@ -91,6 +102,14 @@
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.ginkgocap.ywxt</groupId>
+					<artifactId>phoenix-cache</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -117,7 +136,6 @@
 					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -169,13 +187,6 @@
 			<groupId>com.github.sgroschupf</groupId>
 			<artifactId>zkclient</artifactId>
 			<version>0.1</version>
-		</dependency>
-
-		<!-- business -->
-		<dependency>
-			<groupId>com.ginkgocap.parasol</groupId>
-			<artifactId>parasol-tags-api</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 
 		<!-- apache common -->
@@ -255,15 +266,12 @@
 			<artifactId>phoenix-frame-util</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
-		
-		
 		<!-- 2017-04-11 -->
-	
 		<dependency>
-				<groupId>com.ginkgocap.parasol</groupId>
-				<artifactId>parasol-util</artifactId>
-				<version>1.0.3-SNAPSHOT</version>
-		</dependency>		
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-util</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
