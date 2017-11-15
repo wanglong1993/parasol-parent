@@ -26,6 +26,13 @@ public class AssociateShareController extends BaseControl {
     @Autowired
     private AssociateShareService associateShareService;
 
+    /**
+     * 保存关联权限
+     * @param content
+     * @param request
+     * @return
+     * @throws AssociateServiceException
+     */
     @RequestMapping(path = {"/associate/associate/createAssociateShare"},method = RequestMethod.POST)
     public InterfaceResult createAssociateShare(
             @RequestParam(name = AssociateShareController.parameterContent,defaultValue = "") String content,
@@ -42,5 +49,25 @@ public class AssociateShareController extends BaseControl {
         } catch (Exception e) {
             return InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
         }
+    }
+
+    /**
+     * 获取关联权限信息
+     * @param shareId
+     * @param request
+     * @return
+     */
+    @RequestMapping(path = {"/associate/associate/getAssociateShare"},method = RequestMethod.GET)
+    public InterfaceResult getAssociateShare(
+            @RequestParam(name = AssociateShareController.parameterShareId,defaultValue = "0") long shareId,
+            HttpServletRequest request
+    ) {
+        try {
+            String content = associateShareService.getAssociateShare(shareId);
+            return InterfaceResult.getSuccessInterfaceResultInstance(content);
+        } catch (Exception e) {
+            return InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
+        }
+
     }
 }
