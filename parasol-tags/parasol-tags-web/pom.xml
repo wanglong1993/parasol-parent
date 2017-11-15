@@ -92,6 +92,10 @@
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-simple</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -117,7 +121,6 @@
 					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -255,15 +258,12 @@
 			<artifactId>phoenix-frame-util</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
-		
-		
 		<!-- 2017-04-11 -->
-	
 		<dependency>
-				<groupId>com.ginkgocap.parasol</groupId>
-				<artifactId>parasol-util</artifactId>
-				<version>1.0.3-SNAPSHOT</version>
-		</dependency>		
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-util</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
