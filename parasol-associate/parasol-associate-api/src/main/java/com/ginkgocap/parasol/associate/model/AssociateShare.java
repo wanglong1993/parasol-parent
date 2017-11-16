@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by xutlong on 2017/11/14.
@@ -12,7 +14,7 @@ import javax.persistence.*;
 @JsonFilter("com.ginkgocap.parasol.associate.model.AssociateShare")
 @Entity
 @Table(name = "tb_associate_share")
-public class AssociateShare {
+public class AssociateShare implements Serializable{
     private long id;
     private String content;
 

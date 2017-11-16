@@ -5,11 +5,12 @@ import com.ginkgocap.parasol.associate.model.AssociateShare;
 import com.ginkgocap.parasol.associate.service.AssociateShareService;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,15 +39,14 @@ public class AssociateShareController extends BaseControl {
             @RequestParam(name = AssociateShareController.parameterContent,defaultValue = "") String content,
             HttpServletRequest request) throws AssociateServiceException {
         try {
-            new JsonParser().parse(content);
+            if (content.equals("") || content == null)
+                return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
             AssociateShare associateShare = new AssociateShare();
             associateShare.setContent(content);
             long shareId = associateShareService.createAssociateShare(associateShare);
             return InterfaceResult.getSuccessInterfaceResultInstance(shareId);
-        } catch (JsonParseException e) {
-            logger.error("bad json: " + content);
-            return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_FORMAT_EXCEPTION);
         } catch (Exception e) {
+            e.printStackTrace();
             return InterfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION);
         }
     }
