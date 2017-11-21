@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ginkgocap.parasol.tags.exception.TagServiceException;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
+import com.ginkgocap.parasol.tags.model.Property;
 import com.ginkgocap.parasol.tags.model.TagSource;
 
 /**
@@ -53,6 +54,17 @@ public interface TagSourceService {
 	 */
 	public TagSource getTagSource(Long appId, Long tagSourceId) throws TagSourceServiceException;
 
+	/**
+	 * 查询一个资源下边的所有标签Id，比如查询一篇文章下边的所有标签。
+	 * 
+	 * @param appId
+	 * @param sourceId
+	 * @param sourceType
+	 * @return
+	 * @throws TagSourceServiceException
+	 */
+	public List<Long> getTagSourceIdListByAppIdTagIdAndType(Long appId, Long tagId, Long sourceType, Integer iStart, Integer iCount) throws TagSourceServiceException;
+	
 	/**
 	 * 查询一个资源下边的所有标签，比如查询一篇文章下边的所有标签。
 	 * 
@@ -121,4 +133,11 @@ public interface TagSourceService {
 	 * @throws TagSourceServiceException
 	 */
 	public boolean createTagSources(List<TagSource> tagSource) throws TagSourceServiceException;
+
+	public List<TagSource> getTagSourcesBySourceId(Long appId, Long sourceId, Long sourceType)throws Exception;
+
+	public List<Long> getTagIdsBySourceId(Long appId, Long sourceId, Long sourceType) throws Exception;
+
+	public boolean removeTagSourcesByTagIds(List<Long> ids) throws TagSourceServiceException;
+	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle) throws TagSourceServiceException;
 }

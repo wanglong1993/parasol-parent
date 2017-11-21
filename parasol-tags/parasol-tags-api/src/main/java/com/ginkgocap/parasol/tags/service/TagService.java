@@ -56,6 +56,14 @@ public interface TagService {
 	public Tag getTag(Long userId, Long id) throws TagServiceException;
 
 	/**
+	 * 根据id查询一个标签
+	 * @param id
+	 * @return
+	 * @throws TagServiceException
+	 */
+	public Tag getTag(Long id) throws TagServiceException;
+
+	/**
 	 * 查询标签集合，通过ids
 	 * @param userId
 	 * @param ids
@@ -80,10 +88,32 @@ public interface TagService {
 	 * 
 	 * @param appId
 	 * @param userId
-	 * @param pId
 	 * @return
 	 * @throws TagServiceException
 	 */
 	public int countTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException;
 
+	/**
+	 * 查找大数据指定分类的Tag列表个数
+	 * @param userId
+	 * @param appId
+	 * @param tagType
+	 * @return
+	 * @throws TagServiceException
+	 */
+	public int countDefaultTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException;
+
+	/**
+	 * 查找大数据指定分类的Tag列表
+	 * @param userId
+	 * @param appId
+	 * @param tagType
+	 * @param start
+	 * @param size
+	 * @throws TagServiceException
+	 * @return
+	 */
+	public List<Tag> getTagsByUserIdAppidTagTypePage(Long userId, Long appId, Long tagType, int start, int size) throws TagServiceException;
+
+	boolean batchDeleteTags(long userId, List<Long> ids);
 }

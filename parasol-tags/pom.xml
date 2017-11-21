@@ -16,5 +16,6 @@
 	<modules>
 		<module>parasol-tags-api</module>
 		<module>parasol-tags-provider</module>
+		<module>parasol-tags-web</module>
 	</modules>
 </project>

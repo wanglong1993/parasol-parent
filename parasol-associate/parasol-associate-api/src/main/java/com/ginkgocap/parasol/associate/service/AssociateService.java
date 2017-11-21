@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ginkgocap.parasol.associate.exception.AssociateServiceException;
 import com.ginkgocap.parasol.associate.model.Associate;
 import com.ginkgocap.parasol.associate.model.AssociateType;
+import com.ginkgocap.parasol.associate.model.Page;
 
 /**
  * 操作Associate的接口定义
@@ -58,11 +59,12 @@ public interface AssociateService {
 	 * 
 	 * @param appId
 	 * @param userId
-	 * @param associateId
+	 * @param sourceId
+	 * @param sourceTypeId
 	 * @return
 	 * @throws AssociateServiceException
 	 */
-	public List<Associate> getAssociatesBySourceId(Long appId, Long userId, Long sourceId)  throws AssociateServiceException;
+	public List<Associate> getAssociatesBySourceId(Long appId, Long userId, Long sourceId ,Long sourceTypeId)  throws AssociateServiceException;
 	/**
 	 *  查询一个对象的关联数据，需要定义一下格式
 	 * @param appId
@@ -72,4 +74,23 @@ public interface AssociateService {
 	 * @throws AssociateServiceException
 	 */
 	public Map<AssociateType, List<Associate>> getAssociatesBy(Long appId, Long sourceType, Long sourceId) throws AssociateServiceException;
+
+	/**
+	 *
+	 * @param userId
+	 * @param typeId
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws AssociateServiceException
+	 */
+	public Page<Associate> getassociatesByPage(Long userId, Long typeId, int pageNo, int pageSize) throws AssociateServiceException;
+
+	/**
+	 * 查询一个资源的关联详情列表
+	 * @param userId
+	 * @param typeId
+	 * @return
+	 */
+	public Page<Map<String, Object>> getAssociatesByPage(Long userId, Long typeId, int pageNo, int pageSize) throws AssociateServiceException;
 }

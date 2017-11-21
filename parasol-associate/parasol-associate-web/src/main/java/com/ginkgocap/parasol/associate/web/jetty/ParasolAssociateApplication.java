@@ -18,18 +18,23 @@ package com.ginkgocap.parasol.associate.web.jetty;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 
+
+@EnableAutoConfiguration(exclude={HibernateJpaAutoConfiguration.class,org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration.class})
 @Configuration
-@EnableAutoConfiguration
-@ComponentScan
+@ComponentScan(basePackages="com.ginkgocap.parasol.associate")
+@ImportResource("classpath:applicationContext.xml")
 public class ParasolAssociateApplication{
 
 	public static void main(String[] args) throws Exception {
 		
 		//SpringApplication.run(SampleJettyApplication.class, args);
-		SpringApplication.run(new Object[]{"classpath:/applicationContext.xml"}, args);
+//		SpringApplication.run(new Object[]{"classpath:/applicationContext.xml"}, args);
+		SpringApplication.run(ParasolAssociateApplication.class, args);
 //		SpringApplication application = new SpringApplication(SampleJettyApplication.class);
 		//application.setShowBanner(false);
 //		application.run(args);

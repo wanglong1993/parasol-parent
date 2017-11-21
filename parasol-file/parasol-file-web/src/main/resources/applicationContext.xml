@@ -31,11 +31,12 @@
 		</property>
 	</bean>
 	<import resource="classpath:file-dubbo-config.xml" />
-	<import resource="classpath:file-dubbo-consumer.xml" />
+	<import resource="classpath:newfile-dubbo-consumer.xml" />
 	<import resource="classpath:user-dubbo-consumer.xml"/>
-	<import resource="classpath:oauth2-dubbo-consumer.xml"/>
+	<import resource="classpath:applicationContext-cache.xml"/>
+	<!-- <import resource="classpath:oauth2-dubbo-consumer.xml"/>
 	<context:component-scan base-package="com.ginkgocap.parasol.directory,com.ginkgocap.parasol.oauth2">
-              </context:component-scan>
+              </context:component-scan> -->
 	<context:component-scan base-package="com.ginkgocap.parasol.file">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
@@ -51,16 +52,13 @@
 			<value>com.mysql.jdbc.Driver</value>
 		</property>
 		<property name="jdbcUrl">
-			 <!-- <value>jdbc:mysql://mysql.gintong.local:3306/phoenix_user?createDatabaseIfNotExist=true&amp;useUnicode=true</value> -->
-			<value>jdbc:mysql://192.168.101.131:3306/phoenix_user?createDatabaseIfNotExist=true&amp;useUnicode=true</value>
+			<value>jdbc:mysql://${jdbc.host}/phoenix_user?createDatabaseIfNotExist=true&amp;useUnicode=true</value>
 		</property>
 		<property name="user">
-			<!-- <value>ph_parent</value>  -->
-			<value>zhangwei</value>
+			<value>${jdbc.username}</value>
 		</property>
 		<property name="password">
-			<!-- <value>QHuqURq5EW</value>  -->
-			<value>zhangwei</value>
+			<value>${jdbc.password}</value>
 		</property>
 		<property name="maxPoolSize">
 			<value>5</value>

@@ -1,6 +1,21 @@
 package com.ginkgocap.parasol.tags.web.jetty.web.controller;
 
-import org.apache.log4j.Logger;
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.gintong.frame.util.dto.CommonResultCode;
+import com.gintong.frame.util.dto.InterfaceResult;
+
+
+import com.ginkgocap.ywxt.user.model.User;
+
+import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.converter.json.MappingJacksonValue;
+
 /**
  * 
  * @author allenshen
@@ -9,5 +24,75 @@ import org.apache.log4j.Logger;
  * @Copyright Copyright©2015 www.gintong.com
  */
 public abstract class BaseControl {
-	private static Logger logger = Logger.getLogger(BaseControl.class);
+
+	private static Logger logger = LoggerFactory.getLogger(BaseControl.class);
+	protected final Long DefaultAppId=1l;
+	
+	/**
+	 * 获取用户
+	 * @param request
+	 * @return
+	 */
+	public User getUser(HttpServletRequest request) {
+		//在AppFilter过滤器里面从cache获取了当前用户对象并设置到request中了
+		return (User) request.getAttribute("sessionUser");
+	}
+	
+	public Long getUserId(HttpServletRequest request){
+		User user=this.getUser(request);
+		Long uid=0l;
+		if(user!=null){
+			uid=user.getId();
+		}
+		return uid;
+	}
+	
+	/**
+	 * 获取前端数据
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	public JSONObject getRequestJson(HttpServletRequest request) throws IOException {
+		
+		String requestString = (String)request.getAttribute("requestJson");
+		
+		JSONObject requestJson = JSONObject.fromObject(requestString == null ? "" : requestString);
+		
+		return requestJson;
+	}
+	
+	public String readJSONString(HttpServletRequest request){
+        StringBuffer json = new StringBuffer();
+        String line = null;
+        try {
+            BufferedReader reader = request.getReader();
+            while((line = reader.readLine()) != null) {
+                json.append(line);
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e.toString());
+        }
+        return json.toString();
+		
+    }
+	protected String getBodyParam(HttpServletRequest request) {
+		StringBuffer jsonIn = new StringBuffer();
+		try {
+			BufferedReader reader = request.getReader();
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				jsonIn.append(line);
+			}
+		} catch (IOException e) {
+			logger.error("read request body failed : "+e.getMessage());
+			e.printStackTrace();
+		}
+		return jsonIn.toString();
+	}
+	/*protected MappingJacksonValue mappingJacksonValue(CommonResultCode resultCode)
+	{
+		return new MappingJacksonValue(InterfaceResult.getInterfaceResultInstance(resultCode));
+	}*/
 }

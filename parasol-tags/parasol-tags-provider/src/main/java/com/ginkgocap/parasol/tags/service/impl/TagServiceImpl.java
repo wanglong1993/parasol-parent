@@ -8,7 +8,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,10 @@ import com.ginkgocap.parasol.tags.service.TagSourceService;
  */
 @Service("tagService")
 public class TagServiceImpl extends BaseService<Tag> implements TagService {
-	private static Logger logger = Logger.getLogger(TagServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(TagServiceImpl.class);
 	private static final String LIST_TAG_ID_USERID_APPID_TAGTYPE = "List_Tag_Id_UserId_AppId_TagType";
+	private static final String LIST_TAG_ID_USERID_APPID_TAGTYPE_DEFAULT = "List_Tag_Id_UserId_AppId_TagType_Default";
+	private static final String LIST_TAG_ID_USERID_IDS = "List_Tag_Id_UserId_Ids";
 
 	private static final int MAX_TAG = 300; // 最多创建的标签数量
 	private static final int MAX_LEN_TAG = 30; // Tag的长度30个字符
@@ -57,9 +60,9 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		}
 
 		// 检查长度
-		if (StringUtils.length(tag.getTagName()) > MAX_LEN_TAG) {
+		/*if (StringUtils.length(tag.getTagName()) > MAX_LEN_TAG) {
 			throw new TagServiceException(ServiceError.ERROR_TAG_NAME_TOO_LENGTH, "tagName too length， max is " + MAX_LEN_TAG);
-		}
+		}*/
 
 		//tag.setTagName(tag.getTagName().replace(" ", "")); //replace tab blank , 有英文情况
 		int count = countTagsByUserIdAppidTagType(userId, tag.getAppId(), tag.getTagType());
@@ -166,6 +169,22 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	}
 
 	@Override
+	public Tag getTag(Long id) throws TagServiceException {
+		ServiceError.assertTagIdIsNull(id);
+		// ServiceError.assertUserIdIsNull(userId);
+		try {
+			Tag tag = this.getEntity(id);
+			if (tag != null) {
+				return tag;
+			}
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new TagServiceException(e);
+		}
+		return null;
+	}
+
+	@Override
 	public List<Tag> getTags(Long userId, List<Long> ids) throws TagServiceException {
 		List<Tag> result = new ArrayList<Tag>();
 		if (userId != null && CollectionUtils.isNotEmpty(ids)) {
@@ -201,12 +220,50 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		}
 		return null;
 	}
+	
+	@Override
+	public List<Tag> getTagsByUserIdAppidTagTypePage(Long userId, Long appId, Long tagType, int start, int size) throws TagServiceException {
+		//ServiceError.assertUserIdIsNull(userId); // 检查用户ID
+		try {
+			List<Tag> tagList = this.getSubEntitys(LIST_TAG_ID_USERID_APPID_TAGTYPE_DEFAULT,start,size, userId, appId, tagType);
+
+			if(CollectionUtils.isNotEmpty(tagList)){
+				return tagList;
+			}
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new TagServiceException(e);
+		}
+		return new ArrayList<Tag>();
+	}
+
+	@Override
+	public boolean batchDeleteTags(long userId, List<Long> ids) {
+
+		boolean flag = false;
+		try {
+			flag = this.deleteEntityByIds(ids);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return flag;
+	}
 
 	@Override
 	public int countTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException {
 		ServiceError.assertUserIdIsNull(userId); // 检查用户ID
 		try {
 			return this.countEntitys(LIST_TAG_ID_USERID_APPID_TAGTYPE, userId, appId, tagType);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new TagServiceException(e);
+		}
+	}
+	@Override
+	public int countDefaultTagsByUserIdAppidTagType(Long userId, Long appId, Long tagType) throws TagServiceException {
+		//ServiceError.assertUserIdIsNull(userId); // 不用检查用户ID
+		try {
+			return this.countEntitys(LIST_TAG_ID_USERID_APPID_TAGTYPE_DEFAULT, userId, appId, tagType);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new TagServiceException(e);

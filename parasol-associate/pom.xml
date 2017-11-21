@@ -16,5 +16,39 @@
 	<modules>
 		<module>parasol-associate-api</module>
 		<module>parasol-associate-provider</module>
+		<module>parasol-associate-web</module>
 	</modules>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>Snapshots</id>
+			<url>http://192.168.101.89:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>Releases</id>
+			<url>http://192.168.101.89:8081/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
+	<dependencies>
+	<!-- GinTong framework -->
+	<dependency>
+		<groupId>com.ginkgocap.ywxt</groupId>
+		<artifactId>phoenix-framework-cache</artifactId>
+		<version>1.0.0</version>
+	</dependency>
+	<dependency>
+		<groupId>com.ginkgocap.ywxt</groupId>
+		<artifactId>phoenix-framework-id</artifactId>
+		<version>1.1.0</version>
+	</dependency>
+	<dependency>
+		<groupId>com.ginkgocap.ywxt</groupId>
+		<artifactId>phoenix-framework-dal</artifactId>
+		<version>1.1.0</version>
+	</dependency>
+	<dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+		<version>2.2.4</version>
+	</dependency>
+	</dependencies>
 </project>

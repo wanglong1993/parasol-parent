@@ -6,16 +6,18 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * 将单个字符转换成拼音
- * @author 
  * 
- *
+ * @author clive
+ * @param src
+ * @return
+ * 
+ * 
  */
 public class PinyinUtils {
-	private static String charToPinyin(final char src,
+
+	public static String charToPinyin(final char src,
 			final boolean isPolyphone, final String separator) {
 		// 创建汉语拼音处理类
 		final HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
@@ -32,9 +34,7 @@ public class PinyinUtils {
 				// 转换得出结果
 				final String[] strs = PinyinHelper.toHanyuPinyinStringArray(
 						src, defaultFormat);
-				if(strs == null){
-				    return "";
-				}
+
 				// 是否查出多音字，默认是查出多音字的第一个字符
 				if (isPolyphone && null != separator) {
 					for (int i = 0; i < strs.length; i++) {
@@ -45,7 +45,7 @@ public class PinyinUtils {
 						}
 					}
 				} else {
-					tempPinying.append(strs[0]);
+					tempPinying.append(strs!=null?strs[0]:"");
 				}
 
 			} catch (final BadHanyuPinyinOutputFormatCombination e) {
@@ -67,31 +67,31 @@ public class PinyinUtils {
 	 *            是否是大写
 	 * @return
 	 */
-	private static String getHeadByChar(final char src, final boolean isCapital) {
+	public static char[] getHeadByChar(final char src, final boolean isCapital) {
 		// 如果不是汉字直接返回
 		if (src <= 128) {
-			return String.valueOf(src);
+			return new char[] { src };
 		}
 		// 获取所有的拼音
 		final String[] pinyingStr = PinyinHelper.toHanyuPinyinStringArray(src);
-		if(pinyingStr == null){
-		    return "";
-		}
 		// 创建返回对象
-		StringBuffer headChars = new StringBuffer();
-//		final char[] headChars = new char[polyphoneSize];
+		final int polyphoneSize =pinyingStr!=null?pinyingStr.length:0;
+		final char[] headChars = new char[polyphoneSize];
+		int i = 0;
+		if(pinyingStr!=null && pinyingStr.length>0){
 		// 截取首字符
 		for (final String s : pinyingStr) {
 			final char headChar = s.charAt(0);
 			// 首字母是否大写，默认是小写
 			if (isCapital) {
-				headChars.append(Character.toUpperCase(headChar));
+				headChars[i] = Character.toUpperCase(headChar);
 			} else {
-				headChars.append(headChar);
+				headChars[i] = headChar;
 			}
+			i++;
 		}
-
-		return headChars.toString();
+	   }
+		return headChars;
 	}
 
 	/**
@@ -100,14 +100,8 @@ public class PinyinUtils {
 	 * @param src
 	 * @return
 	 */
-	public static String getHeadByChar(final char src) {
-	    String ch = getHeadByChar(src, false);
-	    if(StringUtils.isNotBlank(ch)){
-	        return ch.substring(0,1);
-	    }else{
-	        return "";
-	    }
-		
+	public static char getHeadByChar(final char src) {
+		return getHeadByChar(src, false)!=null&&getHeadByChar(src, false).length>0?getHeadByChar(src, false)[0]:0;
 	}
 
 	/**

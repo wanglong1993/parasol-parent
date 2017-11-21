@@ -10,6 +10,7 @@
   <modules>
   	<module>parasol-file-api</module>
   	<module>parasol-file-provider</module>
+     <!-- <module>parasol-file-web</module>-->
   </modules>
   	<properties>
 		<file.version>1.0.0</file.version>

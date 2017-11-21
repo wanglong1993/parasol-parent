@@ -1,6 +1,7 @@
 package com.ginkgocap.parasol.file.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,9 +23,6 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 * @date 2015-11-30 
 * @version 1.0
  */
-@JsonFilter("com.ginkgocap.parasol.file.model.FileIndex")
-@Entity
-@Table(name = "tb_file_index")
 public class FileIndex implements Serializable {
 
 	/**
@@ -50,10 +48,11 @@ public class FileIndex implements Serializable {
 	private String md5;
 	// taskId
 	private String taskId;
-	// 类型	1:用户头像、2：知识模块、3：人脉模块、4：需求模块、5：组织客户 、6：会议模块 、7：其他（可扩展）
-	// "moduleType":"0:需求、1：业务需求、2：公司客户、3：公司项目、4：会员、5：名片 、6 公司名片 、7资讯、8客户、9人脉分享 、10机构",(api文档注释)
+	// 类型	1: 用户头像、2: 知识模块、3：人脉模块、4：需求模块、
+	// 		5: 组织客户、6: 会议模块、7: 事务、   8：动态、
+	// 		9: 畅聊、   10: 社群、   11：云盘文件、12：问答、13：其他（可扩展）、100：老数据同步
 	private int moduleType;
-	// 类型	1-图片，2-视频，3-音频, 4-文档, 5-附件
+	// 类型	1-图片，2-视频，3-音频, 4-附件（包含文档和其他）
 	private int fileType;
     // 解压缩
 	private String crc32;
@@ -63,11 +62,17 @@ public class FileIndex implements Serializable {
 	private String thumbnailsPath;
 	// appid
 	private long appId;
+	// 创建时间
+	private Date ctime;
+	// 备注信息（拓展用）
+	private String remark;
+	// 方便前端使用
+	private String url;
+	private String sfid;
 
-	@Id
-	@GeneratedValue(generator = "id")
-	@GenericGenerator(name = "id", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator", parameters = { @Parameter(name = "sequence", value = "tb_file_index") })
-	@Column(name = "id")	
+	private int width;
+	private int heigth;
+
 	public long getId() {
 		return id;
 	}
@@ -76,7 +81,6 @@ public class FileIndex implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "file_type")
 	public int getFileType() {
         return fileType;
     }
@@ -85,7 +89,6 @@ public class FileIndex implements Serializable {
         this.fileType = fileType;
     }
 
-	@Column(name = "file_path")
 	public String getFilePath() {
 		return filePath;
 	}
@@ -94,7 +97,6 @@ public class FileIndex implements Serializable {
 		this.filePath = filePath;
 	}
 
-	@Column(name = "file_title")
 	public String getFileTitle() {
 		return fileTitle;
 	}
@@ -103,7 +105,6 @@ public class FileIndex implements Serializable {
 		this.fileTitle = fileTitle;
 	}
 
-	@Column(name = "file_size")
 	public long getFileSize() {
 		return fileSize;
 	}
@@ -112,7 +113,6 @@ public class FileIndex implements Serializable {
 		this.fileSize = fileSize;
 	}
 	
-	@Column(name = "status")
 	public int getStatus() {
 		return status;
 	}
@@ -121,7 +121,6 @@ public class FileIndex implements Serializable {
 		this.status = status;
 	}
 
-	@Column(name = "md5")
 	public String getMd5() {
 		return md5;
 	}
@@ -130,7 +129,6 @@ public class FileIndex implements Serializable {
 		this.md5 = md5;
 	}
 
-	@Column(name = "task_id")
 	public String getTaskId() {
 		return taskId;
 	}
@@ -139,7 +137,6 @@ public class FileIndex implements Serializable {
 		this.taskId = taskId;
 	}
 
-	@Column(name = "module_type")
 	public int getModuleType() {
 		return moduleType;
 	}
@@ -148,7 +145,6 @@ public class FileIndex implements Serializable {
 		this.moduleType = moduleType;
 	}
 
-	@Column(name = "crc32")
 	public String getCrc32() {
 		return crc32;
 	}
@@ -157,7 +153,6 @@ public class FileIndex implements Serializable {
 		this.crc32 = crc32;
 	}
 
-	@Column(name = "server_host")
 	public String getServerHost() {
 		return serverHost;
 	}
@@ -166,7 +161,6 @@ public class FileIndex implements Serializable {
 		this.serverHost = serverHost;
 	}
 
-	@Column(name = "creater_id")
 	public long getCreaterId() {
 		return createrId;
 	}
@@ -175,7 +169,6 @@ public class FileIndex implements Serializable {
 		this.createrId = createrId;
 	}
 
-	@Column(name = "transcoding")	
 	public int getTranscoding() {
 		return transcoding;
 	}
@@ -184,7 +177,6 @@ public class FileIndex implements Serializable {
 		this.transcoding = transcoding;
 	}
 
-	@Column(name = "thumbnails_path")
 	public String getThumbnailsPath() {
 		return thumbnailsPath;
 	}
@@ -193,7 +185,6 @@ public class FileIndex implements Serializable {
 		this.thumbnailsPath = thumbnailsPath;
 	}
 
-	@Column(name = "appId")	
 	public long getAppId() {
 		return appId;
 	}
@@ -202,4 +193,51 @@ public class FileIndex implements Serializable {
 		this.appId = appId;
 	}
 
+	public Date getCtime() {
+		return ctime;
+	}
+
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getSfid() {
+		return sfid;
+	}
+
+	public void setSfid(String sfid) {
+		this.sfid = sfid;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeigth() {
+		return heigth;
+	}
+
+	public void setHeigth(int heigth) {
+		this.heigth = heigth;
+	}
 }

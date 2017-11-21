@@ -16,15 +16,28 @@
 				<pattern value="[13579]$" group="g3" />
 			</dbStrategy>
 			                  
+
+            
            <list name="List_Associate_Id_AppId_SourceId"
-                  sqlitem="select id from tb_associate where appId=? and sourceId=?"
-                  sqlType="hsql" keyProperty="appId,sourceId" valueProperty="id"/>
+                  sqlitem="select id from tb_associate where appId=? and sourceId=? and sourceTypeId=?"
+                  sqlType="hsql" keyProperty="appId,sourceId,sourceTypeId" valueProperty="id"/>
 
            <!-- 查询一个资源下有多少关联 --> 
            <list name="List_Associate_Id_AppId_SourceTypeId_SourceId"
                   sqlitem="select id from tb_associate where appId=? and sourceTypeId=? and sourceId=?"
                   sqlType="hsql" keyProperty="appId,sourceTypeId,sourceId" valueProperty="id"/>
 
+            <list name="List_Associate_userId_AssociateType"
+                  sqlitem="select id from tb_associate where userId = ? and assocTypeId = ? GROUP BY assocId"
+                  sqlType="hsql" keyProperty="userId,typeId" valueProperty="id"/>
+
+			<list name="List_Associate_userId_AssociateTwoType"
+				  sqlitem="select id from tb_associate where userId = ? and (assocTypeId = ? or assocTypeId= ?) GROUP BY assocId"
+				  sqlType="hsql" keyProperty="userId,typeId1,typeId2" valueProperty="id"/>
+
+            <list name="List_Associate_userId_assocId"
+                  sqlitem="select id from tb_associate where userId = ? and assocId =?"
+                  sqlType="hsql" keyProperty="userId,assocId" valueProperty="id"/>
 		</object>
 		
 		<object name="com.ginkgocap.parasol.associate.model.AssociateType" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">
@@ -42,8 +55,15 @@
                  sqlitem="select id from tb_associate_type where appId=? and name=?"
                  keyProperty="appId,name" valueProperty="id" />
 		</object>
+
+		<object name ="com.ginkgocap.parasol.associate.model.AssociateShare" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="pid">
+			<dbStrategy name="" clasz="com.ginkgocap.ywxt.framework.dal.dao.route.strategy.DefaultStrategy" useCRC32="true">
+				<pattern value="[02468]$" group="g2" />
+				<pattern value="[13579]$" group="g3" />
+			</dbStrategy>
+		</object>
 		
 
-	</route>
+    </route>
 </dal>
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.ginkgocap.parasol.associate.model.Page;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.math.RandomUtils;
@@ -110,5 +111,40 @@ public class AssociateServiceTest extends TestBase implements Test {
 			}
 		}
 		
+	}
+
+    @org.junit.Test
+    public void testGetAssociatesPage() throws AssociateTypeServiceException, AssociateServiceException, IOException {
+        Page<Associate> page = associateService.getassociatesByPage(7L, 2l,2, 5);
+
+        List<Associate> associates = page.getList();
+
+        for (Associate associate : associates) {
+            System.out.println(associate.getAssocTitle());
+        }
+    }
+
+    @org.junit.Test
+    public void testGetAssociatesByAssocId() throws AssociateServiceException, IOException {
+        Page<Map<String, Object>> page = associateService.getAssociatesByPage(200562L, 2L,0,5);
+
+        for (Map<String, Object> associate : page.getList()) {
+            //Assert.assertTrue(MapUtils.isNotEmpty(associate));
+            JsonObjectOutput joo = new JsonObjectOutput(System.out);
+            joo.writeObject(associate);
+
+        }
+    }
+
+	@org.junit.Test
+	public void testGetAssociatesBySourGtceId() throws AssociateServiceException, IOException {
+		List<Associate>  page = associateService.getAssociatesBySourceId(1L, 3167354L, 316122021043421L,8l);
+
+		for (Associate associate : page) {
+			//Assert.assertTrue(MapUtils.isNotEmpty(associate));
+			JsonObjectOutput joo = new JsonObjectOutput(System.out);
+			joo.writeObject(associate);
+
+		}
 	}
 }

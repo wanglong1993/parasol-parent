@@ -4,15 +4,16 @@ import java.text.MessageFormat;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 
 import com.ginkgocap.parasol.tags.exception.TagServiceException;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
 import com.ginkgocap.parasol.tags.model.Tag;
 import com.ginkgocap.parasol.tags.model.TagSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ServiceError {
-	public final static Logger logger = Logger.getLogger(ServiceError.class);
+	public final static Logger logger = LoggerFactory.getLogger(ServiceError.class);
 	public final static int ERROR_INPUT_NULL = 102;// 输入了一个空对象
 	public final static int ERROR_PERTIES = 104; // 对象的属性参数错误
 	public final static int ERROR_NOT_FOUND = 105; // 对象不存在
@@ -33,6 +34,7 @@ public abstract class ServiceError {
 	public final static int ERROR_TAG_NAME_IS_BLANK = 111; //不能是空串
 	public final static int ERROR_TAG_NAME_TOO_LENGTH = 112; //Tag名字太长
 
+	public final static long appId=1l;
 
 	public final static MessageFormat propertyParametrMessage = new MessageFormat("Required {0} property {1} is not present"); // "Required String property name is not present"
 

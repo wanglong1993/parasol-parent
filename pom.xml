@@ -15,7 +15,8 @@
 		<module>parasol-directory</module>
 		<module>parasol-tags</module>
 		<module>parasol-sms</module>
-		<!-- <module>parasol-common</module> -->
+		<module>parasol-common</module>
+		<module>parasol-column</module>
 		<module>parasol-message</module>
 		<module>parasol-user</module>
 	   	<module>parasol-sensitive</module>
@@ -23,12 +24,11 @@
 		<!--
 	   	<module>parasol-knowledge</module>
 		-->
-	   	<!-- <module>parasol-person</module> -->
-	   	<module>parasol-column</module>
+	   	<module>parasol-person</module>
+	   	<!-- <module>parasol-column</module> -->
  	   	<module>parasol-associate</module>
  	   	<module>parasol-comment</module>
 
- 	   	<module>parasol</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -490,10 +490,10 @@
 		<maven.test.skip>false</maven.test.skip>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- framework -->
-		<phoenix-framework.version>1.0.0</phoenix-framework.version>
-		<phoenix-framework-cache.version>1.0.0</phoenix-framework-cache.version>
-		<phoenix-framework-id.version>1.0.0</phoenix-framework-id.version>
-		<phoenix-framework-dal.version>1.0.0</phoenix-framework-dal.version>
+		<phoenix-framework.version>1.1.0-SNAPSHOT</phoenix-framework.version>
+		<phoenix-framework-cache.version>1.1.0-SNAPSHOT</phoenix-framework-cache.version>
+		<phoenix-framework-id.version>1.1.0-SNAPSHOT</phoenix-framework-id.version>
+		<phoenix-framework-dal.version>1.1.0-SNAPSHOT</phoenix-framework-dal.version>
 	</properties>
 	<scm>
 		<!-- <connection>scm:git:ssh://git@192.168.101.89/phoenix-parent.git</connection> 

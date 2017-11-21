@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.directory.exception.DirectoryTypeServiceException;
 import com.ginkgocap.parasol.directory.model.DirectoryType;
 import com.ginkgocap.parasol.directory.service.DirectoryTypeService;
-import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
+// import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 
 /**
  * 
@@ -70,7 +70,8 @@ public class DirectoryTypeController extends BaseControl {
 	@RequestMapping(path = "/directory/type/getTypeList", method = { RequestMethod.GET })
 	public MappingJacksonValue getFunctionClassList(@RequestParam(name = DirectoryTypeController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = DirectoryTypeController.parameterDebug, defaultValue = "") String debug) {
-		Long loginAppId = LoginUserContextHolder.getAppKey();
+		// Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginAppId = this.DefaultAppId;
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
@@ -109,7 +110,8 @@ public class DirectoryTypeController extends BaseControl {
 	@RequestMapping(path = "/directory/type/createTypeList", method = { RequestMethod.POST })
 	public MappingJacksonValue createFunctionClassList(@RequestParam(name = DirectoryTypeController.parameterName, defaultValue = "") String name,
 			@RequestParam(name = DirectoryTypeController.parameterDebug, defaultValue = "") String debug) {
-		Long loginAppId = LoginUserContextHolder.getAppKey();
+		// Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginAppId = this.DefaultAppId;
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 	

@@ -33,4 +33,5 @@
     
     <dubbo:service interface="com.ginkgocap.parasol.associate.service.AssociateTypeService" ref="associateTypeService" version="2.0.0" />
     <dubbo:service interface="com.ginkgocap.parasol.associate.service.AssociateService" ref="associateService" version="2.0.0"/>
+	<dubbo:service interface="com.ginkgocap.parasol.associate.service.AssociateShareService" ref="associateShareService" version="2.0.0"/>
 </beans>

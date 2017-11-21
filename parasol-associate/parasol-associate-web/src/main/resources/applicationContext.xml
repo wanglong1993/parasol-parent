@@ -30,10 +30,11 @@
 		</property>
 	</bean>
 	<import resource="classpath:associate-dubbo-config.xml" />
-	<import resource="classpath:associate-dubbo-consumer.xml" />
+	<import resource="classpath:metadata-associate-consumer.xml" />
 	<import resource="classpath:user-dubbo-consumer.xml" />
-	<import resource="classpath:oauth2-dubbo-consumer.xml" />
-	<context:component-scan
+	<import resource="classpath:applicationContext-cache.xml" />
+	<!-- <import resource="classpath:oauth2-dubbo-consumer.xml" /> -->
+	<!-- <context:component-scan
 		base-package="com.ginkgocap.parasol.associate,com.ginkgocap.parasol.oauth2">
-	</context:component-scan>
+	</context:component-scan> -->
 </beans>

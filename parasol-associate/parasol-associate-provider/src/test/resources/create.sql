@@ -12,11 +12,11 @@ CREATE TABLE `tb_associate_type` (
 CREATE TABLE `tb_associate` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '关联ID',
   `userId` bigint(20) NOT NULL COMMENT '用户ID（Ower）',
-  `userName` varchar(30) NOT NULL COMMENT '用户名字（OwerName）',
+  `userName` varchar(30) DEFAULT NULL COMMENT '用户名字（OwerName）',
   `appId` bigint(20) NOT NULL COMMENT '应用ID',
   `sourceTypeId` bigint(20) NOT NULL COMMENT '表示知识, 人脉ID,组织ID，等资源类型',
   `sourceId` bigint(20) NOT NULL COMMENT '知识ID, 人脉ID,组织ID，等资源ID',
-  `assocDesc` varchar(30) NOT NULL COMMENT '关联描述，比如文章的作者，或者编辑等；关联标签描述',
+  `assocDesc` varchar(100) NOT NULL COMMENT '关联描述，比如文章的作者，或者编辑等；关联标签描述',
   `assocTypeId` bigint(20) NOT NULL COMMENT '关联类型 比如管理的类型是知识、人脉、组织等',
   `assocId` bigint(20) NOT NULL COMMENT '关联数据ID',
   `assocTitle` varchar(255) NOT NULL COMMENT '标题',

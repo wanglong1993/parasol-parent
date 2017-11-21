@@ -5,12 +5,12 @@
 	<parent>
 		<artifactId>parasol-common</artifactId>
 		<groupId>com.ginkgocap.parasol</groupId>
-		<version>1.0.2-SNAPSHOT</version>
+		<version>1.0.3-SNAPSHOT</version>
 	</parent>
 	<groupId>com.ginkgocap.parasol</groupId>
 	<artifactId>parasol-common-provider</artifactId>
 	<name>${project.artifactId}</name>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.3-SNAPSHOT</version>
 
 	<properties>
 		<skip_maven_deploy>false</skip_maven_deploy>

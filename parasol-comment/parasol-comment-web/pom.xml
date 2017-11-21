@@ -173,7 +173,15 @@
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>4.3.6</version>
-			</dependency>
+		</dependency>
+			
+		<!-- 2017-04-11 -->
+	
+		<dependency>
+				<groupId>com.ginkgocap.parasol</groupId>
+				<artifactId>parasol-util</artifactId>
+				<version>1.0.3-SNAPSHOT</version>
+		</dependency>		
 	</dependencies>
 	<build>
 		<resources>

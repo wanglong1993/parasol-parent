@@ -33,4 +33,5 @@
     
     <dubbo:service interface="com.ginkgocap.parasol.metadata.service.CodeService" ref="codeService" version="2.0.0"/>
     <dubbo:service interface="com.ginkgocap.parasol.metadata.service.CodeRegionService" ref="codeRegionService" version="2.0.0"/>
+	<dubbo:service interface="com.ginkgocap.parasol.metadata.service.NewRegionService" ref="newRegionService" version="2.0.0"/>
 </beans>

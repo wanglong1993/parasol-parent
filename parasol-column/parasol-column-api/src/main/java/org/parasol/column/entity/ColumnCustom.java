@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class ColumnCustom implements Serializable {
+
+    private static final long serialVersionUID = 13253426246L;
+
     private Long id;
 
     private Long cid;

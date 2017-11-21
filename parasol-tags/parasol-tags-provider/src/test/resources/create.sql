@@ -1,3 +1,5 @@
+create database parasol_tags;
+use parasol_tags
 CREATE TABLE `tb_tag` (
   `id` bigint(20) NOT NULL COMMENT '标签ID',
   `userId` bigint(20) NOT NULL COMMENT '用户ID',

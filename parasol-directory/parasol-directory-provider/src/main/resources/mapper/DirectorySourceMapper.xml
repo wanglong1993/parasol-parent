@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ginkgocap.parasol.directory.dao.DirectorySourceDao" >
+  <resultMap id="BaseResultMap" type="com.ginkgocap.parasol.directory.model.DirectorySource" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="directoryId" property="directoryId" jdbcType="BIGINT" />
+    <result column="appId" property="appId" jdbcType="BIGINT" />
+    <result column="userId" property="userId" jdbcType="BIGINT" />
+    <result column="sourceId" property="sourceId" jdbcType="BIGINT" />
+    <result column="sourceType" property="sourceType" jdbcType="INTEGER" />
+    <result column="sourceUrl" property="sourceUrl" jdbcType="VARCHAR" />
+    <result column="sourceTitle" property="sourceTitle" jdbcType="VARCHAR" />
+    <result column="sourceData" property="sourceData" jdbcType="VARCHAR" />
+    <result column="invokeMethod" property="invokeMethod" jdbcType="VARCHAR" />
+    <result column="createAt" property="createAt" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, directoryId, appId, userId, sourceId, sourceType, sourceUrl, sourceTitle, sourceData, 
+    invokeMethod, createAt
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_directory_source
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_directory_source
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ginkgocap.parasol.directory.model.DirectorySource" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tb_directory_source (id, directoryId, appId, 
+      userId, sourceId, sourceType, 
+      sourceUrl, sourceTitle, sourceData, 
+      invokeMethod, createAt)
+    values (#{id,jdbcType=BIGINT}, #{directoryId,jdbcType=BIGINT}, #{appId,jdbcType=BIGINT}, 
+      #{userId,jdbcType=BIGINT}, #{sourceId,jdbcType=BIGINT}, #{sourceType,jdbcType=INTEGER}, 
+      #{sourceUrl,jdbcType=VARCHAR}, #{sourceTitle,jdbcType=VARCHAR}, #{sourceData,jdbcType=VARCHAR}, 
+      #{invokeMethod,jdbcType=VARCHAR}, #{createAt,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ginkgocap.parasol.directory.model.DirectorySource" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tb_directory_source
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      id,
+      <if test="directoryId != null" >
+        directoryId,
+      </if>
+      <if test="appId != null" >
+        appId,
+      </if>
+      <if test="userId != null" >
+        userId,
+      </if>
+      <if test="sourceId != null" >
+        sourceId,
+      </if>
+      <if test="sourceType != null" >
+        sourceType,
+      </if>
+      <if test="sourceUrl != null" >
+        sourceUrl,
+      </if>
+      <if test="sourceTitle != null" >
+        sourceTitle,
+      </if>
+      <if test="sourceData != null" >
+        sourceData,
+      </if>
+      <if test="invokeMethod != null" >
+        invokeMethod,
+      </if>
+      <if test="createAt != null" >
+        createAt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{id,jdbcType=BIGINT},
+      <if test="directoryId != null" >
+        #{directoryId,jdbcType=BIGINT},
+      </if>
+      <if test="appId != null" >
+        #{appId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="sourceId != null" >
+        #{sourceId,jdbcType=BIGINT},
+      </if>
+      <if test="sourceType != null" >
+        #{sourceType,jdbcType=INTEGER},
+      </if>
+      <if test="sourceUrl != null" >
+        #{sourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTitle != null" >
+        #{sourceTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceData != null" >
+        #{sourceData,jdbcType=VARCHAR},
+      </if>
+      <if test="invokeMethod != null" >
+        #{invokeMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ginkgocap.parasol.directory.model.DirectorySource" >
+    update tb_directory_source
+    <set >
+      <if test="directoryId != null" >
+        directoryId = #{directoryId,jdbcType=BIGINT},
+      </if>
+      <if test="appId != null" >
+        appId = #{appId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        userId = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="sourceId != null" >
+        sourceId = #{sourceId,jdbcType=BIGINT},
+      </if>
+      <if test="sourceType != null" >
+        sourceType = #{sourceType,jdbcType=INTEGER},
+      </if>
+      <if test="sourceUrl != null" >
+        sourceUrl = #{sourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTitle != null" >
+        sourceTitle = #{sourceTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceData != null" >
+        sourceData = #{sourceData,jdbcType=VARCHAR},
+      </if>
+      <if test="invokeMethod != null" >
+        invokeMethod = #{invokeMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        createAt = #{createAt,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ginkgocap.parasol.directory.model.DirectorySource" >
+    update tb_directory_source
+    set directoryId = #{directoryId,jdbcType=BIGINT},
+      appId = #{appId,jdbcType=BIGINT},
+      userId = #{userId,jdbcType=BIGINT},
+      sourceId = #{sourceId,jdbcType=BIGINT},
+      sourceType = #{sourceType,jdbcType=INTEGER},
+      sourceUrl = #{sourceUrl,jdbcType=VARCHAR},
+      sourceTitle = #{sourceTitle,jdbcType=VARCHAR},
+      sourceData = #{sourceData,jdbcType=VARCHAR},
+      invokeMethod = #{invokeMethod,jdbcType=VARCHAR},
+      createAt = #{createAt,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

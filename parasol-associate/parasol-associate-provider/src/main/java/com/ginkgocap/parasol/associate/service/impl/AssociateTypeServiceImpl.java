@@ -16,7 +16,7 @@ import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateTypeService;
 
 /**
- * 
+ *
  * @author allenshen
  * @date 2015年11月25日
  * @time 下午2:54:09

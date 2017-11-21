@@ -16,5 +16,6 @@
 	<modules>
 		<module>parasol-directory-api</module>
 		<module>parasol-directory-provider</module>
+		<module>parasol-directory-web</module>
 	</modules>
 </project>

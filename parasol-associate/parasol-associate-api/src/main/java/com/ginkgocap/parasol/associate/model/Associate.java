@@ -30,8 +30,8 @@ public class Associate implements Serializable {
 	 */
 	private static final long serialVersionUID = 1637202901564479194L;
 	private long id; // id标识
-	private long userId;// 创建这个记录的人用户(OwerID)
-	private String userName;//创建这个记录的人用户名字(OwerName)
+	private long userId;// 创建这个记录的人用户ID（OwerID）
+	private String userName;//创建这个记录的人用户名字（OwerName）
 	private long appId; // 应用Id
 	private long sourceTypeId;// 表示知识, 人脉ID,组织ID，等资源类型，可以参考AssociateType对象
 	private long sourceId; // 知识ID, 人脉ID,组织ID，等资源ID

@@ -15,44 +15,51 @@ import org.springframework.stereotype.Component;
 public class ColumnCustomDaoImpl implements ColumnCustomDao {
 	
 	@Resource
-	private ColumnCustomMapper ccm;
+	private ColumnCustomMapper columnCustomMapper;
 
 	@Override
 	public int deleteByPrimaryKey(Long id) {
-		return ccm.deleteByPrimaryKey(id);
+		// TODO Auto-generated method stub
+		return columnCustomMapper.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public int insert(ColumnCustom record) {
-		return ccm.insert(record);
+		// TODO Auto-generated method stub
+		return columnCustomMapper.insert(record);
 	}
 
 	@Override
 	public ColumnCustom selectByPrimaryKey(Long id) {
-		return ccm.selectByPrimaryKey(id);
+		// TODO Auto-generated method stub
+		return columnCustomMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByPrimaryKey(ColumnCustom record) {
-		return ccm.updateByPrimaryKey(record);
+		// TODO Auto-generated method stub
+		return columnCustomMapper.updateByPrimaryKey(record);
 	}
 
 	@Override
 	public List<ColumnCustom> queryListByPidAndUserId(Long pid, Long uid) {
+		// TODO Auto-generated method stub
 		ColumnCustomExample example=new ColumnCustomExample();
 		Criteria c=example.createCriteria();
-//		c.andPcidEqualTo(pid);
+		c.andPcidEqualTo(pid);
 		c.andUserIdEqualTo(uid);
-		List<ColumnCustom> list=ccm.selectByExample(example);
+		List<ColumnCustom> list=columnCustomMapper.selectByExample(example);
 		return list;
 	}
 
+
 	@Override
 	public ColumnCustom queryByCid(Long cid) {
+		// TODO Auto-generated method stub
 		ColumnCustomExample example=new ColumnCustomExample();
 		Criteria c=example.createCriteria();
 		c.andCidEqualTo(cid);
-		List<ColumnCustom> list=ccm.selectByExample(example);
+		List<ColumnCustom> list=columnCustomMapper.selectByExample(example);
 		if(list!=null&&list.size()>0){
 			return list.get(0);
 		}
@@ -61,16 +68,18 @@ public class ColumnCustomDaoImpl implements ColumnCustomDao {
 
 	@Override
 	public int deleteByUserId(Long uid) {
+		// TODO Auto-generated method stub
 		ColumnCustomExample example=new ColumnCustomExample();
 		Criteria c=example.createCriteria();
 		c.andUserIdEqualTo(uid);
-		int n=ccm.deleteByExample(example);
+		int n=columnCustomMapper.deleteByExample(example);
 		return n;
 	}
 
 	@Override
 	public int insertBatch(List<ColumnCustom> list) {
-		return ccm.insertBatch(list);
+		// TODO Auto-generated method stub
+		return columnCustomMapper.insertBatch(list);
 	}
 
 }

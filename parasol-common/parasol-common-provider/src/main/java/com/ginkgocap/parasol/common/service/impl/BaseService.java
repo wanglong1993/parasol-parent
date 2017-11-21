@@ -30,7 +30,7 @@ public abstract class BaseService<T> {
 	private Class<T> entitlClass;
 	
 	@Autowired(required = true)
-	private Dao dao;
+	protected Dao dao;
 
 	@SuppressWarnings("unchecked")
 	public Class<T> getEntityClass() {
@@ -184,7 +184,6 @@ public abstract class BaseService<T> {
 			throw new BaseServiceException(e);
 		}
 	}
-
 
 	@SuppressWarnings("unchecked")
 	protected List<T> getEntitys(String region_name, Object... parameters) throws BaseServiceException {

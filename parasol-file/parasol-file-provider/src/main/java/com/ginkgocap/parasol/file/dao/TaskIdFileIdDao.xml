@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ginkgocap.parasol.file.dao.TaskIdFileIdDao">
+
+<!--auto generated Code-->
+    <resultMap id="AllColumnMap" type="com.ginkgocap.parasol.file.model.TaskIdFileId">
+        <result column="id" property="id"/>
+        <result column="task_id" property="taskId"/>
+        <result column="file_id" property="fileId"/>
+        <result column="source" property="source"/>
+        <result column="user_id" property="userId"/>
+        <result column="file_title" property="fileTitle" />
+    </resultMap>
+
+<!--auto generated Code-->
+    <sql id="all_column">
+        id,
+        task_id,
+        file_id,
+        source,
+        user_id,
+        file_title
+    </sql>
+
+<!--auto generated Code-->
+    <insert id="insert">
+        INSERT INTO tb_task_fileid
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pojo.id != null"> id, </if>
+            <if test="pojo.taskId != null"> task_id, </if>
+            <if test="pojo.fileId != null"> file_id, </if>
+            <if test="pojo.source != null"> source, </if>
+            <if test="pojo.userId != null"> user_id,</if>
+            <if test="pojo.fileTitle != null"> file_title,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pojo.id != null"> #{pojo.id}, </if>
+            <if test="pojo.taskId != null"> #{pojo.taskId}, </if>
+            <if test="pojo.fileId != null"> #{pojo.fileId}, </if>
+            <if test="pojo.source != null"> #{pojo.source}, </if>
+            <if test="pojo.userId != null"> #{pojo.userId}, </if>
+            <if test="pojo.fileTitle != null" > #{pojo.fileTitle}, </if>
+        </trim>
+    </insert>
+
+<!--auto generated Code-->
+    <insert id="insertList">
+        INSERT INTO tb_task_fileid(
+        <include refid="all_column"/>
+        )VALUES
+        <foreach collection="pojos" item="pojo" index="index" separator=",">
+            (
+            #{pojo.id},
+            #{pojo.taskId},
+            #{pojo.fileId},
+            #{pojo.source},
+            #{pojo.userId},
+            #{pojo.fileTitle}
+            )
+        </foreach>
+    </insert>
+
+<!--auto generated Code-->
+    <update id="update">
+        UPDATE tb_task_fileid
+        <set>
+            <if test="pojo.id != null"> id = #{pojo.id}, </if>
+            <if test="pojo.taskId != null"> task_id = #{pojo.taskId}, </if>
+            <if test="pojo.fileId != null"> file_id = #{pojo.fileId}, </if>
+            <if test="pojo.source != null"> source = #{pojo.source}, </if>
+            <if test="pojo.userId != null"> user_id = #{pojo.userId}, </if>
+            <if test="pojo.fileTitle != null" > file_title = #{pojo.fileTitle} </if>
+        </set>
+         WHERE id = #{pojo.id}
+    </update>
+
+<!--auto generated Code-->
+    <select id="select" resultMap="AllColumnMap">
+        SELECT <include refid="all_column"/>
+        FROM tb_task_fileid
+        <where>
+            <if test="pojo.id != null"> AND id = #{pojo.id} </if>
+            <if test="pojo.taskId != null"> AND task_id = #{pojo.taskId} </if>
+            <if test="pojo.fileId != null"> AND file_id = #{pojo.fileId} </if>
+            <if test="pojo.source != null"> AND source = #{pojo.source} </if>
+            <if test="pojo.userId != null"> AND user_id = #{pojo.userId}</if>
+        </where>
+    </select>
+
+    <select id="selectByTaskId" resultType="long">
+        SELECT file_id
+        FROM tb_task_fileid
+        WHERE task_id = #{taskId}
+    </select>
+
+<!--auto generated Code-->
+    <delete id="delete">
+        DELETE FROM tb_task_fileid where id = #{pojo.id}
+    </delete>
+
+    <delete id="deleteByTaskId">
+        DELETE FROM tb_task_fileid where task_id = #{taskId}
+    </delete>
+
+    <delete id="deleteByTaskIdAndFileId">
+        DELETE FROM tb_task_fileid where task_id = #{taskId} AND file_id = #{fileId}
+    </delete>
+</mapper>

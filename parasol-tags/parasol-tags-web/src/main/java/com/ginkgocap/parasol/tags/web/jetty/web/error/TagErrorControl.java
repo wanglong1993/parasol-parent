@@ -15,7 +15,9 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
@@ -41,7 +43,7 @@ import com.ginkgocap.parasol.tags.web.jetty.web.ResponseError;
 
 @ControllerAdvice
 public class TagErrorControl {
-	public static Logger logger = Logger.getLogger(TagErrorControl.class);
+	public Logger logger = LoggerFactory.getLogger(TagErrorControl.class);
 	private static Pattern service_method_parttern = Pattern.compile("Failed to invoke the method (.+?) in the service (.+?). No provider");
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })

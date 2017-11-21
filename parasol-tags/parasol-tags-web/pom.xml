@@ -22,6 +22,8 @@
 		<jetty.version>8.1.15.v20140411</jetty.version>
 		<jetty-jsp.version>2.2.0.v201112011158</jetty-jsp.version>
 		<main.basedir>${basedir}/../..</main.basedir>
+		<util.dependencied>5.6.3</util.dependencied>
+		<start-class>com.ginkgocap.parasol.tags.web.jetty.ParasolTagApplication</start-class>
 	</properties>
 	<repositories>
 	    <repository>
@@ -48,6 +50,17 @@
 	      <url>https://repo.maven.apache.org/maven2</url>
 	    </repository>
 	</repositories>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>Snapshots</id>
+			<url>http://192.168.101.89:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>Releases</id>
+			<url>http://192.168.101.89:8081/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
+
 	<pluginRepositories>
 	    <pluginRepository>
 	      <id>Codehaus repository</id>
@@ -70,6 +83,36 @@
 	    </pluginRepository>
 	</pluginRepositories>
 	<dependencies>
+		<!-- business -->
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-tags-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-cache</artifactId>
+			<version>5.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-knowledge-api</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.ginkgocap.ywxt</groupId>
+					<artifactId>phoenix-cache</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -93,7 +136,6 @@
 					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -105,11 +147,11 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- parasol oauth2 begin -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-oauth2-resource</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 		<!-- parasol oauth2 end -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -147,18 +189,88 @@
 			<version>0.1</version>
 		</dependency>
 
-		<!-- business -->
-		<dependency>
-			<groupId>com.ginkgocap.parasol</groupId>
-			<artifactId>parasol-tags-api</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
-		</dependency>
-
 		<!-- apache common -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<!-- quartz start -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.8.5</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-util</artifactId>
+			<version>${util.dependencied}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>httpclient</artifactId>
+					<groupId>org.apache.httpcomponents</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency> -->
+
+		<!-- <dependency>
+			<groupId>com.gintong.frame</groupId>
+			<artifactId>phoenix-frame-util</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jedis</artifactId>
+					<groupId>redis.clients</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency> -->
+		<!-- <dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-entire-api</artifactId>
+			<version>5.6.3</version>
+		</dependency> -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+		<!-- file upload start -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <!-- file upload end -->
+        <dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.3.6</version>
+			</dependency>
+		<dependency>
+			 <groupId>org.hibernate</groupId>
+			 <artifactId>hibernate-validator</artifactId>
+			 <version>4.3.1.Final</version>
+			</dependency>
+		<dependency>
+			<groupId>com.gintong.frame</groupId>
+			<artifactId>phoenix-frame-util</artifactId>
+			<version>1.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- 2017-04-11 -->
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-util</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -239,8 +351,10 @@
 			<properties>
 				<!-- dubbo -->
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
-				<dubbo.registry.address>zookeeper://192.168.120.135:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.registry.address>zookeeper://192.168.101.131:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+                <redis.host>192.168.101.131</redis.host>
+                <redis.port>6379</redis.port>
 			</properties>
 		</profile>
 		<profile>
@@ -250,6 +364,10 @@
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://zk.gintong.local:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<!-- redis地址 -->
+				<redis.host>redis.gintong.local</redis.host>
+				<!-- redis端口 -->
+				<redis.port>6379</redis.port>
 			</properties>
 		</profile>
 		<profile>
@@ -259,7 +377,48 @@
 				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
 				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
 				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<!-- redis地址 -->
+				<redis.host>192.168.101.42</redis.host>
+				<!-- redis端口 -->
+				<redis.port>6379</redis.port>
 			</properties>
 		</profile>
+		<profile>
+			<id>testOnline</id>
+			<properties>
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<!-- redis地址 -->
+				<redis.host>192.168.101.42</redis.host>
+				<!-- redis端口 -->
+				<redis.port>6379</redis.port>
+			</properties>
+		</profile>
+		<profile>
+			<id>openPlat</id>
+			<properties>
+				<!-- dubbo -->
+				<dubbo.application.name>${project.artifactId}</dubbo.application.name>
+				<dubbo.registry.address>zookeeper://192.168.101.9:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<!-- redis地址 -->
+				<redis.host>192.168.101.181</redis.host>
+				<!-- redis端口 -->
+				<redis.port>6379</redis.port>
+			</properties>
+		</profile>
+        <profile>
+			<id>delivery</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<filters>
+					<filter>${sa.config.file}</filter>
+				</filters>
+			</build>
+		</profile>  
 	</profiles>
 </project>

@@ -31,6 +31,11 @@
 			<version>1.2.0</version>
 		</dependency>
 		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.37</version>
+		</dependency>
+		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>3.2.1</version>
@@ -105,11 +110,11 @@
 		</dependency>
 		<!-- logging begin -->
 		
-		<dependency>
-			<groupId>com.ginkgocap.parasol</groupId>
-			<artifactId>parasol-common-provider</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.ginkgocap.parasol</groupId>-->
+			<!--<artifactId>parasol-common-provider</artifactId>-->
+			<!--<version>1.0.2-SNAPSHOT</version>-->
+		<!--</dependency>-->
 		
 		<!-- activemq-client -->
 		<dependency>
@@ -186,7 +191,11 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+		</dependency>
 		<!-- slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -231,6 +240,11 @@
 			<groupId>net.spy</groupId>
 			<artifactId>spymemcached</artifactId>
 			<version>2.11.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-file-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 		<!-- dubbo 服务注册方式 end -->
 		
@@ -399,20 +413,30 @@
 				<!-- redis端口 -->
 				<redis.port>6379</redis.port>
 				<!-- mysql -->
+				<jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
+				<c3p0.acquireIncrement>2</c3p0.acquireIncrement>
+				<c3p0.initialPoolSize>10</c3p0.initialPoolSize>
+				<c3p0.minPoolSize>10</c3p0.minPoolSize>
+				<c3p0.maxPoolSize>30</c3p0.maxPoolSize>
+				<c3p0.maxIdleTime>60</c3p0.maxIdleTime>
+				<c3p0.idleConnectionTestPeriod>28000</c3p0.idleConnectionTestPeriod>
+				<c3p0.maxStatements>0</c3p0.maxStatements>
+				<c3p0.numHelperThreads>0</c3p0.numHelperThreads>
+				<c3p0.checkoutTimeout>120</c3p0.checkoutTimeout>
 				<jdbc.url>jdbc:mysql://192.168.101.131:3306/parasol_file?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
 				<jdbc.username>zhangwei</jdbc.username>
 				<jdbc.password>zhangwei</jdbc.password>
 				<!-- memcached -->
-				<memcached.list_1.ip>192.168.101.22</memcached.list_1.ip>
-				<memcached.list_1.port>11211</memcached.list_1.port>
-				<memcached.object_1.ip>192.168.101.22</memcached.object_1.ip>
-				<memcached.object_1.port>11211</memcached.object_1.port>
+				<memcached.list1.ip>192.168.101.42</memcached.list1.ip>
+				<memcached.list1.port>11211</memcached.list1.port>
+				<memcached.object1.ip>192.168.101.42</memcached.object1.ip>
+				<memcached.object1.port>11211</memcached.object1.port>
 				
 				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
 				<log4j.level>debug</log4j.level>
 				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
-				<log4j.path>d:/log</log4j.path>
-				<logback.path>d:/parasol-file-provider</logback.path>	
+				<log4j.path>./logs</log4j.path>
+				<logback.path>./parasol-file-provider</logback.path>
 				<qatest.schema.skip>false</qatest.schema.skip>
 				<!-- dubbo注册中心的地址 -->
 				<dubbo.application.name>filedubboprovider</dubbo.application.name>
@@ -437,16 +461,65 @@
 				<jdbc.username>ph_kfpt</jdbc.username>
 				<jdbc.password>Cual17jc5qd4</jdbc.password>
 				<!-- memcached -->
-				<memcached.list_1.ip>192.168.101.22</memcached.list_1.ip>
-				<memcached.list_1.port>11211</memcached.list_1.port>
-				<memcached.object_1.ip>192.168.101.22</memcached.object_1.ip>
-				<memcached.object_1.port>11211</memcached.object_1.port>
-				
+				<memcached.list1.ip>192.168.101.42</memcached.list1.ip>
+				<memcached.list1.port>11211</memcached.list1.port>
+				<memcached.object1.ip>192.168.101.42</memcached.object1.ip>
+				<memcached.object1.port>11211</memcached.object1.port>
+
 				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
 				<log4j.level>debug</log4j.level>
 				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
 				<log4j.path>./logs</log4j.path>
-				<logback.path>./parasol-file-provider</logback.path>	
+				<logback.path>./parasol-file-provider</logback.path>
+				<qatest.schema.skip>false</qatest.schema.skip>
+				<!-- dubbo注册中心的地址 -->
+				<dubbo.application.name>filedubboprovider</dubbo.application.name>
+				<dubbo.protocol.name>dubbo</dubbo.protocol.name>
+				<dubbo.registry.address>zookeeper://192.168.101.15:2181?client=zkclient</dubbo.registry.address>
+				<dubbo.protocol.port>7766</dubbo.protocol.port>
+			</properties>
+		</profile>
+		<profile>
+			<id>testOnline</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+				<!-- redis地址 -->
+				<redis.host>192.168.101.42</redis.host>
+				<!-- redis端口 -->
+				<redis.port>6379</redis.port>
+				<!-- mysql -->
+				<jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
+				<c3p0.acquireIncrement>2</c3p0.acquireIncrement>
+				<c3p0.initialPoolSize>10</c3p0.initialPoolSize>
+				<c3p0.minPoolSize>5</c3p0.minPoolSize>
+				<c3p0.maxPoolSize>50</c3p0.maxPoolSize>
+				<c3p0.maxIdleTime>60</c3p0.maxIdleTime>
+				<c3p0.idleConnectionTestPeriod>30</c3p0.idleConnectionTestPeriod>
+				<c3p0.maxStatements>0</c3p0.maxStatements>
+				<c3p0.numHelperThreads>100</c3p0.numHelperThreads>
+				<c3p0.checkoutTimeout>0</c3p0.checkoutTimeout>
+				<!--<jdbc.url>jdbc:mysql://192.168.101.42:3306/parasol_file?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>-->
+				<!--<jdbc.username>ph_kfpt</jdbc.username>-->
+				<!--<jdbc.password>Cual17jc5qd4</jdbc.password>-->
+				<jdbc.url>jdbc:mysql://192.168.101.131:3306/parasol_file?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8</jdbc.url>
+				<jdbc.username>zhangwei</jdbc.username>
+				<jdbc.password>zhangwei</jdbc.password>
+				<jtmobileserver.root>http://www.gintong.com/cross/</jtmobileserver.root>
+				<nginx.root>dfs.test.gintong.com/</nginx.root>
+				<!-- memcached -->
+				<memcached.list1.ip>192.168.101.42</memcached.list1.ip>
+				<memcached.list1.port>11211</memcached.list1.port>
+				<memcached.object1.ip>192.168.101.42</memcached.object1.ip>
+				<memcached.object1.port>11211</memcached.object1.port>
+
+				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
+				<log4j.level>debug</log4j.level>
+				<!-- 日志存储路径，多个项目可以用同一个路径，在该路径下每个项目会自动创建以项目名称命名的子文件夹 -->
+				<log4j.path>./logs</log4j.path>
+				<logback.path>./parasol-file-provider</logback.path>
 				<qatest.schema.skip>false</qatest.schema.skip>
 				<!-- dubbo注册中心的地址 -->
 				<dubbo.application.name>filedubboprovider</dubbo.application.name>

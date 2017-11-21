@@ -1,7 +1,8 @@
 package com.ginkgocap.parasol.directory.service.impl;
 
-import java.util.List;
+import java.util.*;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +33,10 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	private static Logger logger = Logger.getLogger(DirectorySourcesServiceImpl.class);
 	private static String LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID = "List_DirectorySources_Id_userId_appId_sourceType_sourceId";
 	private static String LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_DIRECTORYID = "List_DirectorySources_Id_userId_appId_sourceType_directoryId";
+	private static String LIST_DIRECTORYSOURCES_ID_APPID_SOURCETYPE = "List_DirectorySources_Id_appId_sourceType";
 	private static String LIST_DIRECTORYSOURCE_ID_DIRECTORYID = "List_DirectorySource_Id_DirectoryId";
 	private static String MAP_DIRECTORYSOURCE_ID_USERID_DIRECTORYID_APPID_SOURCETYPE_SOURICEID = "Map_DirectorySource_Id_UserId_DirectoryId_AppId_SourceType_SourceId";
+	private static String LIST_DIRECTORYSOURCE_ID_USERID_TYPEID = "List_DirectorySource_Id_UserId_TypeId";
 
 	@Autowired
 	private DirectoryService directoryService;
@@ -56,7 +59,10 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 			if (directory == null) { // 目录不存在
 				throw new DirectorySourceServiceException(ServiceError.ERROR_NOT_FOUND, "Don't find then Directory entity by id [" + directoryId + "]");
 			}
-
+			directory.addSourceCount(directory.getSourceCount());
+			boolean b = directoryService.updateDirectory(directory);
+			if (!b)
+				throw new DirectorySourceServiceException(ServiceError.ERROR_DIRECTORY_UPDATE, "update directory sourceCount failed [" + directoryId + "]");
 			DirectorySource existSource = this.getDirectorySource(userId, directoryId, appId, sourceType, sourceId);
 			if (existSource != null) { // 已经存在
 				StringBuilder sb = new StringBuilder();
@@ -90,6 +96,16 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	}
 
 	@Override
+	public boolean removeDirectorySourcesByDireIds(List<Long> ids) throws DirectorySourceServiceException{
+		try {
+			return this.deleteEntityByIds(ids);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
+	}
+
+	@Override
 	public boolean removeDirectorySources(Long appId, Long userId, Long id) throws DirectorySourceServiceException {
 		try {
 			DirectorySource ds = this.getDirectorySourceById(appId, id);
@@ -109,9 +125,43 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	}
 
 	@Override
+	public boolean removeDirectorySourceByIds(List<Long> ids) throws Exception {
+
+		return this.deleteEntityByIds(ids);
+	}
+
+	@Override
 	public boolean removeDirectorySourcesBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException {
+
+		boolean b = false;
+		List<DirectorySource> directorySourceList = null;
+		List<Long> ids = null;
+		List<Long> dirIds = new ArrayList<Long>();
 		try {
-			List<Long> ids = this.getIds(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID, userId, appId, sourceType, sourceId);
+			ids = this.getIds(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID, userId, appId, sourceType, sourceId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace();
+		}
+		try {
+			directorySourceList = this.getEntityByIds(ids);
+			for (DirectorySource directorySource : directorySourceList) {
+				if (directorySource == null)
+					continue;
+				long directoryId = directorySource.getDirectoryId();
+				dirIds.add(directoryId);
+			}
+		} catch (BaseServiceException e) {
+			e.printStackTrace();
+		}
+		try {
+			b = directoryService.subtractSourceCountByDirectoryIds(userId, appId, dirIds);
+		} catch (Exception e) {
+			logger.error("invoke directory service failed, method : [ subtractSourceCountByDirectoryIds ]. sourceId = " + sourceId);
+		}
+		if (!b) {
+			logger.error("subtractSourceCountByDirectoryIds method : failed!" );
+		}
+		try {
 			return this.deleteEntityByIds(ids);
 		} catch (BaseServiceException e) {
 			e.printStackTrace();
@@ -128,12 +178,48 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 			throw new DirectorySourceServiceException(e);
 		}
 	}
-	
+
+	@Override
+	public List<Long> getDirectoryIdsBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException {
+		try {
+			return this.getIds(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_SOURCEID, userId, appId, sourceType, sourceId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
+	}
+
+	@Override
+	public boolean removeDirectorySourcesByDirId(long directoryId) {
+
+		int count = 0;
+		try {
+			count = this.deleteList(LIST_DIRECTORYSOURCE_ID_DIRECTORYID, directoryId);
+			logger.info("deleteList {LIST_DIRECTORYSOURCE_ID_DIRECTORYID} count : " + count + "directoryId = " + directoryId);
+			return count >= 0;
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+		}
+		return false;
+	}
+
 	@Override
 	public List<DirectorySource> getSourcesByDirectoryIdAndSourceType(int start,int size,Object... parameters) throws DirectorySourceServiceException 
 	{
 		try {
 			return this.getSubEntitys(LIST_DIRECTORYSOURCES_ID_USERID_APPID_SOURCETYPE_DIRECTORYID, start, size, parameters);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
+	}
+
+	@Override
+	public List<DirectorySource> getSourcesBySourceType(int page, int size, byte sourceType) throws DirectorySourceServiceException
+	{
+		try {
+			final int start = page * size;
+			return this.getSubEntitys(LIST_DIRECTORYSOURCES_ID_APPID_SOURCETYPE, start, size, sourceType);
 		} catch (BaseServiceException e) {
 			e.printStackTrace(System.err);
 			throw new DirectorySourceServiceException(e);
@@ -265,6 +351,16 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 	}
 
 	@Override
+	public int getMyDirectoriesSouceCount(Long appId, Long userId, Long typeId) throws DirectorySourceServiceException {
+		try {
+			return this.countEntitys(LIST_DIRECTORYSOURCE_ID_USERID_TYPEID, appId, userId, typeId);
+		} catch (BaseServiceException e) {
+			e.printStackTrace(System.err);
+			throw new DirectorySourceServiceException(e);
+		}
+	}
+
+	@Override
 	public DirectorySource getDirectorySource(Long userId, Long directoryId, Long sourceAppId, Integer sourceType, Long souriceId) throws DirectorySourceServiceException {
 		try {
 			Long id = (Long) this.getMapId(MAP_DIRECTORYSOURCE_ID_USERID_DIRECTORYID_APPID_SOURCETYPE_SOURICEID, userId, directoryId, sourceAppId, sourceType, souriceId);
@@ -277,6 +373,87 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 		}
 
 		return null;
+	}
+
+	/**
+	 *快捷更新资源目录（知识、需求使用）
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 */
+	@Override
+	public boolean updateDiresources(Long appId, Long userId, Long sourceId, Long sourceType, List<Long> direIds, String sourceTitle) throws DirectorySourceServiceException{
+
+		List<DirectorySource> newDireSourceList = new ArrayList<DirectorySource>();
+		List<DirectorySource> direSourceList = null;
+		try {
+            long newSourceType = sourceType;
+            direSourceList = this.getDirectorySourcesBySourceId(userId,appId,(int)newSourceType,sourceId);
+            if (CollectionUtils.isEmpty(direSourceList)) {
+                for (Long direId : direIds) {
+                    if (direId != null) {
+                        DirectorySource dirSource = newDirecotrySource(userId, sourceId, sourceTitle, sourceType, direId);
+                        if(dirSource != null){
+                            newDireSourceList.add(dirSource);
+                        }
+                    }
+                }
+                if (newDireSourceList != null) {
+                    for (DirectorySource direSource : newDireSourceList) {
+                        this.createDirectorySources(direSource);
+                        logger.info("add DirectorySources success : [" + direSource.getDirectoryId() + "]");
+                    }
+                    logger.info("add DirectorySources success");
+                }
+            } else {
+                List<Long> delIdList = new ArrayList<Long>();
+                List<DirectorySource> addDireSourceList = new ArrayList<DirectorySource>();
+                List<Long> subtractSourceDirIds = new ArrayList<Long>();
+                Set<Long> existIdSet = new HashSet<Long>(direSourceList.size());
+
+                for (DirectorySource source : direSourceList) {
+                    existIdSet.add(source.getDirectoryId());
+                }
+                //帅选新增加的目录，并将其写入数据库
+                for (Long direId : direIds) {
+                    if (!(existIdSet.contains(direId))) {
+                        DirectorySource tagSource = newDirecotrySource(userId, sourceId, sourceTitle, sourceType, direId);
+                        if (tagSource != null) {
+                            addDireSourceList.add(tagSource);
+                        }
+                    }
+                }
+                if (CollectionUtils.isNotEmpty(addDireSourceList)) {
+                    for (DirectorySource direSource : addDireSourceList) {
+                        this.createDirectorySources(direSource);
+                        logger.info("add directorySource success : directoryId [" + direSource.getDirectoryId() + "]");
+                    }
+                    logger.info("add directorySource success");
+                }
+                //删除数据库中已被更新的数据
+                for (DirectorySource directorySource : direSourceList) {
+                    long id = directorySource.getId();
+					long dirId = directorySource.getDirectoryId();
+                    if (!direIds.contains(dirId)) {
+                        delIdList.add(id);
+						subtractSourceDirIds.add(dirId);
+                    }
+                }
+				boolean b = directoryService.subtractSourceCountByDirectoryIds(userId, appId, subtractSourceDirIds);
+                if (!b) {
+                	logger.error("subtractSourceCountByDirectoryIds method : failed!" );
+				}
+				if (CollectionUtils.isNotEmpty(delIdList)) {
+                    for (Long id : delIdList) {
+                        logger.info("delete directorySource success : directoryId [" + id + "]");
+                    }
+                    this.removeDirectorySourcesByDireIds(delIdList);
+                    logger.info("delete directorySource success");
+                }
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 	/**
@@ -303,4 +480,15 @@ public class DirectorySourcesServiceImpl extends BaseService<DirectorySource> im
 		return null;
 	}
 
+	private DirectorySource newDirecotrySource(long userId, long sourceId, String sourceTitle, long sourceType, long direcoryId){
+		DirectorySource directorySource = new DirectorySource();
+		directorySource.setUserId(userId);
+		directorySource.setDirectoryId(direcoryId);
+		directorySource.setAppId(ServiceError.appId);
+		directorySource.setSourceId(sourceId);
+		directorySource.setSourceType((int)sourceType);
+		directorySource.setSourceTitle(sourceTitle);
+		directorySource.setCreateAt(new Date().getTime());
+		return directorySource;
+	}
 }

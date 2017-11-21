@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ginkgocap.parasol.file.dao.UserFileCategoryDao">
+
+<!--auto generated Code-->
+    <resultMap id="AllColumnMap" type="com.ginkgocap.parasol.file.model.UserFileCategory">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="server_filename" property="serverFilename"/>
+        <result column="sort_id" property="sortId"/>
+        <result column="ctime" property="ctime"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="file_id" property="fileId"/>
+        <result column="is_dir" property="isDir"/>
+    </resultMap>
+
+    <resultMap id="userFileCategoryExt" type="com.ginkgocap.parasol.file.model.UserFileCategoryExt">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="server_filename" property="serverFilename"/>
+        <result column="sort_id" property="sortId"/>
+        <result column="ctime" property="ctime"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="file_id" property="fileId"/>
+        <result column="is_dir" property="isDir"/>
+        <result column="file_type" property="fileType" />
+        <result column="file_size" property="fileSize" />
+        <result column="thumbnails_path" property="thumbnailsPath" />
+        <result column="remark" property="remark" />
+        <result column="file_title" property="fileTitle" />
+        <result column="file_path" property="filePath" />
+        <result column="server_host" property="serverHost" />
+        <result column="module_type" property="moduleType" />
+    </resultMap>
+
+<!--auto generated Code-->
+    <sql id="all_column">
+        id,
+        user_id,
+        server_filename,
+        sort_id,
+        ctime,
+        parent_id,
+        file_id,
+        is_dir
+    </sql>
+
+<!--auto generated Code-->
+    <insert id="insert" parameterType="com.ginkgocap.parasol.file.model.UserFileCategory"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_user_file_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> id, </if>
+            <if test="userId != null"> user_id, </if>
+            <if test="serverFilename != null"> server_filename, </if>
+            <if test="sortId != null"> sort_id, </if>
+            <if test="ctime != null"> ctime, </if>
+            <if test="parentId != null"> parent_id, </if>
+            <if test="fileId != null"> file_id, </if>
+            <if test="isDir != null"> is_dir, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> #{id}, </if>
+            <if test="userId != null"> #{userId}, </if>
+            <if test="serverFilename != null"> #{serverFilename}, </if>
+            <if test="sortId != null"> #{sortId}, </if>
+            <if test="ctime != null"> #{ctime}, </if>
+            <if test="parentId != null"> #{parentId}, </if>
+            <if test="fileId != null"> #{fileId}, </if>
+            <if test="isDir != null"> #{isDir}, </if>
+        </trim>
+    </insert>
+
+<!--auto generated Code-->
+    <insert id="insertList">
+        INSERT INTO tb_user_file_category(
+        <include refid="all_column"/>
+        )VALUES
+        <foreach collection="pojos" item="pojo" index="index" separator=",">
+            (
+            #{pojo.id},
+            #{pojo.userId},
+            #{pojo.serverFilename},
+            #{pojo.sortId},
+            #{pojo.ctime},
+            #{pojo.parentId},
+            #{pojo.fileId},
+            #{pojo.isDir}
+            )
+        </foreach>
+    </insert>
+
+<!--auto generated Code-->
+    <update id="update">
+        UPDATE tb_user_file_category
+        <set>
+            <if test="pojo.id != null"> id = #{pojo.id}, </if>
+            <if test="pojo.userId != null"> user_id = #{pojo.userId}, </if>
+            <if test="pojo.serverFilename != null"> server_filename = #{pojo.serverFilename}, </if>
+            <if test="pojo.sortId != null"> sort_id = #{pojo.sortId}, </if>
+            <if test="pojo.ctime != null"> ctime = #{pojo.ctime}, </if>
+            <if test="pojo.parentId != null"> parent_id = #{pojo.parentId}, </if>
+            <if test="pojo.fileId != null"> file_id = #{pojo.fileId}, </if>
+            <if test="pojo.isDir != null"> is_dir = #{pojo.isDir} </if>
+        </set>
+         WHERE id = #{pojo.id}
+    </update>
+
+<!--auto generated Code-->
+    <select id="select" resultMap="AllColumnMap">
+        SELECT <include refid="all_column"/>
+        FROM tb_user_file_category
+        <where>
+            <if test="pojo.id != null"> AND id = #{pojo.id} </if>
+            <if test="pojo.userId != null"> AND user_id = #{pojo.userId} </if>
+            <if test="pojo.serverFilename != null"> AND server_filename = #{pojo.serverFilename} </if>
+            <if test="pojo.sortId != null"> AND sort_id = #{pojo.sortId} </if>
+            <if test="pojo.ctime != null"> AND ctime = #{pojo.ctime} </if>
+            <if test="pojo.parentId != null"> AND parent_id = #{pojo.parentId} </if>
+            <if test="pojo.fileId != null"> AND file_id = #{pojo.fileId} </if>
+            <if test="pojo.isDir != null"> AND is_dir = #{pojo.isDir} </if>
+        </where>
+    </select>
+
+    <select id="selectById" resultMap="AllColumnMap">
+        SELECT <include refid="all_column" />
+        FROM tb_user_file_category
+        WHERE id = #{id}
+    </select>
+
+    <select id="getFileAndCategoryByFileType" resultMap="userFileCategoryExt">
+        <bind name="keyword" value="'%' + pojos.keyword + '%'"></bind>
+        SELECT
+           fc.id ,
+           fc.user_id ,
+           fc.server_filename,
+           fc.sort_id,
+           fc.ctime,
+           fc.parent_id,
+           fc.file_id,
+           fc.is_dir,
+           f.file_title,
+           f.file_path,
+           f.server_host,
+           f.file_type,
+           f.file_size,
+           f.thumbnails_path,
+           f.remark,
+           f.module_type
+        FROM
+           tb_user_file_category fc
+           LEFT JOIN tb_file_index f ON fc.`file_id` = f.id
+        WHERE
+           user_Id = #{pojos.userId}
+           <if test="pojos.fileType != 0 and pojos.fileType != null">
+               AND f.file_type is not null
+               AND f.file_type = #{pojos.fileType}
+           </if>
+           <if test="pojos.parentId != null">
+               AND fc.parent_id = #{pojos.parentId}
+           </if>
+           <if test="pojos.isDir == 0 or pojos.isDir ==1">
+               AND fc.is_dir = #{pojos.isDir}
+           </if>
+           <if test="pojos.keyword != null and pojos.keyword != ''.toString()">
+               AND(
+                   CASE
+                       WHEN(
+                           fc.server_filename IS NULL
+                           OR fc.server_filename = 'null'
+                           OR fc.server_filename = ''
+                       )THEN
+                           f.file_title LIKE #{keyword}
+                       ELSE
+                           fc.server_filename LIKE #{keyword}
+                   END
+               )
+           </if>
+        AND (fc.is_dir = 1 OR (fc.is_dir = 0 AND f.server_host is not null))
+        ORDER BY is_dir DESC,ctime DESC
+        <if test="pojos.start != null and pojos.size != null">
+            LIMIT #{pojos.start},#{pojos.size}
+        </if>
+    </select>
+
+    <select id="getFileSizeSumByFileType" resultType="long">
+        SELECT
+          IF(ISNULL(SUM(f.file_size)),0,SUM(f.file_size))
+        FROM
+        tb_user_file_category fc
+        LEFT JOIN tb_file_index f ON fc.`file_id` = f.id
+        WHERE
+        user_Id = #{pojos.userId}
+        <if test="pojos.fileType != 0 and pojos.fileType != null">
+            AND f.file_type = #{pojos.fileType}
+        </if>
+        <if test="pojos.parentId != null">
+            AND fc.parent_id = #{pojos.parentId}
+        </if>
+        <if test="pojos.isDir == 0 or pojos.isDir ==1">
+            AND fc.is_dir = #{pojos.isDir}
+        </if>
+        AND (fc.is_dir = 1 OR (fc.is_dir = 0 AND f.server_host is not null))
+    </select>
+
+    <select id="existUserCategory" resultType="int" >
+        SELECT
+          count(1)
+        FROM
+           tb_user_file_category fc
+           LEFT JOIN tb_file_index f ON fc.`file_id` = f.id
+        WHERE
+           user_Id = #{pojo.userId}
+           AND fc.is_dir = #{pojo.isDir}
+           <if test="pojo.parentId != null">
+               AND fc.parent_id = #{pojo.parentId}
+           </if>
+           <if test="pojo.isDir == 0">
+               AND(
+                   CASE
+                       WHEN(
+                           fc.server_filename IS NULL
+                           OR fc.server_filename = 'null'
+                           OR fc.server_filename = ''
+                       )
+                       THEN
+                           f.file_title = #{pojo.name}
+                       ELSE
+                           fc.server_filename = #{pojo.name}
+                   END
+               )
+           </if>
+           <if test="pojo.isDir == 1">
+               AND fc.server_filename = #{pojo.name}
+           </if>
+        AND (fc.is_dir = 1 OR (fc.is_dir = 0 AND f.server_host is not null))
+    </select>
+
+    <select id="selectByAndCId" resultMap="AllColumnMap" >
+        SELECT <include refid="all_column" />
+        FROM tb_user_file_category
+        WHERE
+          user_id = #{userId}
+          AND file_id = #{id}
+          AND parent_id = #{cid}
+    </select>
+
+<!--auto generated Code-->
+    <delete id="delete">
+        DELETE FROM tb_user_file_category where id = #{pojo.id}
+    </delete>
+    
+    <delete id="bathDelete">
+        DELETE FROM tb_user_file_category
+        WHERE id IN
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND user_id = #{userId}
+    </delete>
+</mapper>

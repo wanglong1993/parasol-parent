@@ -38,6 +38,14 @@ public interface DirectorySourceService {
 	public boolean removeDirectorySources(Long appId, Long userId, Long id) throws DirectorySourceServiceException;
 
 	/**
+	 * 批量删除资源 通过ids
+	 * @param ids
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 */
+	public boolean removeDirectorySourceByIds(List<Long> ids) throws Exception;
+
+	/**
 	 * 从资源中是删除具有资源Id的所有目录资源 小心使用
 	 * 
 	 * @param appId
@@ -128,7 +136,6 @@ public interface DirectorySourceService {
 	 * 查询某个资源是否在指定的目录下，存在就返回这个DirectorSource，否则, 返回 null
 	 * 
 	 * @param userId
-	 * @param appId
 	 * @param directoryId
 	 * @param sourceType
 	 * @param souriceId
@@ -137,4 +144,47 @@ public interface DirectorySourceService {
 	 */
 	public DirectorySource getDirectorySource(Long userId, Long directoryId, Long sourceAppId, Integer sourceType, Long souriceId) throws DirectorySourceServiceException;
 
+	/**
+	 * 根据sourceId查询标签集合
+	 * @throws DirectorySourceServiceException
+	 */
+	public List<Long> getDirectoryIdsBySourceId(long userId, Long appId, int sourceType, Long sourceId) throws DirectorySourceServiceException;
+
+	/**
+	 * 删除资源目录 通过目录id
+	 * @param directoryId
+	 * @return
+	 */
+	boolean removeDirectorySourcesByDirId(long directoryId);
+	/**
+	 * 批量删除资源目录
+	 * @throws DirectorySourceServiceException
+	 */
+	public boolean removeDirectorySourcesByDireIds(List<Long> ids) throws DirectorySourceServiceException;
+
+	/**
+	 *更新目录
+	 * @throws DirectorySourceServiceException
+	 */
+	public boolean updateDiresources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> direIds,String sourceTitle) throws DirectorySourceServiceException;
+
+	/**
+	 * 我的目录下所有资源个数
+	 * @param appId
+	 * @param userId
+	 * @param typeId
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 */
+	int getMyDirectoriesSouceCount(Long appId, Long userId, Long typeId) throws DirectorySourceServiceException;
+
+	/**
+	 * 查找所有资源 通过资源类型
+	 * @param start
+	 * @param size
+	 * @param sourceType
+	 * @return
+	 * @throws DirectorySourceServiceException
+	 */
+	List<DirectorySource> getSourcesBySourceType(int start, int size, byte sourceType) throws DirectorySourceServiceException;
 }

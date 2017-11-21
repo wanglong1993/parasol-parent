@@ -131,7 +131,7 @@ public class TagSource implements Serializable {
 	@Override
 	public String toString() {
 		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceTitle=" + sourceTitle + ", sourceType=" + sourceType + ", createAt="
-				+ createAt + "]";
+				+ createAt +",tagName="+tagName+"]";
 	}
 
 }

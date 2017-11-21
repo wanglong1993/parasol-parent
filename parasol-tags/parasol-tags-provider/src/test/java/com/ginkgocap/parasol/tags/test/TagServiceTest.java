@@ -61,6 +61,8 @@ public class TagServiceTest extends TestBase implements Test {
 				tagService.removeTag(userId, tag.getId());
 			}
 		}
+		
+		List<TagSource> sourceTgs = tagSourceService.getTagSourcesByAppIdTagIdAndType(System_AppId, 1213L, 8L, 0, 10);
 
 		//检查是否删除成功
 		tags = tagService.getTagsByUserIdAppidTagType(userId, System_AppId, tagType);
@@ -88,6 +90,7 @@ public class TagServiceTest extends TestBase implements Test {
 		Long tagSourceId = tagSourceService.createTagSource(source);
 		Assert.assertTrue(tagId != null && tagId > 0);
 
+		
 		//添加到第二个资源上
 		source = new TagSource();
 		source.setAppId(System_AppId);
@@ -99,22 +102,18 @@ public class TagServiceTest extends TestBase implements Test {
 		source.setCreateAt(System.currentTimeMillis());
 		Long tagSourceId2 = tagSourceService.createTagSource(source);
 
-		//检查第二个资源是否存在
-		source = tagSourceService.getTagSource(System_AppId, tagSourceId2);
-		Assert.assertNotNull(source);
+		List<TagSource> sourceList = tagSourceService.getTagSourcesByAppIdTagIdAndType(System_AppId, tagId, tagType, 0, 8);
+		Assert.assertTrue(sourceList != null && sourceList.size() > 0);
 
-		List<TagSource> sourceTgs = tagSourceService.getTagSourcesByAppIdTagId(System_AppId, tagId, 0, 10);
-		Assert.assertTrue(sourceTgs != null && sourceTgs.size() > 0);
-
-		sourceTgs = tagSourceService.getTagSourcesByAppIdTagIdAndType(System_AppId, tagId, (long)sourceType, 0, 10);
-		Assert.assertTrue(sourceTgs != null && sourceTgs.size() > 0);
+		List<Long> ids = tagSourceService.getTagSourceIdListByAppIdTagIdAndType(System_AppId, tagId, tagType, 0, 8);
+		Assert.assertTrue(ids != null && ids.size() > 0);
 
 		//删除第二个资源上的Tag
-		boolean deleteSuccess = tagSourceService.removeTagSource(System_AppId, userId, tagSourceId);
-		Assert.assertTrue(deleteSuccess);
+		tagSourceService.removeTagSource(System_AppId, userId, tagSourceId);
 
-		int num = tagSourceService.removeTagSourceBySourceId(System_AppId, userId, sourceId+1, (long)sourceType);
-		Assert.assertTrue(num>0);
+		//检查第二个资源是否存在
+		source = tagSourceService.getTagSource(System_AppId, tagSourceId2);
+		Assert.assertNull(source);
 
 		//删除Tag
 		tagService.removeTag(userId, tagId);
@@ -123,6 +122,31 @@ public class TagServiceTest extends TestBase implements Test {
 		Assert.assertNull(tag);
 		//检查资源下的Tag是否删除掉
 		source = tagSourceService.getTagSource(System_AppId, tagSourceId);
-		Assert.assertNull(source);
+		Assert.assertNull(tag);
+
+		int num = tagSourceService.removeTagSourceBySourceId(System_AppId, userId, sourceId+1, (long)sourceType);
+		Assert.assertTrue(num>0);
 	}
+
+	@org.junit.Test
+	public void testGetTagsByUserIdAppidTagTypePage() throws TagServiceException{
+
+		List<Tag> tagList = tagService.getTagsByUserIdAppidTagTypePage(0l, System_AppId, 0l, 0, 10);
+			System.out.println("*******************************"+tagList);
+
+	}
+	@org.junit.Test
+	public void testGetTagSourcesByAppIdSourceIdSourceType() throws TagServiceException{
+
+	//	List<Tag> tagList = tagService.getTagsByUserIdAppidTagTypePage(0l, System_AppId, 0l, 0, 10);
+		try {
+			List<TagSource> tagsources=tagSourceService.getTagSourcesBySourceId(1l, 4055923621888010l, 7l);
+			System.err.println(tagsources);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//	System.out.println("*******************************"+tagList);
+
+	}
+
 }

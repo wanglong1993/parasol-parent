@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+   <!-- <classPathEntry
+            location="com.mysql.jdbc.Driver"/>-->
+    <context id="Mysql" targetRuntime="MyBatis3">
+
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <!-- 屏蔽生成注释 -->
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://192.168.101.131:3306/parasol_directory_test?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf8&amp;amp;autoReconnect=true"
+                        userId="zhangwei"
+                        password="zhangwei"/>
+
+        <javaModelGenerator targetPackage="com.ginkgocap.parasol.directory.entity"
+                            targetProject="E:\workspace2\parasol-parent\parasol-directory\parasol-directory-api\src\main\java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="E:\workspace2\parasol-parent\parasol-directory\parasol-directory-provider\src\main\resource">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator targetPackage="com.ginkgocap.parasol.directory.dao"
+                             targetProject="E:\workspace2\parasol-parent\parasol-directory\parasol-directory-provider\src\main\java" type="XMLMAPPER"
+                             implementationPackage = "com.ginkgocap.parasol.directory.dao.impl">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!--<table tableName="T_FEE_AGTBILL" domainObjectName="FeeAgentBill"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false"/>-->
+
+        <table tableName="tb_directory" domainObjectName="Directory"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="Mysql" ></generatedKey>
+        </table>
+        <table tableName="tb_directory_source" domainObjectName="DirectorySource"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="Mysql" ></generatedKey>
+        </table>
+        <table tableName="tb_directory_type" domainObjectName="DirectoryType"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="Mysql" ></generatedKey>
+        </table>
+
+    </context>
+</generatorConfiguration>

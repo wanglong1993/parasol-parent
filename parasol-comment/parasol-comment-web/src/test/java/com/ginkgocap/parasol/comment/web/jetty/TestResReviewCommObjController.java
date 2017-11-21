@@ -8,8 +8,8 @@ import com.ginkgocap.parasol.comment.model.CommObjType;
 import com.ginkgocap.parasol.comment.model.CommObjUpUser;
 import com.ginkgocap.parasol.comment.model.ResReviewCommObj;
 import com.ginkgocap.parasol.comment.model.Tipoff;
-import com.ginkgocap.parasol.comment.web.jetty.web.util.HttpUtils;
-import com.ginkgocap.parasol.comment.web.jetty.web.util.JsonUtils;
+import com.ginkgocap.parasol.util.HttpUtils;
+import com.ginkgocap.parasol.util.JsonUtils;
 
 public class TestResReviewCommObjController {
 	

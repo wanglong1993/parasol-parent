@@ -12,10 +12,10 @@
 	<groupId>com.ginkgocap.parasol</groupId>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<modules>
 		<module>parasol-common-provider</module>
 		<module>parasol-util</module>
-		<module>parasol-mapping</module>
+		<!--<module>parasol-mapping</module>-->
 	</modules>
 </project>

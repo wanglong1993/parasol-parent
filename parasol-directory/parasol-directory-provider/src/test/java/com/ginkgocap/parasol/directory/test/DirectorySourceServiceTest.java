@@ -62,7 +62,6 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 		System.err.println(souceList);
 		
 		//测试创建
-		Long directoryId = 0L;
 		for (Directory directory : rootDirectories) {
 			Assert.assertNotNull(directory);
 			List<Directory> subDirectorys = directoryService.getDirectorysByParentId(System_AppId, user_id, directory.getId());
@@ -74,7 +73,7 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 				source.setSourceType(Source_type);
 				source.setSourceId(source_Id);
 				source.setDirectoryId(targetDirectory.getId());
-				directoryId = directorySourceService.createDirectorySources(source);
+				directorySourceService.createDirectorySources(source);
 			}
 		}
 
@@ -108,15 +107,47 @@ public class DirectorySourceServiceTest extends TestBase implements Test {
 			}
 		}
 		
-		Object[] parameters = new Object[]{7, 1, 8, 3990305410121740L};
-		List<DirectorySource> source = directorySourceService.getSourcesByDirectoryIdAndSourceType(0, 10, parameters);
-		System.out.println(source);
+		
+		
 		
 //		//测试清楚SourceId
 //		if (sourceId != null) {
 //			directorySourceService.removeDirectorySourcesBySourceId(user_id, System_AppId, Source_type, sourceId);
 //		}
 
+	}
+
+	@org.junit.Test
+	public void testGetDirectorySource()
+	{
+		Object[] parameter = new Object[]{441713, System_AppId, 8, 3991724208947840L};
+		List<DirectorySource> souceList = null;
+		try {
+			souceList = directorySourceService.getSourcesByDirectoryIdAndSourceType(0, 10, parameter);
+		} catch (DirectorySourceServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Assert.assertTrue(souceList != null && souceList.size() > 0);
+		System.err.println(souceList);
+	}
+
+	@org.junit.Test
+	public void testCreateDirectoryForChildren() {
+		//'1-0-4-我的目录4-8'
+		Directory directory = new Directory();
+		directory.setAppId(1);
+		directory.setUserId(4);
+		directory.setPid(0l);
+		directory.setName("我的目录4");
+		directory.setTypeId(8);
+		Long id = null;
+		try {
+			id = directoryService.createDirectoryForRoot(8l, directory);
+		} catch (DirectoryServiceException e) {
+			e.printStackTrace();
+		}
+		System.out.println("*******************id:" + id);
 	}
 
 }

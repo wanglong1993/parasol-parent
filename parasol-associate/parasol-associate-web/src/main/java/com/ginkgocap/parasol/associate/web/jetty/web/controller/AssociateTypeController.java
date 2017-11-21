@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.associate.exception.AssociateTypeServiceException;
 import com.ginkgocap.parasol.associate.model.AssociateType;
 import com.ginkgocap.parasol.associate.service.AssociateTypeService;
-import com.ginkgocap.parasol.oauth2.web.jetty.LoginUserContextHolder;
 
 /**
  * 
@@ -70,9 +69,11 @@ public class AssociateTypeController extends BaseControl {
 	@RequestMapping(path = "/associate/type/getTypeList", method = { RequestMethod.GET })
 	public MappingJacksonValue getFunctionClassList(@RequestParam(name = AssociateTypeController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = AssociateTypeController.parameterDebug, defaultValue = "") String debug) {
-		Long loginAppId = LoginUserContextHolder.getAppKey();
+//		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginAppId=this.DefaultAppId;
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
+			
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
 			List<AssociateType> associateTypes = associateTypeService.getAssociateTypessByAppId(loginAppId);
@@ -109,7 +110,8 @@ public class AssociateTypeController extends BaseControl {
 	@RequestMapping(path = "/associate/type/createAssociateType", method = { RequestMethod.POST })
 	public MappingJacksonValue createFunctionClassList(@RequestParam(name = AssociateTypeController.parameterName, defaultValue = "") String name,
 			@RequestParam(name = AssociateTypeController.parameterDebug, defaultValue = "") String debug) {
-		Long loginAppId = LoginUserContextHolder.getAppKey();
+//		Long loginAppId = LoginUserContextHolder.getAppKey();
+		Long loginAppId=this.DefaultAppId;
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
 	

@@ -21,4 +21,6 @@ public class ColumnSysDaoTest {
 		ColumnSys cs=csd.selectByPrimaryKey(1l);
 		System.out.println(cs.getColumnname());
 	}
+
+
 }

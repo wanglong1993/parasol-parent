@@ -59,7 +59,7 @@ public class ColumnCustomController extends BaseController {
 		for(ColumnSelf c:newList){
 			c.setCreatetime(new Date());
 			c.setUpdateTime(new Date());
-//			c.setParentId(0l);
+			c.setParentId(0l);
 		}
 		Long pid=0l;
 		int n=this.ccs.replace(uid, newList);

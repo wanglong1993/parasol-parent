@@ -20,6 +20,10 @@
            <list name="List_Tag_Id_UserId_AppId_TagType"
                   sqlitem="select id from tb_tag where userId=? and appId=? and tagType = ?"
                   sqlType="hsql" keyProperty="userId,appId,tagType" valueProperty="id"/>
+			<!-- 查询一个用户指导应用和类型下的大数据推送标签 -->
+           <list name="List_Tag_Id_UserId_AppId_TagType_Default"
+                  sqlitem="select id from tb_tag where userId=? and appId=? and tagType = ? order by id desc"
+                  sqlType="hsql" keyProperty="userId,appId,tagType" valueProperty="id"/>
 		</object>
 		
 		<object name="com.ginkgocap.parasol.tags.model.TagSource" listenerClass="com.ginkgocap.ywxt.framework.dal.dao.listener.DefaultListener" strategyProperty="appId">
@@ -39,10 +43,14 @@
            <list name="List_Id_AppId_TagId"
                   sqlitem="select id from tb_tag_source where appId=? and tagId=?"
                   sqlType="hsql" keyProperty="appId,tagId" valueProperty="id"  update="true"/>
+                  
+		   <list name="List_Id_AppId_TagId_SourceType"
+                  sqlitem="select id from tb_tag_source where appId=? and tagId=? and sourceType=?"
+                  sqlType="hsql" keyProperty="appId,tagId,sourceType" valueProperty="id"  update="true"/>
 
-           <list name="List_Id_AppId_TagId_SourceType"
+           <list name="List_By_AppId_TagId_SourceType"
                   sqlitem="select id from tb_tag_source where appId=? and tagId=? and sourceType=? order by createAt desc"
-                  sqlType="hsql" valueProperty="id" keyProperty="appId,tagId,sourceType,start,size" update="true"/>
+                  sqlType="hsql" valueProperty="id" keyProperty="appId,tagId,sourceType" update="true"/>
 		</object>
 	</route>
 </dal>

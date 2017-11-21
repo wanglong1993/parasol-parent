@@ -3,6 +3,7 @@ package com.ginkgocap.parasol.file.web.jetty.autoconfig;
 import java.net.InetSocketAddress;
 import java.util.List;
 
+import javax.servlet.Filter;
 import javax.servlet.MultipartConfigElement;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +13,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.MultipartConfigFactory;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
@@ -26,6 +28,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.ginkgocap.parasol.file.web.jetty.web.filter.AppFilter;
 
 /**
  * 
@@ -125,4 +128,20 @@ public class WebConfig {
 		}
 		
 	}
+	
+	@Bean
+    public FilterRegistrationBean appFilterRegistration() {
+
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(appFilter());
+        registration.addUrlPatterns("/*");
+        registration.addInitParameter("excludedUrl", "/paramValue");
+        registration.setName("appFilter");
+        return registration;
+    }
+	
+	@Bean(name = "appFilter")
+    public Filter appFilter() {
+        return new AppFilter();
+    }
 }
