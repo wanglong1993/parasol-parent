@@ -29,17 +29,15 @@ public class AssociateShareController extends BaseControl {
 
     /**
      * 保存关联权限
-     * @param content
      * @param request
      * @return
      * @throws AssociateServiceException
      */
     @RequestMapping(path = {"/associate/associate/createAssociateShare"},method = RequestMethod.POST)
-    public InterfaceResult createAssociateShare(
-            @RequestParam(name = AssociateShareController.parameterContent,defaultValue = "") String content,
-            HttpServletRequest request) throws AssociateServiceException {
+    public InterfaceResult  createAssociateShare(HttpServletRequest request) throws AssociateServiceException {
         try {
-            if (content.equals("") || content == null)
+            String content = request.getParameter("content");
+            if (content == null || content.equals("") )
                 return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
             AssociateShare associateShare = new AssociateShare();
             associateShare.setContent(content);
@@ -63,6 +61,9 @@ public class AssociateShareController extends BaseControl {
             HttpServletRequest request
     ) {
         try {
+            if (shareId == 0) {
+                return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+            }
             String content = associateShareService.getAssociateShare(shareId);
             return InterfaceResult.getSuccessInterfaceResultInstance(content);
         } catch (Exception e) {
