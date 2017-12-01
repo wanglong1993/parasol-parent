@@ -354,5 +354,16 @@
 				<redis.port>6379</redis.port>
 			</properties>
 		</profile>
+		<profile>
+			<id>delivery</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<filters>
+					<filter>${sa.config.file}</filter>
+				</filters>
+			</build>
+		</profile>
 	</profiles>
 </project>
