@@ -62,7 +62,7 @@ public class AssociateShareController extends BaseControl {
     ) {
         try {
             if (shareId == 0) {
-                return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
+                return InterfaceResult.getSuccessInterfaceResultInstance("");
             }
             String content = associateShareService.getAssociateShare(shareId);
             return InterfaceResult.getSuccessInterfaceResultInstance(content);
