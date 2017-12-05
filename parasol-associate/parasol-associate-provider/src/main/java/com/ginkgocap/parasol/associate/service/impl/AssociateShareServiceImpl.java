@@ -24,6 +24,8 @@ public class AssociateShareServiceImpl extends BaseService<AssociateShare> imple
     @Override
     public String getAssociateShare(long id) {
         try {
+            if(id == 0)
+                return "";
             return this.getEntity(id).getContent();
         } catch (BaseServiceException e) {
             e.printStackTrace();
