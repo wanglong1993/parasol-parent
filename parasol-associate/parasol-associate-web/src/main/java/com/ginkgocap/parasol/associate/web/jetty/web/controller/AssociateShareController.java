@@ -37,8 +37,8 @@ public class AssociateShareController extends BaseControl {
     public InterfaceResult  createAssociateShare(HttpServletRequest request) throws AssociateServiceException {
         try {
             String content = request.getParameter("content");
-            if (content == null  ||  content.equals("") )
-                return InterfaceResult.getSuccessInterfaceResultInstance(0);
+            if (content == null)
+                return InterfaceResult.getSuccessInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION);
             AssociateShare associateShare = new AssociateShare();
             associateShare.setContent(content);
             long shareId = associateShareService.createAssociateShare(associateShare);
