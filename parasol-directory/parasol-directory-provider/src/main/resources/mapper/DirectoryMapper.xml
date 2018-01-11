@@ -14,7 +14,7 @@
     <result column="orderNo" property="orderNo" jdbcType="INTEGER" />
     <result column="typeId" property="typeId" jdbcType="BIGINT" />
     <result column="updateAt" property="updateAt" jdbcType="BIGINT" />
-    <result column="sourceCount" property="sourceCount" jdbcType="INTEGER" />
+    <result column="sourceCount" property="sourceCount"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, pid, appId, userId, name, nameIndex, nameIndexAll, remark, numberCode, orderNo, 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.*;
 
@@ -59,7 +60,8 @@ public class Directory implements Serializable {
 	private String remark; // 描述
 	private String numberCode; // 编码(存放三级，爷爷-父父-自己）
 	private long updateAt; // 更新时间
-	private int sourceCount = 0;
+	//private int sourceCount = 0;
+	private AtomicInteger sourceCount = new AtomicInteger(0);
 	// 不持久化
 	private List<Directory> childDirectory = null;// 子目录
 
@@ -196,17 +198,17 @@ public class Directory implements Serializable {
 	}
 
 	public int getSourceCount() {
-		return sourceCount;
+		return sourceCount.get() < 0 ? 0 : sourceCount.get();
 	}
 
 	public void setSourceCount(int sourceCount) {
-		this.sourceCount = sourceCount;
+		this.sourceCount.set(sourceCount);
 	}
 	public void addSourceCount(int sourceCount) {
-		this.sourceCount = sourceCount + 1;
+		this.sourceCount.incrementAndGet();
 	}
 	public void subtractSourceCount(int sourceCount) {
-		this.sourceCount = sourceCount - 1;
+		this.sourceCount.decrementAndGet();
 	}
 
 }
