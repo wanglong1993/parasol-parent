@@ -7,10 +7,11 @@ import com.ginkgocap.parasol.tags.service.SearchService;
 import com.ginkgocap.parasol.tags.service.TagService;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service("searchService")
 public class SearchServiceImpl implements SearchService{
 
 
