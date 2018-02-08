@@ -11,7 +11,7 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
      <typeAliases>
-         <typeAlias alias="customerAnnouncementRead" type="com.ginkgocap.parasol.tags.model.Tag" />
-         <typeAlias alias="memberSearchList" type="com.ginkgocap.parasol.tags.model.TagSource" />
+         <typeAlias alias="tag" type="com.ginkgocap.parasol.tags.model.Tag" />
+         <typeAlias alias="tagSource" type="com.ginkgocap.parasol.tags.model.TagSource" />
     </typeAliases>  
 </configuration>

@@ -278,7 +278,7 @@ public class TagSourceController extends BaseControl {
 	 * @param request
 	 * @return
 	 * @throws TagSourceServiceException
-	 * @throws CodeServiceException
+	 * @throws
 	 */
 	@RequestMapping(path = "/tags/source/deleteTagSource", method = { RequestMethod.GET, RequestMethod.DELETE})
 	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,

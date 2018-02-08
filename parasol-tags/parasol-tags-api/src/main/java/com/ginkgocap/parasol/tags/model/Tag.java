@@ -35,6 +35,7 @@ public class Tag implements Serializable {
 	private long appId; // '应用ID',
 	private long tagType;// tag的分类（比如是：知识、组织、人、图片）默认0',
 	private String tagName; // '标签名称',
+	private String firstIndex;
 
 	@Id
 	@GeneratedValue(generator = "TagId")
@@ -83,9 +84,15 @@ public class Tag implements Serializable {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
+	@Column(name = "firstIndex")
+	public String getFirstIndex() {
+		return firstIndex;
+	}
 
-	
-	
+	public void setFirstIndex(String firstIndex) {
+		this.firstIndex = firstIndex;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

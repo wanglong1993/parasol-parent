@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.ginkgocap.ywxt.util.PinyinUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -49,7 +50,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		ServiceError.assertPopertiesIsNullForTag("appId");
 		ServiceError.assertPopertiesIsNullForTag("tagName");
 		tag.setUserId(userId);
-
+		tag.setFirstIndex(PinyinUtils.stringToHeads(tag.getTagName()));
 		if (!ObjectUtils.equals(userId, tag.getUserId())) {
 			throw new TagServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own tag!");
 		}

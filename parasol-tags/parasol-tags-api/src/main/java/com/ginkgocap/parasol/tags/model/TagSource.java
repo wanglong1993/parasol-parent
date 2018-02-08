@@ -41,6 +41,7 @@ public class TagSource implements Serializable {
 	private long createAt; // '更新时间',
 
 	private String tagName; //不持久化
+	private String sourceExtra;
 	
 
 
@@ -127,7 +128,15 @@ public class TagSource implements Serializable {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
-	
+	@Column(name = "sourceExtra")
+	public String getSourceExtra() {
+		return sourceExtra;
+	}
+
+	public void setSourceExtra(String sourceExtra) {
+		this.sourceExtra = sourceExtra;
+	}
+
 	@Override
 	public String toString() {
 		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceTitle=" + sourceTitle + ", sourceType=" + sourceType + ", createAt="

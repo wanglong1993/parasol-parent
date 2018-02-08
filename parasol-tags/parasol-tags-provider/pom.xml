@@ -39,6 +39,16 @@
 			<artifactId>parasol-tags-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-util</artifactId>
+			<version>5.6.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.ywxt</groupId>
+			<artifactId>phoenix-util</artifactId>
+			<version>5.6.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
