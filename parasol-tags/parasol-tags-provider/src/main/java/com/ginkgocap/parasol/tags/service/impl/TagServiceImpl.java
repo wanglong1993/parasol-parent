@@ -3,6 +3,8 @@ package com.ginkgocap.parasol.tags.service.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ginkgocap.ywxt.util.PinyinUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -37,7 +39,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	private static final String LIST_TAG_ID_USERID_IDS = "List_Tag_Id_UserId_Ids";
 
 	private static final int MAX_TAG = 300; // 最多创建的标签数量
-	private static final int MAX_LEN_TAG = 30; // Tag的长度30个字符
+	private static final int MAX_LEN_TAG = 20; // Tag的长度30个字符
 
 	@Autowired
 	private TagSourceService tagSourceService;
@@ -50,7 +52,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		ServiceError.assertPopertiesIsNullForTag("appId");
 		ServiceError.assertPopertiesIsNullForTag("tagName");
 		tag.setUserId(userId);
-		tag.setFirstIndex(PinyinUtils.stringToHeads(tag.getTagName()));
+
 		if (!ObjectUtils.equals(userId, tag.getUserId())) {
 			throw new TagServiceException(ServiceError.ERROR_NOT_MYSELF, "Operation of the non own tag!");
 		}
@@ -59,11 +61,14 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		if (StringUtils.isBlank(tag.getTagName())) {
 			throw new TagServiceException(ServiceError.ERROR_TAG_NAME_IS_BLANK, "tagName must have value ");
 		}
+		String firstIndex = PinyinUtils.stringToHeads(tag.getTagName());
+		tag.setFirstIndex(firstIndex);
+		tag.setSortType(getSortType(firstIndex));
 
 		// 检查长度
-		/*if (StringUtils.length(tag.getTagName()) > MAX_LEN_TAG) {
+		if (StringUtils.length(tag.getTagName()) > MAX_LEN_TAG) {
 			throw new TagServiceException(ServiceError.ERROR_TAG_NAME_TOO_LENGTH, "tagName too length， max is " + MAX_LEN_TAG);
-		}*/
+		}
 
 		//tag.setTagName(tag.getTagName().replace(" ", "")); //replace tab blank , 有英文情况
 		int count = countTagsByUserIdAppidTagType(userId, tag.getAppId(), tag.getTagType());
@@ -87,6 +92,31 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 			e.printStackTrace(System.err);
 			throw new TagServiceException(e);
 		}
+	}
+
+	private  int getSortType(String nameindex){
+		int type=3;
+		if(StringUtils.isNotEmpty(nameindex)){
+			String index = nameindex.substring(0, 1);
+			if(checkLetters(index)){
+				type=1;
+			}else if(checksumNumber(index)){
+				type=2;
+			}
+		}
+		return type;
+	}
+
+	private  boolean checkLetters(String name){
+		String regex=".*[a-zA-Z]+.*";
+		Matcher m= Pattern.compile(regex).matcher(name);
+		return m.matches();
+	}
+
+	private  boolean checksumNumber(String name){
+		Pattern pattern = Pattern.compile("[0-9]*");
+		Matcher isNum = pattern.matcher(name);
+		return isNum.matches();
 	}
 
 	@Override
@@ -139,7 +169,9 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 		oldTag.setTagName(tag.getTagName());
 		//TagType must same with old
 		tag.setTagType(oldTag.getTagType());
-
+		String firstIndex = PinyinUtils.stringToHeads(tag.getTagName());
+		tag.setFirstIndex(firstIndex);
+		tag.setSortType(getSortType(firstIndex));
 		try {
 			this.updateEntity(tag);
 		} catch (BaseServiceException e) {

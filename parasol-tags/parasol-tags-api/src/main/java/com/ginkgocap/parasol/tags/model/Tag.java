@@ -36,6 +36,7 @@ public class Tag implements Serializable {
 	private long tagType;// tag的分类（比如是：知识、组织、人、图片）默认0',
 	private String tagName; // '标签名称',
 	private String firstIndex;
+	private int sortType; //1以字母开头1以数字开头3特殊字符开头
 
 	@Id
 	@GeneratedValue(generator = "TagId")
@@ -91,6 +92,15 @@ public class Tag implements Serializable {
 
 	public void setFirstIndex(String firstIndex) {
 		this.firstIndex = firstIndex;
+	}
+
+	@Column(name = "sortType")
+	public int getSortType() {
+		return sortType;
+	}
+
+	public void setSortType(int sortType) {
+		this.sortType = sortType;
 	}
 
 	@Override
