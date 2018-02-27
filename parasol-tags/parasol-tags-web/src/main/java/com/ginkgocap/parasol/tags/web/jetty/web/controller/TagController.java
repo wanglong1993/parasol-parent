@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ginkgocap.parasol.tags.model.Ids;
@@ -63,7 +64,7 @@ public class TagController extends BaseControl {
 	private static final String parameterTagType = "tagType";
 	private static final String parameterTagName = "tagName";
 
-	@Autowired
+	@Resource
 	private TagService tagService;
 
 	//@formatter:off

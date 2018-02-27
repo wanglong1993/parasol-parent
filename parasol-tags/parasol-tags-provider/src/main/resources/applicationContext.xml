@@ -35,5 +35,4 @@
 
 	<import resource="classpath:tags-dubbo-config.xml" />
 	<import resource="classpath:tags-dubbo-provider.xml" />
-	<import resource="classpath:tags-spring-config.xml"/>
 </beans>

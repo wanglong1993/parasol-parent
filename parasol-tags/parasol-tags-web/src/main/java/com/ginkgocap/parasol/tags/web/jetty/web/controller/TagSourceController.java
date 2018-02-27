@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -69,10 +69,10 @@ public class TagSourceController extends BaseControl {
 	private static final String parameterCount = "count";
 	private static final String parameterStart = "start";
 
-	@Autowired
-	private TagSourceService tagsSourceService;
+	@Resource
+	private TagSourceService tagSourceService;
 
-	@Autowired
+	@Resource
 	private KnowledgeService knowledgeService;
 
 	//@formatter:off
@@ -80,8 +80,6 @@ public class TagSourceController extends BaseControl {
 	 * 1. 查询一个资源下的标签
 	 * curl -i "http://localhost:8081/tags/source/getSourceList?appKey=1&userId=111&sourceId=1&sourceType=1"
 	 * @param request
-	 * @return
-	 * @throws
 	 */
 	@RequestMapping(path = "/tags/source/getSourceList", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceList(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
@@ -98,7 +96,7 @@ public class TagSourceController extends BaseControl {
 			Long loginUserId=this.getUserId(request);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdSourceIdSourceType(loginAppId, sourceId, sourceType);
+			List<TagSource> tagsTypes = tagSourceService.getTagSourcesByAppIdSourceIdSourceType(loginAppId, sourceId, sourceType);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
 			// 3.创建页面显示数据项的过滤器
@@ -118,7 +116,6 @@ public class TagSourceController extends BaseControl {
 	 * @param fileds
 	 * @param debug
 	 * @param tagId
-	 * @return
 	 */
 	@RequestMapping(path = "/tags/source/getSourceListByTag", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
@@ -136,7 +133,7 @@ public class TagSourceController extends BaseControl {
 			Long loginUserId=this.getUserId(request);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdTagId(loginAppId, tagId, start, count);
+			List<TagSource> tagsTypes = tagSourceService.getTagSourcesByAppIdTagId(loginAppId, tagId, start, count);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
 			// 3.创建页面显示数据项的过滤器
@@ -156,7 +153,6 @@ public class TagSourceController extends BaseControl {
 	 * @param fileds
 	 * @param debug
 	 * @param tagId
-	 * @return
 	 */
 	@RequestMapping(path = "/tags/source/getSourceListByTagAndType", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
@@ -175,7 +171,7 @@ public class TagSourceController extends BaseControl {
 			Long loginUserId=this.getUserId(request);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			List<TagSource> tagsTypes = tagsSourceService.getTagSourcesByAppIdTagIdAndType(loginAppId, tagId, sourceType, start, count);
+			List<TagSource> tagsTypes = tagSourceService.getTagSourcesByAppIdTagIdAndType(loginAppId, tagId, sourceType, start, count);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
 			// 3.创建页面显示数据项的过滤器
@@ -195,7 +191,6 @@ public class TagSourceController extends BaseControl {
 	 * @param fileds
 	 * @param debug
 	 * @param tagId
-	 * @return
 	 */
 	@RequestMapping(path = "/tags/source/getSourceCountByTag", method = { RequestMethod.GET })
 	public MappingJacksonValue getSourceCountByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
@@ -211,7 +206,7 @@ public class TagSourceController extends BaseControl {
 			Long loginUserId=this.getUserId(request);
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务
-			Integer resCount = tagsSourceService.countTagSourcesByAppIdTagId(loginAppId, tagId);
+			Integer resCount = tagSourceService.countTagSourcesByAppIdTagId(loginAppId, tagId);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resCount);
 			// 3.创建页面显示数据项的过滤器
@@ -232,9 +227,7 @@ public class TagSourceController extends BaseControl {
 	 * curl -i http://localhost:8081/tags/source/createTagSource -d "appKey=1&userId=111&tagId=3925085861971496&sourceId=1&sourceType=1"
 	 * 
 	 * @param request
-	 * @return
 	 * @throws TagSourceServiceException
-	 * @throws CodeServiceException
 	 */
 	@RequestMapping(path = "/tags/source/createTagSource", method = { RequestMethod.POST })
 	public MappingJacksonValue createTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
@@ -258,7 +251,7 @@ public class TagSourceController extends BaseControl {
 			source.setSourceTitle(sourceTitle);
 			source.setSourceType(sourceType);
 
-			Long id = tagsSourceService.createTagSource(source);
+			Long id = tagSourceService.createTagSource(source);
 			Map<String, Long> resultMap = new HashMap<String, Long>();
 			resultMap.put("id", id);
 			// 2.转成框架数据
@@ -276,9 +269,7 @@ public class TagSourceController extends BaseControl {
 	 * 2. 删除一个TagSource
 	 * curl -i "http://localhost:8081/tags/source/deleteTagSource?appKey=1&userId=111&id=3925349171986436"
 	 * @param request
-	 * @return
 	 * @throws TagSourceServiceException
-	 * @throws
 	 */
 	@RequestMapping(path = "/tags/source/deleteTagSource", method = { RequestMethod.GET, RequestMethod.DELETE})
 	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
@@ -291,7 +282,7 @@ public class TagSourceController extends BaseControl {
 		Long loginUserId=this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-			Boolean success = tagsSourceService.removeTagSource(loginAppId, loginUserId, id); // 服务验证Owner
+			Boolean success = tagSourceService.removeTagSource(loginAppId, loginUserId, id); // 服务验证Owner
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
@@ -340,7 +331,6 @@ public class TagSourceController extends BaseControl {
 
 	/**
 	 * 根据sourceId查询资源列表
-	 * @return
 	 */
 	@RequestMapping(path = "/tags/source/getSourceListBySourceId", method = { RequestMethod.GET })
 	public MappingJacksonValue  getSourceListBySourceId(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
@@ -375,7 +365,7 @@ public class TagSourceController extends BaseControl {
 			// 1.查询后台服务r
 			List<TagSource> tagSourceList = null;
 			try {
-				tagSourceList = tagsSourceService.getTagSourcesBySourceId(loginAppId,sourceId,sourceType);
+				tagSourceList = tagSourceService.getTagSourcesBySourceId(loginAppId,sourceId,sourceType);
 			} catch (Exception e) {
 				e.printStackTrace();
 				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION,"数据库操作失败！");
@@ -400,7 +390,6 @@ public class TagSourceController extends BaseControl {
 
 	/**
 	 * 批量更新标签
-	 * @return
 	 */
 	@RequestMapping(path = "/tags/source/updateTagSources", method = { RequestMethod.POST })
 	public MappingJacksonValue updateTagSources(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
@@ -455,7 +444,7 @@ public class TagSourceController extends BaseControl {
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceType不能为空！");
 					return new MappingJacksonValue(interfaceResult);
 				}
-				tagsSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle);
+				tagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle);
 			if (sourceType == 8) {
 					try {
 						knowledgeService.updateTag(loginUserId, sourceId, columnType, tagIds);
@@ -466,7 +455,7 @@ public class TagSourceController extends BaseControl {
 					}
 				}
 					try {
-						tagSourceList = tagsSourceService.getTagSourcesBySourceId(loginAppId, sourceId, sourceType);
+						tagSourceList = tagSourceService.getTagSourcesBySourceId(loginAppId, sourceId, sourceType);
 					} catch (Exception e) {
 						e.printStackTrace();
 						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION, "数据库操作失败！");
