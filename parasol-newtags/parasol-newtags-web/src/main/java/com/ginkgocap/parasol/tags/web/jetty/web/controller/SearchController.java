@@ -1,18 +1,15 @@
 package com.ginkgocap.parasol.tags.web.jetty.web.controller;
 
+import com.ginkgocap.parasol.tags.service.NewTagService;
 import com.ginkgocap.parasol.tags.service.NewTagSourceService;
 import com.ginkgocap.parasol.tags.service.SearchService;
-import com.ginkgocap.parasol.tags.service.TagService;
-import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.ywxt.user.model.User;
 import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
-import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -21,13 +18,13 @@ public class SearchController extends BaseControl{
 
     private static Logger logger = LoggerFactory.getLogger(SearchController.class);
 
-    @Autowired
-    private TagService tagService;
+    @Resource
+    private NewTagService newTagService;
 
-    @Autowired
+    @Resource
     private NewTagSourceService newTagSourceService ;
 
-    @Autowired
+    @Resource
     private SearchService searchService ;
 
 
@@ -39,7 +36,6 @@ public class SearchController extends BaseControl{
      * @param keyWord
      * @param index
      * @param size
-     * @return
      * @throws Exception
      */
     @RequestMapping(value="/tags/tags/searchTags/{type}/{sourceType}/{keyWord}/{index}/{size}",method = RequestMethod.POST)

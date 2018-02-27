@@ -15,6 +15,15 @@ public class Tag implements Serializable {
 	private long tagType;// tag的分类（比如是：知识、组织、人、图片）默认0',
 	private String tagName; // '标签名称',
 	private String firstIndex;
+	private int sortType;
+
+	public int getSortType() {
+		return sortType;
+	}
+
+	public void setSortType(int sortType) {
+		this.sortType = sortType;
+	}
 
 	public long getId() {
 		return id;

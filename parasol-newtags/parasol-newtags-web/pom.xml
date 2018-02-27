@@ -85,7 +85,7 @@
 		<!-- business -->
 		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
-			<artifactId>parasol-tags-api</artifactId>
+			<artifactId>parasol-newtags-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
