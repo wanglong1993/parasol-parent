@@ -137,10 +137,25 @@ public class TagSource implements Serializable {
 		this.sourceExtra = sourceExtra;
 	}
 
+//	@Override
+//	public String toString() {
+//		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceTitle=" + sourceTitle + ", sourceType=" + sourceType + ", createAt="
+//				+ createAt +",tagName="+tagName+"]";
+//	}
+
 	@Override
 	public String toString() {
-		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceTitle=" + sourceTitle + ", sourceType=" + sourceType + ", createAt="
-				+ createAt +",tagName="+tagName+"]";
+		return "TagSource{" +
+				"id=" + id +
+				", tagId=" + tagId +
+				", appId=" + appId +
+				", userId=" + userId +
+				", sourceId=" + sourceId +
+				", sourceTitle='" + sourceTitle + '\'' +
+				", sourceType=" + sourceType +
+				", createAt=" + createAt +
+				", tagName='" + tagName + '\'' +
+				", sourceExtra='" + sourceExtra + '\'' +
+				'}';
 	}
-
 }
