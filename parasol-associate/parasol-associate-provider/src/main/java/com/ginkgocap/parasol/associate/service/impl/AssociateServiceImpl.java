@@ -88,7 +88,8 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
                                     )
                                     ) {
                                 logger.error("the assocId[" + associate.getAssocId() + "] and assocType[" + associate.getAssocTypeId() + "]  already exists");
-                                throw new AssociateServiceException(ServiceError.ERROR_DUPLICATE, "the assocId[" + associate.getAssocId() + "] and assocType[" + associate.getAssocTypeId() + "]  already exists");
+//                                throw new AssociateServiceException(ServiceError.ERROR_DUPLICATE, "the assocId[" + associate.getAssocId() + "] and assocType[" + associate.getAssocTypeId() +
+                                return existAssoc.getId();
                             }
                         }
                     }
@@ -102,11 +103,16 @@ public class AssociateServiceImpl extends BaseService<Associate> implements Asso
             return (Long) this.saveEntity(associate);
         } catch (BaseServiceException e) {
             e.printStackTrace(System.err);
-            throw new AssociateServiceException(e);
+            String message=e.getMessage();
+//            if(message.indexOf("Duplicate entry")>=0){
+//                return 0l;
+//            }
+//            throw new AssociateServiceException(e);
+            return 0l;
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return 0l;
         }
+        return 0l;
     }
 
     @Override
