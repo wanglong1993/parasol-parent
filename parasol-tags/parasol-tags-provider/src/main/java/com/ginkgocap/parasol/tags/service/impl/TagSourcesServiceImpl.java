@@ -40,6 +40,8 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	private static final String LIST_BY_APPID_TAGID_SOURCETYPE = "List_By_AppId_TagId_SourceType";
 	private static final String DELETE_BY_APPID_SOURCEID_SOURCETYPE = "Delete_By_AppId_SourceId_SourceType";
 
+	private static final String TAGID_APPID_SOURCEID_SOURCETYPE = "TagId_AppId_SourceId_SourceType";
+
 	private static int MAX_TAG = 10; // 一个资源下最多创建的标签数
 
 	@Autowired
@@ -242,6 +244,25 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
 		try {
 			return this.getIds(LIST_ID_APPID_SOURCEID_SOURCETYPE, appId, sourceId, sourceType);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw new TagSourceServiceException(e);
+		}
+	}
+
+	@Override
+	public TagSource getByTIdSourceIdType(Long tagId, Long sourceId, Long sourceType) throws Exception{
+
+		ServiceError.assertTagSourceIdIsNullForTagSource(sourceId);
+		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
+		ServiceError.assertTagIdIsNull(tagId);
+		try {
+			List<TagSource> tagSources = this.getEntitys(TAGID_APPID_SOURCEID_SOURCETYPE, ServiceError.appId, tagId, sourceId, sourceType);
+			if (CollectionUtils.isNotEmpty(tagSources)) {
+				return tagSources.get(0);
+			}
+			logger.info("query tagSource is empty.. ");
+			return null;
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 			throw new TagSourceServiceException(e);
