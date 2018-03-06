@@ -26,6 +26,10 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.ginkgocap.parasol.tags.model.TagSearchVO;
+import com.ginkgocap.parasol.tags.model.TagSourceSearchVO;
+import com.ginkgocap.parasol.tags.service.NewTagService;
+import com.ginkgocap.parasol.tags.service.NewTagSourceService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,10 +72,14 @@ public class TagSourceController extends BaseControl {
 	private static final String parameterTagSourceId = "id";
 	private static final String parameterCount = "count";
 	private static final String parameterStart = "start";
+	private static final String parameterKeyword = "keyword";
 
 	@Resource
 	private TagSourceService tagSourceService;
-
+	@Resource
+	private NewTagSourceService newTagSourceService;
+	@Resource
+	private NewTagService newTagService;
 	@Resource
 	private KnowledgeService knowledgeService;
 
@@ -263,6 +271,7 @@ public class TagSourceController extends BaseControl {
 			throw e;
 		}
 	}
+
 
 	//@formatter:off
 	/**
@@ -477,4 +486,139 @@ public class TagSourceController extends BaseControl {
 			return new MappingJacksonValue(interfaceResult);
 		}
 	}
+
+
+	/**
+	 * 模块下标签的删除（只删除标签下当前模块的资源）
+	 * @param debug
+	 * @param tagsId
+	 * @param sourceType
+	 * @param request
+	 * @throws Exception
+	 */
+	@RequestMapping(path = "/tags/source/deleteModulTagSource", method = { RequestMethod.POST })
+	public MappingJacksonValue deleteModulTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+													@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagsId,
+													@RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+													HttpServletRequest request) throws Exception {
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
+		MappingJacksonValue mappingJacksonValue = null;
+		try {
+			boolean flag = newTagSourceService.deleteSourceByType(loginUserId, tagsId, sourceType);
+			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
+			resultMap.put("result", flag);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
+	}
+
+
+	/**
+	 * 查询标签下的资源（支持关键词检索）
+	 * @param debug
+	 * @param tagsId
+	 * @param sourceType
+	 * @param keyword
+	 * @param start
+	 * @param count
+	 * @param request
+	 * @throws Exception
+	 */
+	@RequestMapping(path = "/tags/source/selectTagSource", method = { RequestMethod.POST })
+	public MappingJacksonValue selectTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+													@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagsId,
+													@RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+											   		@RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
+											   		@RequestParam(name = TagSourceController.parameterStart, required = true) int start,
+											   		@RequestParam(name = TagSourceController.parameterCount, required = true) int count,
+													HttpServletRequest request) throws Exception {
+		Long loginAppId=this.DefaultAppId;
+		Long loginUserId=this.getUserId(request);
+		MappingJacksonValue mappingJacksonValue = null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<TagSource> tagSources = newTagSourceService.selectSourceByTagId(loginUserId, tagsId, sourceType, keyword, start, count);
+			long counts = newTagSourceService.countSourceByTagId(loginUserId, tagsId, sourceType, keyword);
+			resultMap.put("list", tagSources);
+			resultMap.put("count", counts);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
+	}
+
+	/**
+	 * 新的标签列表及标签搜索
+	 * @param debug
+	 * @param sourceType
+	 * @param keyword
+	 * @param start
+	 * @param count
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = "/tags/tags/selectTagList", method = { RequestMethod.POST })
+	public MappingJacksonValue selectTagList(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+											   @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+											   @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
+											   @RequestParam(name = TagSourceController.parameterStart, required = true) int start,
+											   @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
+											   HttpServletRequest request) throws Exception {
+		Long loginUserId=this.getUserId(request);
+		MappingJacksonValue mappingJacksonValue = null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<TagSearchVO> tags = newTagService.selectTagListByKeword(loginUserId, keyword, sourceType, start, count);
+			long counts = newTagService.countTagListByKeword(loginUserId, keyword);
+			resultMap.put("list", tags);
+			resultMap.put("count", counts);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
+	}
+
+	@RequestMapping(path = "/tags/source/searchSource", method = { RequestMethod.POST })
+	public MappingJacksonValue searchSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+											 @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+											 @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
+											 @RequestParam(name = TagSourceController.parameterStart, required = true) int start,
+											 @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
+											 HttpServletRequest request) throws Exception {
+		Long loginUserId=this.getUserId(request);
+		MappingJacksonValue mappingJacksonValue = null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<TagSourceSearchVO> tags = newTagSourceService.searchTagSources(loginUserId, keyword, sourceType, start, count);
+			long counts = newTagSourceService.countSourceByTagId(loginUserId,0,sourceType,keyword);
+			resultMap.put("list", tags);
+			resultMap.put("count", counts);
+			// 2.转成框架数据
+			mappingJacksonValue = new MappingJacksonValue(resultMap);
+			// 4.返回结果
+			return mappingJacksonValue;
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
+	}
+
+
+
+
 }

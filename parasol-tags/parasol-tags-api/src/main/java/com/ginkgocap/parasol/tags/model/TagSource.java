@@ -39,7 +39,6 @@ public class TagSource implements Serializable {
 	private String sourceTitle;// '资源标题'
 	private long sourceType; // '资源类型 知识、人脉',
 	private long createAt; // '更新时间',
-
 	private String tagName; //不持久化
 	private String sourceExtra;
 	

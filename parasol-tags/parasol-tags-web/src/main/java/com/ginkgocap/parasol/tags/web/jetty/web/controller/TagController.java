@@ -28,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ginkgocap.parasol.tags.model.Ids;
 import com.ginkgocap.parasol.tags.model.Page;
+import com.ginkgocap.parasol.tags.model.TagSearchVO;
+import com.ginkgocap.parasol.tags.service.NewTagService;
 import com.ginkgocap.parasol.util.Constants;
 import com.ginkgocap.parasol.util.JsonUtils;
 import com.gintong.frame.util.dto.CommonResultCode;
@@ -230,7 +232,7 @@ public class TagController extends BaseControl {
 			tag.setAppId(loginAppId);
 			tag.setUserId(loginUserId);
 			tag.setTagType(tagType);
-			tag.setTagName(tagName);
+			tag.setTagName(tagName.trim());
 
 			Long id = tagService.createTag(loginUserId, tag);
 			Map<String, Long> resultMap = new HashMap<String, Long>();
@@ -262,7 +264,7 @@ public class TagController extends BaseControl {
 	 * @return
 	 * @throws TagSourceServiceException
 	 */
-	@RequestMapping(path = "/tags/tags/updateTag", method = { RequestMethod.PUT })
+	@RequestMapping(path = "/tags/tags/updateTag", method = { RequestMethod.PUT, RequestMethod.POST})
 	public MappingJacksonValue updateTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagId, required = true) long tagId,
 			@RequestParam(name = TagController.parameterTagName, required = true) String tagName,

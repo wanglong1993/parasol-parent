@@ -12,5 +12,4 @@
 
 	<dubbo:service interface="com.ginkgocap.parasol.tags.service.NewTagSourceService" ref="newTagSourceService" version="2.0.0"/>
 	<dubbo:service interface="com.ginkgocap.parasol.tags.service.NewTagService" ref="newTagService" version="2.0.0"/>
-	<dubbo:service interface="com.ginkgocap.parasol.tags.service.SearchService" ref="searchService" version="2.0.0"/>
 </beans>

@@ -2,18 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ginkgocap.parasol.tags.mapper.TagSourcesDao">
 
-    <select id="searchTagSources"  resultType="tagSource">
-        select a.* from tb_tag_source a left join tb_tag b on a.userId = b.userId where 1=1
+    <delete id="deleteSourceByType" >
+        DELETE FROM tb_tag_source where userId=#{userId} AND sourceType = #{sourceType} AND tagId = #{tagId}
+    </delete>
+
+    <select id="selectSourceByTagId"  resultType="tagSource">
+        select * from tb_tag_source where 1=1
         <if test=" userId!=0 ">
-            and a.userId=#{userId}
+            and userId=#{userId}
         </if>
         <if test=" sourceType!=0 ">
-            and a.sourceType = #{sourceType}
+            and sourceType = #{sourceType}
         </if>
-        <if test=" keyWord!='' and keyWord!=null">
-            and a.sourceTitle LIKE concat(concat('%',#{keyWord}),'%')
+        <if test=" tagId!=0">
+            and tagId = #{tagId}
         </if>
-        order by a.createtime desc
+        <if test=' keyword!=null and keyword!="" '>
+            and sourceTitle LIKE concat(concat('%',#{keyWord}),'%')
+        </if>
+        order by createAt DESC
         limit #{index},#{size}
+    </select>
+
+    <select id="countSourceByTagId"  resultType="tagSource">
+        select COUNT(*) from tb_tag_source where 1=1
+        <if test=" userId!=0 ">
+            and userId=#{userId}
+        </if>
+        <if test=" sourceType!=0 ">
+            and sourceType = #{sourceType}
+        </if>
+        <if test=" tagId!=0">
+            and tagId = #{tagId}
+        </if>
+        <if test=' keyword!=null and keyword!="" '>
+            and sourceTitle LIKE concat(concat('%',#{keyWord}),'%')
+        </if>
     </select>
 </mapper>
