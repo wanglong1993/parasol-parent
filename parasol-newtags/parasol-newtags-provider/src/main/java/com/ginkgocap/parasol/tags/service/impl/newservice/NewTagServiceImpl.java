@@ -33,23 +33,23 @@ class NewTagServiceImpl implements NewTagService {
 			while (tagListIterator.hasNext()){
 				Tag next = tagListIterator.next();
 				TagSearchVO tagSearchVO = new TagSearchVO();
-				tagSearchVO.setTagId(next.getId());
+				tagSearchVO.setId(next.getId());
 				tagSearchVO.setUserId(next.getUserId());
 				tagSearchVO.setFirstName(next.getFirstIndex().substring(0,1));
 				tagSearchVO.setTagName(next.getTagName());
 				if(sourceType==0){
-					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,0,2,""));
-					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,0,3,""));
-					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,0,8,""));
-					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,0,7,""));
+					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),2,""));
+					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),3,""));
+					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),8,""));
+					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),7,""));
 				}else if(sourceType==2){
-					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,0,2,""));
+					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),2,""));
 				}else if(sourceType==3){
-					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,0,3,""));
+					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),3,""));
 				}else if(sourceType==7){
-					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,0,7,""));
+					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),7,""));
 				}else if(sourceType==8){
-					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,0,8,""));
+					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),8,""));
 				}
 				tagSearchVOs.add(tagSearchVO);
 			}

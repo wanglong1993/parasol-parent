@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TagSourcesDao {
 
-    public int deleteSourceByType(@Param("userId")long userId,@Param("tagId")long tagId,@Param("sourceType")int sourceType);
+    int deleteSourceByType(@Param("userId")long userId,@Param("tagId")long tagId,@Param("sourceType")int sourceType);
 
     List<TagSource> selectSourceByTagId(@Param("userId")long userId,@Param("tagId")long tagId,@Param("sourceType")int sourceType,@Param("keyword")String keyword,
                                         @Param("index")int index,@Param("size")int size);

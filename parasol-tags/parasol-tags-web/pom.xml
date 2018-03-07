@@ -90,6 +90,11 @@
 			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>com.gintong.common</groupId>
+			<artifactId>phoenix-permission-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>com.ginkgocap.ywxt</groupId>
 			<artifactId>phoenix-cache</artifactId>
 			<version>5.6.3</version>

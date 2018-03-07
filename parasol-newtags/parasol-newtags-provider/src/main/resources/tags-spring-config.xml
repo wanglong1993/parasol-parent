@@ -20,7 +20,7 @@
 	http://www.springframework.org/schema/data/jpa 
 	http://www.springframework.org/schema/data/jpa/spring-jpa-1.2.xsd">
 	
-	<context:component-scan base-package="com.ginkgocap.parasol.tags.service.impl.newservice">
+	<context:component-scan base-package="com.ginkgocap.parasol.tags">
 		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation" />
 	</context:component-scan>
 	<!-- Datasource -->
@@ -65,5 +65,10 @@
 		<property name="basePackage" value="com.ginkgocap.parasol.tags.mapper" />
 		<property name="sqlSessionFactoryBeanName" value="mybatisSqlSessionFactory" />
 	</bean>
-
+	<!-- 使用annotation定义事务 -->
+	<bean id="transactionManager"
+		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
 </beans>

@@ -7,7 +7,7 @@
     </delete>
 
     <select id="selectSourceByTagId"  resultType="tagSource">
-        select * from tb_tag_source where 1=1
+        select DISTINCT * from tb_tag_source where 1=1
         <if test=" userId!=0 ">
             and userId=#{userId}
         </if>
@@ -17,15 +17,15 @@
         <if test=" tagId!=0">
             and tagId = #{tagId}
         </if>
-        <if test=' keyword!=null and keyword!="" '>
-            and sourceTitle LIKE concat(concat('%',#{keyWord}),'%')
+        <if test=" keyword!=null and keyword!='' ">
+            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%');
         </if>
         order by createAt DESC
         limit #{index},#{size}
     </select>
 
-    <select id="countSourceByTagId"  resultType="tagSource">
-        select COUNT(*) from tb_tag_source where 1=1
+    <select id="countSourceByTagId"  resultType="long">
+        select DISTINCT COUNT(*) from tb_tag_source where 1=1
         <if test=" userId!=0 ">
             and userId=#{userId}
         </if>
@@ -35,8 +35,8 @@
         <if test=" tagId!=0">
             and tagId = #{tagId}
         </if>
-        <if test=' keyword!=null and keyword!="" '>
-            and sourceTitle LIKE concat(concat('%',#{keyWord}),'%')
+        <if test=" keyword!=null and keyword!='' ">
+            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%');
         </if>
     </select>
 </mapper>

@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class TagSearchVO implements Serializable {
 
-    private long tagId;// '标签ID'
+    private long id;// '标签ID'
     private long userId; // '用户ID',
     private String tagName; // '标签名称',
     private String firstName; //名字首字母
@@ -17,12 +17,12 @@ public class TagSearchVO implements Serializable {
     private long demandSourceCount=0;
     private long knowledgeSourceCount=0;
 
-    public long getTagId() {
-        return tagId;
+    public long getId() {
+        return id;
     }
 
-    public void setTagId(long tagId) {
-        this.tagId = tagId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getUserId() {

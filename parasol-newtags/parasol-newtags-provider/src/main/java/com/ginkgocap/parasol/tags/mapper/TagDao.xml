@@ -7,25 +7,25 @@
         <if test=" userId!=0 ">
             and userId=#{userId}
         </if>
-        <if test='keyWord!="" and keyWord!=null ' >
-            and tagName LIKE concat(concat('%',#{keyWord}),'%')
+        <if test='keyword!="" and keyword!=null ' >
+            and tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%')
         </if>
         order by sortType,firstIndex ASC
         limit #{index},#{size}
     </select>
 
     <select id="countTagListByKeword"  resultType="long">
-        select COUNT（*） from tb_tag where 1=1
+        select COUNT(*) from tb_tag where 1=1
         <if test=" userId!=0 ">
             and userId=#{userId}
         </if>
-        <if test='keyWord!="" and keyWord!=null ' >
-            and tagName LIKE concat(concat('%',#{keyWord}),'%')
+        <if test='keyword!="" and keyword!=null ' >
+            and tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%')
         </if>
     </select>
 
     <select id="selectTagBySourceId"  resultType="tag">
-        select * from tb_tag where userId=#{userId} id in (
+        select * from tb_tag where userId=#{userId} and id in (
         select tagId from tb_tag_source where userId = #{userId} and sourceId = #{sourceId} and sourceType=#{sourceType}
         )
     </select>
