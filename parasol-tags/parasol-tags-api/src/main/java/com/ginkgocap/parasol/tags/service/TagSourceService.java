@@ -140,4 +140,12 @@ public interface TagSourceService {
 
 	public boolean removeTagSourcesByTagIds(List<Long> ids) throws TagSourceServiceException;
 	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle) throws TagSourceServiceException;
+	/**
+	 * 获取标签资源 通过 tagId 资源 id 资源 type
+	 * @param tagId
+	 * @param sourceId
+	 * @param sourceType
+	 * @return
+	 */
+	TagSource getByTIdSourceIdType(Long tagId, Long sourceId, Long sourceType) throws Exception;
 }
