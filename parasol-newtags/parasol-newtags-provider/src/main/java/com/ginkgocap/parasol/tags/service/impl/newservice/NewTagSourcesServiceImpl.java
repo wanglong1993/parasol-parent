@@ -52,6 +52,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 						tagList.add(next1);
 					}
 				}
+				tagSourceSearchVO.setCreateUserId(next.getUserId());
 				tagSourceSearchVO.setSourceTagList(tagList);
 				tagSourceSearchVOList.add(tagSourceSearchVO);
 			}

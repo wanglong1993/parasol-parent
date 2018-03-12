@@ -14,6 +14,7 @@ public class TagSourceSearchVO implements Serializable {
     private long createAt; // '更新时间',
     private String sourceExtra;
     private List<Tag> sourceTagList;
+    private long createUserId; // 创建者 id
 
     public String getSourceExtra() {
         return sourceExtra;
@@ -61,5 +62,13 @@ public class TagSourceSearchVO implements Serializable {
 
     public void setSourceTagList(List<Tag> sourceTagList) {
         this.sourceTagList = sourceTagList;
+    }
+
+    public long getCreateUserId() {
+        return createUserId;
+    }
+
+    public void setCreateUserId(long createUserId) {
+        this.createUserId = createUserId;
     }
 }
