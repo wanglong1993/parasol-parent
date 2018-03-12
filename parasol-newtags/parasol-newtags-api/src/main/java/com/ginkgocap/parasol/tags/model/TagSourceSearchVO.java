@@ -4,71 +4,26 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by Lenovo on 2018/2/28.
+ * Created by Lenovo on 2018/3/7.
  */
-public class TagSourceSearchVO implements Serializable {
+public class TagSourceSearchVO extends TagSearchVO implements Serializable {
 
-    private long sourceId; // '资源ID',
-    private String sourceTitle;// '资源标题'
-    private long sourceType; // 资源类型 2人脉3客户7需求8知识,
-    private long createAt; // '更新时间',
-    private String sourceExtra;
-    private List<Tag> sourceTagList;
-    private long createUserId; // 创建者 id
+    private long totalcount;
+    List<SourceSearchVO> sourceList;
 
-    public String getSourceExtra() {
-        return sourceExtra;
+    public long getTotalcount() {
+        return totalcount;
     }
 
-    public void setSourceExtra(String sourceExtra) {
-        this.sourceExtra = sourceExtra;
+    public void setTotalcount(long totalcount) {
+        this.totalcount = totalcount;
     }
 
-    public long getSourceId() {
-        return sourceId;
+    public List<SourceSearchVO> getSourceList() {
+        return sourceList;
     }
 
-    public void setSourceId(long sourceId) {
-        this.sourceId = sourceId;
-    }
-
-    public String getSourceTitle() {
-        return sourceTitle;
-    }
-
-    public void setSourceTitle(String sourceTitle) {
-        this.sourceTitle = sourceTitle;
-    }
-
-    public long getSourceType() {
-        return sourceType;
-    }
-
-    public void setSourceType(long sourceType) {
-        this.sourceType = sourceType;
-    }
-
-    public long getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(long createAt) {
-        this.createAt = createAt;
-    }
-
-    public List<Tag> getSourceTagList() {
-        return sourceTagList;
-    }
-
-    public void setSourceTagList(List<Tag> sourceTagList) {
-        this.sourceTagList = sourceTagList;
-    }
-
-    public long getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(long createUserId) {
-        this.createUserId = createUserId;
+    public void setSourceList(List<SourceSearchVO> sourceList) {
+        this.sourceList = sourceList;
     }
 }

@@ -5,8 +5,9 @@ import com.ginkgocap.parasol.tags.mapper.TagDao;
 import com.ginkgocap.parasol.tags.mapper.TagSourcesDao;
 import com.ginkgocap.parasol.tags.model.Tag;
 import com.ginkgocap.parasol.tags.model.TagSource;
-import com.ginkgocap.parasol.tags.model.TagSourceSearchVO;
+import com.ginkgocap.parasol.tags.model.SourceSearchVO;
 import com.ginkgocap.parasol.tags.service.NewTagSourceService;
+import com.ginkgocap.parasol.tags.utils.GetId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,49 +31,92 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 
 
 	@Override
-	public List<TagSourceSearchVO> searchTagSources(long userId, long tagId,String keyWord, int sourceType, int index, int size) {
-		List<TagSourceSearchVO> tagSourceSearchVOList = new ArrayList<TagSourceSearchVO>();
+	public List<SourceSearchVO> searchTagSources(long userId, long tagId, String keyWord, int sourceType, int index, int size) {
+		List<SourceSearchVO> sourceSearchVOList = new ArrayList<SourceSearchVO>();
 		List<TagSource> tagSourceList= tagSourcesDao.selectSourceByTagId(userId,tagId,sourceType,keyWord,index*size,size);
 		if(tagSourceList!=null && tagSourceList.size()>0){
 			ListIterator<TagSource> tagSourceListIterator = tagSourceList.listIterator();
 			while (tagSourceListIterator.hasNext()){
 				TagSource next = tagSourceListIterator.next();
-				TagSourceSearchVO tagSourceSearchVO = new TagSourceSearchVO();
+				SourceSearchVO tagSourceSearchVO = new SourceSearchVO();
 				tagSourceSearchVO.setCreateAt(next.getCreateAt());
 				tagSourceSearchVO.setSourceExtra(next.getSourceExtra());
 				tagSourceSearchVO.setSourceId(next.getSourceId());
 				tagSourceSearchVO.setSourceTitle(next.getSourceTitle());
 				tagSourceSearchVO.setSourceType(next.getSourceType());
 				List<Tag> tags = tagDao.selectTagBySourceId(userId, next.getSourceId(), next.getSourceType());
-				List<Tag> tagList=new ArrayList<Tag>();
-				if(tags!=null && tags.size()>0){
-					ListIterator<Tag> tagListIterator = tags.listIterator();
-					while (tagListIterator.hasNext()){
-						Tag next1 = tagListIterator.next();
-						tagList.add(next1);
-					}
-				}
+				tagSourceSearchVO.setSourceTagList(tags);
 				tagSourceSearchVO.setCreateUserId(next.getUserId());
-				tagSourceSearchVO.setSourceTagList(tagList);
-				tagSourceSearchVOList.add(tagSourceSearchVO);
+				sourceSearchVOList.add(tagSourceSearchVO);
 			}
 		}
-		return tagSourceSearchVOList;
+		return sourceSearchVOList;
 	}
 
 	@Override
 	public boolean deleteSourceByType(long userId, long tagId, int sourceType) {
 		logger.info("删除标签下的资源：userId="+userId+"**tagId"+tagId+"**sourceType"+sourceType);
-		boolean flag = false;
-		int i = tagSourcesDao.deleteSourceByType(userId, tagId, sourceType);
-		if(i>0){
-			flag=true;
+		boolean flag = true;
+		try {
+			tagSourcesDao.deleteSourceByType(userId, tagId, sourceType);
+		}catch (Exception e){
+			e.printStackTrace();
+			flag=false;
 		}
 		return flag;
 	}
 
 	@Override
 	public long countSourceByTagId(long userId, long tagId, int sourceType, String keyword) {
-		return tagSourcesDao.countSourceByTagId(userId,tagId,sourceType,keyword);
+		Long aLong = tagSourcesDao.countSourceByTagId(userId, tagId, sourceType, keyword);
+		if(aLong==null){
+			aLong=0l;
+		}
+		return aLong;
+	}
+
+	@Override
+	public List<SourceSearchVO> searchSourcesExctTag(long userId, String keyWord,int sourceType) {
+		List<SourceSearchVO> sourceSearchVOList = new ArrayList<SourceSearchVO>();
+		List<TagSource> tagSourceList= tagSourcesDao.searchSourcesExctTag(userId,keyWord,sourceType);
+		if(tagSourceList!=null && tagSourceList.size()>0){
+			ListIterator<TagSource> tagSourceListIterator = tagSourceList.listIterator();
+			while (tagSourceListIterator.hasNext()){
+				TagSource next = tagSourceListIterator.next();
+				SourceSearchVO tagSourceSearchVO = new SourceSearchVO();
+				tagSourceSearchVO.setCreateAt(next.getCreateAt());
+				tagSourceSearchVO.setSourceExtra(next.getSourceExtra());
+				tagSourceSearchVO.setSourceId(next.getSourceId());
+				tagSourceSearchVO.setSourceTitle(next.getSourceTitle());
+				tagSourceSearchVO.setSourceType(next.getSourceType());
+				List<Tag> tags = tagDao.selectTagBySourceId(userId, next.getSourceId(), next.getSourceType());
+				tagSourceSearchVO.setSourceTagList(tags);
+				sourceSearchVOList.add(tagSourceSearchVO);
+			}
+		}
+		return sourceSearchVOList;
+	}
+
+	@Override
+	public boolean updateSourceByTagId(long userId, long tagId, int sourceType, List<TagSource> tagSourceList) {
+		boolean flag=true;
+		try {
+			if (tagSourceList!=null && tagSourceList.size()>0){
+				ListIterator<TagSource> tagSourceListIterator = tagSourceList.listIterator();
+				while (tagSourceListIterator.hasNext()){
+					TagSource next = tagSourceListIterator.next();
+					next.setUserId(userId);
+					next.setTagId(tagId);
+					next.setAppId(1);
+					next.setId(GetId.getId());
+					next.setCreateAt(System.currentTimeMillis());
+					tagSourcesDao.insertSource(next);
+				}
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			flag=false;
+		}
+		return flag;
 	}
 }

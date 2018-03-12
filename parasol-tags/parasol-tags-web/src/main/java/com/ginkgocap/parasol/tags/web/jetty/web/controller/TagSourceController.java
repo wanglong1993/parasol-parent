@@ -26,24 +26,18 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import com.ginkgocap.parasol.tags.model.TagSearchVO;
-import com.ginkgocap.parasol.tags.model.TagSourceSearchVO;
+import com.ginkgocap.parasol.tags.model.*;
 import com.ginkgocap.parasol.tags.service.NewTagService;
 import com.ginkgocap.parasol.tags.service.NewTagSourceService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.ginkgocap.parasol.tags.exception.TagSourceServiceException;
-import com.ginkgocap.parasol.tags.model.Property;
-import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.service.TagSourceService;
 import com.ginkgocap.parasol.util.JsonUtils;
 import com.ginkgocap.ywxt.knowledge.service.KnowledgeService;
@@ -545,7 +539,7 @@ public class TagSourceController extends BaseControl {
 			List<TagSearchVO> tags = newTagService.selectTagListByKeword(loginUserId, keyword, sourceType, start, count);
 			long counts = newTagService.countTagListByKeword(loginUserId, keyword);
 			resultMap.put("list", tags);
-			resultMap.put("count", counts);
+			resultMap.put("totalcount", counts);
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
@@ -555,6 +549,41 @@ public class TagSourceController extends BaseControl {
 			throw e;
 		}
 	}
+
+	/**
+	 * 搜索资源
+	 * @param debug
+	 * @param sourceType
+	 * @param keyword
+	 * @param start
+	 * @param count
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = "/tags/source/searchSource", method = { RequestMethod.POST })
+	public String searchSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+										   @RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
+										   @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+										   @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
+										   @RequestParam(name = TagSourceController.parameterStart, required = true) int start,
+										   @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
+										   HttpServletRequest request) throws Exception {
+		Long loginUserId=this.getUserId(request);
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			logger.info("全局搜索资源:**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
+			List<SourceSearchVO> tags = newTagSourceService.searchTagSources(loginUserId,tagId,keyword,sourceType,start,count);
+			long counts = newTagSourceService.countSourceByTagId(loginUserId,tagId,sourceType,keyword);
+			resultMap.put("list", tags);
+			resultMap.put("totalcount", counts);
+			return JsonUtils.beanToJson(resultMap);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw e;
+		}
+	}
+
 
 	/**
 	 * 全局搜索资源
@@ -567,31 +596,71 @@ public class TagSourceController extends BaseControl {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(path = "/tags/source/searchSource", method = { RequestMethod.POST })
-	public MappingJacksonValue searchSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
-											@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
-											 @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
-											 @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
-											 @RequestParam(name = TagSourceController.parameterStart, required = true) int start,
-											 @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
-											 HttpServletRequest request) throws Exception {
+	@RequestMapping(path = "/tags/source/searchTagSourceList", method = { RequestMethod.POST })
+	public String searchTagSourceList(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+									  @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+									  @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
+									  @RequestParam(name = TagSourceController.parameterStart, required = true) int start,
+							  		  @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
+									  HttpServletRequest request) throws Exception {
 		Long loginUserId=this.getUserId(request);
-		MappingJacksonValue mappingJacksonValue = null;
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			logger.info("全局搜索资源:**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
-			List<TagSourceSearchVO> tags = newTagSourceService.searchTagSources(loginUserId,tagId,keyword,sourceType,start,count);
-			long counts = newTagSourceService.countSourceByTagId(loginUserId,tagId,sourceType,keyword);
+			List<TagSourceSearchVO> tags = newTagService.selectTagSourceList(loginUserId, keyword, sourceType, start, count);
+			long counts = newTagService.countTagListByKeword(loginUserId,keyword);
 			resultMap.put("list", tags);
-			resultMap.put("count", counts);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			// 4.返回结果
-			return mappingJacksonValue;
+			resultMap.put("totalcount", counts);
+			if(tags==null || tags.size()==0){
+				resultMap.put("sourceList", newTagSourceService.searchSourcesExctTag(loginUserId,keyword,sourceType));
+			}else {
+				resultMap.put("sourceList", null);
+			}
+			return JsonUtils.beanToJson(resultMap);
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 			throw e;
 		}
 	}
 
+	/**
+	 * 更改或新增标签资源
+	 * @param debug
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = "/tags/source/addTagSource", method = { RequestMethod.POST })
+	public String addTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+									  HttpServletRequest request) throws Exception {
+		String requestJson = null;
+		InterfaceResult interfaceResult=null;
+		List<TagSource> tagSourceList = null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			Long loginUserId = this.getUserId(request);
+			if(loginUserId==null){
+				logger.error("userId is null");
+				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+				return JsonUtils.beanToJson(interfaceResult);
+			}
+			requestJson = this.getBodyParam(request);
+			if (requestJson != null && !"".equals(requestJson)) {
+				JSONObject j = JSONObject.fromObject(requestJson);
+				Long tagId = j.getLong("tagId");
+				int sourceType = j.getInt("sourceType");
+				tagSourceList = JsonUtils.getList4Json(j.getString("tagSourceList"), TagSource.class);
+				boolean b = newTagSourceService.deleteSourceByType(loginUserId, tagId, sourceType);
+				logger.info("更新前删除老资源结果："+b);
+				logger.info("客户端出入的资源列表：json="+JsonUtils.beanToJson(tagSourceList));
+				boolean b1 = newTagSourceService.updateSourceByTagId(loginUserId, tagId, sourceType, tagSourceList);
+				resultMap.put("result",b1);
+			}
+			return JsonUtils.beanToJson(resultMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION,"更新标签资源失败！");
+			return JsonUtils.beanToJson(interfaceResult);
+		}
+	}
 }

@@ -3,11 +3,14 @@
 <mapper namespace="com.ginkgocap.parasol.tags.mapper.TagSourcesDao">
 
     <delete id="deleteSourceByType" >
-        DELETE FROM tb_tag_source where userId=#{userId} AND sourceType = #{sourceType} AND tagId = #{tagId}
+        DELETE FROM tb_tag_source where userId=#{userId} AND tagId = #{tagId}
+        <if test=" sourceType!=0 ">
+            and sourceType = #{sourceType}
+        </if>
     </delete>
 
     <select id="selectSourceByTagId"  resultType="tagSource">
-        select DISTINCT * from tb_tag_source where 1=1
+        select * from tb_tag_source where 1=1
         <if test=" userId!=0 ">
             and userId=#{userId}
         </if>
@@ -18,14 +21,15 @@
             and tagId = #{tagId}
         </if>
         <if test=" keyword!=null and keyword!='' ">
-            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%');
+            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
         </if>
+        GROUP BY sourceId,sourceType
         order by createAt DESC
         limit #{index},#{size}
     </select>
 
-    <select id="countSourceByTagId"  resultType="long">
-        select DISTINCT COUNT(*) from tb_tag_source where 1=1
+    <select id="countSourceByTagId"  resultType="java.lang.Long">
+        SELECT COUNT(*) from tb_tag_source where 1=1
         <if test=" userId!=0 ">
             and userId=#{userId}
         </if>
@@ -36,7 +40,32 @@
             and tagId = #{tagId}
         </if>
         <if test=" keyword!=null and keyword!='' ">
-            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%');
+            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
         </if>
+--         GROUP BY sourceId,sourceType
     </select>
+
+    <select id="searchSourcesExctTag"  resultType="tagSource">
+        select * from tb_tag_source where 1=1
+        <if test=" userId!=0 ">
+            and userId=#{userId}
+        </if>
+        <if test=" sourceType!=0 ">
+            and sourceType = #{sourceType}
+        </if>
+        <if test=" keyword!=null and keyword!='' ">
+            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+        </if>
+        and tagId not IN (
+             SELECT id FROM tb_tag where userId=#{userId} and tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+        )
+        GROUP BY sourceId,sourceType
+        order by createAt DESC
+    </select>
+
+    <insert id="insertSource" parameterType="tagSource">
+        INSERT INTO tb_tag_source (id,tagId,appId,userId,sourceId,sourceType,createAt,sourceTitle,sourceExtra)
+        VALUES (#{id},#{tagId},#{appId},#{userId},#{sourceId},#{sourceType},#{createAt},#{sourceTitle},#{sourceExtra})
+    </insert>
+
 </mapper>

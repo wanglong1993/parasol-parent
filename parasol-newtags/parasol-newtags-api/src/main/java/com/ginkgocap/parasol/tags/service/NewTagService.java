@@ -2,6 +2,7 @@ package com.ginkgocap.parasol.tags.service;
 
 import com.ginkgocap.parasol.tags.model.Tag;
 import com.ginkgocap.parasol.tags.model.TagSearchVO;
+import com.ginkgocap.parasol.tags.model.TagSourceSearchVO;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ public interface NewTagService {
     public long  countTagListByKeword(long userId,String keyword);
 
     public List<Tag> selectTagBySourceId(long userId,long sourceId,long sourceType);
+
+    public List<TagSourceSearchVO> selectTagSourceList(long userId, String keyword, int sourceType, int index, int size);
 }
