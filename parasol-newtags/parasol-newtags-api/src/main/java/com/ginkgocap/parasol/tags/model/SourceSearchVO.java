@@ -23,6 +23,15 @@ public class SourceSearchVO implements Serializable {
     private List<Tag> sourceTagList;
     private long createUserId; // 创建者 id
     private long sourceColumnType;
+    private int supDem;//需求供需0供1需
+
+    public int getSupDem() {
+        return supDem;
+    }
+
+    public void setSupDem(int supDem) {
+        this.supDem = supDem;
+    }
 
     public long getSourceColumnType() {
         return sourceColumnType;

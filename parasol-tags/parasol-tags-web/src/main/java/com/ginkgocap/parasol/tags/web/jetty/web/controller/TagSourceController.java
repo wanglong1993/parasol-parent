@@ -423,6 +423,10 @@ public class TagSourceController extends BaseControl {
 						return new MappingJacksonValue(interfaceResult);
 					}
 				}
+				int supDem=0;
+				if(j.containsKey("supDem")){
+					supDem=j.getInt("supDem");
+				}
 				tags = JsonUtils.getList4Json(j.getString("tags"), Property.class);
 				if (tags != null) {
 					for (Property property : tags) {
@@ -444,7 +448,7 @@ public class TagSourceController extends BaseControl {
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceType不能为空！");
 					return new MappingJacksonValue(interfaceResult);
 				}
-				tagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle,columnType);
+				tagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle,columnType,supDem);
 			if (sourceType == 8) {
 					try {
 						knowledgeService.updateTag(loginUserId, sourceId, columnType, tagIds);

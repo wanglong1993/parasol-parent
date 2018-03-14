@@ -8,6 +8,7 @@ import com.ginkgocap.parasol.tags.model.TagSource;
 import com.ginkgocap.parasol.tags.model.SourceSearchVO;
 import com.ginkgocap.parasol.tags.service.NewTagSourceService;
 import com.ginkgocap.parasol.tags.utils.GetId;
+import net.sf.json.util.JSONUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 
 	@Override
 	public List<SourceSearchVO> searchTagSources(long userId, long tagId, String keyWord, int sourceType, int index, int size) {
+		logger.info("查询资源查询列表参数：userId="+ userId+"**tagId="+tagId+"**keyWord"+keyWord+"**sourceType="+sourceType);
 		List<SourceSearchVO> sourceSearchVOList = new ArrayList<SourceSearchVO>();
 		List<TagSource> tagSourceList= tagSourcesDao.selectSourceByTagId(userId,tagId,sourceType,keyWord,index*size,size);
 		if(tagSourceList!=null && tagSourceList.size()>0){
@@ -48,6 +50,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 				tagSourceSearchVO.setSourceTagList(tags);
 				tagSourceSearchVO.setCreateUserId(next.getUserId());
 				tagSourceSearchVO.setSourceColumnType(next.getSourceColumnType());
+				tagSourceSearchVO.setSupDem(next.getSupDem());
 				sourceSearchVOList.add(tagSourceSearchVO);
 			}
 		}
@@ -69,11 +72,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 
 	@Override
 	public long countSourceByTagId(long userId, long tagId, int sourceType, String keyword) {
-		Long aLong = tagSourcesDao.countSourceByTagId(userId, tagId, sourceType, keyword);
-		if(aLong==null){
-			aLong=0l;
-		}
-		return aLong;
+		return tagSourcesDao.countSourceByTagId(userId, tagId, sourceType, keyword);
 	}
 
 	@Override
@@ -93,6 +92,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 				List<Tag> tags = tagDao.selectTagBySourceId(userId, next.getSourceId(), next.getSourceType());
 				tagSourceSearchVO.setSourceTagList(tags);
 				tagSourceSearchVO.setSourceColumnType(next.getSourceColumnType());
+				tagSourceSearchVO.setSupDem(next.getSupDem());
 				sourceSearchVOList.add(tagSourceSearchVO);
 			}
 		}

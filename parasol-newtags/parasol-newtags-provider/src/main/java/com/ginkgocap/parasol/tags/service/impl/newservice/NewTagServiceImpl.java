@@ -97,6 +97,7 @@ class NewTagServiceImpl implements NewTagService {
 						List<Tag> tags = tagDao.selectTagBySourceId(userId, sourcenext.getSourceId(), sourcenext.getSourceType());
 						sourceSearchVO.setSourceTagList(tags);
 						sourceSearchVO.setSourceColumnType(sourcenext.getSourceColumnType());
+						sourceSearchVO.setSupDem(sourcenext.getSupDem());
 						if(sourcenext.getSourceType()==2){
 							personcount++;
 						}else if(sourcenext.getSourceType()==3){

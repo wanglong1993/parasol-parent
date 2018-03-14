@@ -42,6 +42,7 @@ public class TagSource implements Serializable {
 	private String tagName; //不持久化
 	private long sourceColumnType;
 	private String sourceExtra;
+	private int supDem;//需求供需0供1需
 	
 
 
@@ -55,6 +56,15 @@ public class TagSource implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	@Column(name = "supDem")
+	public int getSupDem() {
+		return supDem;
+	}
+
+	public void setSupDem(int supDem) {
+		this.supDem = supDem;
 	}
 
 	@Column(name = "tagId")

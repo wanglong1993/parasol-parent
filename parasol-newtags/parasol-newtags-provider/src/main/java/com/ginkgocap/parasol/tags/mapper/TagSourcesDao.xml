@@ -28,16 +28,10 @@
         limit #{index},#{size}
     </select>
 
-    <select id="countSourceByTagId"  resultType="java.lang.Long">
-        SELECT COUNT(*) from tb_tag_source where 1=1
-        <if test=" userId!=0 ">
-            and userId=#{userId}
-        </if>
+    <select id="countSourceByTagId"  resultType="long">
+        SELECT COUNT(*) from tb_tag_source WHERE userId=#{userId}
         AND id IN (
-            select id from tb_tag_source where 1=1
-            <if test=" userId!=0 ">
-                and userId=#{userId}
-            </if>
+            select id from tb_tag_source where userId=#{userId}
             <if test=" sourceType!=0 ">
                 and sourceType = #{sourceType}
             </if>
@@ -70,8 +64,8 @@
     </select>
 
     <insert id="insertSource" parameterType="tagSource">
-        INSERT INTO tb_tag_source (id,tagId,appId,userId,sourceId,sourceType,createAt,sourceTitle,sourceExtra,sourceColumnType)
-        VALUES (#{id},#{tagId},#{appId},#{userId},#{sourceId},#{sourceType},#{createAt},#{sourceTitle},#{sourceExtra},,#{sourceColumnType})
+        INSERT INTO tb_tag_source (id,tagId,appId,userId,sourceId,sourceType,createAt,sourceTitle,sourceExtra,sourceColumnType,supDem)
+        VALUES (#{id},#{tagId},#{appId},#{userId},#{sourceId},#{sourceType},#{createAt},#{sourceTitle},#{sourceExtra},#{sourceColumnType},#{supDem})
     </insert>
 
 </mapper>

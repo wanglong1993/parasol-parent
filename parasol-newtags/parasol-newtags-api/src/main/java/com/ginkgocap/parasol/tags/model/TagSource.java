@@ -21,6 +21,16 @@ public class TagSource implements Serializable {
 	private String sourceExtra;
 	private long sourceColumnType=0;
 
+	private int supDem;//需求供需0供1需
+
+	public int getSupDem() {
+		return supDem;
+	}
+
+	public void setSupDem(int supDem) {
+		this.supDem = supDem;
+	}
+
 	public long getSourceColumnType() {
 		return sourceColumnType;
 	}

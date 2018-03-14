@@ -139,7 +139,7 @@ public interface TagSourceService {
 	public List<Long> getTagIdsBySourceId(Long appId, Long sourceId, Long sourceType) throws Exception;
 
 	public boolean removeTagSourcesByTagIds(List<Long> ids) throws TagSourceServiceException;
-	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle,long columnType) throws TagSourceServiceException;
+	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle,long columnType,int supDem) throws TagSourceServiceException;
 	/**
 	 * 获取标签资源 通过 tagId 资源 id 资源 type
 	 * @param tagId
