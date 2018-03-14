@@ -30,7 +30,6 @@ import org.springframework.context.annotation.ImportResource;
 public class ParasolTagApplication{
 
 	public static void main(String[] args) throws Exception {
-		
 		//SpringApplication.run(SampleJettyApplication.class, args);
 		SpringApplication.run(ParasolTagApplication.class, args);
 //		SpringApplication.run(new Object[]{"classpath:/applicationContext.xml"}, args);
