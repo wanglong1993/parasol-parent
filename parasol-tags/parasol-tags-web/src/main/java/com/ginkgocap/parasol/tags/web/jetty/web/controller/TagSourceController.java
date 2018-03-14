@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ginkgocap.parasol.tags.model.*;
 import com.ginkgocap.parasol.tags.service.NewTagService;
 import com.ginkgocap.parasol.tags.service.NewTagSourceService;
+import com.ginkgocap.parasol.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -447,7 +448,7 @@ public class TagSourceController extends BaseControl {
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceType不能为空！");
 					return new MappingJacksonValue(interfaceResult);
 				}
-				tagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle);
+				tagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle,columnType);
 			if (sourceType == 8) {
 					try {
 						knowledgeService.updateTag(loginUserId, sourceId, columnType, tagIds);
@@ -491,24 +492,19 @@ public class TagSourceController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = "/tags/source/deleteModulTagSource", method = { RequestMethod.POST})
-	public MappingJacksonValue deleteModulTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+	public InterfaceResult deleteModulTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 													@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 													@RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
 													HttpServletRequest request) throws Exception {
-		Long loginAppId=this.DefaultAppId;
 		Long loginUserId=this.getUserId(request);
-		MappingJacksonValue mappingJacksonValue = null;
+		Map<String, Boolean> responseDataMap = new HashMap<String, Boolean>();
 		try {
 			boolean flag = newTagSourceService.deleteSourceByType(loginUserId, tagId, sourceType);
-			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-			resultMap.put("result", flag);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			// 4.返回结果
-			return mappingJacksonValue;
+			responseDataMap.put("result", flag);
+			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
-			throw e;
+			return InterfaceResult.getInterfaceResultInstance("0002","系统异常");
 		}
 	}
 
@@ -525,28 +521,24 @@ public class TagSourceController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = "/tags/tags/selectTagList", method = { RequestMethod.POST })
-	public MappingJacksonValue selectTagList(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+	public InterfaceResult selectTagList(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 											   @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
 											   @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
 											   @RequestParam(name = TagSourceController.parameterStart, required = true) int start,
 											   @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
 											   HttpServletRequest request) throws Exception {
 		Long loginUserId=this.getUserId(request);
-		MappingJacksonValue mappingJacksonValue = null;
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		try {
 			logger.info("新的标签列表及标签搜索:**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
 			List<TagSearchVO> tags = newTagService.selectTagListByKeword(loginUserId, keyword, sourceType, start, count);
 			long counts = newTagService.countTagListByKeword(loginUserId, keyword);
-			resultMap.put("list", tags);
-			resultMap.put("totalcount", counts);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			// 4.返回结果
-			return mappingJacksonValue;
+			responseDataMap.put("list", tags);
+			responseDataMap.put("totalcount", counts);
+			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
-			throw e;
+			return InterfaceResult.getInterfaceResultInstance("0002","系统异常");
 		}
 	}
 
@@ -562,7 +554,7 @@ public class TagSourceController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = "/tags/source/searchSource", method = { RequestMethod.POST })
-	public String searchSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+	public InterfaceResult searchSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 										   @RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 										   @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
 										   @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
@@ -570,17 +562,18 @@ public class TagSourceController extends BaseControl {
 										   @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
 										   HttpServletRequest request) throws Exception {
 		Long loginUserId=this.getUserId(request);
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		try {
-			logger.info("全局搜索资源:**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
+			logger.info("搜索资源:**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
 			List<SourceSearchVO> tags = newTagSourceService.searchTagSources(loginUserId,tagId,keyword,sourceType,start,count);
 			long counts = newTagSourceService.countSourceByTagId(loginUserId,tagId,sourceType,keyword);
-			resultMap.put("list", tags);
-			resultMap.put("totalcount", counts);
-			return JsonUtils.beanToJson(resultMap);
+			responseDataMap.put("list", tags);
+			responseDataMap.put("totalcount", counts);
+//			return InterfaceResult.getSuccessInterfaceResultInstance(JsonUtils.beanToJson(responseDataMap));
+			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
-			throw e;
+			return InterfaceResult.getInterfaceResultInstance("0002","系统异常");
 		}
 	}
 
@@ -597,29 +590,30 @@ public class TagSourceController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = "/tags/source/searchTagSourceList", method = { RequestMethod.POST })
-	public String searchTagSourceList(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+	public InterfaceResult searchTagSourceList(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 									  @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
 									  @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
 									  @RequestParam(name = TagSourceController.parameterStart, required = true) int start,
 							  		  @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
 									  HttpServletRequest request) throws Exception {
 		Long loginUserId=this.getUserId(request);
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		try {
 			logger.info("全局搜索资源:**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
 			List<TagSourceSearchVO> tags = newTagService.selectTagSourceList(loginUserId, keyword, sourceType, start, count);
 			long counts = newTagService.countTagListByKeword(loginUserId,keyword);
-			resultMap.put("list", tags);
-			resultMap.put("totalcount", counts);
+			responseDataMap.put("list", tags);
+			responseDataMap.put("totalcount", counts);
 			if(tags==null || tags.size()==0){
-				resultMap.put("sourceList", newTagSourceService.searchSourcesExctTag(loginUserId,keyword,sourceType));
+				responseDataMap.put("sourceList", newTagSourceService.searchSourcesExctTag(loginUserId,keyword,sourceType));
 			}else {
-				resultMap.put("sourceList", null);
+				responseDataMap.put("sourceList", null);
 			}
-			return JsonUtils.beanToJson(resultMap);
+//			return InterfaceResult.getSuccessInterfaceResultInstance(JsonUtils.beanToJson(responseDataMap));
+			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
-			throw e;
+			return InterfaceResult.getInterfaceResultInstance("0002","系统异常");
 		}
 	}
 
@@ -631,18 +625,17 @@ public class TagSourceController extends BaseControl {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = "/tags/source/addTagSource", method = { RequestMethod.POST })
-	public String addTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+	public InterfaceResult addTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 									  HttpServletRequest request) throws Exception {
 		String requestJson = null;
 		InterfaceResult interfaceResult=null;
 		List<TagSource> tagSourceList = null;
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		try {
 			Long loginUserId = this.getUserId(request);
 			if(loginUserId==null){
 				logger.error("userId is null");
-				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
-				return JsonUtils.beanToJson(interfaceResult);
+				return interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
 			}
 			requestJson = this.getBodyParam(request);
 			if (requestJson != null && !"".equals(requestJson)) {
@@ -654,13 +647,12 @@ public class TagSourceController extends BaseControl {
 				logger.info("更新前删除老资源结果："+b);
 				logger.info("客户端出入的资源列表：json="+JsonUtils.beanToJson(tagSourceList));
 				boolean b1 = newTagSourceService.updateSourceByTagId(loginUserId, tagId, sourceType, tagSourceList);
-				resultMap.put("result",b1);
+				responseDataMap.put("result",b1);
 			}
-			return JsonUtils.beanToJson(resultMap);
+			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (Exception e) {
 			e.printStackTrace();
-			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION,"更新标签资源失败！");
-			return JsonUtils.beanToJson(interfaceResult);
+			return InterfaceResult.getInterfaceResultInstance("0002","更新标签资源失败");
 		}
 	}
 }

@@ -387,7 +387,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	 * @throws TagSourceServiceException
 	 */
 	@Override
-	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle) throws TagSourceServiceException{
+	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle,long columnType) throws TagSourceServiceException{
 
 		List<TagSource> tagSourceList = null;
 		List<TagSource> newTagSourceList=new ArrayList<TagSource>();
@@ -396,7 +396,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 			if (CollectionUtils.isEmpty(tagSourceList)) {
 				for (Long tagId : tagIds) {
 					if (tagId != null) {
-						TagSource tagSource = newTagSource(userId,sourceId, sourceTitle, sourceType, tagId);
+						TagSource tagSource = newTagSource(userId,sourceId, sourceTitle, sourceType, tagId,columnType);
 						if(tagSource != null){
 							newTagSourceList.add(tagSource);
 						}
@@ -418,7 +418,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 				for (Long Id : tagIds) {
 					final long tagId = Id;
 					if (!(existIdSet.contains(tagId))) {
-						TagSource tagSource = newTagSource(userId,sourceId, sourceTitle, sourceType, tagId);
+						TagSource tagSource = newTagSource(userId,sourceId, sourceTitle, sourceType, tagId,columnType);
 						addTagSourceList.add(tagSource);
 					}
 				}
@@ -443,7 +443,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		return true;
 	}
 
-	private TagSource newTagSource(long userId, long sourceId, String sourceTitle, long sourceType, long tagId) {
+	private TagSource newTagSource(long userId, long sourceId, String sourceTitle, long sourceType, long tagId,long columnType) {
 		TagSource tagSource = new TagSource();
 		tagSource.setUserId(userId);
 		tagSource.setAppId(ServiceError.appId);
@@ -452,6 +452,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		tagSource.setSourceType(sourceType);
 		tagSource.setTagId(tagId);
 		tagSource.setCreateAt(new Date().getTime());
+		tagSource.setSourceColumnType(columnType);
 		return tagSource;
 	}
 }

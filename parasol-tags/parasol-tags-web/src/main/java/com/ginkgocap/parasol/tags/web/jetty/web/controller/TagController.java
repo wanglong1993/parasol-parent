@@ -265,34 +265,26 @@ public class TagController extends BaseControl {
 	 * @throws TagSourceServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/updateTag", method = { RequestMethod.PUT, RequestMethod.POST})
-	public MappingJacksonValue updateTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+	public InterfaceResult updateTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagId, required = true) long tagId,
 			@RequestParam(name = TagController.parameterTagName, required = true) String tagName,
 			HttpServletRequest request)
 			throws TagServiceException {
-		//@formatter:on
-//		Long loginAppId = LoginUserContextHolder.getAppKey();
-//		Long loginUserId = LoginUserContextHolder.getUserId();
+		Map<String, Boolean> responseDataMap = new HashMap<String, Boolean>();
 		Long loginAppId=this.DefaultAppId;
 		Long loginUserId=this.getUserId(request);
-		MappingJacksonValue mappingJacksonValue = null;
 		try {
 			Tag tag = new Tag();
 			tag.setId(tagId);
 			tag.setAppId(loginAppId);
 			tag.setUserId(loginUserId);
 			tag.setTagName(tagName);
-
 			Boolean result = tagService.updateTag(loginUserId, tag);
-			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-			resultMap.put("result", result);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			// 4.返回结果
-			return mappingJacksonValue;
+			responseDataMap.put("result", result);
+			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
-			throw e;
+			return InterfaceResult.getInterfaceResultInstance("0002","系统异常");
 		}
 	}
 

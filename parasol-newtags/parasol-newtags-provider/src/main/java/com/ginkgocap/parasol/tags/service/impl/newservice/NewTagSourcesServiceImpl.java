@@ -47,6 +47,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 				List<Tag> tags = tagDao.selectTagBySourceId(userId, next.getSourceId(), next.getSourceType());
 				tagSourceSearchVO.setSourceTagList(tags);
 				tagSourceSearchVO.setCreateUserId(next.getUserId());
+				tagSourceSearchVO.setSourceColumnType(next.getSourceColumnType());
 				sourceSearchVOList.add(tagSourceSearchVO);
 			}
 		}
@@ -91,6 +92,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 				tagSourceSearchVO.setSourceType(next.getSourceType());
 				List<Tag> tags = tagDao.selectTagBySourceId(userId, next.getSourceId(), next.getSourceType());
 				tagSourceSearchVO.setSourceTagList(tags);
+				tagSourceSearchVO.setSourceColumnType(next.getSourceColumnType());
 				sourceSearchVOList.add(tagSourceSearchVO);
 			}
 		}

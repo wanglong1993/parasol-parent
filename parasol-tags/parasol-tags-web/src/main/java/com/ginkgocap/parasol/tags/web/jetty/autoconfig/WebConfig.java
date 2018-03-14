@@ -2,6 +2,8 @@ package com.ginkgocap.parasol.tags.web.jetty.autoconfig;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
@@ -28,14 +30,15 @@ import ch.qos.logback.core.filter.Filter;
  * @time 下午7:42:22
  * @Copyright Copyright©2015 www.gintong.com
  */
-@Configuration
+//@Configuration
 public class WebConfig {
 
 	@Bean
 	public MappingJackson2HttpMessageConverter customJackson2HttpMessageConverter() {
 		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+//		objectMapper.setFilterProvider(new SimpleFilterProvider().addFilter("tagFilter", SimpleBeanPropertyFilter.filterOutAllExcept()));
+//		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		objectMapper.configure(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, true);
 		MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter(objectMapper);
 		return jsonConverter;

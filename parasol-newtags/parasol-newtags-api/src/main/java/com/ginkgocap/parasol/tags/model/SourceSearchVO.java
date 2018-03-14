@@ -22,6 +22,15 @@ public class SourceSearchVO implements Serializable {
     //@JsonSerialize(using = MyCustomSerializer.class)
     private List<Tag> sourceTagList;
     private long createUserId; // 创建者 id
+    private long sourceColumnType;
+
+    public long getSourceColumnType() {
+        return sourceColumnType;
+    }
+
+    public void setSourceColumnType(long sourceColumnType) {
+        this.sourceColumnType = sourceColumnType;
+    }
 
     public String getSourceExtra() {
         return sourceExtra;

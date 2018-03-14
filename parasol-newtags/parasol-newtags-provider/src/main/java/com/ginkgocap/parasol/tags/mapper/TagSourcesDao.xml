@@ -33,16 +33,22 @@
         <if test=" userId!=0 ">
             and userId=#{userId}
         </if>
-        <if test=" sourceType!=0 ">
-            and sourceType = #{sourceType}
-        </if>
-        <if test=" tagId!=0">
-            and tagId = #{tagId}
-        </if>
-        <if test=" keyword!=null and keyword!='' ">
-            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
-        </if>
---         GROUP BY sourceId,sourceType
+        AND id IN (
+            select id from tb_tag_source where 1=1
+            <if test=" userId!=0 ">
+                and userId=#{userId}
+            </if>
+            <if test=" sourceType!=0 ">
+                and sourceType = #{sourceType}
+            </if>
+            <if test=" tagId!=0">
+                and tagId = #{tagId}
+            </if>
+            <if test=" keyword!=null and keyword!='' ">
+                and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+            </if>
+            GROUP BY sourceId,sourceType
+        )
     </select>
 
     <select id="searchSourcesExctTag"  resultType="tagSource">
@@ -64,8 +70,8 @@
     </select>
 
     <insert id="insertSource" parameterType="tagSource">
-        INSERT INTO tb_tag_source (id,tagId,appId,userId,sourceId,sourceType,createAt,sourceTitle,sourceExtra)
-        VALUES (#{id},#{tagId},#{appId},#{userId},#{sourceId},#{sourceType},#{createAt},#{sourceTitle},#{sourceExtra})
+        INSERT INTO tb_tag_source (id,tagId,appId,userId,sourceId,sourceType,createAt,sourceTitle,sourceExtra,sourceColumnType)
+        VALUES (#{id},#{tagId},#{appId},#{userId},#{sourceId},#{sourceType},#{createAt},#{sourceTitle},#{sourceExtra},,#{sourceColumnType})
     </insert>
 
 </mapper>

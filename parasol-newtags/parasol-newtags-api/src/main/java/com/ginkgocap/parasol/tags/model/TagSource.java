@@ -19,6 +19,15 @@ public class TagSource implements Serializable {
 
 	private String tagName; //不持久化
 	private String sourceExtra;
+	private long sourceColumnType=0;
+
+	public long getSourceColumnType() {
+		return sourceColumnType;
+	}
+
+	public void setSourceColumnType(long sourceColumnType) {
+		this.sourceColumnType = sourceColumnType;
+	}
 
 	public long getId() {
 		return id;

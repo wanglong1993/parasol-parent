@@ -40,6 +40,7 @@ public class TagSource implements Serializable {
 	private long sourceType; // '资源类型 知识、人脉',
 	private long createAt; // '更新时间',
 	private String tagName; //不持久化
+	private long sourceColumnType;
 	private String sourceExtra;
 	
 
@@ -127,6 +128,7 @@ public class TagSource implements Serializable {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
+
 	@Column(name = "sourceExtra")
 	public String getSourceExtra() {
 		return sourceExtra;
@@ -136,7 +138,16 @@ public class TagSource implements Serializable {
 		this.sourceExtra = sourceExtra;
 	}
 
-//	@Override
+	@Column(name = "sourceColumnType")
+	public long getSourceColumnType() {
+		return sourceColumnType;
+	}
+
+	public void setSourceColumnType(long sourceColumnType) {
+		this.sourceColumnType = sourceColumnType;
+	}
+
+	//	@Override
 //	public String toString() {
 //		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceTitle=" + sourceTitle + ", sourceType=" + sourceType + ", createAt="
 //				+ createAt +",tagName="+tagName+"]";
