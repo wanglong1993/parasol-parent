@@ -2,12 +2,7 @@ package com.ginkgocap.parasol.tags.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -48,8 +43,7 @@ public class TagSource implements Serializable {
 
 
 	@Id
-	@GeneratedValue(generator = "tagSourceId")
-	@GenericGenerator(name = "tagSourceId", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator", parameters = { @Parameter(name = "sequence", value = "tagSourceId") })
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Column(name = "id")
 	public long getId() {
 		return id;
