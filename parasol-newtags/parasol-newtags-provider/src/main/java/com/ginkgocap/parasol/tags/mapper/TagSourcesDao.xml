@@ -7,6 +7,9 @@
         <if test=" sourceType!=0 ">
             and sourceType = #{sourceType}
         </if>
+        <if test=" sourceId!=0 ">
+            and sourceId = #{sourceId}
+        </if>
     </delete>
 
     <select id="selectSourceByTagId"  resultType="tagSource">
@@ -64,8 +67,8 @@
     </select>
 
     <insert id="insertSource" parameterType="tagSource">
-        INSERT INTO tb_tag_source (id,tagId,appId,userId,sourceId,sourceType,createAt,sourceTitle,sourceExtra,sourceColumnType,supDem)
-        VALUES (#{id},#{tagId},#{appId},#{userId},#{sourceId},#{sourceType},#{createAt},#{sourceTitle},#{sourceExtra},#{sourceColumnType},#{supDem})
+        INSERT INTO tb_tag_source (tagId,appId,userId,sourceId,sourceType,createAt,sourceTitle,sourceExtra,sourceColumnType,supDem)
+        VALUES (#{tagId},#{appId},#{userId},#{sourceId},#{sourceType},#{createAt},#{sourceTitle},#{sourceExtra},#{sourceColumnType},#{supDem})
     </insert>
 
 </mapper>

@@ -43,6 +43,7 @@ public class TagSource implements Serializable {
 	private long sourceColumnType;
 	private String sourceExtra;
 	private int supDem;//需求供需0供1需
+	private int chosenTag	;//是否选中（不持久化）被选中状态0：未被选中 1：被选中
 	
 
 
@@ -137,6 +138,15 @@ public class TagSource implements Serializable {
 
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
+	}
+
+	@Transient
+	public int getChosenTag() {
+		return chosenTag;
+	}
+
+	public void setChosenTag(int chosenTag) {
+		this.chosenTag = chosenTag;
 	}
 
 	@Column(name = "sourceExtra")

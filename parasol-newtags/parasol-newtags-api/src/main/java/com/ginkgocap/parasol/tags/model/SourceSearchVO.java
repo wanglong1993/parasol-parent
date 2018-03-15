@@ -14,6 +14,7 @@ public class SourceSearchVO implements Serializable {
 
     private static final long serialVersionUID = 6606454865761504898L;
 
+    private long id;
     private long sourceId; // '资源ID',
     private String sourceTitle;// '资源标题'
     private long sourceType; // 资源类型 2人脉3客户7需求8知识,
@@ -24,6 +25,14 @@ public class SourceSearchVO implements Serializable {
     private long createUserId; // 创建者 id
     private long sourceColumnType;
     private int supDem;//需求供需0供1需
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public int getSupDem() {
         return supDem;

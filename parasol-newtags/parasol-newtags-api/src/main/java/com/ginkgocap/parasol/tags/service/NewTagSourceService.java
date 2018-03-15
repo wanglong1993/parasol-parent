@@ -11,7 +11,7 @@ public interface NewTagSourceService {
 
 	public List<SourceSearchVO> searchTagSources(long userId, long tagId, String keyWord, int sourceType, int index, int size);
 
-	public boolean deleteSourceByType(long userId,long tagId,int sourceType);
+	public boolean deleteSourceByType(long userId,long tagId,int sourceType,long sourceId);
 
 	public long  countSourceByTagId(long userId,long tagId,int sourceType,String keyword);
 

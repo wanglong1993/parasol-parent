@@ -51,6 +51,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 				tagSourceSearchVO.setCreateUserId(next.getUserId());
 				tagSourceSearchVO.setSourceColumnType(next.getSourceColumnType());
 				tagSourceSearchVO.setSupDem(next.getSupDem());
+				tagSourceSearchVO.setId(next.getId());
 				sourceSearchVOList.add(tagSourceSearchVO);
 			}
 		}
@@ -58,11 +59,11 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 	}
 
 	@Override
-	public boolean deleteSourceByType(long userId, long tagId, int sourceType) {
+	public boolean deleteSourceByType(long userId, long tagId, int sourceType,long sourceId) {
 		logger.info("删除标签下的资源：userId="+userId+"**tagId"+tagId+"**sourceType"+sourceType);
 		boolean flag = true;
 		try {
-			tagSourcesDao.deleteSourceByType(userId, tagId, sourceType);
+			tagSourcesDao.deleteSourceByType(userId, tagId, sourceType,sourceId);
 		}catch (Exception e){
 			e.printStackTrace();
 			flag=false;
@@ -93,6 +94,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 				tagSourceSearchVO.setSourceTagList(tags);
 				tagSourceSearchVO.setSourceColumnType(next.getSourceColumnType());
 				tagSourceSearchVO.setSupDem(next.getSupDem());
+				tagSourceSearchVO.setId(next.getId());
 				sourceSearchVOList.add(tagSourceSearchVO);
 			}
 		}
@@ -107,12 +109,16 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 				ListIterator<TagSource> tagSourceListIterator = tagSourceList.listIterator();
 				while (tagSourceListIterator.hasNext()){
 					TagSource next = tagSourceListIterator.next();
-					next.setUserId(userId);
-					next.setTagId(tagId);
-					next.setAppId(1);
-					next.setId(GetId.getId());
-					next.setCreateAt(System.currentTimeMillis());
-					tagSourcesDao.insertSource(next);
+					if(next.getChosenTag()==1){
+						tagSourcesDao.deleteSourceByType(userId,tagId,(int)next.getSourceType(),next.getSourceId());
+						next.setUserId(userId);
+						next.setTagId(tagId);
+						next.setAppId(1);
+						next.setCreateAt(System.currentTimeMillis());
+						tagSourcesDao.insertSource(next);
+					}else {
+						tagSourcesDao.deleteSourceByType(userId,tagId,(int)next.getSourceType(),next.getSourceId());
+					}
 				}
 			}
 		}catch (Exception e){

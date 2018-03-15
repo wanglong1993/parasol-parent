@@ -15,13 +15,12 @@ public class TagSource implements Serializable {
 	private long sourceId; // '资源ID',
 	private String sourceTitle;// '资源标题'
 	private long sourceType; // '资源类型 知识、人脉',
-	private long createAt; // '更新时间',
-
+	private long createAt; // '更新时间'
 	private String tagName; //不持久化
 	private String sourceExtra;
 	private long sourceColumnType=0;
-
 	private int supDem;//需求供需0供1需
+	private int chosenTag;//是否选中（不持久化）被选中状态0：未被选中 1：被选中
 
 	public int getSupDem() {
 		return supDem;
@@ -117,5 +116,13 @@ public class TagSource implements Serializable {
 
 	public void setSourceExtra(String sourceExtra) {
 		this.sourceExtra = sourceExtra;
+	}
+
+	public int getChosenTag() {
+		return chosenTag;
+	}
+
+	public void setChosenTag(int chosenTag) {
+		this.chosenTag = chosenTag;
 	}
 }

@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ginkgocap.parasol.tags.model.*;
 import com.ginkgocap.parasol.tags.service.NewTagService;
 import com.ginkgocap.parasol.tags.service.NewTagSourceService;
+import com.ginkgocap.parasol.tags.service.TagService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,8 @@ public class TagSourceController extends BaseControl {
 	private NewTagService newTagService;
 	@Resource
 	private KnowledgeService knowledgeService;
+	@Resource
+	private TagService tagService;
 
 	//@formatter:off
 	/**
@@ -495,11 +498,18 @@ public class TagSourceController extends BaseControl {
 	public InterfaceResult deleteModulTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 													@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 													@RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+													@RequestParam(name = TagSourceController.parameterSourceId, required = true) long sourceId,
 													HttpServletRequest request) throws Exception {
 		Long loginUserId=this.getUserId(request);
 		Map<String, Boolean> responseDataMap = new HashMap<String, Boolean>();
+		boolean flag=false;
 		try {
-			boolean flag = newTagSourceService.deleteSourceByType(loginUserId, tagId, sourceType);
+			if(sourceType==0){
+				tagService.removeTag(loginUserId,tagId);
+				flag = newTagSourceService.deleteSourceByType(loginUserId, tagId, sourceType, sourceId);
+			}else {
+				flag = newTagSourceService.deleteSourceByType(loginUserId, tagId, sourceType, sourceId);
+			}
 			responseDataMap.put("result", flag);
 			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (Exception e) {
@@ -642,8 +652,6 @@ public class TagSourceController extends BaseControl {
 				Long tagId = j.getLong("tagId");
 				int sourceType = j.getInt("sourceType");
 				tagSourceList = JsonUtils.getList4Json(j.getString("tagSourceList"), TagSource.class);
-				boolean b = newTagSourceService.deleteSourceByType(loginUserId, tagId, sourceType);
-				logger.info("更新前删除老资源结果："+b);
 				logger.info("客户端出入的资源列表：json="+JsonUtils.beanToJson(tagSourceList));
 				boolean b1 = newTagSourceService.updateSourceByTagId(loginUserId, tagId, sourceType, tagSourceList);
 				responseDataMap.put("result",b1);

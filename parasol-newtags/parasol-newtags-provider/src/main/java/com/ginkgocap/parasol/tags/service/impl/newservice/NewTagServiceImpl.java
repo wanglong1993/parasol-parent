@@ -98,6 +98,7 @@ class NewTagServiceImpl implements NewTagService {
 						sourceSearchVO.setSourceTagList(tags);
 						sourceSearchVO.setSourceColumnType(sourcenext.getSourceColumnType());
 						sourceSearchVO.setSupDem(sourcenext.getSupDem());
+						sourceSearchVO.setId(sourcenext.getId());
 						if(sourcenext.getSourceType()==2){
 							personcount++;
 						}else if(sourcenext.getSourceType()==3){
