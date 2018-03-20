@@ -79,7 +79,7 @@ public class TagController extends BaseControl {
 	 */
 							
 	@RequestMapping(path = "/tags/tags/getTagList", method = { RequestMethod.GET })
-	public MappingJacksonValue getSourceList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
+	public List<Tag> getSourceList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType,
 			HttpServletRequest request) throws TagServiceException {
@@ -96,12 +96,12 @@ public class TagController extends BaseControl {
 			List<Tag> tag = tagService.getTagsByUserIdAppidTagType(loginUserId, loginAppId, tagType);
 			tag = tag == null ? new ArrayList<Tag>() : tag;
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(tag);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
+//			mappingJacksonValue = new MappingJacksonValue(tag);
+//			// 3.创建页面显示数据项的过滤器
+//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+//			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return tag;
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -117,7 +117,7 @@ public class TagController extends BaseControl {
 	 * @throws TagServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/getRecomTagList", method = { RequestMethod.GET })
-	public MappingJacksonValue getRecomTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
+	public Map<String, List<Tag>> getRecomTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType,
 			HttpServletRequest request) throws TagServiceException {
@@ -145,7 +145,7 @@ public class TagController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return resultMap;
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -161,7 +161,7 @@ public class TagController extends BaseControl {
 	 * @throws TagServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/getRecomDefaultTagList", method = { RequestMethod.GET })
-	public MappingJacksonValue getRecomDefaultTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
+	public Map<String,Page<Tag>> getRecomDefaultTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
 													   @RequestParam(name = "index",required = false,defaultValue="0")int index,
 											           @RequestParam(name = "size", required = false,defaultValue="10") int size,
 											           HttpServletRequest request) throws TagServiceException {
@@ -191,7 +191,7 @@ public class TagController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			//result.setResponseData(mappingJacksonValue);
-			return mappingJacksonValue;
+			return map;
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -217,7 +217,7 @@ public class TagController extends BaseControl {
 	 * @throws TagSourceServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/createTag", method = { RequestMethod.POST })
-	public MappingJacksonValue createTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+	public Map<String, Object> createTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagType, required = true) int tagType,
 			@RequestParam(name = TagController.parameterTagName, required = true) String tagName,
 			HttpServletRequest request)
@@ -227,6 +227,7 @@ public class TagController extends BaseControl {
 		Long loginUserId=this.getUserId(request);
 		MappingJacksonValue mappingJacksonValue = null;
 		InterfaceResult result = null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			Tag tag = new Tag();
 			tag.setAppId(loginAppId);
@@ -235,21 +236,19 @@ public class TagController extends BaseControl {
 			tag.setTagName(tagName.trim());
 
 			Long id = tagService.createTag(loginUserId, tag);
-			Map<String, Long> resultMap = new HashMap<String, Long>();
-			resultMap.put("id", id);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			// 4.返回结果
-			return mappingJacksonValue;
+
+			resultMap.put("id",id);
+			return resultMap;
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
 			int errorCode = e.getErrorCode();
 			logger.info("errorCode : " + errorCode);
 			if (errorCode == 109) {
 				result = InterfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION, "标签已重复");
+				resultMap.put("result", "标签已重复");
 				mappingJacksonValue = new MappingJacksonValue(result);
 				// 4.返回结果
-				return mappingJacksonValue;
+				return resultMap;
 			} else {
 				throw e;
 			}
@@ -298,7 +297,7 @@ public class TagController extends BaseControl {
 	 * @throws TagServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/deleteTag", method = { RequestMethod.GET , RequestMethod.DELETE})
-	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+	public Map<String, Boolean> deleteTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagId, required = true) Long id,
 			HttpServletRequest request) throws TagSourceServiceException, TagServiceException {
 		//@formatter:on
@@ -312,7 +311,7 @@ public class TagController extends BaseControl {
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return resultMap;
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;

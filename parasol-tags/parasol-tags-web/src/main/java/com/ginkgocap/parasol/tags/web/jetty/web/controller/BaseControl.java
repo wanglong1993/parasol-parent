@@ -95,4 +95,5 @@ public abstract class BaseControl {
 	{
 		return new MappingJacksonValue(InterfaceResult.getInterfaceResultInstance(resultCode));
 	}*/
+
 }

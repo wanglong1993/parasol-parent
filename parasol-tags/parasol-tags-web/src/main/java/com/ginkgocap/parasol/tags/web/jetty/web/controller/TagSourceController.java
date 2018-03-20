@@ -84,7 +84,7 @@ public class TagSourceController extends BaseControl {
 	 * @param request
 	 */
 	@RequestMapping(path = "/tags/source/getSourceList", method = { RequestMethod.GET })
-	public MappingJacksonValue getSourceList(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+	public List<TagSource> getSourceList(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
 			@RequestParam(name = TagSourceController.parameterSourceType, required = true) Long sourceType,
@@ -105,7 +105,7 @@ public class TagSourceController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return tagsTypes;
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 		}
@@ -120,7 +120,7 @@ public class TagSourceController extends BaseControl {
 	 * @param tagId
 	 */
 	@RequestMapping(path = "/tags/source/getSourceListByTag", method = { RequestMethod.GET })
-	public MappingJacksonValue getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+	public List<TagSource> getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 			@RequestParam(name = TagSourceController.parameterStart, required = true) Integer start,
@@ -142,7 +142,7 @@ public class TagSourceController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return tagsTypes;
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 		}
@@ -157,7 +157,7 @@ public class TagSourceController extends BaseControl {
 	 * @param tagId
 	 */
 	@RequestMapping(path = "/tags/source/getSourceListByTagAndType", method = { RequestMethod.GET })
-	public MappingJacksonValue getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+	public List<TagSource> getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 			@RequestParam(name = TagSourceController.parameterSourceType, required = true) Long sourceType,
@@ -180,7 +180,7 @@ public class TagSourceController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return tagsTypes;
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 		}
@@ -195,7 +195,7 @@ public class TagSourceController extends BaseControl {
 	 * @param tagId
 	 */
 	@RequestMapping(path = "/tags/source/getSourceCountByTag", method = { RequestMethod.GET })
-	public MappingJacksonValue getSourceCountByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+	public Integer getSourceCountByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 			HttpServletRequest request) {
@@ -215,7 +215,7 @@ public class TagSourceController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return resCount;
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 		}
@@ -232,7 +232,7 @@ public class TagSourceController extends BaseControl {
 	 * @throws TagSourceServiceException
 	 */
 	@RequestMapping(path = "/tags/source/createTagSource", method = { RequestMethod.POST })
-	public MappingJacksonValue createTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+	public Map<String, Long> createTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagsId,
 			@RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
 			@RequestParam(name = TagSourceController.parameterSourceTitle, required = true) String sourceTitle,
@@ -259,7 +259,7 @@ public class TagSourceController extends BaseControl {
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return resultMap;
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -275,7 +275,7 @@ public class TagSourceController extends BaseControl {
 	 * @throws TagSourceServiceException
 	 */
 	@RequestMapping(path = "/tags/source/deleteTagSource", method = { RequestMethod.GET, RequestMethod.DELETE})
-	public MappingJacksonValue deleteTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+	public Map<String, Boolean> deleteTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagSourceId, required = true) Long id,
 			HttpServletRequest request) throws TagSourceServiceException {
 		//@formatter:on
@@ -291,7 +291,7 @@ public class TagSourceController extends BaseControl {
 			// 2.转成框架数据
 			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return resultMap;
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -336,7 +336,7 @@ public class TagSourceController extends BaseControl {
 	 * 根据sourceId查询资源列表
 	 */
 	@RequestMapping(path = "/tags/source/getSourceListBySourceId", method = { RequestMethod.GET })
-	public MappingJacksonValue  getSourceListBySourceId(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+	public InterfaceResult  getSourceListBySourceId(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 											 @RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 											 @RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
 											 @RequestParam(name = TagSourceController.parameterSourceType, required = true) Long sourceType,
@@ -352,17 +352,17 @@ public class TagSourceController extends BaseControl {
 			if(loginUserId==null){
 				logger.error("userId is null");
 				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
-				return new MappingJacksonValue(interfaceResult);
+				return interfaceResult;
 			}
 			if(sourceId == null){
 				logger.error("sourceId is null");
 				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceId 不能为空！");
-				return new MappingJacksonValue(interfaceResult);
+				return interfaceResult;
 			}
 			if(sourceType == null){
 				logger.error("sourceType is null");
 				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"sourceType 不能为空！");
-				return new MappingJacksonValue(interfaceResult);
+				return interfaceResult;
 			}
 			// 0.校验输入参数（框架搞定，如果业务业务搞定）
 			// 1.查询后台服务r
@@ -372,21 +372,21 @@ public class TagSourceController extends BaseControl {
 			} catch (Exception e) {
 				e.printStackTrace();
 				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION,"数据库操作失败！");
-				return new MappingJacksonValue(interfaceResult);
+				return interfaceResult;
 			}
 			// 2.转成框架数据
 			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 			interfaceResult.setResponseData(tagSourceList);
-			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
+//			mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+//			// 3.创建页面显示数据项的过滤器
+//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+//			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return mappingJacksonValue;
+			return interfaceResult;
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SYSTEM_EXCEPTION,"获取标签列表失败！");
-			return new MappingJacksonValue(interfaceResult);
+			return interfaceResult;
 		}
 
 	}
@@ -395,7 +395,7 @@ public class TagSourceController extends BaseControl {
 	 * 批量更新标签
 	 */
 	@RequestMapping(path = "/tags/source/updateTagSources", method = { RequestMethod.POST })
-	public MappingJacksonValue updateTagSources(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+	public InterfaceResult updateTagSources(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 												HttpServletRequest request, HttpServletRequest response) throws TagSourceServiceException {
 		String requestJson = null;
 		MappingJacksonValue mappingJacksonValue = null;
@@ -409,7 +409,7 @@ public class TagSourceController extends BaseControl {
 			if(loginUserId==null){
 				logger.error("userId is null");
 				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
-				return new MappingJacksonValue(interfaceResult);
+				return interfaceResult;
 			}
 			requestJson = this.getBodyParam(request);
 			if (requestJson != null && !"".equals(requestJson)) {
@@ -423,7 +423,7 @@ public class TagSourceController extends BaseControl {
 					if (columnType<=0) {
 						logger.error("columnType is null..");
 						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"columnType不能为空！");
-						return new MappingJacksonValue(interfaceResult);
+						return interfaceResult;
 					}
 				}
 				int supDem=0;
@@ -439,17 +439,17 @@ public class TagSourceController extends BaseControl {
 				if (sourceId <= 0 || sourceId == null) {
 					logger.error("sourceId is null..");
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceId不能为空！");
-					return new MappingJacksonValue(interfaceResult);
+					return interfaceResult;
 				}
 				if (sourceTitle == null || sourceTitle.trim().length() <= 0) {
 					logger.error("sourceTitle is null..");
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceTitle不能为空！");
-					return new MappingJacksonValue(interfaceResult);
+					return interfaceResult;
 				}
 				if (sourceType <= 0) {
 					logger.error("sourceType is null..");
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceType不能为空！");
-					return new MappingJacksonValue(interfaceResult);
+					return interfaceResult;
 				}
 				tagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle,columnType,supDem);
 			if (sourceType == 8) {
@@ -466,22 +466,22 @@ public class TagSourceController extends BaseControl {
 					} catch (Exception e) {
 						e.printStackTrace();
 						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION, "数据库操作失败！");
-						return new MappingJacksonValue(interfaceResult);
+						return interfaceResult;
 					}
 					// 2.转成框架数据
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.SUCCESS);
 					interfaceResult.setResponseData(tagSourceList);
-					mappingJacksonValue = new MappingJacksonValue(interfaceResult);
-					// 3.创建页面显示数据项的过滤器
-					SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-					mappingJacksonValue.setFilters(filterProvider);
+//					mappingJacksonValue = new MappingJacksonValue(interfaceResult);
+//					// 3.创建页面显示数据项的过滤器
+//					SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+//					mappingJacksonValue.setFilters(filterProvider);
 			}
 			// 4.返回结果
-			return mappingJacksonValue;
+			return interfaceResult;
 		} catch (Exception e) {
 			e.printStackTrace();
 			interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_EXCEPTION,"更新标签列表失败！");
-			return new MappingJacksonValue(interfaceResult);
+			return interfaceResult;
 		}
 	}
 
@@ -576,9 +576,12 @@ public class TagSourceController extends BaseControl {
 		try {
 			logger.info("搜索资源:**loginUserId="+loginUserId+"**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
 			List<SourceSearchVO> tags = newTagSourceService.searchTagSources(loginUserId,tagId,keyword,sourceType,start,count);
-			long counts = newTagSourceService.countSourceByTagId(loginUserId,tagId,sourceType,keyword);
 			responseDataMap.put("list", tags);
-			responseDataMap.put("totalcount", counts);
+			responseDataMap.put("totalcount", newTagSourceService.countSourceByTagId(loginUserId,tagId,sourceType,keyword));
+			responseDataMap.put("personcount", newTagSourceService.countSourceByTagId(loginUserId,tagId,2,keyword));
+			responseDataMap.put("customercount", newTagSourceService.countSourceByTagId(loginUserId,tagId,3,keyword));
+			responseDataMap.put("demandcount", newTagSourceService.countSourceByTagId(loginUserId,tagId,7,keyword));
+			responseDataMap.put("knowledgecount", newTagSourceService.countSourceByTagId(loginUserId,tagId,8,keyword));
 			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
