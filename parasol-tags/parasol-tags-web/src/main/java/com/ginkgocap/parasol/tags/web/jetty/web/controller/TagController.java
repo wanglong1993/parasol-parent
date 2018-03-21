@@ -82,7 +82,7 @@ public class TagController extends BaseControl {
 	public List<Tag> getSourceList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType,
-			HttpServletRequest request) throws TagServiceException {
+			HttpServletRequest request) throws Exception {
 		//@formatter:on
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
@@ -333,6 +333,7 @@ public class TagController extends BaseControl {
 		Ids<Long> ids =  null;
 		try {
 			ids = (Ids<Long>) JsonUtils.jsonToBean(requestJson, Ids.class);
+			logger.info("批量删除标签传入的参数："+JsonUtils.beanToJson(ids));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

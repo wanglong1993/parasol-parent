@@ -25,9 +25,7 @@
     </select>
 
     <select id="selectTagBySourceId"  resultType="tag">
-        select * from tb_tag where userId=#{userId} and id in (
-        select tagId from tb_tag_source where userId = #{userId} and sourceId = #{sourceId} and sourceType=#{sourceType}
-        )
+        SELECT t.* from tb_tag t,tb_tag_source s where t.id=s.tagId and s.sourceId=#{sourceId} and s.sourceType=#{sourceType} and s.userId=#{userId}
     </select>
 
 </mapper>

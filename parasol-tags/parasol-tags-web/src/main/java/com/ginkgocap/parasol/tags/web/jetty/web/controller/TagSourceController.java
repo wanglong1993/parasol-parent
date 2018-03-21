@@ -16,12 +16,7 @@
 
 package com.ginkgocap.parasol.tags.web.jetty.web.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import com.ginkgocap.parasol.tags.model.*;
@@ -43,6 +38,8 @@ import com.gintong.frame.util.dto.CommonResultCode;
 import com.gintong.frame.util.dto.InterfaceResult;
 
 import net.sf.json.JSONObject;
+
+import static com.ginkgocap.ywxt.knowledge.service.common.KnowledgeBaseService.sourceType;
 
 /**
  * 
@@ -658,6 +655,48 @@ public class TagSourceController extends BaseControl {
 				logger.info("客户端出入的资源列表：json="+JsonUtils.beanToJson(tagSourceList));
 				boolean b1 = newTagSourceService.updateSourceByTagId(loginUserId, tagId, sourceType, tagSourceList);
 				responseDataMap.put("result",b1);
+			}
+			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return InterfaceResult.getInterfaceResultInstance("0002","更新标签资源失败");
+		}
+	}
+
+	/**
+	 * 更改或新增标签资源
+	 * @param debug
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(path = "/tags/source/batchDeleteSource", method = { RequestMethod.POST })
+	public InterfaceResult batchDeleteSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+										HttpServletRequest request) throws Exception {
+		String requestJson = null;
+		InterfaceResult interfaceResult=null;
+		List<TagSource> tagSourceIdList = null;
+		Map<String, Object> responseDataMap = new HashMap<String, Object>();
+		boolean flag=false;
+		try {
+			Long loginUserId = this.getUserId(request);
+			if(loginUserId==null){
+				logger.error("userId is null");
+				return interfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+			}
+			requestJson = this.getBodyParam(request);
+			if (requestJson != null && !"".equals(requestJson)) {
+				JSONObject j = JSONObject.fromObject(requestJson);
+				tagSourceIdList = JsonUtils.getList4Json(j.getString("tagSourceIdList"), TagSource.class);
+				logger.info("客户端出入的资源列表：json="+JsonUtils.beanToJson(tagSourceIdList));
+				if(tagSourceIdList!=null && tagSourceIdList.size()>0){
+					Iterator<TagSource> iterator = tagSourceIdList.iterator();
+					while (iterator.hasNext()){
+						TagSource next = iterator.next();
+						flag=newTagSourceService.deleteSourceByType(loginUserId,next.getTagId(),(int) next.getSourceType(),next.getSourceId());
+					}
+				}
+				responseDataMap.put("result",flag);
 			}
 			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (Exception e) {
