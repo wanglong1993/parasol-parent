@@ -20,7 +20,7 @@ import java.util.List;
  * @time 下午7:42:22
  * @Copyright Copyright©2015 www.gintong.com
  */
-@Configuration
+//@Configuration
 public class WebNewConfig extends WebMvcConfigurerAdapter{
 
 	@Bean

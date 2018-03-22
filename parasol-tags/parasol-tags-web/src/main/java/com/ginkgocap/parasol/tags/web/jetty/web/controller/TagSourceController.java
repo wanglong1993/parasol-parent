@@ -81,7 +81,7 @@ public class TagSourceController extends BaseControl {
 	 * @param request
 	 */
 	@RequestMapping(path = "/tags/source/getSourceList", method = { RequestMethod.GET })
-	public List<TagSource> getSourceList(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+	public Object getSourceList(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
 			@RequestParam(name = TagSourceController.parameterSourceType, required = true) Long sourceType,
@@ -97,12 +97,12 @@ public class TagSourceController extends BaseControl {
 			// 1.查询后台服务
 			List<TagSource> tagsTypes = tagSourceService.getTagSourcesByAppIdSourceIdSourceType(loginAppId, sourceId, sourceType);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
+//			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
+//			// 3.创建页面显示数据项的过滤器
+//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+//			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return tagsTypes;
+			return com.alibaba.fastjson.JSONObject.toJSON(tagsTypes);
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 		}
@@ -117,7 +117,7 @@ public class TagSourceController extends BaseControl {
 	 * @param tagId
 	 */
 	@RequestMapping(path = "/tags/source/getSourceListByTag", method = { RequestMethod.GET })
-	public List<TagSource> getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+	public Object getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 			@RequestParam(name = TagSourceController.parameterStart, required = true) Integer start,
@@ -134,12 +134,12 @@ public class TagSourceController extends BaseControl {
 			// 1.查询后台服务
 			List<TagSource> tagsTypes = tagSourceService.getTagSourcesByAppIdTagId(loginAppId, tagId, start, count);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
+//			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
+//			// 3.创建页面显示数据项的过滤器
+//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+//			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return tagsTypes;
+			return com.alibaba.fastjson.JSONObject.toJSON(tagsTypes);
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 		}
@@ -154,7 +154,7 @@ public class TagSourceController extends BaseControl {
 	 * @param tagId
 	 */
 	@RequestMapping(path = "/tags/source/getSourceListByTagAndType", method = { RequestMethod.GET })
-	public List<TagSource> getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
+	public Object getSourceListByTag(@RequestParam(name = TagSourceController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
 			@RequestParam(name = TagSourceController.parameterSourceType, required = true) Long sourceType,
@@ -172,12 +172,12 @@ public class TagSourceController extends BaseControl {
 			// 1.查询后台服务
 			List<TagSource> tagsTypes = tagSourceService.getTagSourcesByAppIdTagIdAndType(loginAppId, tagId, sourceType, start, count);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
+//			mappingJacksonValue = new MappingJacksonValue(tagsTypes);
+//			// 3.创建页面显示数据项的过滤器
+//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+//			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return tagsTypes;
+			return com.alibaba.fastjson.JSONObject.toJSON(tagsTypes);
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 		}
@@ -207,10 +207,10 @@ public class TagSourceController extends BaseControl {
 			// 1.查询后台服务
 			Integer resCount = tagSourceService.countTagSourcesByAppIdTagId(loginAppId, tagId);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resCount);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
+//			mappingJacksonValue = new MappingJacksonValue(resCount);
+//			// 3.创建页面显示数据项的过滤器
+//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+//			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
 			return resCount;
 		} catch (TagSourceServiceException e) {
@@ -229,7 +229,7 @@ public class TagSourceController extends BaseControl {
 	 * @throws TagSourceServiceException
 	 */
 	@RequestMapping(path = "/tags/source/createTagSource", method = { RequestMethod.POST })
-	public Map<String, Long> createTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+	public Object createTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagsId,
 			@RequestParam(name = TagSourceController.parameterSourceId, required = true) Long sourceId,
 			@RequestParam(name = TagSourceController.parameterSourceTitle, required = true) String sourceTitle,
@@ -253,10 +253,10 @@ public class TagSourceController extends BaseControl {
 			Long id = tagSourceService.createTagSource(source);
 			Map<String, Long> resultMap = new HashMap<String, Long>();
 			resultMap.put("id", id);
-			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
+//			// 2.转成框架数据
+//			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
-			return resultMap;
+			return com.alibaba.fastjson.JSONObject.toJSON(resultMap);
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -272,7 +272,7 @@ public class TagSourceController extends BaseControl {
 	 * @throws TagSourceServiceException
 	 */
 	@RequestMapping(path = "/tags/source/deleteTagSource", method = { RequestMethod.GET, RequestMethod.DELETE})
-	public Map<String, Boolean> deleteTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+	public Object deleteTagSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagSourceController.parameterTagSourceId, required = true) Long id,
 			HttpServletRequest request) throws TagSourceServiceException {
 		//@formatter:on
@@ -286,9 +286,9 @@ public class TagSourceController extends BaseControl {
 			Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
 			resultMap.put("success", success);
 			// 2.转成框架数据
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
+//			mappingJacksonValue = new MappingJacksonValue(resultMap);
 			// 4.返回结果
-			return resultMap;
+			return com.alibaba.fastjson.JSONObject.toJSON(resultMap);
 		} catch (TagSourceServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -414,6 +414,10 @@ public class TagSourceController extends BaseControl {
 				Long sourceId = j.getLong("sourceId");
 				String sourceTitle = j.getString("sourceTitle");
 				long sourceType = j.getInt("sourceType");
+				String sourceExtra=null;
+				if(j.containsKey("sourceExtra")){
+					sourceExtra = j.getString("sourceExtra");
+				}
 				int columnType=0;
 				if(sourceType==8){
 					columnType=j.getInt("columnType");
@@ -448,7 +452,7 @@ public class TagSourceController extends BaseControl {
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceType不能为空！");
 					return interfaceResult;
 				}
-				tagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle,columnType,supDem);
+				tagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle,columnType,supDem,sourceExtra);
 			if (sourceType == 8) {
 					try {
 						knowledgeService.updateTag(loginUserId, sourceId, columnType, tagIds);

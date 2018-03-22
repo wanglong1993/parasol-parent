@@ -26,6 +26,8 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ginkgocap.parasol.tags.model.Ids;
 import com.ginkgocap.parasol.tags.model.Page;
 import com.ginkgocap.parasol.tags.model.TagSearchVO;
@@ -79,15 +81,13 @@ public class TagController extends BaseControl {
 	 */
 							
 	@RequestMapping(path = "/tags/tags/getTagList", method = { RequestMethod.GET })
-	public List<Tag> getSourceList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
-			@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
-			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType,
-			HttpServletRequest request) throws Exception {
-		//@formatter:on
+	public Object getSourceList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
+							  @RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+							  @RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType,
+							  HttpServletRequest request) throws Exception {
+
 		MappingJacksonValue mappingJacksonValue = null;
 		try {
-//			Long loginAppId = LoginUserContextHolder.getAppKey();
-//			Long loginUserId = LoginUserContextHolder.getUserId();
 			Long loginAppId=this.DefaultAppId;
 			Long loginUserId=this.getUserId(request);
 
@@ -96,12 +96,12 @@ public class TagController extends BaseControl {
 			List<Tag> tag = tagService.getTagsByUserIdAppidTagType(loginUserId, loginAppId, tagType);
 			tag = tag == null ? new ArrayList<Tag>() : tag;
 			// 2.转成框架数据
-//			mappingJacksonValue = new MappingJacksonValue(tag);
-//			// 3.创建页面显示数据项的过滤器
-//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-//			mappingJacksonValue.setFilters(filterProvider);
+			mappingJacksonValue = new MappingJacksonValue(tag);
+			// 3.创建页面显示数据项的过滤器
+			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return tag;
+			return JSONObject.toJSON(tag);
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -117,7 +117,7 @@ public class TagController extends BaseControl {
 	 * @throws TagServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/getRecomTagList", method = { RequestMethod.GET })
-	public Map<String, List<Tag>> getRecomTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
+	public Object getRecomTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
 			@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagType, required = false,defaultValue="0") Long tagType,
 			HttpServletRequest request) throws TagServiceException {
@@ -140,12 +140,12 @@ public class TagController extends BaseControl {
 			Map<String, List<Tag>> resultMap = new HashMap<String, List<Tag>>();
 			resultMap.put("user", userTags);
 			resultMap.put("sys", sysTags);
-			mappingJacksonValue = new MappingJacksonValue(resultMap);
-			// 3.创建页面显示数据项的过滤器
-			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
-			mappingJacksonValue.setFilters(filterProvider);
+//			mappingJacksonValue = new MappingJacksonValue(resultMap);
+//			// 3.创建页面显示数据项的过滤器
+//			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
+//			mappingJacksonValue.setFilters(filterProvider);
 			// 4.返回结果
-			return resultMap;
+			return JSONObject.toJSON(resultMap);
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -161,7 +161,7 @@ public class TagController extends BaseControl {
 	 * @throws TagServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/getRecomDefaultTagList", method = { RequestMethod.GET })
-	public Map<String,Page<Tag>> getRecomDefaultTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
+	public Object getRecomDefaultTagList(@RequestParam(name = TagController.parameterFields, defaultValue = "") String fileds,
 													   @RequestParam(name = "index",required = false,defaultValue="0")int index,
 											           @RequestParam(name = "size", required = false,defaultValue="10") int size,
 											           HttpServletRequest request) throws TagServiceException {
@@ -191,7 +191,7 @@ public class TagController extends BaseControl {
 			SimpleFilterProvider filterProvider = builderSimpleFilterProvider(fileds);
 			mappingJacksonValue.setFilters(filterProvider);
 			//result.setResponseData(mappingJacksonValue);
-			return map;
+			return JSONObject.toJSON(map);
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
 			throw e;
@@ -217,7 +217,7 @@ public class TagController extends BaseControl {
 	 * @throws TagSourceServiceException
 	 */
 	@RequestMapping(path = "/tags/tags/createTag", method = { RequestMethod.POST })
-	public Map<String, Object> createTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
+	public Object createTagSource(@RequestParam(name = TagController.parameterDebug, defaultValue = "") String debug,
 			@RequestParam(name = TagController.parameterTagType, required = true) int tagType,
 			@RequestParam(name = TagController.parameterTagName, required = true) String tagName,
 			HttpServletRequest request)
@@ -238,7 +238,7 @@ public class TagController extends BaseControl {
 			Long id = tagService.createTag(loginUserId, tag);
 
 			resultMap.put("id",id);
-			return resultMap;
+			return JSONObject.toJSON(resultMap);
 		} catch (TagServiceException e) {
 			e.printStackTrace(System.err);
 			int errorCode = e.getErrorCode();
