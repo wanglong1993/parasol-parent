@@ -33,7 +33,11 @@ class NewTagServiceImpl implements NewTagService {
 				TagSearchVO tagSearchVO = new TagSearchVO();
 				tagSearchVO.setId(next.getId());
 				tagSearchVO.setUserId(next.getUserId());
-				tagSearchVO.setFirstName(next.getFirstIndex().substring(0,1));
+				String firstIndex = next.getFirstIndex();
+				if (StringUtils.isNotBlank(firstIndex)) {
+					firstIndex = firstIndex.substring(0,1);
+				}
+				tagSearchVO.setFirstName(firstIndex);
 				tagSearchVO.setTagName(next.getTagName());
 				if(sourceType==0){
 					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),2,""));
