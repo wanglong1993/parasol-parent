@@ -13,38 +13,41 @@
     </delete>
 
     <select id="selectSourceByTagId"  resultType="tagSource">
-        select * from tb_tag_source where 1=1
+        SELECT s.* from tb_tag t,tb_tag_source s  where t.id=s.tagId
         <if test=" userId!=0 ">
-            and userId=#{userId}
+            and s.userId=#{userId}
         </if>
         <if test=" sourceType!=0 ">
-            and sourceType = #{sourceType}
+            and s.sourceType = #{sourceType}
         </if>
         <if test=" tagId!=0">
-            and tagId = #{tagId}
+            and s.tagId = #{tagId}
         </if>
         <if test=" keyword!=null and keyword!='' ">
-            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+            and （s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
         </if>
-        GROUP BY sourceId,sourceType
-        order by createAt DESC
+        GROUP BY s.sourceId,s.sourceType
+        order by s.createAt DESC
         limit #{index},#{size}
     </select>
 
     <select id="countSourceByTagId"  resultType="long">
         SELECT COUNT(*) from tb_tag_source WHERE userId=#{userId}
         AND id IN (
-            select id from tb_tag_source where userId=#{userId}
+            SELECT s.id from tb_tag t,tb_tag_source s  where t.id=s.tagId
+            <if test=" userId!=0 ">
+                and s.userId=#{userId}
+            </if>
             <if test=" sourceType!=0 ">
-                and sourceType = #{sourceType}
+                and s.sourceType = #{sourceType}
             </if>
             <if test=" tagId!=0">
-                and tagId = #{tagId}
+                and s.tagId = #{tagId}
             </if>
             <if test=" keyword!=null and keyword!='' ">
-                and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+                and （s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
             </if>
-            GROUP BY sourceId,sourceType
+            GROUP BY s.sourceId,s.sourceType
         )
     </select>
 

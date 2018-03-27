@@ -225,10 +225,12 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
 		try {
 			List<TagSource> tagSources = this.getEntitys(LIST_ID_APPID_SOURCEID_SOURCETYPE, appId, sourceId, sourceType);
-			for(TagSource tagSource:tagSources){
-				long tagId=tagSource.getTagId();
-				Tag tag=tagService.getTag(tagId);
-				tagSource.setTagName(tag.getTagName());
+			if(tagSources!=null && tagSources.size()>0){
+				for(TagSource tagSource:tagSources){
+					long tagId=tagSource.getTagId();
+					Tag tag=tagService.getTag(tagId);
+					tagSource.setTagName(tag.getTagName());
+				}
 			}
 			return tagSources;
 		} catch (Exception e) {

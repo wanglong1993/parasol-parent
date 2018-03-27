@@ -83,7 +83,7 @@ class NewTagServiceImpl implements NewTagService {
 				long customercount=0;
 				long demandcount=0;
 				long knowledgecount=0;
-				List<TagSource> tagSourceList= tagSourcesDao.selectSourceByTagId(userId,next.getId(),sourceType,keyword,0,3);
+				List<TagSource> tagSourceList= tagSourcesDao.selectSourceByTagId(userId,next.getId(),sourceType,"",0,3);
 				if(tagSourceList!=null && tagSourceList.size()>0){
 					ListIterator<TagSource> tagSourceListIterator = tagSourceList.listIterator();
 					while (tagSourceListIterator.hasNext()){
