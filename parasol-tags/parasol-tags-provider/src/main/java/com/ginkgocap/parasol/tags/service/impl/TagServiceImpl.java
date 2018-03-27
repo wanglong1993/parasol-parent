@@ -39,7 +39,7 @@ public class TagServiceImpl extends BaseService<Tag> implements TagService {
 	private static final String LIST_TAG_ID_USERID_IDS = "List_Tag_Id_UserId_Ids";
 
 	private static final int MAX_TAG = 300; // 最多创建的标签数量
-	private static final int MAX_LEN_TAG = 20; // Tag的长度30个字符
+	private static final int MAX_LEN_TAG = 40; // Tag的长度30个字符
 
 	@Autowired
 	private TagSourceService tagSourceService;
