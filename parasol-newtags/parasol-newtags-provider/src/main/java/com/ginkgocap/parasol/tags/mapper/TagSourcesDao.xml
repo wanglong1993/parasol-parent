@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ginkgocap.parasol.tags.mapper.TagSourcesDao">
+
+    <delete id="deleteSourceByType" >
+        DELETE FROM tb_tag_source where userId=#{userId} AND tagId = #{tagId}
+        <if test=" sourceType!=0 ">
+            and sourceType = #{sourceType}
+        </if>
+        <if test=" sourceId!=0 ">
+            and sourceId = #{sourceId}
+        </if>
+    </delete>
+
+    <select id="selectSourceByTagId"  resultType="tagSource">
+        SELECT s.* from tb_tag t,tb_tag_source s  where t.id=s.tagId
+        <if test=" userId!=0 ">
+            and s.userId=#{userId}
+        </if>
+        <if test=" sourceType!=0 ">
+            and s.sourceType = #{sourceType}
+        </if>
+        <if test=" tagId!=0">
+            and s.tagId = #{tagId}
+        </if>
+        <if test=" keyword!=null and keyword!='' ">
+            and （s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
+        </if>
+        GROUP BY s.sourceId,s.sourceType
+        order by s.createAt DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="countSourceByTagId"  resultType="long">
+        SELECT COUNT(*) from tb_tag_source WHERE userId=#{userId}
+        AND id IN (
+            SELECT s.id from tb_tag t,tb_tag_source s  where t.id=s.tagId
+            <if test=" userId!=0 ">
+                and s.userId=#{userId}
+            </if>
+            <if test=" sourceType!=0 ">
+                and s.sourceType = #{sourceType}
+            </if>
+            <if test=" tagId!=0">
+                and s.tagId = #{tagId}
+            </if>
+            <if test=" keyword!=null and keyword!='' ">
+                and （s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
+            </if>
+            GROUP BY s.sourceId,s.sourceType
+        )
+    </select>
+
+    <select id="searchSourcesExctTag"  resultType="tagSource">
+        select * from tb_tag_source where 1=1
+        <if test=" userId!=0 ">
+            and userId=#{userId}
+        </if>
+        <if test=" sourceType!=0 ">
+            and sourceType = #{sourceType}
+        </if>
+        <if test=" keyword!=null and keyword!='' ">
+            and sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+        </if>
+        and tagId not IN (
+             SELECT id FROM tb_tag where userId=#{userId} and tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+        )
+        GROUP BY sourceId,sourceType
+        order by createAt DESC
+    </select>
+
+    <insert id="insertSource" parameterType="tagSource">
+        INSERT INTO tb_tag_source (tagId,appId,userId,sourceId,sourceType,createAt,sourceTitle,sourceExtra,sourceColumnType,supDem)
+        VALUES (#{tagId},#{appId},#{userId},#{sourceId},#{sourceType},#{createAt},#{sourceTitle},#{sourceExtra},#{sourceColumnType},#{supDem})
+    </insert>
+
+</mapper>

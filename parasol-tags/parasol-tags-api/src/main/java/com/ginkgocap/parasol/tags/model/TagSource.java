@@ -2,12 +2,7 @@ package com.ginkgocap.parasol.tags.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -39,14 +34,16 @@ public class TagSource implements Serializable {
 	private String sourceTitle;// '资源标题'
 	private long sourceType; // '资源类型 知识、人脉',
 	private long createAt; // '更新时间',
-
 	private String tagName; //不持久化
+	private long sourceColumnType;
+	private String sourceExtra;
+	private int supDem;//需求供需0供1需
+	private int chosenTag	;//是否选中（不持久化）被选中状态0：未被选中 1：被选中
 	
 
 
 	@Id
-	@GeneratedValue(generator = "tagSourceId")
-	@GenericGenerator(name = "tagSourceId", strategy = "com.ginkgocap.ywxt.framework.dal.dao.id.util.TimeIdGenerator", parameters = { @Parameter(name = "sequence", value = "tagSourceId") })
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Column(name = "id")
 	public long getId() {
 		return id;
@@ -54,6 +51,15 @@ public class TagSource implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	@Column(name = "supDem")
+	public int getSupDem() {
+		return supDem;
+	}
+
+	public void setSupDem(int supDem) {
+		this.supDem = supDem;
 	}
 
 	@Column(name = "tagId")
@@ -127,11 +133,53 @@ public class TagSource implements Serializable {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
-	
-	@Override
-	public String toString() {
-		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceTitle=" + sourceTitle + ", sourceType=" + sourceType + ", createAt="
-				+ createAt +",tagName="+tagName+"]";
+
+	@Transient
+	public int getChosenTag() {
+		return chosenTag;
 	}
 
+	public void setChosenTag(int chosenTag) {
+		this.chosenTag = chosenTag;
+	}
+
+	@Column(name = "sourceExtra")
+	public String getSourceExtra() {
+		return sourceExtra;
+	}
+
+	public void setSourceExtra(String sourceExtra) {
+		this.sourceExtra = sourceExtra;
+	}
+
+	@Column(name = "sourceColumnType")
+	public long getSourceColumnType() {
+		return sourceColumnType;
+	}
+
+	public void setSourceColumnType(long sourceColumnType) {
+		this.sourceColumnType = sourceColumnType;
+	}
+
+	//	@Override
+//	public String toString() {
+//		return "TagSource [id=" + id + ", tagId=" + tagId + ", appId=" + appId + ", userId=" + userId + ", sourceId=" + sourceId + ", sourceTitle=" + sourceTitle + ", sourceType=" + sourceType + ", createAt="
+//				+ createAt +",tagName="+tagName+"]";
+//	}
+
+	@Override
+	public String toString() {
+		return "TagSource{" +
+				"id=" + id +
+				", tagId=" + tagId +
+				", appId=" + appId +
+				", userId=" + userId +
+				", sourceId=" + sourceId +
+				", sourceTitle='" + sourceTitle + '\'' +
+				", sourceType=" + sourceType +
+				", createAt=" + createAt +
+				", tagName='" + tagName + '\'' +
+				", sourceExtra='" + sourceExtra + '\'' +
+				'}';
+	}
 }

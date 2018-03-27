@@ -28,7 +28,7 @@
 	   	<!-- <module>parasol-column</module> -->
  	   	<module>parasol-associate</module>
  	   	<module>parasol-comment</module>
-
+		<module>parasol-newtags</module>
 	</modules>
 	<repositories>
 		<repository>

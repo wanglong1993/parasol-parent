@@ -17,7 +17,7 @@ public interface TagService {
 
 	/**
 	 * 创建一个标签
-	 * 
+	 *
 	 * @param userId
 	 * @param tag
 	 * @return
@@ -27,7 +27,7 @@ public interface TagService {
 
 	/**
 	 * 删除一个标签, Note：要删除使用此标签的资源下边的引用
-	 * 
+	 *
 	 * @param userId
 	 * @param tagId
 	 * @return
@@ -37,7 +37,7 @@ public interface TagService {
 
 	/**
 	 * 更新标签
-	 * 
+	 *
 	 * @param userId
 	 * @param tag
 	 * @return
@@ -47,7 +47,7 @@ public interface TagService {
 
 	/**
 	 * 查询一个标签
-	 * 
+	 *
 	 * @param userId
 	 * @param id
 	 * @return
@@ -74,7 +74,7 @@ public interface TagService {
 
 	/**
 	 * 查找指定用户指定应用指定分类的Tag列表
-	 * 
+	 *
 	 * @param userId
 	 * @param appId
 	 * @param tagType
@@ -85,7 +85,7 @@ public interface TagService {
 
 	/**
 	 * 查找指定用户指定应用指定分类的Tag列表
-	 * 
+	 *
 	 * @param appId
 	 * @param userId
 	 * @return

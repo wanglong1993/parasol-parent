@@ -1,9 +1,6 @@
 package com.ginkgocap.parasol.tags.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.ginkgocap.parasol.tags.model.Property;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,6 +39,8 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	private static final String LIST_ID_APPID_TAGID_SOURCETYPE = "List_Id_AppId_TagId_SourceType";
 	private static final String LIST_BY_APPID_TAGID_SOURCETYPE = "List_By_AppId_TagId_SourceType";
 	private static final String DELETE_BY_APPID_SOURCEID_SOURCETYPE = "Delete_By_AppId_SourceId_SourceType";
+
+	private static final String TAGID_APPID_SOURCEID_SOURCETYPE = "TagId_AppId_SourceId_SourceType";
 
 	private static int MAX_TAG = 10; // 一个资源下最多创建的标签数
 
@@ -226,10 +225,12 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
 		try {
 			List<TagSource> tagSources = this.getEntitys(LIST_ID_APPID_SOURCEID_SOURCETYPE, appId, sourceId, sourceType);
-			for(TagSource tagSource:tagSources){
-				long tagId=tagSource.getTagId();
-				Tag tag=tagService.getTag(tagId);
-				tagSource.setTagName(tag.getTagName());
+			if(tagSources!=null && tagSources.size()>0){
+				for(TagSource tagSource:tagSources){
+					long tagId=tagSource.getTagId();
+					Tag tag=tagService.getTag(tagId);
+					tagSource.setTagName(tag.getTagName());
+				}
 			}
 			return tagSources;
 		} catch (Exception e) {
@@ -245,6 +246,25 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
 		try {
 			return this.getIds(LIST_ID_APPID_SOURCEID_SOURCETYPE, appId, sourceId, sourceType);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw new TagSourceServiceException(e);
+		}
+	}
+
+	@Override
+	public TagSource getByTIdSourceIdType(Long tagId, Long sourceId, Long sourceType) throws Exception{
+
+		ServiceError.assertTagSourceIdIsNullForTagSource(sourceId);
+		ServiceError.assertTagSourceTypeIsNullForTagSource(sourceType);
+		ServiceError.assertTagIdIsNull(tagId);
+		try {
+			List<TagSource> tagSources = this.getEntitys(TAGID_APPID_SOURCEID_SOURCETYPE, ServiceError.appId, tagId, sourceId, sourceType);
+			if (CollectionUtils.isNotEmpty(tagSources)) {
+				return tagSources.get(0);
+			}
+			logger.info("query tagSource is empty.. ");
+			return null;
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 			throw new TagSourceServiceException(e);
@@ -369,7 +389,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 	 * @throws TagSourceServiceException
 	 */
 	@Override
-	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle) throws TagSourceServiceException{
+	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle,long columnType,int supDem,String sourceExtra) throws TagSourceServiceException{
 
 		List<TagSource> tagSourceList = null;
 		List<TagSource> newTagSourceList=new ArrayList<TagSource>();
@@ -378,7 +398,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 			if (CollectionUtils.isEmpty(tagSourceList)) {
 				for (Long tagId : tagIds) {
 					if (tagId != null) {
-						TagSource tagSource = newTagSource(userId,sourceId, sourceTitle, sourceType, tagId);
+						TagSource tagSource = newTagSource(userId,sourceId, sourceTitle, sourceType, tagId,columnType,supDem,sourceExtra);
 						if(tagSource != null){
 							newTagSourceList.add(tagSource);
 						}
@@ -400,7 +420,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 				for (Long Id : tagIds) {
 					final long tagId = Id;
 					if (!(existIdSet.contains(tagId))) {
-						TagSource tagSource = newTagSource(userId,sourceId, sourceTitle, sourceType, tagId);
+						TagSource tagSource = newTagSource(userId,sourceId, sourceTitle, sourceType, tagId,columnType,supDem,sourceExtra);
 						addTagSourceList.add(tagSource);
 					}
 				}
@@ -425,7 +445,7 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		return true;
 	}
 
-	private TagSource newTagSource(long userId, long sourceId, String sourceTitle, long sourceType, long tagId) {
+	private TagSource newTagSource(long userId, long sourceId, String sourceTitle, long sourceType, long tagId,long columnType,int supDem,String sourceExtra) {
 		TagSource tagSource = new TagSource();
 		tagSource.setUserId(userId);
 		tagSource.setAppId(ServiceError.appId);
@@ -434,6 +454,9 @@ public class TagSourcesServiceImpl extends BaseService<TagSource> implements Tag
 		tagSource.setSourceType(sourceType);
 		tagSource.setTagId(tagId);
 		tagSource.setCreateAt(new Date().getTime());
+		tagSource.setSourceColumnType(columnType);
+		tagSource.setSupDem(supDem);
+		tagSource.setSourceExtra(sourceExtra);
 		return tagSource;
 	}
 }

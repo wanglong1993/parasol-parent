@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ginkgocap.parasol.tags.mapper.TagDao">
+
+    <select id="selectTagListByKeword"  resultType="tag">
+        select * from tb_tag where 1=1
+        <if test=" userId!=0 ">
+            and userId=#{userId}
+        </if>
+        <if test='keyword!="" and keyword!=null ' >
+            and tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+        </if>
+        order by sortType,firstIndex ASC
+        limit #{index},#{size}
+    </select>
+
+    <select id="countTagListByKeword"  resultType="long">
+        select COUNT(*) from tb_tag where 1=1
+        <if test=" userId!=0 ">
+            and userId=#{userId}
+        </if>
+        <if test='keyword!="" and keyword!=null ' >
+            and tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+        </if>
+    </select>
+
+    <select id="selectTagBySourceId"  resultType="tag">
+        SELECT t.* from tb_tag t,tb_tag_source s where t.id=s.tagId and s.sourceId=#{sourceId} and s.sourceType=#{sourceType} and s.userId=#{userId}
+    </select>
+
+</mapper>

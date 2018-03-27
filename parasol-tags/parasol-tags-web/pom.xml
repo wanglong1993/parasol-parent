@@ -85,9 +85,19 @@
 	<dependencies>
 		<!-- business -->
 		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.15</version>
+		</dependency>
+		<dependency>
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-tags-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gintong.common</groupId>
+			<artifactId>phoenix-permission-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ginkgocap.ywxt</groupId>
@@ -206,44 +216,6 @@
 			<artifactId>quartz</artifactId>
 			<version>1.8.5</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>com.ginkgocap.ywxt</groupId>
-			<artifactId>phoenix-util</artifactId>
-			<version>${util.dependencied}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>httpclient</artifactId>
-					<groupId>org.apache.httpcomponents</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency> -->
-
-		<!-- <dependency>
-			<groupId>com.gintong.frame</groupId>
-			<artifactId>phoenix-frame-util</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>jedis</artifactId>
-					<groupId>redis.clients</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency> -->
-		<!-- <dependency>
-			<groupId>com.ginkgocap.ywxt</groupId>
-			<artifactId>phoenix-entire-api</artifactId>
-			<version>5.6.3</version>
-		</dependency> -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.5.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.5.1</version>
-		</dependency>
 		<!-- file upload start -->
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -271,6 +243,11 @@
 			<groupId>com.ginkgocap.parasol</groupId>
 			<artifactId>parasol-util</artifactId>
 			<version>1.0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ginkgocap.parasol</groupId>
+			<artifactId>parasol-newtags-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -419,6 +396,6 @@
 					<filter>${sa.config.file}</filter>
 				</filters>
 			</build>
-		</profile>  
+		</profile>
 	</profiles>
 </project>
