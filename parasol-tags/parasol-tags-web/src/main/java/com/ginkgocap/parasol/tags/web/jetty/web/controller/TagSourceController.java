@@ -452,7 +452,7 @@ public class TagSourceController extends BaseControl {
 					interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION, "sourceType不能为空！");
 					return interfaceResult;
 				}
-				tagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle,columnType,supDem,sourceExtra);
+				newTagSourceService.updateTagsources(loginAppId, loginUserId, sourceId, sourceType, tagIds, sourceTitle,columnType,supDem,sourceExtra);
 			if (sourceType == 8) {
 					try {
 						knowledgeService.updateTag(loginUserId, sourceId, columnType, tagIds);
