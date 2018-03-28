@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -126,5 +127,34 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 			flag=false;
 		}
 		return flag;
+	}
+
+	@Override
+	public boolean updateTagsources(Long appId, Long userId, Long sourceId, Long sourceType, List<Long> tagIds, String sourceTitle, long columnType, int supDem, String sourceExtra) {
+		try {
+			tagSourcesDao.deleteSourceByType(userId,0,Integer.valueOf(sourceType+""),sourceId);
+			if(tagIds!=null && tagIds.size()>0){
+				Iterator<Long> iterator = tagIds.iterator();
+				while (iterator.hasNext()){
+					Long next = iterator.next();
+					TagSource tagSource = new TagSource();
+					tagSource.setAppId(appId);
+					tagSource.setSourceExtra(sourceExtra);
+					tagSource.setSupDem(supDem);
+					tagSource.setSourceColumnType(columnType);
+					tagSource.setSourceTitle(sourceTitle);
+					tagSource.setCreateAt(System.currentTimeMillis());
+					tagSource.setTagId(next);
+					tagSource.setUserId(userId);
+					tagSource.setSourceId(sourceId);
+					tagSource.setSourceType(sourceType);
+					tagSourcesDao.insertSource(tagSource);
+				}
+			}
+			return true;
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

@@ -3,7 +3,10 @@
 <mapper namespace="com.ginkgocap.parasol.tags.mapper.TagSourcesDao">
 
     <delete id="deleteSourceByType" >
-        DELETE FROM tb_tag_source where userId=#{userId} AND tagId = #{tagId}
+        DELETE FROM tb_tag_source where userId=#{userId}
+        <if test=" tagId!=0 ">
+            AND tagId = #{tagId}
+        </if>
         <if test=" sourceType!=0 ">
             and sourceType = #{sourceType}
         </if>

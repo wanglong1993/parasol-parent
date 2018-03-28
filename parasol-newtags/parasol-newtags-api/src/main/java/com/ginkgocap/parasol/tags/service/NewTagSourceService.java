@@ -18,4 +18,7 @@ public interface NewTagSourceService {
 	public List<SourceSearchVO> searchSourcesExctTag(long userId,String keyWord,int sourceType);
 
 	public boolean  updateSourceByTagId(long userId,long tagId,int sourceType,List<TagSource> tagSourceList);
+
+	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle,long columnType,int supDem,String sourceExtra);
+
 }
