@@ -21,11 +21,9 @@
             and s.sourceType = #{sourceType}
         </if>
         <if test=" tagId!=0" >
+            and  s.tagId = #{tagId}
             <if test=" keyword!=null and keyword!='' ">
-                and (s.tagId = #{tagId} and s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
-            </if>
-            <if test=" keyword==null or keyword=='' ">
-                and  s.tagId = #{tagId}
+                and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
             </if>
         </if>
         <if test=" tagId==0 " >
@@ -49,11 +47,9 @@
                 and s.sourceType = #{sourceType}
             </if>
             <if test=" tagId!=0" >
+                and  s.tagId = #{tagId}
                 <if test=" keyword!=null and keyword!='' ">
-                    and (s.tagId = #{tagId} and s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
-                </if>
-                <if test=" keyword==null or keyword=='' ">
-                    and  s.tagId = #{tagId}
+                    and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
                 </if>
             </if>
             <if test=" tagId==0 " >
