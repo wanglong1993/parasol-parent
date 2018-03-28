@@ -418,9 +418,8 @@ public class TagSourceController extends BaseControl {
 				if(j.containsKey("sourceExtra")){
 					sourceExtra = j.getString("sourceExtra");
 				}
-				int columnType=0;
+				int columnType=j.getInt("columnType");;
 				if(sourceType==8){
-					columnType=j.getInt("columnType");
 					if (columnType<=0) {
 						logger.error("columnType is null..");
 						interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_NULL_EXCEPTION,"columnType不能为空！");
