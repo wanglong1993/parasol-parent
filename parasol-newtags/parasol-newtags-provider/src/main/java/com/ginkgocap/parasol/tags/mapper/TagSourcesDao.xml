@@ -21,15 +21,10 @@
             and s.sourceType = #{sourceType}
         </if>
         <if test=" tagId!=0" >
-            and  s.tagId = #{tagId}
-            <if test=" keyword!=null and keyword!='' ">
-                and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
-            </if>
+            and s.tagId = #{tagId}
         </if>
-        <if test=" tagId==0 " >
-            <if test=" keyword!=null and keyword!='' ">
-                and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
-            </if>
+        <if test=" keyword!=null and keyword!='' ">
+            and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
         </if>
         GROUP BY s.sourceId,s.sourceType
         order by s.createAt DESC
@@ -48,14 +43,9 @@
             </if>
             <if test=" tagId!=0" >
                 and  s.tagId = #{tagId}
-                <if test=" keyword!=null and keyword!='' ">
-                    and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
-                </if>
             </if>
-            <if test=" tagId==0 " >
-                <if test=" keyword!=null and keyword!='' ">
-                    and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
-                </if>
+            <if test=" keyword!=null and keyword!='' ">
+                and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
             </if>
             GROUP BY s.sourceId,s.sourceType
         )
