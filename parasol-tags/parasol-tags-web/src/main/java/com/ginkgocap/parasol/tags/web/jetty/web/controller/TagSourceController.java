@@ -566,7 +566,7 @@ public class TagSourceController extends BaseControl {
 	 */
 	@RequestMapping(path = "/tags/source/searchSource", method = { RequestMethod.POST })
 	public InterfaceResult searchSource(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
-										   @RequestParam(name = TagSourceController.parameterTagId, required = true) Long tagId,
+										   @RequestParam(name = TagSourceController.parameterTagId, required = true) long tagId,
 										   @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
 										   @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
 										   @RequestParam(name = TagSourceController.parameterStart, required = true) int start,
@@ -575,7 +575,8 @@ public class TagSourceController extends BaseControl {
 		Long loginUserId=this.getUserId(request);
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		try {
-			logger.info("搜索资源:**loginUserId="+loginUserId+"**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
+			logger.info("搜索资源:**loginUserId="+loginUserId+"**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count+
+			"**标签tagId-"+tagId);
 			List<SourceSearchVO> tags = newTagSourceService.searchTagSources(loginUserId,tagId,keyword,sourceType,start,count);
 			responseDataMap.put("list", tags);
 			responseDataMap.put("totalcount", newTagSourceService.countSourceByTagId(loginUserId,tagId,sourceType,keyword));
