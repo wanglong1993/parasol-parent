@@ -3,7 +3,7 @@
 <mapper namespace="com.ginkgocap.parasol.tags.mapper.TagDao">
 
     <select id="selectTagListByKeword"  resultType="tag">
-        select * from tb_tag where 1=1
+        select * from tb_tag where tagType!=18
         <if test=" userId!=0 ">
             and userId=#{userId}
         </if>
@@ -15,7 +15,7 @@
     </select>
 
     <select id="countTagListByKeword"  resultType="long">
-        select COUNT(*) from tb_tag where 1=1
+        select COUNT(*) from tb_tag where tagType!=18
         <if test=" userId!=0 ">
             and userId=#{userId}
         </if>
@@ -26,6 +26,10 @@
 
     <select id="selectTagBySourceId"  resultType="tag">
         SELECT t.* from tb_tag t,tb_tag_source s where t.id=s.tagId and s.sourceId=#{sourceId} and s.sourceType=#{sourceType} and s.userId=#{userId}
+    </select>
+
+    <select id="getTagById"  resultType="tag">
+        SELECT * from tb_tag where id = #{id}
     </select>
 
 </mapper>

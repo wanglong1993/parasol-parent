@@ -16,7 +16,7 @@
     </delete>
 
     <select id="selectSourceByTagId"  resultType="tagSource">
-        SELECT * from tb_tag_source where userId=#{userId}
+        SELECT * from tb_tag_source where userId=#{userId} and sourceType!=18
         <if test=" sourceType!=0 ">
             and sourceType = #{sourceType}
         </if>
@@ -39,7 +39,7 @@
     </select>
 
     <select id="countSourceByTagId"  resultType="long">
-        SELECT COUNT(*) from tb_tag_source WHERE userId=#{userId}
+        SELECT COUNT(*) from tb_tag_source WHERE userId=#{userId} and sourceType!=18
         AND id IN (
         SELECT id from tb_tag_source where userId=#{userId}
         <if test=" sourceType!=0 ">
@@ -63,7 +63,7 @@
     </select>
 
     <select id="searchSourceByTagIdAndtagName"  resultType="long">
-        SELECT id from tb_tag_source where userId=#{userId}
+        SELECT id from tb_tag_source where userId=#{userId} and sourceType!=18
         <if test=" sourceType!=0 ">
             and sourceType = #{sourceType}
         </if>
@@ -83,7 +83,7 @@
     </select>
 
     <select id="searchSourcesExctTag"  resultType="tagSource">
-        select * from tb_tag_source where userId=#{userId}
+        select * from tb_tag_source where userId=#{userId} and sourceType!=18
         <if test=" sourceType!=0 ">
             and sourceType = #{sourceType}
         </if>

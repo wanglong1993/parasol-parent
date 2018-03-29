@@ -16,7 +16,6 @@ public interface TagSourcesDao {
      * @param tagId
      * @param sourceType
      * @param keyword
-     * @param index
      * @param size
      * @return
      */
@@ -41,4 +40,5 @@ public interface TagSourcesDao {
 
     long insertSource(TagSource tagSource);
 
+    List<TagSource> getTagSourcesBySourceId(@Param("userId")Long userId, @Param("sourceId")Long sourceId, @Param("sourceType")Long sourceType);
 }

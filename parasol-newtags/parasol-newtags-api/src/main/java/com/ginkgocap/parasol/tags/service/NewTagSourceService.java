@@ -21,4 +21,5 @@ public interface NewTagSourceService {
 
 	public boolean updateTagsources(Long appId, Long userId, Long sourceId,Long sourceType,List<Long> tagIds,String sourceTitle,long columnType,int supDem,String sourceExtra);
 
+	List<TagSource> getTagSourcesBySourceId(Long userId,Long sourceId, Long sourceType);
 }

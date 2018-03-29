@@ -198,4 +198,19 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 			return false;
 		}
 	}
+
+	@Override
+	public List<TagSource> getTagSourcesBySourceId(Long userId, Long sourceId, Long sourceType) {
+		List<TagSource> tagSourcesBySourceId = tagSourcesDao.getTagSourcesBySourceId(userId, sourceId, sourceType);
+		if(tagSourcesBySourceId!=null && tagSourcesBySourceId.size()>0){
+			for (TagSource tagSource: tagSourcesBySourceId) {
+				long tagId = tagSource.getTagId();
+				Tag tagById = tagDao.getTagById(tagId);
+				if(tagById!=null){
+					tagSource.setTagName(tagById.getTagName());
+				}
+			}
+		}
+		return tagSourcesBySourceId;
+	}
 }

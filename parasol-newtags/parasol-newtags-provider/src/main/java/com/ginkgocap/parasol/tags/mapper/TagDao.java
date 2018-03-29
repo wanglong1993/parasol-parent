@@ -13,4 +13,6 @@ public interface TagDao {
     long  countTagListByKeword(@Param("userId") long userId, @Param("keyword") String keyword);
 
     List<Tag> selectTagBySourceId(@Param("userId") long userId,@Param("sourceId") long sourceId,@Param("sourceType") long sourceType);
+
+    Tag getTagById(@Param("id") long id);
 }
