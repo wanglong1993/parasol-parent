@@ -365,7 +365,7 @@ public class TagSourceController extends BaseControl {
 			// 1.查询后台服务r
 			List<TagSource> tagSourceList = null;
 			try {
-				tagSourceList = tagSourceService.getTagSourcesBySourceId(loginAppId,sourceId,sourceType);
+				tagSourceList = newTagSourceService.getTagSourcesBySourceId(loginUserId,sourceId,sourceType);
 			} catch (Exception e) {
 				e.printStackTrace();
 				interfaceResult = interfaceResult.getInterfaceResultInstance(CommonResultCode.PARAMS_DB_OPERATION_EXCEPTION,"数据库操作失败！");

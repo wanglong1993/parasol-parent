@@ -102,4 +102,8 @@
         VALUES (#{tagId},#{appId},#{userId},#{sourceId},#{sourceType},#{createAt},#{sourceTitle},#{sourceExtra},#{sourceColumnType},#{supDem})
     </insert>
 
+
+    <select id="getTagSourcesBySourceId"  resultType="tagSource">
+        select * from tb_tag_source where userId=#{userId} and sourceType = #{sourceType} and sourceId=#{sourceId}
+    </select>
 </mapper>
