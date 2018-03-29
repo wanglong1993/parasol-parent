@@ -381,6 +381,11 @@ public class FileController extends BaseControl {
 			} else {
 				index.setUrl(nginxDFSRoot + "/" + index.getFilePath());
 			}
+			// gif图片的时候要把 大图和压缩图都修改成原图，这样前端才能播放
+			if (StringUtils.isNotBlank(fileExtName) && fileExtName.toUpperCase().equals("GIF") ) {
+				index.setRemark(index.getFilePath());
+				index.setUrl(nginxDFSRoot + "/" + index.getFilePath());
+			}
 			index = fileIndexService.insertFileIndex(index);
 			index.setHeigth(source_h);
 			index.setWidth(source_w);
