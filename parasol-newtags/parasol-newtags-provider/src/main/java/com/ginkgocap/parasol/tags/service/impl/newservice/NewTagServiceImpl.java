@@ -4,6 +4,7 @@ import com.ginkgocap.parasol.tags.mapper.TagDao;
 import com.ginkgocap.parasol.tags.mapper.TagSourcesDao;
 import com.ginkgocap.parasol.tags.model.*;
 import com.ginkgocap.parasol.tags.service.NewTagService;
+import net.sf.json.util.JSONUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,9 @@ class NewTagServiceImpl implements NewTagService {
 	@Override
 	public List<TagSearchVO> selectTagListByKeword(long userId, String keyword, int sourceType, int index, int size) {
 		List<TagSearchVO> tagSearchVOs = new ArrayList<TagSearchVO>();
+		logger.info("查询条件keyword="+ keyword);
 		List<Tag> tags = tagDao.selectTagListByKeword(userId, keyword, index*size, size);
+		logger.info("查询到的标签列表="+ JSONUtils.valueToString(tags)+"***标签数量="+tags.size());
 		if(tags!=null && tags.size()>0){
 			ListIterator<Tag> tagListIterator = tags.listIterator();
 			while (tagListIterator.hasNext()){

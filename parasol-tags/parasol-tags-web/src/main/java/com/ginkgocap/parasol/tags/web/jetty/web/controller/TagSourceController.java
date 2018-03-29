@@ -622,6 +622,11 @@ public class TagSourceController extends BaseControl {
 			}else {
 				responseDataMap.put("sourceList", null);
 			}
+			if((start+1)*count>=counts){
+				responseDataMap.put("webSourceList", newTagSourceService.searchSourcesExctTag(loginUserId,keyword,sourceType));
+			}else {
+				responseDataMap.put("webSourceList", null);
+			}
 //			return InterfaceResult.getSuccessInterfaceResultInstance(JsonUtils.beanToJson(responseDataMap));
 			return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
 		} catch (Exception e) {
