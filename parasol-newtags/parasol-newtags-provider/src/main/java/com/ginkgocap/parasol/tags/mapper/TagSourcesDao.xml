@@ -16,59 +16,74 @@
     </delete>
 
     <select id="selectSourceByTagId"  resultType="tagSource">
-        SELECT s.* from tb_tag t,tb_tag_source s  where t.id=s.tagId
-        <if test=" userId!=0 ">
-            and s.userId=#{userId}
-        </if>
+        SELECT * from tb_tag_source where userId=#{userId}
         <if test=" sourceType!=0 ">
-            and s.sourceType = #{sourceType}
+            and sourceType = #{sourceType}
         </if>
         <if test=" tagId!=0" >
-            and  s.tagId = #{tagId}
-            <if test=" keyword!=null and keyword!='' ">
-                and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
-            </if>
+            and  tagId = #{tagId}
         </if>
-        <if test=" tagId==0 " >
-            <if test=" keyword!=null and keyword!='' ">
-                and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
+        <if test=" keyword!=null and keyword!='' ">
+            and (sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+            <if test=" sourceIdList!=null and sourceIdList.size>0 ">
+                OR id IN
+                <foreach collection="sourceIdList" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
             </if>
+            )
         </if>
-        GROUP BY s.sourceId,s.sourceType
-        order by s.createAt DESC
-        limit #{index},#{size}
+        GROUP BY sourceId,sourceType
+        order by createAt DESC
+        limit #{start},#{size}
     </select>
 
     <select id="countSourceByTagId"  resultType="long">
         SELECT COUNT(*) from tb_tag_source WHERE userId=#{userId}
         AND id IN (
-            SELECT s.id from tb_tag t,tb_tag_source s  where t.id=s.tagId
-            <if test=" userId!=0 ">
-                and s.userId=#{userId}
+        SELECT id from tb_tag_source where userId=#{userId}
+        <if test=" sourceType!=0 ">
+            and sourceType = #{sourceType}
+        </if>
+        <if test=" tagId!=0" >
+            and  tagId = #{tagId}
+        </if>
+        <if test=" keyword!=null and keyword!='' ">
+            and (sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+            <if test=" sourceIdList!=null and sourceIdList.size>0">
+                OR id IN
+                <foreach collection="sourceIdList" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
             </if>
-            <if test=" sourceType!=0 ">
-                and s.sourceType = #{sourceType}
-            </if>
-            <if test=" tagId!=0" >
-                and  s.tagId = #{tagId}
-                <if test=" keyword!=null and keyword!='' ">
-                    and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
-                </if>
-            </if>
-            <if test=" tagId==0 " >
-                <if test=" keyword!=null and keyword!='' ">
-                    and (s.sourceTitle LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%') )
-                </if>
-            </if>
-            GROUP BY s.sourceId,s.sourceType
+            )
+        </if>
+        GROUP BY sourceId,sourceType
         )
     </select>
 
-    <select id="searchSourcesExctTag"  resultType="tagSource">
-        select * from tb_tag_source where 1=1
-        <if test=" userId!=0 ">
-            and userId=#{userId}
+    <select id="searchSourceByTagIdAndtagName"  resultType="long">
+        SELECT id from tb_tag_source where userId=#{userId}
+        <if test=" sourceType!=0 ">
+            and sourceType = #{sourceType}
         </if>
+        <if test=" tagId!=0" >
+            and  tagId = #{tagId}
+        </if>
+        AND sourceId IN (
+            SELECT s.sourceId FROM tb_tag t,tb_tag_source s where s.tagId=t.id
+            <if test=" userId!=0 ">
+                and s.userId=#{userId}
+            </if>
+            <if test=" keyword!=null and keyword!='' ">
+                and t.tagName LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+            </if>
+        )
+        GROUP BY sourceId,sourceType
+    </select>
+
+    <select id="searchSourcesExctTag"  resultType="tagSource">
+        select * from tb_tag_source where userId=#{userId}
         <if test=" sourceType!=0 ">
             and sourceType = #{sourceType}
         </if>

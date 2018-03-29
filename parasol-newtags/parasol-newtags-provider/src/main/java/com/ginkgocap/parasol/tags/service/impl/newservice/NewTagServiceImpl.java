@@ -40,18 +40,18 @@ class NewTagServiceImpl implements NewTagService {
 				tagSearchVO.setFirstName(firstIndex);
 				tagSearchVO.setTagName(next.getTagName());
 				if(sourceType==0){
-					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),2,""));
-					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),3,""));
-					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),8,""));
-					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),7,""));
+					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),2,"",null));
+					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),3,"",null));
+					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),8,"",null));
+					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),7,"",null));
 				}else if(sourceType==2){
-					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),2,""));
+					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),2,"",null));
 				}else if(sourceType==3){
-					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),3,""));
+					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),3,"",null));
 				}else if(sourceType==7){
-					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),7,""));
+					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),7,"",null));
 				}else if(sourceType==8){
-					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),8,""));
+					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),8,"",null));
 				}
 				tagSearchVOs.add(tagSearchVO);
 			}
@@ -87,7 +87,7 @@ class NewTagServiceImpl implements NewTagService {
 				long customercount=0;
 				long demandcount=0;
 				long knowledgecount=0;
-				List<TagSource> tagSourceList= tagSourcesDao.selectSourceByTagId(userId,next.getId(),sourceType,"",0,3);
+				List<TagSource> tagSourceList= tagSourcesDao.selectSourceByTagId(userId,next.getId(),sourceType,"",0,3,null);
 				if(tagSourceList!=null && tagSourceList.size()>0){
 					ListIterator<TagSource> tagSourceListIterator = tagSourceList.listIterator();
 					while (tagSourceListIterator.hasNext()){

@@ -9,15 +9,13 @@ import com.ginkgocap.parasol.tags.model.SourceSearchVO;
 import com.ginkgocap.parasol.tags.service.NewTagSourceService;
 import com.ginkgocap.parasol.tags.utils.GetId;
 import net.sf.json.util.JSONUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 
 @Service("newTagSourceService")
@@ -32,28 +30,66 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 	private TagDao tagDao;
 
 
+	/**
+	 * 查询符合条件的资源
+	 * @param userId
+	 * @param tagId
+	 * @param keyWord
+	 * @param sourceType
+	 * @param index
+	 * @param size
+	 * @return
+	 */
 	@Override
 	public List<SourceSearchVO> searchTagSources(long userId, long tagId, String keyWord, int sourceType, int index, int size) {
-		logger.info("查询资源查询列表参数：userId="+ userId+"**tagId="+tagId+"**keyWord"+keyWord+"**sourceType="+sourceType);
+		logger.info("查询资源查询列表参数：userId="+ userId+"**tagId="+tagId+"**keyWord"+keyWord+"**sourceType="+sourceType+"**index="+index+"**size="+size);
 		List<SourceSearchVO> sourceSearchVOList = new ArrayList<SourceSearchVO>();
-		List<TagSource> tagSourceList= tagSourcesDao.selectSourceByTagId(userId,tagId,sourceType,keyWord,index*size,size);
-		if(tagSourceList!=null && tagSourceList.size()>0){
-			ListIterator<TagSource> tagSourceListIterator = tagSourceList.listIterator();
-			while (tagSourceListIterator.hasNext()){
-				TagSource next = tagSourceListIterator.next();
-				SourceSearchVO tagSourceSearchVO = new SourceSearchVO();
-				tagSourceSearchVO.setCreateAt(next.getCreateAt());
-				tagSourceSearchVO.setSourceExtra(next.getSourceExtra());
-				tagSourceSearchVO.setSourceId(next.getSourceId());
-				tagSourceSearchVO.setSourceTitle(next.getSourceTitle());
-				tagSourceSearchVO.setSourceType(next.getSourceType());
-				List<Tag> tags = tagDao.selectTagBySourceId(userId, next.getSourceId(), next.getSourceType());
-				tagSourceSearchVO.setSourceTagList(tags);
-				tagSourceSearchVO.setCreateUserId(next.getUserId());
-				tagSourceSearchVO.setSourceColumnType(next.getSourceColumnType());
-				tagSourceSearchVO.setSupDem(next.getSupDem());
-				tagSourceSearchVO.setId(next.getId());
-				sourceSearchVOList.add(tagSourceSearchVO);
+		if(StringUtils.isEmpty(keyWord)){
+			List<TagSource> tagSourceList= tagSourcesDao.selectSourceByTagId(userId,tagId,sourceType,keyWord,index*size,size,null);
+			if(tagSourceList!=null && tagSourceList.size()>0){
+				ListIterator<TagSource> tagSourceListIterator = tagSourceList.listIterator();
+				while (tagSourceListIterator.hasNext()){
+					TagSource next = tagSourceListIterator.next();
+					SourceSearchVO tagSourceSearchVO = new SourceSearchVO();
+					tagSourceSearchVO.setCreateAt(next.getCreateAt());
+					tagSourceSearchVO.setSourceExtra(next.getSourceExtra());
+					tagSourceSearchVO.setSourceId(next.getSourceId());
+					tagSourceSearchVO.setSourceTitle(next.getSourceTitle());
+					tagSourceSearchVO.setSourceType(next.getSourceType());
+					List<Tag> tags = tagDao.selectTagBySourceId(userId, next.getSourceId(), next.getSourceType());
+					tagSourceSearchVO.setSourceTagList(tags);
+					tagSourceSearchVO.setCreateUserId(next.getUserId());
+					tagSourceSearchVO.setSourceColumnType(next.getSourceColumnType());
+					tagSourceSearchVO.setSupDem(next.getSupDem());
+					tagSourceSearchVO.setId(next.getId());
+					sourceSearchVOList.add(tagSourceSearchVO);
+				}
+			}
+		}else{
+			List<Long> sourceIdList = tagSourcesDao.searchSourceByTagIdAndtagName(userId, tagId, sourceType, keyWord);
+			logger.info("符合标签的资源id列表：sourceIdList="+JSONUtils.valueToString(sourceIdList));
+			logger.info("执行前：index="+index+"size="+size+"index * size="+ index * size);
+			List<TagSource> tagSourceList = tagSourcesDao.selectSourceByTagId(userId, tagId, sourceType, keyWord, index * size, size , sourceIdList);
+			logger.info("执行后：index="+index+"size="+size+"index * size="+ index * size);
+			if(tagSourceList!=null && tagSourceList.size()>0){
+				ListIterator<TagSource> tagSourceListIterator = tagSourceList.listIterator();
+				while (tagSourceListIterator.hasNext()){
+					TagSource next = tagSourceListIterator.next();
+					logger.info("资源id="+next.getSourceId()+"****资源名称="+next.getSourceTitle());
+					SourceSearchVO tagSourceSearchVO = new SourceSearchVO();
+					tagSourceSearchVO.setCreateAt(next.getCreateAt());
+					tagSourceSearchVO.setSourceExtra(next.getSourceExtra());
+					tagSourceSearchVO.setSourceId(next.getSourceId());
+					tagSourceSearchVO.setSourceTitle(next.getSourceTitle());
+					tagSourceSearchVO.setSourceType(next.getSourceType());
+					List<Tag> tags = tagDao.selectTagBySourceId(userId, next.getSourceId(), next.getSourceType());
+					tagSourceSearchVO.setSourceTagList(tags);
+					tagSourceSearchVO.setCreateUserId(next.getUserId());
+					tagSourceSearchVO.setSourceColumnType(next.getSourceColumnType());
+					tagSourceSearchVO.setSupDem(next.getSupDem());
+					tagSourceSearchVO.setId(next.getId());
+					sourceSearchVOList.add(tagSourceSearchVO);
+				}
 			}
 		}
 		return sourceSearchVOList;
@@ -74,7 +110,12 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 
 	@Override
 	public long countSourceByTagId(long userId, long tagId, int sourceType, String keyword) {
-		return tagSourcesDao.countSourceByTagId(userId, tagId, sourceType, keyword);
+		if(StringUtils.isEmpty(keyword)){
+			return tagSourcesDao.countSourceByTagId(userId, tagId, sourceType, keyword,null);
+		}else{
+			List<Long> sourceIdList = tagSourcesDao.searchSourceByTagIdAndtagName(userId, tagId, sourceType, keyword);
+			return tagSourcesDao.countSourceByTagId(userId, tagId, sourceType, keyword,sourceIdList);
+		}
 	}
 
 	@Override
@@ -132,7 +173,7 @@ public class NewTagSourcesServiceImpl implements NewTagSourceService {
 	@Override
 	public boolean updateTagsources(Long appId, Long userId, Long sourceId, Long sourceType, List<Long> tagIds, String sourceTitle, long columnType, int supDem, String sourceExtra) {
 		try {
-			tagSourcesDao.deleteSourceByType(userId,0,Integer.valueOf(sourceType+""),sourceId);
+//			tagSourcesDao.deleteSourceByType(userId,0,Integer.valueOf(sourceType+""),sourceId);
 			if(tagIds!=null && tagIds.size()>0){
 				Iterator<Long> iterator = tagIds.iterator();
 				while (iterator.hasNext()){
