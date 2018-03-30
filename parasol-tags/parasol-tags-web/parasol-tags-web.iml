@@ -71,6 +71,15 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-pool2:2.4.2" level="project" />
     <orderEntry type="library" name="Maven: com.mortennobel:imagescaling:0.8.5" level="project" />
     <orderEntry type="library" name="Maven: com.ginkgocap.ywxt:phoenix-knowledge-api:3.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="parasol-associate-api" />
+    <orderEntry type="library" name="Maven: com.ginkgocap.ywxt:phoenix-framework-cache:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache:2.10.1" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.xmemcached:xmemcached:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-digester:commons-digester:2.1" level="project" />
+    <orderEntry type="library" name="Maven: com.ginkgocap.ywxt:phoenix-framework-id:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.ginkgocap.ywxt:phoenix-framework-dal:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.4" level="project" />
+    <orderEntry type="module" module-name="phoenix-organ-api" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:1.3.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:1.3.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:1.3.0.RELEASE" level="project" />

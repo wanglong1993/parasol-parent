@@ -504,6 +504,10 @@ public class TagSourceController extends BaseControl {
 		Map<String, Boolean> responseDataMap = new HashMap<String, Boolean>();
 		boolean flag=false;
 		try {
+			if(loginUserId==null){
+				logger.error("userId is null");
+				return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+			}
 			if(sourceType==0){
 				tagService.removeTag(loginUserId,tagId);
 				flag = newTagSourceService.deleteSourceByType(loginUserId, tagId, sourceType, sourceId);
@@ -540,6 +544,10 @@ public class TagSourceController extends BaseControl {
 		Long loginUserId=this.getUserId(request);
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		try {
+			if(loginUserId==null){
+				logger.error("userId is null");
+				return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+			}
 			logger.info("新的标签列表及标签搜索:**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
 			List<TagSearchVO> tags = newTagService.selectTagListByKeword(loginUserId, keyword, sourceType, start, count);
 			long counts = newTagService.countTagListByKeword(loginUserId, keyword);
@@ -574,6 +582,10 @@ public class TagSourceController extends BaseControl {
 		Long loginUserId=this.getUserId(request);
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		try {
+			if(loginUserId==null){
+				logger.error("userId is null");
+				return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+			}
 			logger.info("搜索资源:**loginUserId="+loginUserId+"**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count+
 			"**标签tagId-"+tagId);
 			List<SourceSearchVO> tags = newTagSourceService.searchTagSources(loginUserId,tagId,keyword,sourceType,start,count);
@@ -612,6 +624,10 @@ public class TagSourceController extends BaseControl {
 		Long loginUserId=this.getUserId(request);
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		try {
+			if(loginUserId==null){
+				logger.error("userId is null");
+				return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
+			}
 			logger.info("全局搜索资源:**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
 			List<TagSourceSearchVO> tags = newTagService.selectTagSourceList(loginUserId, keyword, sourceType, start, count);
 			long counts = newTagService.countTagListByKeword(loginUserId,keyword);
