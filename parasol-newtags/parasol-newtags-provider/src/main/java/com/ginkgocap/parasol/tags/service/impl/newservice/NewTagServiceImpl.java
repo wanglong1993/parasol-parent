@@ -43,20 +43,24 @@ class NewTagServiceImpl implements NewTagService {
 				}
 				tagSearchVO.setFirstName(firstIndex);
 				tagSearchVO.setTagName(next.getTagName());
-				if (sourceType == 0) {
-					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 2, "", null));
-					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 3, "", null));
-					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 8, "", null));
-					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 7, "", null));
-				} else if (sourceType == 2) {
-					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 2, "", null));
-				} else if (sourceType == 3) {
-					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 3, "", null));
-				} else if (sourceType == 7) {
-					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 7, "", null));
-				} else if (sourceType == 8) {
-					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 8, "", null));
-				}
+                if (size <= 20) {
+                    if (sourceType == 0) {
+                        tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 2, "", null));
+                        tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 3, "", null));
+                        tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 8, "", null));
+                        tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 7, "", null));
+                    } else if (sourceType == 2) {
+                        tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 2, "", null));
+                    } else if (sourceType == 3) {
+                        tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 3, "", null));
+                    } else if (sourceType == 7) {
+                        tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 7, "", null));
+                    } else if (sourceType == 8) {
+                        tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 8, "", null));
+                    }
+                } else {
+                    logger.info("because size to large so, set source to 0. userId: " + userId + " size: " + size);
+                }
 				tagSearchVOs.add(tagSearchVO);
 			}
 		}
