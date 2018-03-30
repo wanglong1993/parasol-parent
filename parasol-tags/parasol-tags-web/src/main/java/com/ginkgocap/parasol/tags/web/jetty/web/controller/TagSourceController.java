@@ -61,6 +61,7 @@ public class TagSourceController extends BaseControl {
 	private static final String parameterTagSourceId = "id";
 	private static final String parameterCount = "count";
 	private static final String parameterStart = "start";
+    private static final String parameterPage = "page";
 	private static final String parameterKeyword = "keyword";
 
 	@Resource
@@ -524,7 +525,7 @@ public class TagSourceController extends BaseControl {
 	 * @param debug
 	 * @param sourceType
 	 * @param keyword
-	 * @param start
+	 * @param page
 	 * @param count
 	 * @param request
 	 * @return
@@ -534,14 +535,14 @@ public class TagSourceController extends BaseControl {
 	public InterfaceResult selectTagList(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
 											   @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
 											   @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
-											   @RequestParam(name = TagSourceController.parameterStart, required = true) int start,
+											   @RequestParam(name = TagSourceController.parameterStart, required = true) int page,
 											   @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
 											   HttpServletRequest request) throws Exception {
 		Long loginUserId=this.getUserId(request);
 		Map<String, Object> responseDataMap = new HashMap<String, Object>();
 		try {
-			logger.info("新的标签列表及标签搜索:**sourceType="+sourceType+"**keyword="+keyword+"**start="+start+"**count="+count);
-			List<TagSearchVO> tags = newTagService.selectTagListByKeword(loginUserId, keyword, sourceType, start, count);
+			logger.info("新的标签列表及标签搜索:**sourceType="+sourceType+"**keyword="+keyword+"**page="+page+"**count="+count);
+			List<TagSearchVO> tags = newTagService.selectTagListByKeword(loginUserId, keyword, sourceType, page, count);
 			long counts = newTagService.countTagListByKeword(loginUserId, keyword);
 			responseDataMap.put("list", tags);
 			responseDataMap.put("totalcount", counts);
@@ -551,6 +552,40 @@ public class TagSourceController extends BaseControl {
 			return InterfaceResult.getInterfaceResultInstance("0002","系统异常");
 		}
 	}
+
+    /**
+     * 新的标签列表及标签搜索
+     * @param debug
+     * @param sourceType
+     * @param keyword
+     * @param page
+     * @param count
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(path = "/tags/tags/getTagList", method = { RequestMethod.POST })
+    public InterfaceResult getTagList(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+                                      @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+                                      @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
+                                      @RequestParam(name = TagSourceController.parameterPage, required = true) int page,
+                                      @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
+                                      HttpServletRequest request) throws Exception {
+
+        Long loginUserId=this.getUserId(request);
+        Map<String, Object> responseDataMap = new HashMap<String, Object>();
+        try {
+            logger.info("新的标签列表及标签搜索:**sourceType="+sourceType+"**keyword="+keyword+"**page="+page+"**count="+count);
+            List<TagSearchVO> tags = newTagService.selectTagListByKewordNoCount(loginUserId, keyword, sourceType, page, count);
+            long counts = newTagService.countTagListByKeword(loginUserId, keyword);
+            responseDataMap.put("list", tags);
+            responseDataMap.put("totalcount", counts);
+            return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return InterfaceResult.getInterfaceResultInstance("0002","系统异常");
+        }
+    }
 
 	/**
 	 * 搜索资源
