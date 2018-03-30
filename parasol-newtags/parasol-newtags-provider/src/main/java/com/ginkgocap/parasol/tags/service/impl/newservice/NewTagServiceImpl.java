@@ -58,6 +58,8 @@ class NewTagServiceImpl implements NewTagService {
                     } else if (sourceType == 8) {
                         tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 8, "", null));
                     }
+                } else {
+                    logger.info("because size to large so, set source to 0. userId: " + userId + " size: " + size);
                 }
 				tagSearchVOs.add(tagSearchVO);
 			}
