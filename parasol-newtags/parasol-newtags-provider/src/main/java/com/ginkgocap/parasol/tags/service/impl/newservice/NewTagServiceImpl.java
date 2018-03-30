@@ -5,6 +5,7 @@ import com.ginkgocap.parasol.tags.mapper.TagSourcesDao;
 import com.ginkgocap.parasol.tags.model.*;
 import com.ginkgocap.parasol.tags.service.NewTagService;
 import net.sf.json.util.JSONUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,36 +27,63 @@ class NewTagServiceImpl implements NewTagService {
 	@Override
 	public List<TagSearchVO> selectTagListByKeword(long userId, String keyword, int sourceType, int index, int size) {
 		List<TagSearchVO> tagSearchVOs = new ArrayList<TagSearchVO>();
-		logger.info("查询条件keyword="+ keyword);
-		List<Tag> tags = tagDao.selectTagListByKeword(userId, keyword, index*size, size);
-		logger.info("查询到的标签列表="+ JSONUtils.valueToString(tags)+"***标签数量="+tags.size());
-		if(tags!=null && tags.size()>0){
+		logger.info("查询条件keyword = " + keyword);
+		List<Tag> tags = tagDao.selectTagListByKeword(userId, keyword, index * size, size);
+		logger.info("查询到的标签列表 = " + JSONUtils.valueToString(tags) + "***标签数量 = " + tags.size());
+		if (tags != null && tags.size() > 0) {
 			ListIterator<Tag> tagListIterator = tags.listIterator();
-			while (tagListIterator.hasNext()){
+			while (tagListIterator.hasNext()) {
 				Tag next = tagListIterator.next();
 				TagSearchVO tagSearchVO = new TagSearchVO();
 				tagSearchVO.setId(next.getId());
 				tagSearchVO.setUserId(next.getUserId());
 				String firstIndex = next.getFirstIndex();
 				if (StringUtils.isNotBlank(firstIndex)) {
-					firstIndex = firstIndex.substring(0,1);
+					firstIndex = firstIndex.substring(0, 1);
 				}
 				tagSearchVO.setFirstName(firstIndex);
 				tagSearchVO.setTagName(next.getTagName());
-				if(sourceType==0){
-					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),2,"",null));
-					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),3,"",null));
-					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),8,"",null));
-					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),7,"",null));
-				}else if(sourceType==2){
-					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),2,"",null));
-				}else if(sourceType==3){
-					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),3,"",null));
-				}else if(sourceType==7){
-					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),7,"",null));
-				}else if(sourceType==8){
-					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId,next.getId(),8,"",null));
+				if (sourceType == 0) {
+					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 2, "", null));
+					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 3, "", null));
+					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 8, "", null));
+					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 7, "", null));
+				} else if (sourceType == 2) {
+					tagSearchVO.setPersonSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 2, "", null));
+				} else if (sourceType == 3) {
+					tagSearchVO.setCustomerSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 3, "", null));
+				} else if (sourceType == 7) {
+					tagSearchVO.setDemandSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 7, "", null));
+				} else if (sourceType == 8) {
+					tagSearchVO.setKnowledgeSourceCount(tagSourcesDao.countSourceByTagId(userId, next.getId(), 8, "", null));
 				}
+				tagSearchVOs.add(tagSearchVO);
+			}
+		}
+		return tagSearchVOs;
+	}
+
+	@Override
+	public List<TagSearchVO> selectTagListByKewordNoCount(long userId, String keyword, int sourceType, int page, int size) {
+		List<TagSearchVO> tagSearchVOs = Collections.emptyList();
+		logger.info(" keyword: " + keyword + " userId: " + userId + " page: " + page + " size: " + size);
+		List<Tag> tags = tagDao.selectTagListByKeword(userId, keyword, page * size, size);
+		if (CollectionUtils.isNotEmpty(tags)) {
+			final int tagCount = tags.size();
+			tagSearchVOs = new ArrayList<TagSearchVO>(tagCount);
+			logger.info("查询到的标签列表: " + JSONUtils.valueToString(tags) + "count: " + tagCount);
+			ListIterator<Tag> tagListIterator = tags.listIterator();
+			while (tagListIterator.hasNext()) {
+				Tag next = tagListIterator.next();
+				TagSearchVO tagSearchVO = new TagSearchVO();
+				tagSearchVO.setId(next.getId());
+				tagSearchVO.setUserId(next.getUserId());
+				String firstIndex = next.getFirstIndex();
+				if (StringUtils.isNotBlank(firstIndex)) {
+					firstIndex = firstIndex.substring(0, 1);
+				}
+				tagSearchVO.setFirstName(firstIndex);
+				tagSearchVO.setTagName(next.getTagName());
 				tagSearchVOs.add(tagSearchVO);
 			}
 		}

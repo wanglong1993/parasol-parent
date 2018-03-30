@@ -61,6 +61,7 @@ public class TagSourceController extends BaseControl {
 	private static final String parameterTagSourceId = "id";
 	private static final String parameterCount = "count";
 	private static final String parameterStart = "start";
+    private static final String parameterPage = "page";
 	private static final String parameterKeyword = "keyword";
 
 	@Resource
@@ -504,10 +505,6 @@ public class TagSourceController extends BaseControl {
 		Map<String, Boolean> responseDataMap = new HashMap<String, Boolean>();
 		boolean flag=false;
 		try {
-			if(loginUserId==null){
-				logger.error("userId is null");
-				return InterfaceResult.getInterfaceResultInstance(CommonResultCode.PERMISSION_EXCEPTION,"用户长时间未操作或者未登录，权限失效！");
-			}
 			if(sourceType==0){
 				tagService.removeTag(loginUserId,tagId);
 				flag = newTagSourceService.deleteSourceByType(loginUserId, tagId, sourceType, sourceId);
@@ -559,6 +556,40 @@ public class TagSourceController extends BaseControl {
 			return InterfaceResult.getInterfaceResultInstance("0002","系统异常");
 		}
 	}
+
+    /**
+     * 新的标签列表及标签搜索
+     * @param debug
+     * @param sourceType
+     * @param keyword
+     * @param page
+     * @param count
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(path = "/tags/tags/getTagList", method = { RequestMethod.POST })
+    public InterfaceResult getTagList(@RequestParam(name = TagSourceController.parameterDebug, defaultValue = "") String debug,
+                                      @RequestParam(name = TagSourceController.parameterSourceType, required = true) int sourceType,
+                                      @RequestParam(name = TagSourceController.parameterKeyword, required = true) String keyword,
+                                      @RequestParam(name = TagSourceController.parameterPage, required = true) int page,
+                                      @RequestParam(name = TagSourceController.parameterCount, required = true) int count,
+                                      HttpServletRequest request) throws Exception {
+
+        Long loginUserId=this.getUserId(request);
+        Map<String, Object> responseDataMap = new HashMap<String, Object>();
+        try {
+            logger.info("新的标签列表及标签搜索:**sourceType="+sourceType+"**keyword="+keyword+"**page="+page+"**count="+count);
+            List<TagSearchVO> tags = newTagService.selectTagListByKewordNoCount(loginUserId, keyword, sourceType, page, count);
+            long counts = newTagService.countTagListByKeword(loginUserId, keyword);
+            responseDataMap.put("list", tags);
+            responseDataMap.put("totalcount", counts);
+            return InterfaceResult.getSuccessInterfaceResultInstance(responseDataMap);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return InterfaceResult.getInterfaceResultInstance("0002","系统异常");
+        }
+    }
 
 	/**
 	 * 搜索资源
