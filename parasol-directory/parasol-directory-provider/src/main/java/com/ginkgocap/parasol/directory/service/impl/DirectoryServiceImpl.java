@@ -265,7 +265,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 		InterfaceResult result = null;
 		try {
 			result = this.moveDirectoryToDirectory(appId, userId, directoryId, toDirectoryId);
-			//Thread.sleep(5000);
 			if (CommonResultCode.SUCCESS.getCode().equals(result.getNotification().getNotifCode())) {
 				Directory directory = this.getEntity(directoryId);
 				result = this.returnMyDirectoriesTreeList(appId, userId, directory.getTypeId());
