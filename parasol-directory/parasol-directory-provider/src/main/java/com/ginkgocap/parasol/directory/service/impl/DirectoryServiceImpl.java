@@ -230,7 +230,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 							//throw new DirectoryServiceException(ServiceError.ERROR_NAME_LIMIT, directory.getName() + "  length can not be more than " + len_name);
 						}
 					}
-
 					// 确保如下数据不能修改
 					oldDirectory.setName(directory.getName());
 					oldDirectory.setUpdateAt(System.currentTimeMillis());
