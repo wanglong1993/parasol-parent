@@ -231,12 +231,6 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 						}
 					}
 
-					/*// 检查重名
-					List<Directory> directorys = oldDirectory.getPid() != 0 ? this
-							.getDirectorysByParentId(oldDirectory.getAppId(), oldDirectory.getUserId(), oldDirectory.getPid())
-							: getDirectorysForRoot(oldDirectory.getAppId(), oldDirectory.getUserId(), oldDirectory.getTypeId());
-					assertDuplicateName(directorys, directory);*/
-
 					// 确保如下数据不能修改
 					oldDirectory.setName(directory.getName());
 					oldDirectory.setUpdateAt(System.currentTimeMillis());
