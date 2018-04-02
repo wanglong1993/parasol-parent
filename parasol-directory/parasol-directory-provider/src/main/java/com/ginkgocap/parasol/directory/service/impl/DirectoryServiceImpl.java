@@ -238,14 +238,9 @@ public class DirectoryServiceImpl extends BaseService<Directory> implements Dire
 					assertDuplicateName(directorys, directory);*/
 
 					// 确保如下数据不能修改
-					directory.setAppId(oldDirectory.getAppId());
-					directory.setUserId(oldDirectory.getUserId());
-					directory.setTypeId(oldDirectory.getTypeId());
-					directory.setPid(oldDirectory.getPid());
-					directory.setNumberCode(oldDirectory.getNumberCode());
-
-					directory.setUpdateAt(System.currentTimeMillis());
-					return this.updateEntity(directory);
+					oldDirectory.setName(directory.getName());
+					oldDirectory.setUpdateAt(System.currentTimeMillis());
+					return this.updateEntity(oldDirectory);
 				} else {
 					logger.info("don't find the old Directory entity by id " + directory.getId());
 				}
